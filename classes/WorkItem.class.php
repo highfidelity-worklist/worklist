@@ -25,6 +25,7 @@ class WorkItem {
     protected $code_review_started;
     protected $code_review_completed;
     protected $budget_id;
+    protected $is_internal;
 
     var $status_changed;
 
@@ -77,6 +78,7 @@ class WorkItem {
                         w.sandbox,
                         w.bug_job_id,
                         w.is_bug,
+                        w.is_internal,
                         w.code_reviewer_id,
                         w.code_review_started,
                         w.code_review_completed,
@@ -104,6 +106,7 @@ class WorkItem {
              ->setNotes($row['notes'])
              ->setSandbox($row['sandbox'])
              ->setBugJobId($row['bug_job_id'])
+             ->setIs_internal($row['is_internal'])
              ->setIs_bug($row['is_bug'])
              ->setBudget_id($row['budget_id'])
              ->setCReviewerId($row['code_reviewer_id'] == "" ? 0 : $row['code_reviewer_id'])
@@ -423,6 +426,59 @@ class WorkItem {
         return $this->skills;
     }
 
+    /**
+     * A method to check if this job is internal / for the hifi team.
+     *
+     * @return (boolean)
+     */
+    public function isInternal()
+    {
+        if ((int) $this->getIs_internal() == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool $is_internal
+     */
+    public function getIs_internal() {
+        return $this->is_internal;
+    }
+
+    /**
+     * @param bool $is_internal the $is_internal to set
+     */
+    public function setIs_internal($is_internal) {
+        $this->is_internal = $is_internal;
+
+        return $this;
+    }
+
+    /**
+     * @return bool Whether the operation was successful
+     */
+    public function toggleInternal($user_id) {
+    
+        $user = new User();
+        $user->findUserById($user_id);
+        
+        if ($user->isInternal()){
+            if ($this->isInternal()) {
+                $this->setIs_internal(false);
+            } else {
+                $this->setIs_internal(true);
+            }
+        } else {
+            return false;
+        }
+
+        $this->save();
+
+        return true;
+    }
+
     public static function getStates()
     {
         $states = array();
@@ -451,7 +507,7 @@ class WorkItem {
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug, status_changed ) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -462,7 +518,8 @@ class WorkItem {
             "'".intval($this->getBugJobId())."', ".
             "NOW(), ".
             "'".$this->getIs_bug()."', ".
-            "NOW())";
+            "NOW(), ".
+            mysql_real_escape_string($this->getIs_internal()) . ")";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -509,6 +566,7 @@ class WorkItem {
             status_changed=NOW(),
             runner_id="' .intval($this->getRunnerId()). '",
             bug_job_id="' .intval($this->getBugJobId()).'",
+            is_internal=' . (int) $this->getIs_internal() . ',
             is_bug='.($this->getIs_bug() ? 1 : 0).',
             budget_id='.$this->getBudget_id().',
             code_reviewer_id=' . $this->getCReviewerId() . ',
@@ -994,27 +1052,31 @@ class WorkItem {
             $project_roles = $project->getRoles($this->getProjectId(), "role_title = 'Creator'");
 
             if (count($project_roles) != 0 && ! $creator_fee_added) {
-                $creator_role = $project_roles[0];
-                if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
+                // fees are not automatically created for internal users
+                if (! $this->getCreator()->isInternal()) {
 
-                    $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
-                    if ((float) $creator_fee < $creator_role['min_amount']) {
-                        $creator_fee = $creator_role['min_amount'];
-                    }
+                    $creator_role = $project_roles[0];
+                    if ($creator_role['percentage'] !== null && $creator_role['min_amount'] !== null) {
 
-                    // add the fee
+                        $creator_fee = ($creator_role['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $creator_fee < $creator_role['min_amount']) {
+                            $creator_fee = $creator_role['min_amount'];
+                        }
+
+                        // add the fee
                         
-                    /**
-                     * @TODO - We call addfees and then deduct from budget
-                     * seems we should add the deduction process to the AddFee
-                     * function
-                     * 
-                     */
-                    AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
-                    // and reduce the runners budget
-                    $myRunner = new User();
-                    $myRunner->findUserById($this->getRunnerId());
-                    $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
+                        /**
+                         * @TODO - We call addfees and then deduct from budget
+                         * seems we should add the deduction process to the AddFee
+                         * function
+                         * 
+                         */
+                        AddFee($this->getId(), $creator_fee, $fee_category, $creator_fee_desc, $this->getCreatorId(), $is_expense, $is_rewarder);
+                        // and reduce the runners budget
+                        $myRunner = new User();
+                        $myRunner->findUserById($this->getRunnerId());
+                        $myRunner->updateBudget(-$creator_fee, $this->getBudget_id());
+                    }
                 }
             }
 
@@ -1023,18 +1085,22 @@ class WorkItem {
                     
                 error_log("[FEES] we have a role for runner");
                 $runner_role = $project_roles[0];
-                if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
 
-                    $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
-                    if ((float) $runner_fee < $runner_role['min_amount']) {
-                        $runner_fee = $runner_role['min_amount'];
+                // fees are not automatically created for internal users
+                if (! $this->getRunner()->isInternal()) {
+                    if ($runner_role['percentage'] !== null && $runner_role['min_amount'] !== null) {
+
+                        $runner_fee = ($runner_role['percentage'] / 100) * $accepted_bid_amount;
+                        if ((float) $runner_fee < $runner_role['min_amount']) {
+                            $runner_fee = $runner_role['min_amount'];
+                        }
+                        // add the fee 
+                        AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
+                        // and reduce the runners budget
+                        $myRunner = new User();
+                        $myRunner->findUserById($this->getRunnerId());
+                        $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
                     }
-                    // add the fee 
-                    AddFee($this->getId(), $runner_fee, $fee_category, $runner_fee_desc, $this->getRunnerId(), $is_expense, $is_rewarder);
-                    // and reduce the runners budget
-                    $myRunner = new User();
-                    $myRunner->findUserById($this->getRunnerId());
-                    $myRunner->updateBudget(-$runner_fee, $this->getBudget_id());
                 }
             }
 

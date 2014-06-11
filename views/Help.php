@@ -6,4 +6,8 @@ class HelpView extends View {
     public $stylesheets = array(
         'css/help.css'
     );
+
+    public $scripts = array(
+        'js/help.js'
+    );
 }

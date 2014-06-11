@@ -132,6 +132,7 @@ var AddJob = {
             dataType: 'json',
             data: {
                 summary: $("input[name='summary']").val(),
+                is_internal: $("input[name='is_internal']").is(':checked') ? 1 : 0,
                 files: $("input[name='files']").val(),
                 notes: $("textarea[name='notes']").val(),
                 page: $("input[name='page']").val(),
