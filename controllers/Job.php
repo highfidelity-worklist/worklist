@@ -579,7 +579,7 @@ class JobController extends Controller {
                             $displayDialogAfterDone = true;
                         }
                         
-                        if ($status != 'Draft'){
+                        if ($status != 'Draft' && $status != 'Bidding' && $status != 'Review'){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
@@ -592,14 +592,14 @@ class JobController extends Controller {
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                        if ($status == 'Code Review') {
+                        /*if ($status == 'Code Review') {
                                 Notification::workitemNotify(array('type' => 'new_review',
                                 'workitem' => $workitem,
                                 'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                            $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
+                      */      $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
                     }
                 } else {
