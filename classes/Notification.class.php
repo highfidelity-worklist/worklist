@@ -92,7 +92,7 @@ class Notification {
                 'action' => 'sendNotifications',
                 'api_key' => API_KEY,
                 'command' => 'statusNotify',
-                'workitem' => $workitem->getId(),
+                'workitem' => $workitem->getId()
             ),
             false,
             false,
