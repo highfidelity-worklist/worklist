@@ -56,7 +56,7 @@ class Notification {
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
             case 'Review':
-                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
+                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Review')) {
                     $emails = self::getReviewNotificationEmails();
                     $options = array('type' => 'new_review',
                         'workitem' => $workitem,
@@ -342,7 +342,7 @@ class Notification {
             break;
 
             case 'modified':
-                if ($workitem->getStatus() != 'Draft' && $workitem->getStatus() != 'Review') {
+                if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
                     if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
@@ -351,6 +351,22 @@ class Notification {
                         . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
                         . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
                         . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
+                    }
+                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'Review')) {
+                        $status_change = '-' . strtolower($workitem->getStatus());
+                        $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
+                        $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
+                        . 'Project: ' . $project_name . '<br />'
+                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                        if($workitem->getRunner() != '') {
+                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                        }
+                        if($workitem->getMechanic() != '') {
+                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
+                        }
+                        $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
+                        . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
+                        . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     } else {
                         if (!empty($options['status_change'])) {
                             $from_changes = $options['status_change'];

@@ -579,7 +579,7 @@ class JobController extends Controller {
                             $displayDialogAfterDone = true;
                         }
                         
-                        if (($status != 'Draft') && ($status != 'Review')){
+                        if ($status != 'Draft'){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
@@ -592,7 +592,7 @@ class JobController extends Controller {
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                        if ($status == 'Review') {
+                            if ($status == 'Review') {
                                 Notification::workitemNotify(array('type' => 'new_review',
                                 'workitem' => $workitem,
                                 'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
@@ -1612,12 +1612,12 @@ class JobController extends Controller {
             );
             Notification::massStatusNotify($workitem);
         }
-        if ($newStatus == 'Code Review') {
+        if ($newStatus == 'Review') {
             $options = array(
-                'type' => 'new_review',
+                'type' => 'modified',
                 'workitem' => $workitem,
             );
-            Notification::massStatusNotify($workitem);
+            Notification::workitemNotify($options);
         }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
