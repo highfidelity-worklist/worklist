@@ -597,8 +597,6 @@ class JobController extends Controller {
                                 'workitem' => $workitem,
                                 'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
                                 array('changes' => $new_update_message));
-                                $notifyEmpty = true;
-                                $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                             }
                             $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
@@ -1614,7 +1612,7 @@ class JobController extends Controller {
             );
             Notification::massStatusNotify($workitem);
         }
-        if ($newStatus == 'Review') {
+        if ($newStatus == 'Code Review') {
             $options = array(
                 'type' => 'new_review',
                 'workitem' => $workitem,

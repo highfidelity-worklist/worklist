@@ -6,7 +6,6 @@
  */
 class Notification {
     public static function getBidNotificationEmails($workitem = 0) {
-
         $result = array();
             $uid = getSessionUserId();
             $sql = "SELECT u.username
@@ -20,9 +19,7 @@ class Notification {
             return $bidNotifs;
     }
     public static function getReviewNotificationEmails($workitem = 0) {
-
         $result = array();
-
             $uid = getSessionUserId();
             $sql = "SELECT u.username
                 FROM `" . USERS . "` u
@@ -37,9 +34,7 @@ class Notification {
             return $reviewNotifs;
     }
     public static function getSelfNotificationEmails($workitem = 0) {
-         
         $result = array();
-        
             $uid = getSessionUserId();
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
@@ -62,13 +57,13 @@ class Notification {
         switch($workitem->getStatus()) {
             case 'Review':
                 if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
-                $emails = self::getReviewNotificationEmails();
-                $options = array('type' => 'new_review',
+                    $emails = self::getReviewNotificationEmails();
+                    $options = array('type' => 'new_review',
                         'workitem' => $workitem,
                         'emails' => $emails);
                     self::workitemNotify($options);
+                    break;
                 }
-            break;
             case 'Bidding':
                 $emails = self::getBidNotificationEmails();
                 $options = array('type' => 'new_bidding',
@@ -347,7 +342,7 @@ class Notification {
             break;
 
             case 'modified':
-                if ($workitem->getStatus() != 'Draft') {
+                if ($workitem->getStatus() != 'Draft' && $workitem->getStatus() != 'Review') {
                     $from_changes = "";
                     if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
