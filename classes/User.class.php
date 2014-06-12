@@ -1344,7 +1344,7 @@ class User {
      * @return array Userlist
      *
      */
-    public static function getUserList($populate = 0, $active = 0, $runner = 0) {
+    public static function getUserList($populate = 0, $active = 0, $runner = 0, $namesOnly = false) {
         $sql = "";
         if ($active) {
             $user_where = "( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id )";
@@ -1381,10 +1381,16 @@ class User {
         $i =  (int) $populate > 0 ? (int) 1 : 0;
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
-            if ($populate != $row['id']) {
-                $userlist[$i++] = $user->setOptions($row);
+            if ($namesOnly) {
+                $user->id = $row['id'];
+                $user->nickname = $row['nickname'];
             } else {
-                $userlist[0] = $user->setOptions($row);
+                $user = $user->setOptions($row);
+            }
+            if ($populate != $row['id']) {
+                $userlist[$i++] = $user;
+            } else {
+                $userlist[0] = $user;
             }
         }
         return ((!empty($userlist)) ? $userlist : false);

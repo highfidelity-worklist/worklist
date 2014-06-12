@@ -411,7 +411,7 @@ class Agency_Worklist_Filter {
      */
     public function getUserSelectbox($active = 1, $allMessage = false, $id = 'userCombo', $name = 'user') {
         $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
-        $users = User::getUserList(getSessionUserId(), $active);
+        $users = User::getUserList(getSessionUserId(), $active, 0, true);
         $box = '<select name="' . $name . '" id="' . $id . '" data-placeholder="Select user" data-live-search="true">';
         if ($allMessage !== false) {
             $box .= '<option value="0"' . (($this->getUser() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
@@ -426,7 +426,7 @@ class Agency_Worklist_Filter {
 
     public function getRunnerSelectbox($active = 1, $allMessage = false, $id = 'runnerCombo', $name = 'runner') {
         $allDisplay = ($allMessage !== false) ? $allMessage : "All Users";
-        $users = User::getUserList(getSessionUserId(), $active, 1);
+        $users = User::getUserList(getSessionUserId(), $active, 1, true);
         $box = '<select name="' . $name . '" id="' . $id . '" >';
         if ($allMessage !== false) {
             $box .= '<option value="0"' . (($this->getRunner() == 0) ? ' selected="selected"' : '') . '> ' . $allMessage . '</option>';
@@ -444,7 +444,7 @@ class Agency_Worklist_Filter {
      * Gets the manager user selection box with style
      */
     public function getManagerUserSelectboxS($style = "", $active = 1) {
-        $users = User::getUserList(getSessionUserId(), $active);
+        $users = User::getUserList(getSessionUserId(), $active, 0, true);
         $box = '<select style="'.$style.'" id="manager" name="manager">';
         $box .= '<option value="0" selected="selected">None</option>';
         foreach ($users as $user) {
@@ -459,7 +459,7 @@ class Agency_Worklist_Filter {
      * Gets the referrer user selection box with style
      */
     public function getReferrerUserSelectboxS($style = "", $active = 1) {
-        $users = User::getUserList(getSessionUserId(), $active);
+        $users = User::getUserList(getSessionUserId(), $active, 0, true);
         $box = '<select style="'.$style.'" id="referrer" name="referrer">';
         $box .= '<option value="0" selected="selected">None</option>';
         foreach ($users as $user) {
