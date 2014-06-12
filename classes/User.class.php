@@ -350,12 +350,10 @@ class User {
      * @param array $options
      * @return User $this
      */
-    private function setOptions(array $options)
-    {
-        $methods = get_class_methods($this);
+    private function setOptions(array $options) {
         foreach ($options as $key => $value) {
             $method = 'set' . ucfirst($key);
-            if (in_array($method, $methods)) {
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
@@ -1361,17 +1359,24 @@ class User {
                     " . USERS . ".added > DATE_SUB(NOW(), INTERVAL 15 DAY) ";
             
             $sql .= $runner ? ' AND `is_runner` = 1' : '';
+            if ($populate <> 0) {
+                $sql .= " UNION SELECT users.* FROM users WHERE users.id = {$populate}";
+            }
+
+            // Final Query: wrap unioned queries and sort by nickname
+            $sql = "SELECT DISTINCT * FROM ({$sql}) DistinctUsers ORDER BY nickname ASC";
         }
         else {
         	$sql .= "SELECT users.* FROM users
-                WHERE users.is_active > 0 AND users.confirm = 1";
-            $sql .= $runner ? ' AND `is_runner` = 1' : '';
-        }
-        $sql .= " UNION SELECT users.* FROM users WHERE users.id = {$populate}";
+                WHERE (users.is_active > 0 AND users.confirm = 1";
+            $sql .= $runner ? ' AND `is_runner` = 1)' : ')';
 
-        // Final Query: wrap unioned queries and sort by nickname
-        $sql = "SELECT DISTINCT * FROM ({$sql}) DistinctUsers ORDER BY nickname ASC";
-        
+            if ($populate <> 0) {
+                $sql .= " OR users.id = {$populate}";
+            }
+
+            $sql .= " ORDER BY nickname ASC";
+        }
         $result = mysql_query($sql);
         $i =  (int) $populate > 0 ? (int) 1 : 0;
         while ($result && ($row = mysql_fetch_assoc($result))) {
@@ -1382,7 +1387,6 @@ class User {
                 $userlist[0] = $user->setOptions($row);
             }
         }
-        ksort($userlist);
         return ((!empty($userlist)) ? $userlist : false);
     }
     

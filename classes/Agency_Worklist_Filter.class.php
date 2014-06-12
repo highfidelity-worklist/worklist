@@ -353,7 +353,8 @@ class Agency_Worklist_Filter {
         $options = '';
         $found = false;
 
-        foreach ( Project::getProjects((bool) $active, array('name', 'project_id')) as $project) {
+        $project = new Project();
+        foreach ($project->getProjects((bool) $active, array('name', 'project_id'), false, true) as $project) {
             if ($this->getProjectId() && $this->getProjectId() == $project['project_id']) {
                 $found = true;
             }
