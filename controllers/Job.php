@@ -1619,7 +1619,7 @@ class JobController extends Controller {
                 'type' => 'new_review',
                 'workitem' => $workitem,
             );
-            //Notification::massStatusNotify($workitem);
+            Notification::massStatusNotify($workitem);
         }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
