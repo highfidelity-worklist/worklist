@@ -55,15 +55,6 @@ class Notification {
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
-            case 'Review':
-                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Review')) {
-                    $emails = self::getReviewNotificationEmails();
-                    $options = array('type' => 'new_review',
-                        'workitem' => $workitem,
-                        'emails' => $emails);
-                    self::workitemNotify($options);
-                    break;
-                }
             case 'Bidding':
                 $emails = self::getBidNotificationEmails();
                 $options = array('type' => 'new_bidding',
@@ -71,6 +62,17 @@ class Notification {
                     'emails' => $emails);
                 self::workitemNotify($options);
                 break;
+        }
+        switch($workitem->getStatus()) {
+            case 'Review':
+                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
+                    $emails = self::getReviewNotificationEmails();
+                    $options = array('type' => 'new_review',
+                        'workitem' => $workitem,
+                        'emails' => $emails);
+                    self::workitemNotify($options);
+                    break;
+            }
         }
     }
 
@@ -561,10 +563,7 @@ class Notification {
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
                         if(($username = $rUser->getUsername())){
-                            // check if we already sending email to this user
-                            if(!in_array($username, $emails)){
-                                array_push($emails, $username);
-                            }
+                            array_push($emails, $username);
                         }
                     }
                 }

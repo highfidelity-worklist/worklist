@@ -578,7 +578,6 @@ class JobController extends Controller {
                         if ($status == 'Done') {
                             $displayDialogAfterDone = true;
                         }
-                        
                         if ($status != 'Draft'){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
@@ -592,11 +591,14 @@ class JobController extends Controller {
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
-                            if ($status == 'Review') {
+                         if ($status == 'Review') {
                                 Notification::workitemNotify(array('type' => 'new_review',
                                 'workitem' => $workitem,
+                                'status_change' => $status_change,
+                                'job_changes' => $job_changes,
                                 'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
                                 array('changes' => $new_update_message));
+                                $notifyEmpty = true;
                             }
                             $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
@@ -1611,13 +1613,6 @@ class JobController extends Controller {
                 'workitem' => $workitem,
             );
             Notification::massStatusNotify($workitem);
-        }
-        if ($newStatus == 'Review') {
-            $options = array(
-                'type' => 'modified',
-                'workitem' => $workitem,
-            );
-            Notification::workitemNotify($options);
         }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
