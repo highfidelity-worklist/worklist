@@ -72,7 +72,7 @@ class Notification {
                         'emails' => $emails);
                     self::workitemNotify($options);
                     break;
-            }
+                }
         }
     }
 
@@ -563,7 +563,10 @@ class Notification {
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
                         if(($username = $rUser->getUsername())){
-                            array_push($emails, $username);
+                            // check if we already sending email to this user
+                            //if(!in_array($username, $emails)){
+                                array_push($emails, $username);
+                            //}
                         }
                     }
                 }

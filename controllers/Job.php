@@ -596,7 +596,7 @@ class JobController extends Controller {
                                 'workitem' => $workitem,
                                 'status_change' => $status_change,
                                 'job_changes' => $job_changes,
-                                'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                                'recipients' => array('runner', 'creator', 'mechanic', 'followers', 'reviewNotifs')),
                                 array('changes' => $new_update_message));
                                 $notifyEmpty = true;
                             }
@@ -1610,6 +1610,13 @@ class JobController extends Controller {
         if ($newStatus == 'Bidding') {
             $options = array(
                 'type' => 'new_bidding',
+                'workitem' => $workitem,
+            );
+            Notification::massStatusNotify($workitem);
+        }
+        if ($newStatus == 'Code Review') {
+            $options = array(
+                'type' => 'new_review',
                 'workitem' => $workitem,
             );
             Notification::massStatusNotify($workitem);
