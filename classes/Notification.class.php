@@ -385,7 +385,7 @@ class Notification {
                             . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                             . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     }
-        }
+                }
             break;
 
             case 'new_bidding':
