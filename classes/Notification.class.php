@@ -25,7 +25,7 @@ class Notification {
                 FROM `" . USERS . "` u
                 WHERE ((`review_notif` = 1
                 AND `id` != $uid)
-                OR (self_notif = 1 and `id` == $uid)
+                OR (self_notif = 1 and `id` = $uid)
                 AND `is_active` = 1)";
             $res = mysql_query($sql);
             while($row = mysql_fetch_row($res)) {
@@ -353,22 +353,6 @@ class Notification {
                         . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
                         . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
                         . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
-                    }
-                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'Review')) {
-                        $status_change = '-' . strtolower($workitem->getStatus());
-                        $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
-                        $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
-                        . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                        if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                        }
-                        if($workitem->getMechanic() != '') {
-                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                        }
-                        $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                        . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                        . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     } else {
                         if (!empty($options['status_change'])) {
                             $from_changes = $options['status_change'];
@@ -401,7 +385,7 @@ class Notification {
                             . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                             . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
                     }
-                }
+        }
             break;
 
             case 'new_bidding':
@@ -417,6 +401,13 @@ class Notification {
                 $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
+            break;
+
+            case 'new_functional':
+                $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
+                . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
+                . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
             break;
 
             case 'new_review':
