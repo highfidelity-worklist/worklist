@@ -583,24 +583,24 @@ class JobController extends Controller {
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
-                            if ($status == 'Functional') {
-                                Notification::workitemNotify(array('type' => 'new_functional',
-                                'workitem' => $workitem,
-                                'status_change' => $status_change,
-                                'job_changes' => $job_changes,
-                                'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-                                array('changes' => $new_update_message));
-                                $notifyEmpty = true;
-                            }
-                        if ($status == 'Code Review') {
-                            Notification::workitemNotify(array('type' => 'new_review',
-                            'workitem' => $workitem,
-                            'status_change' => $status_change,
-                            'job_changes' => $job_changes,
-                            'recipients' => array('runner', 'creator', 'mechanic', 'followers', 'reviewNotifs')),
-                            array('changes' => $new_update_message));
-                            $notifyEmpty = true;
-                            }
+                                if ($status == 'Functional') {
+                                    Notification::workitemNotify(array('type' => 'new_functional',
+                                        'workitem' => $workitem,
+                                        'status_change' => $status_change,
+                                        'job_changes' => $job_changes,
+                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                                        array('changes' => $new_update_message));
+                                        $notifyEmpty = true;
+                                }
+                                if ($status == 'Code Review') {
+                                    Notification::workitemNotify(array('type' => 'new_review',
+                                        'workitem' => $workitem,
+                                        'status_change' => $status_change,
+                                        'job_changes' => $job_changes,
+                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers', 'reviewNotifs')),
+                                        array('changes' => $new_update_message));
+                                        $notifyEmpty = true;
+                                }
 
                             $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
