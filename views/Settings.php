@@ -61,20 +61,20 @@ class SettingsView extends View {
     
     public function receivesBiddingJobsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = $userInfo['notifications'];
-        return Notification::isNotified($notifications, Notification::BIDDING_EMAIL_NOTIFICATIONS);
+        $bidding_notif = $userInfo['bidding_notif'];
+        return $userInfo['bidding_notif'];
     }
 
     public function receivesReviewJobsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = $userInfo['notifications'];
-        return Notification::isNotified($notifications, Notification::REVIEW_EMAIL_NOTIFICATIONS);
+        $review_notif = $userInfo['review_notif'];
+        return $userInfo['review_notif'];
     }
 
     public function receivesSelfActionsAlerts() {
         $userInfo = $this->read('userInfo');
-        $notifications = $userInfo['notifications'];
-        return Notification::isNotified($notifications, Notification::SELF_EMAIL_NOTIFICATIONS);
+        $self_notif = $userInfo['self_notif'];
+        return $userInfo['self_notif'];
     }
 
     public function ppConfirmed() {

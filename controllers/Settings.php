@@ -28,24 +28,25 @@ class SettingsController extends Controller {
 
         // process updates to user's settings
         if (isset($_POST['save']) && $_POST['save']) {
+            $bidding_notif = ($_POST['bidding_notif']);
+            if ($bidding_notif != $user->getBidding_notif()) {
+                $saveArgs['bidding_notif'] = 1;
+            }
+
+            $review_notif = ($_POST['review_notif']);
+            if ($review_notif != $user->getReview_notif()) {
+                $saveArgs['review_notif'] = 1;
+            }
+
+            $self_notif = ($_POST['self_notif']);
+            if ($self_notif != $user->getSelf_notif()) {
+                $saveArgs['self_notif'] = 1;
+            }
 
             if (isset($_POST['timezone'])) {
                 $timezone = mysql_real_escape_string(trim($_POST['timezone']));
                 $saveArgs['timezone'] = 0;
             }
-
-            $notifications = 0;
-            $self_email_notify = !empty($_POST['self_email_notify']) ? Notification::SELF_EMAIL_NOTIFICATIONS : 0;
-            $bidding_email_notify = !empty($_POST['bidding_email_notify']) ? Notification::BIDDING_EMAIL_NOTIFICATIONS : 0;
-            $review_email_notify = !empty($_POST['review_email_notify']) ? Notification::REVIEW_EMAIL_NOTIFICATIONS : 0;
-
-            $notifications = Notification::setFlags(
-                $self_email_notify,
-                $bidding_email_notify,
-                $review_email_notify
-            );
-
-            $saveArgs['notifications'] = 0;
 
             $country = trim($_POST['country']);
             if ($country != $user->getCountry()) {

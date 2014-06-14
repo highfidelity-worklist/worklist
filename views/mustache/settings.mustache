@@ -11,19 +11,19 @@
             <label>Email notifications</label>
             <ul>
                 <li>
-                    <input type="checkbox" name="bidding_email_notify" id="bidding_email_notify" 
-                      value="1" {{#receivesBiddingJobsAlerts}}checked="checked"{{/receivesBiddingJobsAlerts}}>
-                    <label for="bidding_email_notify">New Jobs set to bidding</label>
+                    <input type="checkbox" id="bidding_notif" name="bidding_notif"
+                     value="1" {{#userInfo.bidding_notif}}checked="checked"{{/userInfo.bidding_notif}} />
+                    <label for="bidding_notif">New Jobs set to bidding</label>
                 </li>
                 <li>
-                    <input type="checkbox" name="review_email_notify" id="review_email_notify" 
-                      value="1" {{#receivesReviewJobsAlerts}}checked="checked"{{/receivesReviewJobsAlerts}} />
-                    <label for="review_email_notify">Any job set to review</label>
+                    <input type="checkbox" name="review_notif" id="review_notif"
+                      value="1" {{#userInfo.review_notif}}checked="checked"{{/userInfo.review_notif}} />
+                    <label for="review_notif">Any job set to review</label>
                 </li>
                 <li>
-                    <input type="checkbox" name="self_email_notify" id="self_email_notify" 
-                      value="1" {{#receivesSelfActionsAlerts}}checked="checked"{{/receivesSelfActionsAlerts}} />
-                    <label for="self_email_notify">Receive email notifications from my actions</label>
+                    <input type="checkbox" name="self_notif" id="self_notif"
+                      value="1" {{#userInfo.self_notif}}checked="checked"{{/userInfo.self_notif}} />
+                    <label for="self_notif">Receive email notifications from my actions</label>
                 </li>
             </ul>
 
@@ -65,7 +65,7 @@
                     Download W-9 Here
                 </a>.
                 Remember, you need a valid US mailing address to receive your 1099 
-                tax documents at the end of the year. If you move, it’s up to you 
+                tax documents at the end of the year. If you move, it\'s up to you
                 to let us know your new address.
             </p>
             <p>

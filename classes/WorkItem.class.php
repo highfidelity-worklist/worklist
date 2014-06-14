@@ -1317,7 +1317,21 @@ class WorkItem {
         
         return $followers;
     }
-
+    function getReviewNotificationIds() {
+    $user_id = $_SESSION['userid'];
+        $reviewNotifs = array();
+        $query = 'SELECT u.`id`
+            FROM `' . USERS . '` u
+            WHERE ((`review_notif` = 1
+            AND `id` != ' . $user_id . ')
+            OR (self_notif = 1 and `id` == ' . $user_id . ')
+            AND `is_active` = 1)';
+        $res = mysql_query($query);
+        while($row = mysql_fetch_row($res)) {
+            $reviewNotifs[]= $row[0];
+        }
+            return $reviewNotifs;
+    }
     public function getSandboxPath() {
 
         $url_array = parse_url($this->sandbox);
