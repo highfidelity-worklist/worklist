@@ -51,10 +51,13 @@ class User {
     protected $paypal_email;
     protected $paypal_verified;
     protected $paypal_hash;
-    protected $notifications;
+    protected $bidding_notif;
+    protected $review_notif;
+    protected $self_notif;
     protected $has_W2;
     protected $findus;
     protected $sound_settings;
+
     /**
      * All about budget
      */
@@ -1585,15 +1588,29 @@ class User {
     /**
      * @return the $notifications
      */
-    public function getNotifications() {
-        return $this->notifications;
+     public function getBidding_notif() {
+        return $this->bidding_notif;
+    }
+    public function getReview_notif() {
+        return $this->review_notif;
+    }
+    public function getSelf_notif() {
+        return $this->self_notif;
     }
 
     /**
-     * @param $notifications the $notifications to set
+     * @param set notifications
      */
-    public function setNotifications($notifications) {
-        $this->notifications = $notifications;
+    public function setBidding_notif($bidding_notif) {
+        $this->bidding_notif = $bidding_notif;
+        return $this;
+    }
+    public function setReview_notif($review_notif) {
+        $this->review_notif = $review_notif;
+        return $this;
+    }
+    public function setSelf_notif($self_notif) {
+        $this->self_notif = $self_notif;
         return $this;
     }
     

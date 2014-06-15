@@ -578,23 +578,30 @@ class JobController extends Controller {
                         if ($status == 'Done') {
                             $displayDialogAfterDone = true;
                         }
-                        
-                        if($status == 'Code Review') {
-                            Notification::massStatusNotify($workitem);
-                        }
-                        if (($status != 'Draft') && ($status != 'Code Review')){
+
+                        if ($status != 'Draft'){
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
-                            if ($status == 'Functional') {
-                                Notification::workitemNotify(array('type' => 'modified',
-                                'workitem' => $workitem,
-                                'status_change' => $status_change,
-                                'job_changes' => $job_changes,
-                                'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-                                array('changes' => $new_update_message));
-                                $notifyEmpty = true;
-                            }
+                                if ($status == 'Functional') {
+                                    Notification::workitemNotify(array('type' => 'new_functional',
+                                        'workitem' => $workitem,
+                                        'status_change' => $status_change,
+                                        'job_changes' => $job_changes,
+                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                                        array('changes' => $new_update_message));
+                                    $notifyEmpty = true;
+                                }
+                                if ($status == 'Code Review') {
+                                    Notification::workitemNotify(array('type' => 'new_review',
+                                        'workitem' => $workitem,
+                                        'status_change' => $status_change,
+                                        'job_changes' => $job_changes,
+                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers', 'reviewNotifs')),
+                                        array('changes' => $new_update_message));
+                                    $notifyEmpty = true;
+                                }
+
                             $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
                     }
@@ -1166,6 +1173,7 @@ class JobController extends Controller {
         $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
         $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
         $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
+        $status_error = '';
 
         $has_budget = 0;
         if (! empty($user_id)) {
@@ -1613,6 +1621,7 @@ class JobController extends Controller {
                 'type' => 'new_review',
                 'workitem' => $workitem,
             );
+            Notification::massStatusNotify($workitem);
         }
         if ($newStatus != 'SuggestedWithBid') {
             $options = array(
