@@ -6,20 +6,22 @@ require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 
 class UserController extends Controller {
-    public function run($action, $param) {
+    public function run($action, $param = '') {
         $method = '';
         switch($action) {
             case 'exists':
             case 'index':
             case 'budget':
             case 'countries':
+            case 'avatar':
                 $method = $action;
                 break;
             default:
                 $method = 'info';
                 break;
         }
-        $this->$method($param);
+        $params = preg_split('/\//', $param);
+        call_user_func_array(array($this, $method), $params);
     }
 
     public function exists($id) {
@@ -302,5 +304,19 @@ class UserController extends Controller {
             );
         }
         echo json_encode($ret);
+    }
+
+    public function avatar($id, $size) {
+        $user = User::find($id);
+        $size = preg_split('/x/', $size, 2);
+        $width = count($size) == 2 ? $size[0] : $size[0];
+        $height = count($size) == 2 ? $size[1] : $size[0];
+        $thumb = imagecreatetruecolor($width, $height);
+        $filename = $user->getAvatar();
+        list($orig_width, $orig_height) = getimagesize($filename);
+        $source = imagecreatefromjpeg($filename);
+        imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $orig_width, $orig_height);
+        header('Content-type: image/jpeg');
+        imagejpeg($thumb);
     }
 }
