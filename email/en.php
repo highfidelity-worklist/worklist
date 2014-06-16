@@ -360,6 +360,16 @@ replacement data:
 ),
 'jobs-weekly-report' => array(
     'subject' => 'Worklist Weekly',
-    'body' => '{data}'
+    'body' => '
+    <h2>
+      Summary of Worklist activity for the past week:
+    </h2>
+    <table>
+      {data}
+    </table>',
+    'plain' => '
+    ## Summary of Worklist activity for the past week:
+
+    {text}'
 )
 );

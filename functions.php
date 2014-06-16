@@ -1464,7 +1464,7 @@ function send_email($to, $subject, $html, $plain = null, $headers = array()) {
     }
     
     try {
-        $result = CURLHandler::Get(SENDGRID_API_URL, $postArray);
+        $result = CURLHandler::Post(SENDGRID_API_URL, $postArray);
     } catch(Exception $e) {
         error_log("[ERROR] Unable to send message through SendGrid API - Exception: " . $e->getMessage());
         return false;
