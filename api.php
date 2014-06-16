@@ -3462,8 +3462,6 @@ function sendJobReport() {
     $img_baseurl = WORKLIST_URL . 'user/avatar/';
     foreach ($jobs_data as $user_jobs) {
         $nickname = $user_jobs[key($user_jobs)][0]['nickname'];
-        $user = User::find($nickname);
-
         $img_url = $img_baseurl . $nickname . '/35';
         $html .=
             '<tr>' .
