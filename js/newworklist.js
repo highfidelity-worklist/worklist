@@ -23,6 +23,7 @@ var NewWorklist = {
          */
         Budget.init();
     },
+
     loginClick: function(event) {
         event.preventDefault();
 
@@ -64,5 +65,5 @@ var NewWorklist = {
                 },
             });
         }
-    },
+    }
 }
