@@ -673,7 +673,8 @@ class Project {
                     $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
 
                     if($cCount) {
-                        $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
+                        $feesQuery = "SELECT SUM(F.amount) as fees_sum
+                                FROM " . FEES . " F,
                                 " . WORKLIST . " W
                                 WHERE F.worklist_id = W.id
                                 AND F.withdrawn = 0
