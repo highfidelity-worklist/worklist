@@ -1,5 +1,9 @@
 var Budget = {
     init : function() {
+        Budget.initBudgetList();
+        Budget.initUpdateDialog();
+        Budget.initAddFunds();
+
         $('#budget-give-modal form button[type="submit"]').click(function(event) {
             event.preventDefault();
             $('#budget-give-modal form button[type="submit"]').attr("disabled", "disabled");
@@ -91,6 +95,22 @@ var Budget = {
             }
         });
         $('#budget-source-combo').chosen({width: 'auto'});
+
+        $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+        $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+        $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+
+        $("#budgetPopup").dialog({
+            title: "Earning & Budget",
+            autoOpen: false,
+            width: 340,
+            position: ['center',60],
+            modal: true
+        });
+        $("nav a.budget").click(function(e){
+            e.preventDefault();
+            $("#budgetPopup").dialog("open");
+        });
     },
     
     budgetHistory: function(options) {
@@ -643,16 +663,4 @@ var Budget = {
         $('#bet-amount').children().remove();
         $('#bet-created').children().remove();
     }
-
 };
-
-$(function() {
-    Budget.initBudgetList();
-    Budget.initUpdateDialog();
-    Budget.initAddFunds();
-    Budget.init();
-    $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-    $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-    $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-
-});
