@@ -74,7 +74,6 @@ class Dispatcher {
             ),
             'default' => array('method' => 'index')
         ));
-
         $dispatcher->post('/user/:id', array('User'));
 
         $dispatcher->get('/welcome', array('Welcome'));

@@ -18,6 +18,7 @@ class UserController extends Controller {
                 break;
             default:
                 $method = 'info';
+                $param = $action;
                 break;
         }
         $params = preg_split('/\//', $param);
