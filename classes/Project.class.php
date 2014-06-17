@@ -641,7 +641,7 @@ class Project {
     /**
         Return an array of all projects containing all fields
     **/    
-    public function getProjects($active = true, $selections = array(), $onlyInactive = false) {
+    public function getProjects($active = true, $selections = array(), $onlyInactive = false, $namesOnly = false) {
         $query = "
             SELECT
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
@@ -655,42 +655,45 @@ class Project {
         
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
-                $query = "SELECT
-                            SUM(status IN ('Done', 'Completed')) AS completed, 
-                            SUM(status IN ('Working', 'Review', 'SvnHold', 'Functional')) AS underway, 
-                            SUM(status='Bidding') AS bidding 
-                          FROM
-                            " . WORKLIST . " 
-                          WHERE
-                            project_id = " . $project['project_id'];
-                $resultCount = mysql_query($query);
-                $resultCount = mysql_fetch_object($resultCount);
+                if (!$namesOnly) {
+                    $query = "SELECT
+                                SUM(status IN ('Done', 'Completed')) AS completed,
+                                SUM(status IN ('Working', 'Review', 'SvnHold', 'Functional')) AS underway,
+                                SUM(status='Bidding') AS bidding
+                              FROM
+                                " . WORKLIST . "
+                              WHERE
+                                project_id = " . $project['project_id'];
+                    $resultCount = mysql_query($query);
+                    $resultCount = mysql_fetch_object($resultCount);
 
-                $feesCount = 0;
-                $bCount = $resultCount->bidding === NULL ? 0 : $resultCount->bidding;
-                $uCount = $resultCount->underway === NULL ? 0 : $resultCount->underway;
-                $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
-    
-                if($cCount) {
-                    $feesQuery = "SELECT SUM(F.amount) as fees_sum FROM " . FEES . " F,
-                            " . WORKLIST . " W
-                            WHERE F.worklist_id = W.id 
-                            AND F.withdrawn = 0
-                            AND W.project_id = " . $project['project_id'] . "
-                            AND W.status IN ('Completed', 'Done')";
-                    $feesQueryResult = mysql_query($feesQuery);
-                    if (mysql_num_rows($feesQueryResult)) {
-                        $feesCountArray = mysql_fetch_array($feesQueryResult);
-                        if($feesCountArray['fees_sum']) {
-                            $feesCount = number_format($feesCountArray['fees_sum'],0,'',',');
+                    $feesCount = 0;
+                    $bCount = $resultCount->bidding === NULL ? 0 : $resultCount->bidding;
+                    $uCount = $resultCount->underway === NULL ? 0 : $resultCount->underway;
+                    $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
+
+                    if($cCount) {
+                        $feesQuery = "SELECT SUM(F.amount) as fees_sum
+                                FROM " . FEES . " F,
+                                " . WORKLIST . " W
+                                WHERE F.worklist_id = W.id
+                                AND F.withdrawn = 0
+                                AND W.project_id = " . $project['project_id'] . "
+                                AND W.status IN ('Completed', 'Done')";
+                        $feesQueryResult = mysql_query($feesQuery);
+                        if (mysql_num_rows($feesQueryResult)) {
+                            $feesCountArray = mysql_fetch_array($feesQueryResult);
+                            if($feesCountArray['fees_sum']) {
+                                $feesCount = number_format($feesCountArray['fees_sum'],0,'',',');
+                            }
                         }
                     }
+
+                    $project['bCount'] = $bCount;
+                    $project['uCount'] = $uCount;
+                    $project['cCount'] = $cCount;
+                    $project['feesCount'] = $feesCount;
                 }
-                
-                $project['bCount'] = $bCount;
-                $project['uCount'] = $uCount;
-                $project['cCount'] = $cCount;
-                $project['feesCount'] = $feesCount;
                 $projects[$project['project_id']] = $project;                
             }
             return $projects;
