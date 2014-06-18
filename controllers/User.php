@@ -57,8 +57,30 @@ class UserController extends Controller {
     public function budget($id) {
         $this->view = null;
         $user = User::find($id);
-        $ret = $user->getActiveBudgets();
-        echo json_encode(array('budgets' => $ret));
+        if (!$user) {
+            echo json_encode(array('success' => false));
+            return;
+        }
+        $ret = array(
+            'active' => $user->getActiveBudgets()
+        );
+        if ($user->getId() == getSessionUserId()) {
+            $ret = array_merge($ret, array(
+                'feeSums' => Fee::getSums(),
+                'totalManaged' => money_format('%i', $user->getTotalManaged()),
+                'remainingFunds' => money_format('%i', $user->setRemainingFunds()),
+                'allocated' => money_format('%i', $user->getAllocated()),
+                'submitted' => money_format('%i', $user->getSubmitted()),
+                'paid' => money_format('%i', $user->getPaid()),
+                'transfered' => money_format('%i', $user->getTransfered()),
+                'transfersDetails' => $user->getBudgetTransfersDetails(),
+                'available' => $user->getBudget()
+            ));
+        }
+        echo json_encode(array(
+            'success' => true,
+            'budget' => $ret
+        ));
         return;
     }
 

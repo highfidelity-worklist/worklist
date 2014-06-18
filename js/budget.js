@@ -1,5 +1,9 @@
 var Budget = {
     init : function() {
+        Budget.initBudgetList();
+        Budget.initUpdateDialog();
+        Budget.initAddFunds();
+
         $('#budget-give-modal form button[type="submit"]').click(function(event) {
             event.preventDefault();
             $('#budget-give-modal form button[type="submit"]').attr("disabled", "disabled");
@@ -91,6 +95,42 @@ var Budget = {
             }
         });
         $('#budget-source-combo').chosen({width: 'auto'});
+
+        $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+        $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+        $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
+
+        $("nav.navbar a.budget").click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: './user/budget/' + userId,
+                dataType: 'json',
+                success: function(json) {
+                    if (!json.success) {
+                        return;
+                    }
+                    Utils.modal('budget', {
+                        isRunner: is_runner,
+                        budget: json.budget,
+                        open: function(modal) {
+                            $('table:eq(1) > tbody > tr', modal).click(function() {
+                                Budget.displayHistory(userId);
+                            });
+
+                            $('table:eq(2) > tbody td', modal).click(function() {
+                                $(modal).modal('hide');
+                                var index = $(this).prevAll().length;
+                                if (index < 3) {
+                                    Budget.budgetExpand(index);
+                                } else /* if(index == 4) */ {
+                                    Budget.showBudgetTransferDialog();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
     },
     
     budgetHistory: function(options) {
@@ -363,8 +403,7 @@ var Budget = {
     },
     
     displayHistory: function(user_id) {
-        $('#budgetPopup').dialog('close');
-        window.location = './user/' + user_id + '&tab=tabBudgetHistory';
+        window.location = './user/' + user_id + '?tab=tabBudgetHistory';
     },
         
     /**
@@ -643,16 +682,4 @@ var Budget = {
         $('#bet-amount').children().remove();
         $('#bet-created').children().remove();
     }
-
 };
-
-$(function() {
-    Budget.initBudgetList();
-    Budget.initUpdateDialog();
-    Budget.initAddFunds();
-    Budget.init();
-    $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-    $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-    $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-
-});
