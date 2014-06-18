@@ -566,11 +566,12 @@ $(document).ready(function(){
                             url: './user/budget/' + userId,
                             dataType: 'json',
                             success: function(json) {
-                                if (!json.budgets) {
+                                if (!json.budget) {
                                     return;
                                 }
-                                for(var i = 0; i < json.budgets.length; i++) {
-                                    var budget = json.budgets[i],
+                                var budgets = json.budget.active;
+                                for(var i = 0; i < budgets.length; i++) {
+                                    var budget = budgets[i],
                                         link = $('<a>').attr({
                                             budget: budget.id,
                                             reason: budget.reason,
@@ -1075,11 +1076,12 @@ function AcceptMultipleBidOpen(){
                         url: './user/budget/' + userId,
                         dataType: 'json',
                         success: function(json) {
-                            if (!json.budgets) {
+                            if (!json.budget) {
                                 return;
                             }
-                            for(var i = 0; i < json.budgets.length; i++) {
-                                var budget = json.budgets[i],
+                            var budgets = json.budget.active;
+                            for(var i = 0; i < budgets.length; i++) {
+                                var budget = budgets[i],
                                     link = $('<a>').attr({
                                         budget: budget.id,
                                         reason: budget.reason,
