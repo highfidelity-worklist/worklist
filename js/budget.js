@@ -466,41 +466,25 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
-        $('#budget-expanded').dialog({
-            modal: false,
-            autoOpen: false,
-            position: ['middle'],
-            resizable: false,
-            dialogClass: 'white-theme'});
-        $('#budget-transferred').dialog('option', 'dialogClass', 'white-theme');
-        $('#budget-transferred').dialog({
-            modal: false,
-            autoOpen: false,
-            position: ['middle'],
-            resizable: false,
-            dialogClass: 'white-theme'});
-
-        switch (section) {
-            case 0:
-                // Fetch new data via ajax
-                $('#budget-expanded').dialog('open');
-                Budget.be_getData(section, budget_id);
-                break;
-            case 1:
-                // Fetch new data via ajax
-                $('#budget-expanded').dialog('open');
-                Budget.be_getData(section, budget_id);
-                break;
-            case 2:
-                // Fetch new data via ajax
-                $('#budget-expanded').dialog('open');
-                Budget.be_getData(section, budget_id);
-                break;
-            case 3:
-                // Fetch new data via ajax
-                $('#budget-transferred').dialog('open');
-                Budget.be_getData(section, budget_id);
-                break;
+        if (section < 3) {
+            $('#budget-expanded').dialog({
+                modal: false,
+                autoOpen: false,
+                position: ['middle'],
+                resizable: false,
+                dialogClass: 'white-theme'});
+            $('#budget-expanded').dialog('open');
+            Budget.be_getData(section, budget_id);
+        } else /* if (section == 3) */ {
+            $('#budget-transferred').dialog('option', 'dialogClass', 'white-theme');
+            $('#budget-transferred').dialog({
+                modal: false,
+                autoOpen: false,
+                position: ['middle'],
+                resizable: false,
+                dialogClass: 'white-theme'});
+            $('#budget-transferred').dialog('open');
+            Budget.be_getData(section, budget_id);
         }
     },
 
