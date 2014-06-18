@@ -122,7 +122,7 @@ var Budget = {
                                 var index = $(this).prevAll().length;
                                 if (index < 3) {
                                     Budget.budgetExpand(index);
-                                } else /* if(index == 4) */ {
+                                } else /* if(index == 3) */ {
                                     Budget.showBudgetTransferDialog();
                                 }
                             });
