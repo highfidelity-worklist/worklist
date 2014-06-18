@@ -1,0 +1,71 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Earning &amp; Budget</h4>
+      </div>
+      <div class="modal-body">
+        <h4>Your Fees</h4>
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>This week</th>
+              <th>This month</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${{budget.feeSums.week}}</td>
+              <td>${{budget.feeSums.month}}</td>
+            </tr>
+          </tbody>
+        </table>
+        {{#isRunner}}
+        <div class="row">
+          <div class="col-md-5">
+            <h4>Funds</h4>
+            <table class="table table-condensed table-striped">
+              <thead>
+                <tr>
+                  <th>Total managed</th>
+                  <th>Remaining</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${{budget.totalManaged}}</td>
+                  <td>${{budget.remainingFunds}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-7">
+            <h4>Budget</h4>
+            <table class="table table-condensed table-striped">
+              <thead>
+                <tr>
+                  <th>Allocated</th>
+                  <th>Submitted</th>
+                  <th>Paid</th>
+                  <th>Transferred</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${{budget.allocated}}</td>
+                  <td>${{budget.submitted}}</td>
+                  <td>${{budget.paid}}</td>
+                  <td>${{budget.transfered}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {{/isRunner}}
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

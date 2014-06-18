@@ -100,16 +100,36 @@ var Budget = {
         $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
         $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
 
-        $("#budgetPopup").dialog({
-            title: "Earning & Budget",
-            autoOpen: false,
-            width: 340,
-            position: ['center',60],
-            modal: true
-        });
-        $("nav a.budget").click(function(e){
-            e.preventDefault();
-            $("#budgetPopup").dialog("open");
+        $("nav.navbar a.budget").click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: './user/budget/' + userId,
+                dataType: 'json',
+                success: function(json) {
+                    if (!json.success) {
+                        return;
+                    }
+                    Utils.modal('budget', {
+                        isRunner: is_runner,
+                        budget: json.budget,
+                        open: function(modal) {
+                            $('table:eq(1) > tbody > tr', modal).click(function() {
+                                Budget.displayHistory(userId);
+                            });
+
+                            $('table:eq(2) > tbody td', modal).click(function() {
+                                $(modal).modal('hide');
+                                var index = $(this).prevAll().length;
+                                if (index < 3) {
+                                    Budget.budgetExpand(index);
+                                } else /* if(index == 4) */ {
+                                    Budget.showBudgetTransferDialog();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
     },
     
@@ -383,8 +403,7 @@ var Budget = {
     },
     
     displayHistory: function(user_id) {
-        $('#budgetPopup').dialog('close');
-        window.location = './user/' + user_id + '&tab=tabBudgetHistory';
+        window.location = './user/' + user_id + '?tab=tabBudgetHistory';
     },
         
     /**
