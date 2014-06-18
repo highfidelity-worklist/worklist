@@ -6,18 +6,16 @@ class Utils{
         "about",
         "contactway",
         "payway",
-        "skills",
         "timezone",
         "phone",
-        "smsaddr",
         "country",
-		"city",
-        "provider",
+        "city",
         "paypal_email",
-        "sms_flags",
         "findus",
         "int_code",
-        "notifications"
+        "bidding_notif",
+        "review_notif",
+        "self_notif"
     );
     public static function registerKey($key){
         return in_array($key, self::$keys);

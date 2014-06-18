@@ -256,6 +256,10 @@ if(validateAction()) {
                 validateAPIKey();
                 sendNewUserNotification();
                 break;
+            case 'sendJobReport':
+                validateAPIKey();
+                sendJobReport();
+                break;
             default:
                 die("Invalid action.");
         }
@@ -3512,5 +3516,117 @@ function sendNewUserNotification() {
 
     if (! sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
         error_log('sendNewUserNotification cron: Failed to send email report'); 
+    }
+}
+
+// This is responsible for the weekly job report that is being sent to the users.
+function sendJobReport() {
+    // Let's fetch the data.
+    $sql = "
+        SELECT w.id, u.nickname, w.summary, w.status
+        FROM worklist w
+        INNER JOIN users u
+          ON u.id = w.mechanic_id
+        WHERE w.status_changed > DATE_SUB(NOW(), INTERVAL 7 Day)
+          AND w.status IN('Working', 'Review', 'Functional', 'Completed', 'Done')
+        ORDER BY u.nickname, w.id;";
+
+    // Build our data
+    # $jobs_data = array( array(), array() );
+    $res = mysql_query($sql);
+    if($res) {
+        while($row = mysql_fetch_assoc($res)) {
+            if ($row['status'] == 'Done') {
+                $jobs_data[$row['nickname']]['done'][] = $row;
+            } else {
+                $jobs_data[$row['nickname']]['working'][] = $row;
+            }
+
+        }
+    }
+
+    // Build the output
+    $html = $text = '';
+    $img_baseurl = WORKLIST_URL . 'user/avatar/';
+    foreach ($jobs_data as $user_jobs) {
+        $nickname = $user_jobs[key($user_jobs)][0]['nickname'];
+        $img_url = $img_baseurl . $nickname . '/35';
+        $html .=
+            '<tr>' .
+            '  <td style="width: 35px; padding: 0">' .
+            '    <a href="' . WORKLIST_URL . 'user/' . $nickname . '">' .
+            '      <img src="' . $img_url . '" />' .
+            '    </a>' .
+            '  </td>' .
+            '  <td style="padding: 0 0 0 10px">' .
+            '    <a href="' . WORKLIST_URL . 'user/' . $nickname . '">' .
+            '      <h3 style="color: #007F7C; margin: 0; display: inline-block; font-size: 1.5em">' . $nickname . '</h3>' .
+            '    </a>' .
+            '  </td>' .
+            '</tr>' .
+            '<tr>' .
+            '  <td style="width: 35px; padding: 0">&nbsp;</td>' .
+            '  <td style="padding: 0 0 0 10px">';
+        $text .= '### ' . $nickname . "\n";
+
+        // Completed jobs
+        if (isset($user_jobs['done'])) {
+            $html .=
+                '    <h4 style="margin: 0">Completed Last Week:</h4>' .
+                '    <ul style="padding-left: 10px">';
+            $text .= "#### Completed Last Week:\n";
+            foreach ($user_jobs['done'] as $job) {
+                $html .=
+                    '      <li>' .
+                    '        <a style="color: #333; text-decoration: none" href="' . WORKLIST_URL .  $job['id'] . '">' .
+                    '          #' . $job['id'] . ' - ' . $job['summary'] .
+                    '        </a>' .
+                    '      </li>';
+                $text .= ' * #' . $job['id'] . ' - ' . $job['summary'] . ': ' . WORKLIST_URL . '/' . $job['id'] . "\n";
+            }
+            $html .= '    </ul>';
+            $text .= "\n";
+        }
+
+        // In progress
+        if (isset($user_jobs['working'])) {
+            $html .=
+                '    <h4 style="margin: 0">In Progress:</h4>' .
+                '    <ul style="padding-left: 10px">';
+            $text .= "#### In Progress:\n";
+            foreach ($user_jobs['working'] as $job) {
+                $html .= '      <li>' .
+                         '        <a style="color: #333; text-decoration: none" href="' . WORKLIST_URL .  $job['id'] . '">' .
+                         '          #' . $job['id'] . ' - ' . $job['summary'] .
+                         '        </a>' .
+                         '      </li>';
+                $text .= ' * #' . $job['id'] . ' - ' . $job['summary'] . ': ' . WORKLIST_URL . '/' . $job['id'] . "\n";
+            }
+            $html .= '    </ul>';
+            $text .= "\n";
+        }
+
+        $html .=
+            '  </td>' .
+            '</tr>';
+        $text .= "\n";
+
+    }
+
+    // Send the emails
+    $sql = 'SELECT DISTINCT username FROM users WHERE is_runner = 1' ;
+    $user_data = mysql_query($sql);
+    $emails = array();
+    while ($row = mysql_fetch_assoc($user_data)) {
+        array_push($emails, $row["username"]);
+    }
+
+    $email_content = array(
+        'data' => $html,
+        'text' => $text
+    );
+
+    if (! sendTemplateEmail($emails, 'jobs-weekly-report', $email_content, 'contact@highfidelity.io')) {
+        error_log('sendJobReport cron: Emails could not be sent.');
     }
 }

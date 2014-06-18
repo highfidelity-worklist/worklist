@@ -5,65 +5,47 @@
  * subscriptions
  */
 class Notification {
-    const SELF_EMAIL_NOTIFICATIONS = 64;
-    const BIDDING_EMAIL_NOTIFICATIONS = 256;
-    const REVIEW_EMAIL_NOTIFICATIONS = 512;
- 
-    /**
-     *  Sets flags using list of integers passed as arguments
-     *
-     * @return resulting integer with combined flags
-     */
-    public static function setFlags() {
-            $result = 0;
-            foreach(func_get_args() as $flag) {
-                $result = $result | $flag;
-            }
-            return $result;
-    }
-
-    /**
-     * Check if given flag is set for value
-     *
-     * @param $value value to check against
-     * @param $flag flag to check
-     * @return boolean returns true if given flag is set for value
-     */
-    public static function isNotified($value, $flag = self::REVIEW_EMAIL_NOTIFICATIONS) {
-            $result = ($value & $flag) === $flag;
-            return $result;
-    }
-
-    /**
-     * Get list of users who have given flag set
-     * List is returned only for active users!
-     * This flags are for SMS notifications only
-     * @param $flag flag to compare with
-     * @return list of users with given flag
-     */
-    public static function getNotificationEmails($flag = self::REVIEW_EMAIL_NOTIFICATIONS, $workitem = 0) {
-         
+    public static function getBidNotificationEmails($workitem = 0) {
         $result = array();
-        
-        switch($flag) {
-        case self::REVIEW_EMAIL_NOTIFICATIONS :
-        case self::BIDDING_EMAIL_NOTIFICATIONS :
+            $uid = getSessionUserId();
+            $sql = "SELECT u.username
+                FROM `" . USERS . "` u
+                WHERE `bidding_notif` = 1
+                AND `is_active` = 1";
+            $res = mysql_query($sql);
+            while($row = mysql_fetch_row($res)) {
+            $bidNotifs[]= $row[0];
+        }
+            return $bidNotifs;
+    }
+    public static function getReviewNotificationEmails($workitem = 0) {
+        $result = array();
+            $uid = getSessionUserId();
+            $sql = "SELECT u.username
+                FROM `" . USERS . "` u
+                WHERE ((`review_notif` = 1
+                AND `id` != $uid)
+                OR (self_notif = 1 and `id` = $uid)
+                AND `is_active` = 1)";
+            $res = mysql_query($sql);
+            while($row = mysql_fetch_row($res)) {
+            $reviewNotifs[]= $row[0];
+        }
+            return $reviewNotifs;
+    }
+    public static function getSelfNotificationEmails($workitem = 0) {
+        $result = array();
             $uid = getSessionUserId();
             $sql = "SELECT u.username 
                 FROM `" . USERS . "` u 
-                WHERE ((u.notifications & " . self::REVIEW_EMAIL_NOTIFICATIONS . " != 0 && u.id != " . $uid . ") 
-                OR ((u.notifications & " . self::BIDDING_EMAIL_NOTIFICATIONS . ")
-                OR (u.notifications & " . self::SELF_EMAIL_NOTIFICATIONS . ") != 0 && u.id = " . $uid . "))
-                AND u.is_active = 1";
+                WHERE `self_notif` = 1
+                AND `is_active` = 1
+                AND `id` = $uid)";
             $res = mysql_query($sql);
-            if($res) {
-                while($row = mysql_fetch_row($res)) {
-                    $result[] = $row[0];
-                }
-            }
-            break;
+            while($row = mysql_fetch_row($res)) {
+            $selfNotifs[]= $row[0];
         }
-        return $result;
+            return $selfNotifs;
     }
 
     /**
@@ -73,22 +55,24 @@ class Notification {
      */
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
-            case 'Review':
-                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
-                    $emails = self::getNotificationEmails(self::REVIEW_EMAIL_NOTIFICATIONS);
-                    $options = array('type' => 'new_review',
-                        'workitem' => $workitem,
-                        'emails' => $emails);
-                    self::workitemNotify($options);
-                }
-            break;
             case 'Bidding':
-                $emails = self::getNotificationEmails(self::BIDDING_EMAIL_NOTIFICATIONS);
+                $emails = self::getBidNotificationEmails();
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
                     'emails' => $emails);
                 self::workitemNotify($options);
                 break;
+        }
+        switch($workitem->getStatus()) {
+            case 'Review':
+                if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
+                    $emails = self::getReviewNotificationEmails();
+                    $options = array('type' => 'new_review',
+                        'workitem' => $workitem,
+                        'emails' => $emails);
+                    self::workitemNotify($options);
+                    break;
+                }
         }
     }
 
@@ -419,6 +403,13 @@ class Notification {
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
 
+            case 'new_functional':
+                $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
+                . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
+                . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
+            break;
+
             case 'new_review':
                 $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
@@ -563,20 +554,10 @@ class Notification {
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
                         if(($username = $rUser->getUsername())){
-                            // Check to see if user doesn't want to be notified 
-                            // If user is recipient, doesn't have check on settings and not forced to receive then exclude), 
-                            // except for followers
-                            if ( !strcmp($current_user->getUsername(), $username) && strcmp(ucfirst($recipient), 'Followers') ) {
-                                if ( ! Notification::isNotified($current_user->getNotifications(), Notification::SELF_EMAIL_NOTIFICATIONS)
-                                    || $includeSelf == false) {
-                                    continue;
-                                }
-                            }
-
                             // check if we already sending email to this user
-                            if(!in_array($username, $emails)){
+                            //if(!in_array($username, $emails)){
                                 array_push($emails, $username);
-                            }
+                            //}
                         }
                     }
                 }

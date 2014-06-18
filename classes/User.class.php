@@ -51,10 +51,13 @@ class User {
     protected $paypal_email;
     protected $paypal_verified;
     protected $paypal_hash;
-    protected $notifications;
+    protected $bidding_notif;
+    protected $review_notif;
+    protected $self_notif;
     protected $has_W2;
     protected $findus;
     protected $sound_settings;
+
     /**
      * All about budget
      */
@@ -350,12 +353,10 @@ class User {
      * @param array $options
      * @return User $this
      */
-    private function setOptions(array $options)
-    {
-        $methods = get_class_methods($this);
+    private function setOptions(array $options) {
         foreach ($options as $key => $value) {
             $method = 'set' . ucfirst($key);
-            if (in_array($method, $methods)) {
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
@@ -1346,7 +1347,7 @@ class User {
      * @return array Userlist
      *
      */
-    public static function getUserList($populate = 0, $active = 0, $runner = 0) {
+    public static function getUserList($populate = 0, $active = 0, $runner = 0, $namesOnly = false) {
         $sql = "";
         if ($active) {
             $user_where = "( users.id = runner_id  OR users.id = mechanic_id  OR users.id = creator_id )";
@@ -1361,28 +1362,40 @@ class User {
                     " . USERS . ".added > DATE_SUB(NOW(), INTERVAL 15 DAY) ";
             
             $sql .= $runner ? ' AND `is_runner` = 1' : '';
+            if ($populate <> 0) {
+                $sql .= " UNION SELECT users.* FROM users WHERE users.id = {$populate}";
+            }
+
+            // Final Query: wrap unioned queries and sort by nickname
+            $sql = "SELECT DISTINCT * FROM ({$sql}) DistinctUsers ORDER BY nickname ASC";
         }
         else {
         	$sql .= "SELECT users.* FROM users
-                WHERE users.is_active > 0 AND users.confirm = 1";
-            $sql .= $runner ? ' AND `is_runner` = 1' : '';
-        }
-        $sql .= " UNION SELECT users.* FROM users WHERE users.id = {$populate}";
+                WHERE (users.is_active > 0 AND users.confirm = 1";
+            $sql .= $runner ? ' AND `is_runner` = 1)' : ')';
 
-        // Final Query: wrap unioned queries and sort by nickname
-        $sql = "SELECT DISTINCT * FROM ({$sql}) DistinctUsers ORDER BY nickname ASC";
-        
+            if ($populate <> 0) {
+                $sql .= " OR users.id = {$populate}";
+            }
+
+            $sql .= " ORDER BY nickname ASC";
+        }
         $result = mysql_query($sql);
         $i =  (int) $populate > 0 ? (int) 1 : 0;
         while ($result && ($row = mysql_fetch_assoc($result))) {
             $user = new User();
-            if ($populate != $row['id']) {
-                $userlist[$i++] = $user->setOptions($row);
+            if ($namesOnly) {
+                $user->id = $row['id'];
+                $user->nickname = $row['nickname'];
             } else {
-                $userlist[0] = $user->setOptions($row);
+                $user = $user->setOptions($row);
+            }
+            if ($populate != $row['id']) {
+                $userlist[$i++] = $user;
+            } else {
+                $userlist[0] = $user;
             }
         }
-        ksort($userlist);
         return ((!empty($userlist)) ? $userlist : false);
     }
     
@@ -1575,15 +1588,29 @@ class User {
     /**
      * @return the $notifications
      */
-    public function getNotifications() {
-        return $this->notifications;
+     public function getBidding_notif() {
+        return $this->bidding_notif;
+    }
+    public function getReview_notif() {
+        return $this->review_notif;
+    }
+    public function getSelf_notif() {
+        return $this->self_notif;
     }
 
     /**
-     * @param $notifications the $notifications to set
+     * @param set notifications
      */
-    public function setNotifications($notifications) {
-        $this->notifications = $notifications;
+    public function setBidding_notif($bidding_notif) {
+        $this->bidding_notif = $bidding_notif;
+        return $this;
+    }
+    public function setReview_notif($review_notif) {
+        $this->review_notif = $review_notif;
+        return $this;
+    }
+    public function setSelf_notif($self_notif) {
+        $this->self_notif = $self_notif;
         return $this;
     }
     
