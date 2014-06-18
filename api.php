@@ -2252,11 +2252,11 @@ function getWorklist() {
         }
     } else {
         $query = false;
-        $ufilter = false;
+        $ufilter = 'ALL';
     }
 
     $limit = 30;
-              
+
     $_REQUEST['name'] = '.worklist';
     $filter = new Agency_Worklist_Filter($_REQUEST);
 
