@@ -2337,8 +2337,17 @@ function getWorklist() {
                              * bidding on
                              */
                              $where .= "
-                                (status = 'Bidding' AND ((`" . WORKLIST . "`.`id` in (SELECT `worklist_id` "; 
-                             $where .= "FROM `" . BIDS . "` where `bidder_id` = '$userId' AND status = 'Bidding')) OR runner_id = $userId)) OR ";                     
+                                (status = 'Bidding' AND (
+                                    (`" . WORKLIST . "`.`id` IN (
+                                        SELECT `worklist_id` FROM `" . BIDS . "`
+                                        WHERE
+                                            `bidder_id` = '$userId' AND
+                                            status = 'Bidding'
+                                        )
+                                    ) OR
+                                runner_id = $userId
+                             )) OR
+                             ";
                          } else {
                              $where .= "status = '$val' OR ";
                          }
@@ -2357,6 +2366,7 @@ function getWorklist() {
                     }
                 }
         }
+
         $where .= "0)";
     }
 
@@ -2373,7 +2383,9 @@ function getWorklist() {
             if ($val == 'ALL') {
                 $status_cond = "";
             } else {
-                $status_cond = "status='$val' AND";
+                $status_cond = "
+                    `status` = '$val' AND
+                ";
             }
             
             if ($val == 'Bidding' && $mobile_filter) {
@@ -2384,33 +2396,56 @@ function getWorklist() {
                  * (BIDDING or SwB) status then fetch all workitems where he 
                  * is mechanic, runner, creator or has bids.
                  */ 
-                $where .= $severalStatus .
-                    "( $status_cond (`mechanic_id` = '$ufilter' OR `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
-                    OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
-                    ))";
-            } else if ((!$is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId)) {
+                $where .= "
+                    $severalStatus ($status_cond (
+                        `mechanic_id` = '$ufilter' OR
+                        `runner_id` = '$ufilter' OR
+                        `creator_id` = '$ufilter' OR
+                        `" . WORKLIST . "`.`id` in (
+                            SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$ufilter'
+                        )
+                    ))
+                ";
+            } else if (!$is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
                 /**
                  * If current user is a runner and filtering for certain user and 
                  * (BIDDING or SwB) status then fetch all workitems where selected
                  * user is runner, creator or has bids.
                  */ 
-                $where .= $severalStatus . "( $status_cond ( `runner_id` = '$ufilter' OR `creator_id` = '$ufilter'
-                    OR `" . WORKLIST . "`.`id` in (SELECT `worklist_id` FROM `" . BIDS . "` where `bidder_id` = '$ufilter')
-                    ))";
+                $where .= $severalStatus . "
+                    ($status_cond (
+                        `runner_id` = '$ufilter' OR
+                        `creator_id` = '$ufilter' OR `" . WORKLIST . "`.`id` IN (
+                            SELECT `worklist_id` FROM `". BIDS ."` WHERE `bidder_id` = '$ufilter'
+                        )
+                    ))
+                ";
             } else if (($val == 'Bidding' || $val == 'SuggestedWithBid') && $ufilter != $userId) {
                 /**
                  * If current user is not a runner and is filtering for certain user
                  * and (BIDDING or SwB) status then fetch all workitems where selected
                  * user is mechanic, runner or creator.
                  */ 
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `runner_id` = '$ufilter' OR creator_id='$ufilter') ";
+                $where .= "
+                    $severalStatus (
+                        $status_cond (
+                            `mechanic_id` = '$ufilter' OR
+                            `runner_id` = '$ufilter' OR
+                            `creator_id` = '$ufilter')
+                    ";
             } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed') {
                 /**
                  * If current user is filtering for any user (himself or not) and 
                  * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
                  * all workitems where selected user is mechanic, creator or runner.
                  */ 
-                $where .= $severalStatus . "( $status_cond ( mechanic_id='$ufilter' OR `creator_id`='$ufilter' OR `runner_id` = '$ufilter') ";
+                $where .= "$severalStatus (
+                        $status_cond (
+                            `mechanic_id` = '$ufilter' OR
+                            `creator_id` = '$ufilter' OR
+                            `runner_id` = '$ufilter'
+                        )
+                    )";
             } else  {
                 /**
                  * If current user is filtering for any user (himself or not) and 
@@ -2424,9 +2459,14 @@ function getWorklist() {
                     ($status_cond (
                         `creator_id` = '$ufilter' OR
                         `runner_id` = '$ufilter' OR
-                        `mechanic_id` = '$ufilter' OR
-                        (`".FEES."`.user_id = '$ufilter' AND status != 'Bidding') OR
-                        `".WORKLIST."`.`id` in (SELECT `worklist_id` FROM `".BIDS."` WHERE `bidder_id` = '$ufilter' AND status != 'Bidding')
+                        `mechanic_id` = '$ufilter' OR (
+                            `" . FEES . "`.user_id = '$ufilter' AND
+                            `status` != 'Bidding'
+                        ) OR
+                        `" . WORKLIST . "`.`id` IN (
+                            SELECT `worklist_id` FROM `".BIDS."`
+                            WHERE `bidder_id` = '$ufilter' AND status != 'Bidding'
+                        )
                     ))
                 ";
             }
@@ -2444,27 +2484,18 @@ function getWorklist() {
             WHERE user_id = $ufilter
             GROUP BY w.id
         ");
-        
-        error_log("
-                    SELECT worklist_id FROM `".COMMENTS."` c
-            JOIN `".WORKLIST."` w ON c.worklist_id = w.id $statusCommentFilter
-            WHERE user_id = $ufilter
-            GROUP BY w.id
-            ");
-        
-        error_log(print_r($rt, true));
-        error_log(mysql_error());
-        
+
         $orUserHasCommented = '';
 
         while ($row = mysql_fetch_assoc($rt)) {
             error_log(print_r($row, true));
             $orUserHasCommented .= $row['worklist_id'] . ',';
         }
-        
-        $orUserHasCommented = rtrim($orUserHasCommented, ',');
 
-        $where .= " OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
+        $orUserHasCommented = rtrim($orUserHasCommented, ',');
+        if (! empty($orUserHasCommented)) {
+            $where .= " OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
+        }
     }
 
     // Project filter
@@ -2477,24 +2508,28 @@ function getWorklist() {
         $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
     }
 
-    $query = $filter->getQuery();
-    $commentsjoin ="";
+    $commentsjoin = "";
 
-    if ($query !='' && $query != 'Search...') {
+    if ($query != '' && $query != 'Search...') {
         $searchById = false;
 
-         if(is_numeric(trim($query))) {
-            $rt = mysql_query("select count(*) from ".WORKLIST." LEFT JOIN `".FEES."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id` $where AND `".WORKLIST."`.`id` = " .$query);
+         if (is_numeric(trim($query))) {
+            $rt = mysql_query("
+                SELECT COUNT(*) FROM `" . WORKLIST."`
+                LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id`
+                $where AND
+                `" . WORKLIST . "`.`id` = $query"
+            );
+
             $row = mysql_fetch_row($rt);
             $rowCount = intval($row[0]);
-            if($rowCount >0)
-            {
+            if ($rowCount > 0) {
                 $searchById = true;
                 $where .= " AND `". WORKLIST ."`.`id` = " . $query;
             }
         }
 
-        if(!$searchById) {
+        if (!$searchById) {
             // #11500
             // INPUT: 'one OR    two   three' ;
             // RESULT: 'one two,three' ;
@@ -2504,7 +2539,7 @@ function getWorklist() {
             // change ',OR,' into  space
             $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
 
-            $array=explode(",",rawurldecode($query));
+            $array = explode(",",rawurldecode($query));
             $commentPart = "";
 
             foreach ($array as $item) {
@@ -2530,7 +2565,7 @@ function getWorklist() {
                         MATCH (`mu`.`nickname`) AGAINST ('$item')
                         $commentPart
                     )
-                )) ";
+                ) ";
             }
 
             if ($cfilter == 1) {
@@ -2638,8 +2673,6 @@ function getWorklist() {
 
     // Construct json for history
     $qry = "$qsel $qbody $qorder";
-
-    error_log($qry);
 
     //Don't export mysql errors to the browser by default
     $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
