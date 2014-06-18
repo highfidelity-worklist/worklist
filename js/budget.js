@@ -109,7 +109,7 @@ var Budget = {
                     if (!json.success) {
                         return;
                     }
-                    Utils.modal('budget', {
+                    Utils.modal('earnings-and-budget', {
                         isRunner: is_runner,
                         budget: json.budget,
                         open: function(modal) {
@@ -351,7 +351,7 @@ var Budget = {
                         $('#budget-update-modal input[name="amount"]').val('$' + data.amount);
                         $('#budget-update-modal input[name="budget-reason"]').val(data.reason).attr({disabled: data.closed == 1});
                         if ((data.req_user_authorized && data.seed == 1) || data.seed == 0) {
-                            $('#budget-sources-table').show();
+                            $('#budegt-sources-table').show();
                         } else {
                             $('#budget-sources-table').hide();
                         }
