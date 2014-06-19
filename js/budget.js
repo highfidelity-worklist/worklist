@@ -96,10 +96,6 @@ var Budget = {
         });
         $('#budget-source-combo').chosen({width: 'auto'});
 
-        $('#budget-expanded').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-        $('#budget-transferred').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-        $('#budget-transfer').dialog({ autoOpen: false, width:780, show:'fade', hide:'drop' });
-
         $("nav.navbar a.budget").click(function(event) {
             event.preventDefault();
             $.ajax({
@@ -116,15 +112,10 @@ var Budget = {
                             $('table:eq(1) > tbody > tr', modal).click(function() {
                                 Budget.displayHistory(userId);
                             });
-
                             $('table:eq(2) > tbody td', modal).click(function() {
                                 $(modal).modal('hide');
                                 var index = $(this).prevAll().length;
-                                if (index < 3) {
-                                    Budget.budgetExpand(index);
-                                } else /* if(index == 3) */ {
-                                    Budget.showBudgetTransferDialog();
-                                }
+                                Budget.budgetExpand(index);
                             });
                         }
                     });
@@ -466,204 +457,38 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
+
         if (section < 3) {
-            $('#budget-expanded').dialog({
-                modal: false,
-                autoOpen: false,
-                position: ['middle'],
-                resizable: false,
-                dialogClass: 'white-theme'});
-            $('#budget-expanded').dialog('open');
-            Budget.be_getData(section, budget_id);
-        } else /* if (section == 3) */ {
-            $('#budget-transferred').dialog('option', 'dialogClass', 'white-theme');
-            $('#budget-transferred').dialog({
-                modal: false,
-                autoOpen: false,
-                position: ['middle'],
-                resizable: false,
-                dialogClass: 'white-theme'});
-            $('#budget-transferred').dialog('open');
-            Budget.be_getData(section, budget_id);
-        }
-    },
-
-    showBudgetTransferDialog: function() {
-        $('#budget-transfer').dialog('option', 'position', ['center', 'center']);
-        $('#budget-transfer').dialog('option', 'dialogClass', 'white-theme');
-        $('#budget-transfer').addClass('table-popup');
-        $('#budget-transfer').dialog('open'); 
-    },
-
-    be_attachEvents: function(section, budget_id) {
-        $('#be-id').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-budget').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-summary').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-who').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-amount').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-status').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-created').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#be-paid').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-id').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-budget').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-notes').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-who').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-amount').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-        $('#bet-created').click(function() {
-            Budget.be_handleSorting(section, budget_id, $(this));
-        });
-    },
-
-    be_getData: function(section, budget_id, item, desc) {
-        // Clear old data
-		var table = '';
-		if (section == 3) {
-			table = '#table-budget-transferred';
-		} else {
-			table = '#table-budget-expanded';
-		}
-		
-        var header = $(table).children()[0];
-        $(table).children().remove();
-        $(table).append(header);
-        Budget.be_attachEvents(section, budget_id);
-        
-        var params = '?action=manageBudget&section=' + section + '&budget_id=' + budget_id;
-        var sortby = '';
-        // If we've got an item sort by it
-        if (item) {
-            sortby = item.attr('id');
-            params += '&sortby='+sortby+'&desc='+desc;
-        }
-        $.getJSON('api.php'+params, function(data) {
-            // Fill the table
-            for (var i = 0; i < data.length; i++) {
-                if (section == 3 ) {
-                    var row = 
-                        '<tr class="data_row">' +
-                        '    <td>#' + data[i].id + '</td>' +
-                        '    <td title="' + data[i].budget_title + '">' +
-                        '        ' + data[i].budget_title +
-                        '    </td>' + 
-                        '    <td>' + data[i].notes + '</td>' +
-                        '    <td>' +
-                        '        <a href="./user/' + data[i].receiver_id + '" >' + data[i].who + '</a>' +
-                        '    </td>' +
-                        '    <td>$' + data[i].amount + '</td>' +
-                        '    <td>' + data[i].created + '</td>' +
-                        '</tr>';
-                    $('#table-budget-transferred').append(row);
-
-                } else {
-                    var link = '<a href="./' + data[i].id + '" >';
-                    // Separate "who" names into an array so we can add the userinfo for each one
-                    var who = (data[i].who === false) ? new Array() : data[i].who.split(", ");
-                    var who_link = '';
-                    for (var z = 0; z < who.length; z++) {
-                        who[z] = '<a href="./user/' + data[i].ids[z] + '" >' + who[z] + '</a> ';
-                        if (z < who.length - 1) {
-                            who[z] += ', ';
-                        }
-                        who_link += who[z];
-                    }
-
-                    var row = 
-                        '<tr class="data_row">' +
-                        '    <td>' + link + '#' + data[i].id + '</a></td>' +
-                        '    <td title="' + data[i].budget_title + '">' +
-                        '        ' + data[i].budget_id + 
-                        '    </td>' + 
-                        '    <td>' + link + data[i].summary + '</a></td>' + 
-                        '    <td>' + who_link + '</td>' + 
-                        '    <td>$' + data[i].amount + '</td>' + 
-                        '    <td>' + data[i].status + '</td>' +
-                        '    <td>' + data[i].created + '</td>' +
-                        '    <td>' + data[i].paid + '</td>' +
-                        '</tr>';
-                    $('#table-budget-expanded').append(row);
+            var method = (section == 0) ? 'allocated' : (section == 1) ? 'submitted' : 'paid';
+            var url = './budget/' + method + '/' + (budget_id ? budget_id : '0');
+            $.getJSON(url, function(json) {
+                if (!json.success) {
+                    return;
                 }
-			}
-        });
-        $('#budget-report-export').click(function() {
-            window.location = 'api.php?action=manageBudget&section='+section+'&method=export';
-        });
-        $('#budget-report-export-transferred').click(function() {
-            window.location = 'api.php?action=manageBudget&section=' + section + '&method=export&budget_id=' + budget_id;
-        });
-    },
-
-    be_handleSorting: function(section, budget_id, item) {
-        var desc = true;
-        if (item.hasClass('desc')) {
-            desc = false;
+                Utils.modal('budget', {
+                    items: json.items,
+                    title: 'Budget' + method,
+                    exportUrl: url + '.csv',
+                    open: function(modal) {
+                        // todo: add search behavior
+                    }
+                });
+            });
+        } else /* if (section == 3) */ {
+            var url = './budget/transferred/' + (budget_id ? budget_id : '0');
+            $.getJSON(url, function(json) {
+                if (!json.success) {
+                    return;
+                }
+                Utils.modal('budget-transfer', {
+                    items: json.items,
+                    title: 'Budget transferred',
+                    exportUrl: url + '.csv',
+                    open: function(modal) {
+                        // todo: add search behavior
+                    }
+                });
+            });
         }
-        
-        // Cleanup sorting
-        Budget.be_cleaupTableSorting();
-        item.removeClass('asc');
-        item.removeClass('desc');
-        
-        // Add arrow
-        var arrow_up = '<div style="float:right;">'+
-                       '<img src="images/arrow-up.png" height="15" width="15" alt="arrow"/>'+
-                       '</div>';
-
-        var arrow_down = '<div style="float:right;">'+
-                         '<img src="images/arrow-down.png" height="15" width="15" alt="arrow"/>'+
-                         '</div>';
-
-        if (desc) {
-            item.append(arrow_down);
-            item.addClass('desc');
-        } else {
-            item.append(arrow_up);
-            item.addClass('asc');
-        }
-
-        // Update Data
-        Budget.be_getData(section, budget_id, item, desc);
-    },
-
-    be_cleaupTableSorting: function() {
-        $('#be-id').children().remove();
-        $('#be-budget').children().remove();		
-        $('#be-summary').children().remove();
-        $('#be-who').children().remove();
-        $('#be-amount').children().remove();
-        $('#be-status').children().remove();
-        $('#be-created').children().remove();
-        $('#be-paid').children().remove();
-        $('#bet-id').children().remove();
-        $('#bet-budget').children().remove();		
-        $('#bet-notes').children().remove();
-        $('#bet-who').children().remove();
-        $('#bet-amount').children().remove();
-        $('#bet-created').children().remove();
     }
 };

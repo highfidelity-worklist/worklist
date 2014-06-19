@@ -1,0 +1,49 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Budget</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>Budget</th>
+              <th>ID &amp Summary</th>
+              <th>Who</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Paid</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#items}}
+              <tr>
+                <td>
+                  <strong>{{budget_id}}</strong>: {{budget_title}}
+                </td>
+                <td>
+                  <a href="./{{id}}">#{{id}}</a> {{summary}}
+                </td>
+                <td>
+                  {{#who}}
+                    <a href="./user/{{nickname}}">{{nickname}}</a>
+                  {{/who}}
+                </td>
+                <td>{{amount}}</td>
+                <td>{{status}}</td>
+                <td>{{created}}</td>
+                <td>{{paid}}</td>
+              </tr>
+            {{/items}}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <a href="{{exportUrl}}" class="btn btn-primary">Export to CSV</a>
+      </div>
+    </div>
+  </div>
+</div>
