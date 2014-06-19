@@ -13,6 +13,14 @@ class Dispatcher {
 
         $dispatcher = new Pux\Mux;
 
+        $dispatcher->any('/budget/:method(/:param)', array('Budget'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'info')
+        ));
+
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
         $dispatcher->get('/feedlist', array('FeedList'));

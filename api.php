@@ -151,9 +151,6 @@ if(validateAction()) {
             case 'setFavorite':
                 setFavorite();
                 break;
-            case 'manageBudget':
-                manageBudget();
-                break;
             case 'getBidItem':
                 getBidItem();
                 break;
@@ -1216,126 +1213,6 @@ function setFavorite() {
         }
     } else {
         echo json_encode(array( 'error' => "You must be logged in!"));
-    }
-}
-
-function manageBudget() {
-    // Check that this info is requested by a runner
-    if (!isset($_SESSION['is_runner']) || $_SESSION['is_runner'] != 1) {
-        echo "Error: Unauthorized";
-        die;
-    }
-
-    // Check a section request is given
-    if (!isset($_REQUEST['section'])) {
-        echo "No section requested.";
-        die;
-    }
-    $budget_id = 0;
-    if (isset($_REQUEST['budget_id'])) {
-        $budget_id = (int) $_REQUEST['budget_id'];
-    }
-
-    // Check if we've received sorting request
-    $sortby = "";
-    $desc = "";
-    $sort = false;
-    if (isset($_REQUEST['sortby']) && isset($_REQUEST['desc'])) {
-        switch ($_REQUEST['sortby']) {
-            case 'be-id':
-            case 'bet-id':
-                $sortby = 'id';
-                break;
-            case 'be-budget':
-                $sortby = 'budget_id';
-                break;
-            case 'bet-budget':
-                $sortby = 'budget_title';
-                break;
-            case 'be-summary':
-                $sortby = 'summary';
-                break;
-            case 'bet-notes':
-                $sortby = 'notes';
-                break;
-            case 'be-who':
-            case 'bet-who':
-                $sortby = 'who';
-                break;
-            case 'be-amount':
-            case 'bet-amount':
-                $sortby = 'amount';
-                break;
-            case 'be-status':
-                $sortby = 'status';
-                break;
-            case 'be-created':
-            case 'bet-created':
-                $sortby = 'created';
-                break;
-            case 'be-paid':
-                $sortby = 'paid';
-                break;
-        }
-        $desc = $_REQUEST['desc'];
-        $sort = true;
-    }
-
-    $section = $_REQUEST['section'];
-
-    if (!isset($_REQUEST['method'])) {
-        switch ($section) {
-            case 0:
-                if ($sort) {
-                    echo BudgetTools::getAllocated($budget_id, $sortby, $desc);
-                } else {
-                    echo BudgetTools::getAllocated($budget_id);
-                }
-                break;
-            case 1:
-                if ($sort) {
-                    echo BudgetTools::getSubmitted($budget_id, $sortby, $desc);
-                } else {
-                    echo BudgetTools::getSubmitted($budget_id);
-                }
-                break;
-            case 2:
-                if ($sort) {
-                    echo BudgetTools::getPaid($budget_id, $sortby, $desc);
-                } else {
-                    echo BudgetTools::getPaid($budget_id);
-                }
-                break;
-            case 3:
-                if ($sort) {
-                    echo BudgetTools::getTransferred($budget_id, $sortby, $desc);
-                } else {
-                    echo BudgetTools::getTransferred($budget_id);
-                }
-                break;
-        }
-    } else {
-        if ($_REQUEST['method'] == 'export') {
-            // Export to CSV
-            switch ($section) {
-                case 0:
-                    $data = json_decode(BudgetTools::getAllocated());
-                    BudgetTools::exportCSV($data);
-                    break;
-                case 1:
-                    $data = json_decode(BudgetTools::getSubmitted());
-                    BudgetTools::exportCSV($data);
-                    break;
-                case 2:
-                    $data = json_decode(BudgetTools::getPaid());
-                    BudgetTools::exportCSV($data);
-                    break;
-                case 3:
-                    $data = json_decode(BudgetTools::getTransferred($budget_id));
-                    BudgetTools::exportCSV_Transferred($data);
-                    break;
-            }
-        }
     }
 }
 

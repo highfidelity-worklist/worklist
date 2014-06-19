@@ -1,6 +1,5 @@
 <?php
 
-require_once ("config.php");
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");

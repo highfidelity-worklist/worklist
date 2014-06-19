@@ -9,33 +9,23 @@
         <table class="table table-condensed table-striped">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Budget</th>
-              <th>ID &amp Summary</th>
-              <th>Who</th>
+              <th>Date</th>
+              <th>Recipient</th>
               <th>Amount</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Paid</th>
             </tr>
           </thead>
           <tbody>
             {{#items}}
               <tr>
+                <td>{{id}}</td>
+                <td>{{budget_title}}</td>
+                <td>{{created}}</td>
                 <td>
-                  <strong>{{budget_id}}</strong>: {{budget_title}}
-                </td>
-                <td>
-                  <a href="./{{id}}">#{{id}}</a> {{summary}}
-                </td>
-                <td>
-                  {{#who}}
-                    <a href="./user/{{nickname}}">{{nickname}}</a>
-                  {{/who}}
+                  <a href="./user/{{who}}">{{who}}</a>
                 </td>
                 <td>{{amount}}</td>
-                <td>{{status}}</td>
-                <td>{{created}}</td>
-                <td>{{paid}}</td>
               </tr>
             {{/items}}
           </tbody>
