@@ -342,7 +342,7 @@ var Budget = {
                         $('#budget-update-modal input[name="amount"]').val('$' + data.amount);
                         $('#budget-update-modal input[name="budget-reason"]').val(data.reason).attr({disabled: data.closed == 1});
                         if ((data.req_user_authorized && data.seed == 1) || data.seed == 0) {
-                            $('#budegt-sources-table').show();
+                            $('#budget-sources-table').show();
                         } else {
                             $('#budget-sources-table').hide();
                         }
