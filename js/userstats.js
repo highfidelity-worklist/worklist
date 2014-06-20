@@ -199,7 +199,7 @@ var stats = {
                 }
 
             } else {
-                var toAppend = '<tr>';
+                var toAppend = '<tr>'
                             + '<td class="workitem" id="workitem-' + jsonjob.id + '"><a href = "' + worklistUrl
                             + jsonjob.id
                             + '" target = "_blank">#'+ jsonjob.id + ' - <span>' + jsonjob.summary + '</span></a></td>';
