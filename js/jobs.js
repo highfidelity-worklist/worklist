@@ -336,7 +336,7 @@ function GetWorklist(npage, update, reload) {
             sort: sort,
             dir: dir,
             user: search_user,
-            inComment: 0,
+            // inComment: 0,
             query: $('#query input[type="text"]').val(),
             reload: ((reload == undefined) ? false : true),
             save: save_filter,

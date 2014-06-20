@@ -2250,7 +2250,6 @@ function getWorklist() {
             if (! empty($query)) {
                 if ($finder->findUserByNickname($query)) {
                     $ufilter = $finder->getId();
-                    error_log('seraching by user: ' . $query . ' with id: ' . $ufilter);
                 }
             }
         }
@@ -2293,11 +2292,12 @@ function getWorklist() {
                      * status it wont fetch workitems in DRAFT status
                      */
                     $where .= "
-                        status != 'Draft' ";
+                    `status` != 'Draft'";
 
                     if (! empty($ufilter) && $ufilter != 'ALL') {
                         $where .= " AND
-                            (IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1)) OR ";
+                    IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1) OR ";
+
                     } else {
                         $where .= " OR ";
                     }
@@ -2360,9 +2360,11 @@ function getWorklist() {
                          * if filtering by any status different than ALL and (DRAFT, BIDDING) it 
                          * won't do any magic
                          */
-                        $where .= "status = '$val' OR ";
+                        $where .= "
+                        status = '$val' OR ";
                     } else {
-                        $where .= "status = '$val' OR ";
+                        $where .= "
+                        status = '$val' OR ";
                     }
                 }
         }
@@ -2472,6 +2474,8 @@ function getWorklist() {
             }
             $severalStatus = " OR ";
         }
+        
+        $where .= ')';
 
         $statusCommentFilter = '';
         if (! empty($sfilter) && $sfilter[0] != 'ALL') {
@@ -2539,7 +2543,7 @@ function getWorklist() {
             // change ',OR,' into  space
             $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
 
-            $array = explode(",",rawurldecode($query));
+            $array = explode(",", rawurldecode($query));
             $commentPart = "";
 
             foreach ($array as $item) {
@@ -2552,20 +2556,22 @@ function getWorklist() {
                 
                 if (! empty($ufilter)) {
                     $textMatchAndOr = ' OR ';
+                    $partialMatch = '';
                 } else {
                     $textMatchAndOr = ' AND ';
+                    $partialMatch = '*';
                 }
 
                 $where .= "
                     $textMatchAndOr (
                         MATCH(summary, `" . WORKLIST . "`.`notes`) AGAINST ('$item') OR
-                        MATCH(`".FEES."`.notes) AGAINST ('$item') OR
-                        MATCH(`ru`.`nickname`) AGAINST ('$item') OR
-                        MATCH (`cu`.`nickname`) AGAINST ('$item') OR
-                        MATCH (`mu`.`nickname`) AGAINST ('$item')
+                        MATCH(`".FEES."`.notes) AGAINST ('$item$partialMatch' ) OR
+                        MATCH(`ru`.`nickname`) AGAINST ('$item$partialMatch' ) OR
+                        MATCH (`cu`.`nickname`) AGAINST ('$item$partialMatch' ) OR
+                        MATCH (`mu`.`nickname`) AGAINST ('$item$partialMatch')
                         $commentPart
                     )
-                ) ";
+                 ";
             }
 
             if ($cfilter == 1) {
@@ -2673,7 +2679,7 @@ function getWorklist() {
 
     // Construct json for history
     $qry = "$qsel $qbody $qorder";
-
+error_log($qry);
     //Don't export mysql errors to the browser by default
     $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
     while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
