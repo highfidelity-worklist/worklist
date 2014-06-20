@@ -2679,7 +2679,7 @@ function getWorklist() {
 
     // Construct json for history
     $qry = "$qsel $qbody $qorder";
-error_log($qry);
+
     //Don't export mysql errors to the browser by default
     $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
     while ($rtQuery && $row=mysql_fetch_assoc($rtQuery)) {
