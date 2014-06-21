@@ -1,15 +1,12 @@
 <form class="row" id="search">
-    <div id="query" class="col-sm-3 col-md-3">
+    <div id="query" class="col-sm-4 col-md-4">
       <fieldset>
         <input type="text" name="query" placeholder="Search" value="{{getQuery}}" />
         <button href="#" class="glyphicon glyphicon-remove" title="Clear Search Parameters"></button>
       </fieldset>
     </div>
-    <div class="col-sm-2 col-md-2 filter">
+    <div class="col-sm-3 col-md-3 filter">
       {{& projectSelect}}
-    </div>
-    <div class="col-sm-2 col-md-2 filter">
-      {{& userSelect}}
     </div>
     {{#currentUser.id}}
     <div class="col-sm-3 col-md-3 filter">
