@@ -2228,13 +2228,10 @@ function getWorkitem() {
 }
 
 function getWorklist() {
-    // Test for a string containing 0 characters of anything other than 0-9 and #
-    // After a quick trim ofcourse! :)
-    // I know regex is usually the bad first stop, but there would be no back tracking in this
-    // particular regular expression
     if (array_key_exists('query', $_REQUEST)) {
         $query = trim($_REQUEST['query']);
 
+        // test for a string containing 0 characters of anything other than 0-9 and #
         if (preg_match("/^\#?\d+$/", $query)) {
             // if we reach here, include workitem package, autoloaded (hans)
             $workitem = new WorkItem();
@@ -2242,9 +2239,7 @@ function getWorklist() {
                 $obj = array('redirect',$id);
                 die(JSON_encode($obj));
             }
-            // if we're not dead continue on!
         } else {
-
             // test for username
             $finder = new User();
             if (! empty($query)) {
@@ -2296,7 +2291,7 @@ function getWorklist() {
 
                     if (! empty($ufilter) && $ufilter != 'ALL') {
                         $where .= " AND
-                    IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1) OR ";
+                            IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1) OR ";
 
                     } else {
                         $where .= " OR ";
