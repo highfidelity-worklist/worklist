@@ -18,10 +18,11 @@ var NewWorklist = {
         $('a[href^="./github/login"]').click(NewWorklist.loginClick);
 
         /**
-         * Initialize Budget object
-         * previously wrapped on a jQuery.load function
+         * Initialize js objects used by worklist
+         * previously wrapped on jQuery.load functions
          */
         Budget.init();
+        stats.init();
     },
 
     loginClick: function(event) {

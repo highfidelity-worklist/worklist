@@ -5,90 +5,78 @@
  * http://highfidelity.io
  */
 
-if (typeof stats == "undefined") {
-
-$(function(){
-
-    var dialog_options = { dialogClass: 'white-theme', autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
-    $('#jobs-popup').dialog(dialog_options);
-    $('#lovelist-popup').dialog(dialog_options);
-    $('#latest-earnings-popup').dialog(dialog_options);
-
-    $('#total-jobs').click(function(){
-        stats.stats_page = 1;
-        stats.showJobs('doneJobs');
-        return false;
-    });
-
-    $('#runner-total-jobs').click(function(){
-        stats.stats_page = 1;
-        stats.showJobs('runnerTotalJobs');
-        return false;
-    });
-
-    $('#runner-active-jobs, #quick-links-working').click(function(){
-        stats.stats_page = 1;
-        $('#jobs-popup').dialog('option', 'title', 'Active jobs');
-        stats.showJobs('runnerActiveJobs');
-        return false;
-    });
-
-    $('#active-jobs, #quick-links-working').click(function(){
-        stats.stats_page = 1;
-        $('#jobs-popup').dialog('option', 'title', 'Active jobs');
-        stats.showJobs('activeJobs');
-        return false;
-    });
-
-    $('#quick-links-review').click(function(){
-        stats.stats_page = 1;
-        $('#jobs-popup').dialog('option', 'title', 'Jobs in review');
-        stats.showJobs('reviewJobs');
-        return false;
-    });
-
-    $('#quick-links-completed').click(function(){
-        stats.stats_page = 1;
-        $('#jobs-popup').dialog('option', 'title', 'Completed jobs');
-        stats.showJobs('completedJobs');
-        return false;
-    });
-
-    $("nav .following").click(function(){
-        stats.stats_page = 1;
-        $('#jobs-popup').dialog({
-            title: "Jobs I am Following",
-            dialogClass: 'white-theme',
-            modal: true
-        });
-        stats.showJobs('following');
-        return false;
-    });
-
-    $('#latest-earnings').click(function(){
-        stats.stats_page = 1;
-        stats.showLatestEarnings();
-        return false;
-    });
-
-    $('#love').click(function(){
-        stats.stats_page = 1;
-        stats.showLove();
-        return false;
-    });
-
-});
-
-
-
-
 var stats = {
-
     stats_page: 1,
-    user_id: 0,
 
-    setUserId: function(id){
-        stats.user_id = id;
+    init: function() {
+        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
+        $('#jobs-popup').dialog(dialog_options);
+        $('#lovelist-popup').dialog(dialog_options);
+        $('#latest-earnings-popup').dialog(dialog_options);
+
+        $('#total-jobs').click(function(){
+            stats.stats_page = 1;
+            stats.showJobs('doneJobs');
+            return false;
+        });
+
+        $('#runner-total-jobs').click(function(){
+            stats.stats_page = 1;
+            stats.showJobs('runnerTotalJobs');
+            return false;
+        });
+
+        $('#runner-active-jobs, #quick-links-working').click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog('option', 'title', 'Active jobs');
+            stats.showJobs('runnerActiveJobs');
+            return false;
+        });
+
+        $('#active-jobs, #quick-links-working').click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog('option', 'title', 'Active jobs');
+            stats.showJobs('activeJobs');
+            return false;
+        });
+
+        $('#quick-links-review').click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog('option', 'title', 'Jobs in review');
+            stats.showJobs('reviewJobs');
+            return false;
+        });
+
+        $('#quick-links-completed').click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog('option', 'title', 'Completed jobs');
+            stats.showJobs('completedJobs');
+            return false;
+        });
+
+        $("nav .following").click(function(){
+            stats.stats_page = 1;
+            $('#jobs-popup').dialog({
+                title: "Jobs I am Following",
+                dialogClass: 'white-theme',
+                modal: true
+            });
+            stats.showJobs('following');
+            return false;
+        });
+
+        $('#latest-earnings').click(function(){
+            stats.stats_page = 1;
+            stats.showLatestEarnings();
+            return false;
+        });
+
+        $('#love').click(function(){
+            stats.stats_page = 1;
+            stats.showLove();
+            return false;
+        });
+
     },
 
     showJobs: function(job_type, popup, container){
@@ -118,7 +106,7 @@ var stats = {
                             $(containerDiv + ' th.unfollow').hide();
                         }
 
-                        stats.fillJobs(json, partial(stats.showJobs, job_type), job_type, popup, container);
+                        stats.fillJobs(json, stats.partial(stats.showJobs, job_type), job_type, popup, container);
 
                         if (popup != 0) {
                             $('#jobs-popup').dialog('open');
@@ -310,15 +298,13 @@ var stats = {
         a.addClass('pagination-link');
         a.html(txt);
         return a;
+    },
+
+    partial: function(func /*, 0..n args */) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return function() {
+            var allArguments = args.concat(Array.prototype.slice.call(arguments));
+            return func.apply(this, allArguments);
+        };
     }
-
-}
-
-function partial(func /*, 0..n args */) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return function() {
-    var allArguments = args.concat(Array.prototype.slice.call(arguments));
-    return func.apply(this, allArguments);
-  };
-}
-}
+};
