@@ -685,7 +685,7 @@ class JobController extends Controller {
                      'type' => 'bid_placed',
                      'workitem' => $workitem,
                      'recipients' => array('runner'),
-                     'jobsInfo' => $user->jobsForProject('Done', $projectId, 1, 3),
+                     'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
                      'totalJobs' => $user->jobsCount(array('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')),
                      'activeJobs' => $user->jobsCount(array('Working', 'Functional', 'Review'))
                 );
