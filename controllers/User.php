@@ -445,7 +445,7 @@ class UserController extends Controller {
         $bonusPayments = $user->bonusPaymentsTotal();
         $latestEarnings = $user->latestEarnings();
         echo json_encode(array(
-            'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')),
+            'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
             'active_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review')),
             'total_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($totalEarnings))),
             'latest_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$latestEarnings)),
