@@ -1128,6 +1128,12 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 /**
  * UserStats dialogs styling (such as the jobs modal)
  */
+.modal[name='jobs'] .modal-body {
+    text-align: center;
+}
+.modal[name='jobs'] .modal-body > * {
+    text-align: left;
+}
 .modal[name='jobs'] tbody > tr td:first-child {
     white-space: nowrap;
     overflow: hidden;
@@ -1156,4 +1162,7 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
     background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
     background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
+}
+.modal[name='jobs'] ul.pagination {
+    margin: 0 auto;
 }
