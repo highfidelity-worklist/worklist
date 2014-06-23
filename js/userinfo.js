@@ -469,6 +469,11 @@ var UserInfo = {
             UserStats.showDesignerActiveJobs(1, userInfo.user_id);
             return false;
         });
+
+        $('#latest-earnings').click(function(){
+            UserStats.showLatestEarnings(1, userInfo.user_id);
+            return false;
+        });
     },
      
     appendPagination: function(page, cPages, table) {

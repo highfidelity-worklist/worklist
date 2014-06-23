@@ -65,8 +65,13 @@
                                 {{/jobs}}
                                 {{^jobs}}0{{/jobs}}
                             </p>
-                            <p class="totals"><span>Total earned:</span> ${{totalEarnings}}</p>
-                            <p class="totals"><span>Last 30 days:</span> ${{latestEarnings}}</p>
+                            <p class="totals">
+                                <span>Total earned:</span> ${{totalEarnings}}
+                            </p>
+                            <p class="totals">
+                                <span>Last 30 days:</span>
+                                <a href="#" id="latest-earnings">${{latestEarnings}}</a>
+                            </p>
                         </div>
                     </div>
                 </div>
