@@ -22,7 +22,7 @@ var NewWorklist = {
          * previously wrapped on jQuery.load functions
          */
         Budget.init();
-        stats.init();
+        UserStats.init();
     },
 
     loginClick: function(event) {

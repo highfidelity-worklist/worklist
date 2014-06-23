@@ -117,7 +117,6 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
-        $userstats = isset($options['userstats']) ? $options['userstats'] : null;
        
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
@@ -254,9 +253,8 @@ class Notification {
             break;
 
             case 'bid_placed':
-            	$userstats->setItemsPerPage(3);
             	$projectId = $workitem->getProjectId();;
-            	$jobsInfo = $userstats->getUserItemsForASpecificProject('Done', $projectId);
+                $jobsInfo = $options['jobsInfo'];
             	$lastThreeJobs = $jobsInfo['joblist'];
             	$workItemUrl = '<a href="' . WORKLIST_URL;
             	//create the last three jobs and link them to those Jobs.
@@ -271,9 +269,9 @@ class Notification {
       
             	//now get total jobs and total jobs and create links
             	$totalJobs = $workItemUrl;
-                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getTotalJobsCount() . ' Jobs Total</a><br />';
+                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['totalJobs'] . ' Jobs Total</a><br />';
                 $totalActiveJobs = $workItemUrl;
-                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $userstats->getActiveJobsCount() . ' Jobs Active</a><br />';
+                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['activeJobs'] . ' Jobs Active</a><br />';
                 $urlAcceptBid  = '<br />' . $workItemUrl;
                 $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept this bid </a>';
                 $body .=  $urlAcceptBid;

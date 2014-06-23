@@ -27,7 +27,6 @@ class UserView extends View {
         $this->referred_by = $this->read('referred_by');
         $this->tab = $this->read('tab');
         $this->reqUserId = $this->read('reqUserId');
-        $this->userStats = $this->read('userStats');
         $this->favorite_count = $this->read('favorite_count');
         $this->Annual_Salary = $this->read('Annual_Salary');
         $this->filter = $this->read('filter');
@@ -129,11 +128,11 @@ class UserView extends View {
 
     public function totalEarnings() {
         setlocale(LC_MONETARY,'en_US');
-        return preg_replace('/\.[0-9]{2,}$/','',money_format('%n', $this->userStats->getTotalEarnings()));
+        return preg_replace('/\.[0-9]{2,}$/','',money_format('%n', $this->profileUser->totalEarnings()));
     }
 
     public function latestEarnings() {
-        return preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$this->userStats->getLatestEarnings(30)));
+        return preg_replace('/\.[0-9]{2,}$/','',money_format('%n', $this->profileUser->latestEarnings(30)));
     }
 
     public function ownProfile() {
@@ -244,7 +243,7 @@ class UserView extends View {
 
     public function runnerWorkers() {
         $ret = '';
-        if ($runnerWorkers = $this->userStats->getDevelopersForRunner()) {
+        if ($runnerWorkers = $this->profileUser->developersForDesigner()) {
             foreach($runnerWorkers as $runnerWorker) {
                 $ret .= 
                     '<tr class="row-runner-developer-list-live">' .
@@ -259,7 +258,7 @@ class UserView extends View {
 
     public function runnerProjects() {
         $ret = '';
-        if ($runnerProjects = $this->userStats->getProjectsForRunner()) {
+        if ($runnerProjects = $this->profileUser->projectsForRunner()) {
             foreach($runnerProjects as $runnerProject) { +
                 $ret .= 
                     '<tr class="row-runner-project-list-live">' .
@@ -274,5 +273,30 @@ class UserView extends View {
 
     public function budgetAuthorized() {
         return (strpos(BUDGET_AUTHORIZED_USERS, "," . $this->reqUserId . ",") !== false);
+    }
+
+    public function completedJobs() {
+        return $this->profileUser->completedJobsWithStats();
+    }
+
+    public function activeJobs() {
+        $ret = $this->profileUser->jobs(array('Working', 'Functional', 'Review'), 1, 99);
+        return $ret['jobs'];
+    }
+
+    public function jobs() {
+        return $this->profileUser->jobsCount(array('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done'));
+    }
+
+    public function jobsAsDesigner() {
+        return $this->profileUser->jobsAsDesignerCount();
+    }
+
+    public function activeJobsAsDesigner() {
+        return $this->profileUser->jobsAsDesignerCount(array('Working', 'Review', 'Functional'));
+    }
+
+    public function avgJobRunTime() {
+        return $this->profileUser->avgJobRunTime();
     }
 }

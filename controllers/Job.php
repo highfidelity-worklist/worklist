@@ -684,7 +684,9 @@ class JobController extends Controller {
                      'type' => 'bid_placed',
                      'workitem' => $workitem,
                      'recipients' => array('runner'),
-                     'userstats' => new UserStats($_SESSION['userid'])
+                     'jobsInfo' => $user->jobsForProject('Done', $projectId, 1, 3),
+                     'totalJobs' => $user->jobsCount(array('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')),
+                     'activeJobs' => $user->jobsCount(array('Working', 'Functional', 'Review'))
                 );
                 $data = array(
                      'done_in' => $done_in,

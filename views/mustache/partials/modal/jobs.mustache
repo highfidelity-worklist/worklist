@@ -1,0 +1,49 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Jobs</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>ID &amp; Summary</th>
+              <th>Creator</th>
+              <th>Designer</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#data.jobs}}
+              <tr>
+                <td>
+                  <a href="./{{id}}">#{{id}}</a> {{summary}}
+                </td>
+                <td>
+                  <a href="./user/{{creator}}">{{creator}}</a>
+                </td>
+                <td>
+                  <a href="./user/{{designer}}">{{designer}}</a>
+                </td>
+                <td>{{created}}</td>
+                <td>{{status}}</td>
+              </tr>
+            {{/data.jobs}}
+          </tbody>
+        </table>
+        <ul class="pagination">
+          <li {{#first}}class="disabled"{{/first}}><a goto="prev" href="#">&laquo;</a></li>
+          {{#pages}}
+            <li {{#current}}class="active"{{/current}}><a goto="{{page}}" href="#">{{page}}</a></li>
+          {{/pages}}
+          <li {{#last}}class="disabled"{{/last}}><a goto="next" href="#">&raquo;</a></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

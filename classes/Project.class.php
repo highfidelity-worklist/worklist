@@ -49,6 +49,27 @@ class Project {
         }
     }
 
+    /**
+     * This method tries to fetch a project by any expression.
+     *
+     * @param (mixed) $expr Expression, either Project object, numbers for ids, string for names
+     * @return (mixed) Either the Project or false.
+     */
+    public static function find($expr)
+    {
+        $project = new Project();
+        if (is_object($expr) && (get_class($expr) == 'Project' || is_subclass_of($expr, 'Project'))) {
+            $project = $expr;
+        } else {
+            if (is_numeric($expr)) { // id
+                $project->loadById((int) $expr);
+            } else { // name
+                $project->loadByName($expr);
+            }
+        }
+        return $project;
+    }
+
     static public function getById($project_id) {
         $project = new Project();
         $project->loadById($project_id);

@@ -5,7 +5,14 @@
  * http://highfidelity.io
  */
 
-var stats = {
+var UserStats = {
+    page: {
+        following: 1,
+        doneJobs: 1,
+        designerTotalJobs: 1,
+        designerActiveJobs: 1,
+        activeJobs: 1
+    },
     stats_page: 1,
 
     init: function() {
@@ -14,69 +21,200 @@ var stats = {
         $('#lovelist-popup').dialog(dialog_options);
         $('#latest-earnings-popup').dialog(dialog_options);
 
-        $('#total-jobs').click(function(){
-            stats.stats_page = 1;
-            stats.showJobs('doneJobs');
-            return false;
-        });
-
-        $('#runner-total-jobs').click(function(){
-            stats.stats_page = 1;
-            stats.showJobs('runnerTotalJobs');
-            return false;
-        });
-
-        $('#runner-active-jobs, #quick-links-working').click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog('option', 'title', 'Active jobs');
-            stats.showJobs('runnerActiveJobs');
-            return false;
-        });
-
-        $('#active-jobs, #quick-links-working').click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog('option', 'title', 'Active jobs');
-            stats.showJobs('activeJobs');
-            return false;
-        });
-
-        $('#quick-links-review').click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog('option', 'title', 'Jobs in review');
-            stats.showJobs('reviewJobs');
-            return false;
-        });
-
-        $('#quick-links-completed').click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog('option', 'title', 'Completed jobs');
-            stats.showJobs('completedJobs');
-            return false;
-        });
-
-        $("nav .following").click(function(){
-            stats.stats_page = 1;
-            $('#jobs-popup').dialog({
-                title: "Jobs I am Following",
-                dialogClass: 'white-theme',
-                modal: true
-            });
-            stats.showJobs('following');
+        $("nav.navbar .following").click(function(){
+            UserStats.showFollowingJobs(1, userId);
             return false;
         });
 
         $('#latest-earnings').click(function(){
-            stats.stats_page = 1;
-            stats.showLatestEarnings();
+            UserStats.showLatestEarnings();
             return false;
         });
 
         $('#love').click(function(){
-            stats.stats_page = 1;
-            stats.showLove();
+            UserStats.showLove();
             return false;
         });
 
+    },
+
+    modal: function(name, page, json, user, pagination) {
+        Utils.modal(name, {
+            data: json,
+            pages: UserStats.getPagination(json, page),
+            first: (page == 1),
+            last: (page == json.pages),
+            open: function(modal) {
+                if (pagination) {
+                    $('.pagination a', modal).click(function() {
+                        UserStats.handlePaginationClick(this, page, function(newpage) {
+                            pagination(newpage, user, modal);
+                        });
+                        return false;
+                    });
+                }
+            }
+        });
+    },
+
+    modalRefresh: function(modal, page, json, user, pagination) {
+        Utils.modalRefresh(modal, {
+            data: json,
+            pages: UserStats.getPagination(json, page),
+            first: (page == 1),
+            last: (page == json.pages),
+            success: function(modal) {
+                $('.pagination a', modal).click(function() {
+                    UserStats.handlePaginationClick(this, page, function(newpage) {
+                        pagination(newpage, user, modal);
+                    });
+                    return false;
+                })
+
+            }
+        });
+    },
+
+    showFollowingJobs: function(page, user, modal) {
+        UserStats.page.following = page = (page ? page : 1);
+        $.ajax({
+            url: './user/following/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showFollowingJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showFollowingJobs);
+                }
+            }
+        });
+    },
+
+    showDoneJobs: function(page, user, modal) {
+        UserStats.page.doneJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/doneJobs/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showDoneJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showDoneJobs);
+                }
+            }
+        });
+    },
+
+    showDesignerTotalJobs: function(page, user, modal) {
+        UserStats.page.designerTotalJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/designerJobs/' + user + '/total/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showDesignerTotalJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showDesignerTotalJobs);
+                }
+            }
+        });
+    },
+
+    showDesignerActiveJobs: function(page, user, modal) {
+        UserStats.page.designerActiveJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/designerJobs/' + user + '/active/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showDesignerActiveJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showDesignerActiveJobs);
+                }
+            }
+        });
+    },
+
+    showActiveJobs: function(page, user, modal) {
+        UserStats.page.activeJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/activeJobs/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showActiveJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showActiveJobs);
+                }
+            }
+        });
+    },
+
+    showReviewJobs: function(page, user, modal) {
+        UserStats.page.reviewJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/reviewJobs/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, UserStats.showReviewJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showReviewJobs);
+                }
+            }
+        });
+    },
+
+    showLatestEarnings: function(page, user, modal) {
+        UserStats.page.latestEarnings = page = (page ? page : 1);
+        $.ajax({
+            url: './user/latestEarnings/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('latest-earnings', page, json, user, UserStats.showLatestEarnings);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, UserStats.showLatestEarnings);
+                }
+            }
+        });
+    },
+
+    showLove: function(page) {
+        $.ajax({
+            url: './user/love/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                UserStats.modal('love', page, json, user);
+            }
+        });
+    },
+
+    handlePaginationClick: function(which, current, fAfter) {
+        var newpage = $(which).attr('goto');
+        if ($(which).parent().hasClass('disabled')) {
+            return;
+        }
+        if (newpage == 'prev') {
+            newpage = parseInt(current) - 1;
+        }
+        if (newpage == 'next') {
+            newpage = parseInt(current) + 1;
+        }
+        if (fAfter) {
+            fAfter(newpage);
+        }
+    },
+
+    getPagination: function(json, page) {
+        var pages = [];
+        for (var i = 1; i <= json.pages; i++) {
+            pages.push({
+                page: i,
+                current: (i == page)
+            });
+        }
+        return pages;
     },
 
     showJobs: function(job_type, popup, container){
@@ -136,24 +274,6 @@ var stats = {
                     });
     },
 
-    showLatestEarnings: function(){
-        $.getJSON('api.php?action=getUserStats',
-                    {id: stats.user_id, statstype: 'latest_earnings', page: stats.stats_page},
-                    function(json){
-                        stats.fillEarnings(json, stats.showLatestEarnings);
-                        $('#latest-earnings-popup').dialog('open');
-                    });
-    },
-
-    showLove: function(){
-        $.getJSON('api.php?action=getuserstats',
-                    {id: stats.user_id, statstype: 'love', page: stats.stats_page},
-                    function(json){
-                        stats.fillLove(json, stats.showLove);
-                        $('#lovelist-popup').dialog('open');
-                    });
-    },
-
     // func is a functin to be called when clicked on pagination link
     fillJobs: function(json, func, job_type, popup, container) {
         if (popup != 0) {
@@ -194,11 +314,6 @@ var stats = {
 
                 if (job_type == 'activeJobs' || job_type == 'runnerActiveJobs' || job_type == 'following') {
                     toAppend += '<td>' + jsonjob.status + '</td>';
-                }
-
-                if (job_type == 'completedJobsWithStats') {
-                    toAppend += '<td class="cost">$' + (jsonjob.cost ? jsonjob.cost : '0.00') + '</td>';
-                    toAppend += '<td class="time">' + ( (jsonjob.days && jsonjob.days > 1) ? jsonjob.days + ' days' : '1 day') + '</td>';
                 }
 
                 if (job_type == 'following') {
