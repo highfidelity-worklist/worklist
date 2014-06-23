@@ -375,12 +375,7 @@ $(document).ready(function(){
     $('#following').click(function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action: 'ToggleFollowing'
-            },
+            url: './job/toggleFollowing/' + workitem_id,
             dataType: 'json',
             success: function(data) {
                 if (data.success) {

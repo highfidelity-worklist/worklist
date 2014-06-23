@@ -455,18 +455,18 @@ var UserInfo = {
             $("#" + userInfo.tab).click();
         }
 
-        $('#total-jobs').click(function(){
-            stats.showDoneJobs(1, userInfo.user_id);
+        $('#total-jobs').click(function() {
+            UserStats.showDoneJobs(1, userInfo.user_id);
             return false;
         });
 
-        $('#runner-total-jobs').click(function(){
-            stats.showDesignerTotalJobs(1, userInfo.user_id);
+        $('#runner-total-jobs').click(function() {
+            UserStats.showDesignerTotalJobs(1, userInfo.user_id);
             return false;
         });
 
-        $('#runner-active-jobs').click(function(){
-            stats.showDesignerActiveJobs(1, userInfo.user_id);
+        $('#runner-active-jobs').click(function() {
+            UserStats.showDesignerActiveJobs(1, userInfo.user_id);
             return false;
         });
     },

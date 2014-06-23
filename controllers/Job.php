@@ -14,6 +14,7 @@ class JobController extends Controller {
             case 'view':
             case 'add':
             case 'toggleInternal':
+            case 'toggleFollowing':
                 $method = $action;
                 break;
             default:
@@ -1433,13 +1434,31 @@ class JobController extends Controller {
      * we pass the session user to the method
      */
     protected function toggleInternal($job_id) {
+        $this->view = null;
         $workitem = new WorkItem($job_id);
         $resp = $workitem->toggleInternal($_SESSION['userid']);
 
-        $this->view = null;
         echo json_encode(array(
             'success' => true,
             'message' => 'Internal toggled: ' . $resp
+        ));
+    }
+
+
+    /**
+     * Toggle the is_internal field for a Workitem/Job
+     *
+     * The user must be internal in order to perform this action, therefore
+     * we pass the session user to the method
+     */
+    protected function toggleFollowing($job_id) {
+        $this->view = null;
+        $workitem = new WorkItem($job_id);
+        $resp = $workitem->toggleUserFollowing($_SESSION['userid']);
+
+        echo json_encode(array(
+            'success' => true,
+            'message' => 'Following Toggled' . $resp
         ));
     }
 

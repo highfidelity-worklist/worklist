@@ -38,7 +38,7 @@ var UserStats = {
 
     },
 
-    modal: function(name, page, json, user, title, pagination) {
+    modal: function(name, page, json, user, title, pagination, fAfter) {
         Utils.modal(name, {
             data: json,
             title: title,
@@ -54,11 +54,14 @@ var UserStats = {
                         return false;
                     });
                 }
+                if (fAfter) {
+                    fAfter(modal);
+                }
             }
         });
     },
 
-    modalRefresh: function(modal, page, json, user, title, pagination) {
+    modalRefresh: function(modal, page, json, user, title, pagination, fAfter) {
         Utils.modalRefresh(modal, {
             data: json,
             title: title,
@@ -66,15 +69,24 @@ var UserStats = {
             first: (page == 1),
             last: (page == json.pages),
             success: function(modal) {
-                $('.pagination a', modal).click(function() {
-                    UserStats.handlePaginationClick(this, page, function(newpage) {
-                        pagination(newpage, user, modal);
+                if (pagination) {
+                    $('.pagination a', modal).click(function() {
+                        UserStats.handlePaginationClick(this, page, function(newpage) {
+                            pagination(newpage, user, modal);
+                        });
+                        return false;
                     });
-                    return false;
-                })
-
+                }
+                if (fAfter) {
+                    fAfter(modal);
+                }
             }
         });
+    },
+
+    hideJobsStatusCol: function(modal) {
+        console.log($('tr > th:nth-child(5), tr > td:nth-child(5)', modal).length);
+        $('tr > th:nth-child(5), tr > td:nth-child(5)', modal).hide();
     },
 
     showFollowingJobs: function(page, user, modal) {
@@ -84,10 +96,39 @@ var UserStats = {
             dataType: 'json',
             success: function(json) {
                 var title = "Jobs I'm following";
+                var addActionButtons = function(modal) {
+                    $('tr', modal).each(function() {
+                        header = $(this).parent().is('thead');
+                        var html = header ? '<th>' : '<td>';
+                        var column = $(html);
+                        if (!header) {
+                            $('<button>')
+                                .html('Un-Follow')
+                                .attr('type', 'button')
+                                .addClass('btn btn-primary btn-xs')
+                                .appendTo(column);
+                        }
+                        $(this).append(column);
+                    });
+                    $('tr > td:last-child > button').click(function() {
+                        var parentRow = $(this).parent().parent();
+                        var job_id = parentRow.attr('job');
+                        $.ajax({
+                            type: 'post',
+                            url: './job/toggleFollowing/' + job_id,
+                            dataType: 'json',
+                            success: function(data) {
+                                if (data.success) {
+                                    $(parentRow).remove();
+                                }
+                            }
+                        });
+                    });
+                };
                 if (typeof modal == 'undefined') {
-                    UserStats.modal('jobs', page, json, user, title, UserStats.showFollowingJobs);
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showFollowingJobs, addActionButtons);
                 } else {
-                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showFollowingJobs);
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showFollowingJobs, addActionButtons);
                 }
             }
         });
@@ -101,9 +142,9 @@ var UserStats = {
             success: function(json) {
                 var title = "Done jobs";
                 if (typeof modal == 'undefined') {
-                    UserStats.modal('jobs', page, json, user, title, UserStats.showDoneJobs);
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showDoneJobs, UserStats.hideJobsStatusCol);
                 } else {
-                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showDoneJobs);
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showDoneJobs, UserStats.hideJobsStatusCol);
                 }
             }
         });
@@ -117,9 +158,9 @@ var UserStats = {
             success: function(json) {
                 var title = "Jobs as Designer";
                 if (typeof modal == 'undefined') {
-                    UserStats.modal('jobs', page, json, user, title, UserStats.showDesignerTotalJobs);
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showDesignerTotalJobs, UserStats.hideJobsStatusCol);
                 } else {
-                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showDesignerTotalJobs);
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showDesignerTotalJobs, UserStats.hideJobsStatusCol);
                 }
             }
         });
@@ -165,9 +206,9 @@ var UserStats = {
             success: function(json) {
                 var title = "Review jobs";
                 if (typeof modal == 'undefined') {
-                    UserStats.modal('jobs', page, json, user, title, UserStats.showReviewJobs);
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showReviewJobs, UserStats.hideJobsStatusCol);
                 } else {
-                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showReviewJobs);
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showReviewJobs, UserStats.hideJobsStatusCol);
                 }
             }
         });

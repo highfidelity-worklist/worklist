@@ -285,7 +285,7 @@ class UserView extends View {
     }
 
     public function jobs() {
-        return $this->profileUser->jobsCount(array('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done'));
+        return $this->profileUser->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done'));
     }
 
     public function jobsAsDesigner() {

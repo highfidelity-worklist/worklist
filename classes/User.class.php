@@ -2040,7 +2040,7 @@ class User {
         } else {
             $statusCond = "`status` = '{$status}'";
         }
-        $count = $this->jobsAsDesignerCount($statusCond);
+        $count = $this->jobsAsDesignerCount($status);
         $sql = "
             SELECT
               `w`.`id`,
