@@ -253,22 +253,22 @@ class Notification {
             break;
 
             case 'bid_placed':
-            	$projectId = $workitem->getProjectId();;
+                $projectId = $workitem->getProjectId();;
                 $jobsInfo = $options['jobsInfo'];
-            	$lastThreeJobs = $jobsInfo['joblist'];
-            	$workItemUrl = '<a href="' . WORKLIST_URL;
-            	//create the last three jobs and link them to those Jobs.
-            	foreach ($lastThreeJobs as $row){
-            		$jobs .= $workItemUrl;
+                $lastThreeJobs = $jobsInfo['joblist'];
+                $workItemUrl = '<a href="' . WORKLIST_URL;
+                //create the last three jobs and link them to those Jobs.
+                foreach ($lastThreeJobs as $row){
+                    $jobs .= $workItemUrl;
                     $jobs .= $row['id'] . '">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br /><br />';
                 }
-            	//if no Jobs then display 'None'
-            	if (!$jobs){
-            		$jobs = 'None <br />';
-            	}
+                //if no Jobs then display 'None'
+                if (!$jobs){
+                    $jobs = 'None <br />';
+                }
       
-            	//now get total jobs and total jobs and create links
-            	$totalJobs = $workItemUrl;
+                //now get total jobs and total jobs and create links
+                $totalJobs = $workItemUrl;
                 $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['totalJobs'] . ' Jobs Total</a><br />';
                 $totalActiveJobs = $workItemUrl;
                 $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['activeJobs'] . ' Jobs Active</a><br />';
@@ -276,7 +276,7 @@ class Notification {
                 $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept this bid </a>';
                 $body .=  $urlAcceptBid;
 
-            	$headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
+                $headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
                 $body =  ' <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> placed a bid on
                          ' . $itemLink . '<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
