@@ -2168,6 +2168,11 @@ function getWorklist() {
         $where .= "0)";
     }
 
+    // only internal users are allowed to view internal jobs
+    if (! $currentUser->isInternal()) {
+        $where .= " AND `".WORKLIST."`.is_internal = 0";
+    }
+
     // User filter
     if (!empty($ufilter) && $ufilter != 'ALL') {
         if (empty($where)) {
@@ -2278,8 +2283,6 @@ function getWorklist() {
             $severalStatus = " OR ";
         }
 
-        // $where .= ')';
-
         /**
          * Get the list of jobs that the user has commented on for inclusion
          */
@@ -2387,12 +2390,7 @@ function getWorklist() {
         }
     }
 
-    // only internal users are allowed to view internal jobs
-    if (! $currentUser->isInternal()) {
-        $where .= ") AND `".WORKLIST."`.is_internal = 0";
-    } else {
-        $where .= ")";
-    }
+    $where .= ")";
 
     $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
