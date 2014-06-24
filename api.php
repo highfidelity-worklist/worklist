@@ -2017,6 +2017,10 @@ function getWorkitem() {
 }
 
 function getWorklist() {
+
+    $query = false;
+    $ufilter = 'ALL';
+
     if (array_key_exists('query', $_REQUEST)) {
         $query = trim($_REQUEST['query']);
 
@@ -2025,7 +2029,7 @@ function getWorklist() {
             // if we reach here, include workitem package, autoloaded (hans)
             $workitem = new WorkItem();
             if ($workitem->idExists($id = ltrim($query, '#'))) {
-                $obj = array('redirect',$id);
+                $obj = array('redirect', $id);
                 die(JSON_encode($obj));
             }
         } else {
@@ -2037,9 +2041,6 @@ function getWorklist() {
                 }
             }
         }
-    } else {
-        $query = false;
-        $ufilter = 'ALL';
     }
 
     $limit = 30;
@@ -2063,96 +2064,107 @@ function getWorklist() {
 
     $mobile_filter = isset($_POST['mobile']) ? ($_POST['mobile'] == 'true') : false;
 
-    // Status filter
+    /**
+     * Handle the status filter
+     *
+     * User can select one or more statii. This is a mandatory (AND) filter
+     */
     if ($sfilter) {
-        $where = "WHERE (";
+        $where = "
+            WHERE
+                (";
+
         foreach ($sfilter as $val) {
 
             $val = mysql_real_escape_string($val);
 
-                if (($val == 'ALL' || $val == '') && !$is_runner) {
+            // If status is blank or empty, reset it to 'ALL' for clarity
+            if (empty($val)) {
+                $val = 'ALL';
+            }
+
+            /**
+             * If current user is not a runner and is filtering by ALL 
+             * status, we need to prevent any draft jobs from being returned
+             */
+            if ($val == 'ALL' && !$is_runner) {
+                $where .= "`status` != 'Draft'";
+
+                if (! empty($ufilter) && $ufilter != 'ALL') {
                     /**
-                     * if current user is not a runner and is filtering by ALL 
-                     * status it wont fetch workitems in DRAFT status
+                     * If filtering by a user, exclude any jobs in bidding where that user
+                     * has placed a bid.
+                     *
+                     * @todo: What if the user has not bid, but simply has another fee on that job?
                      */
-                    $where .= "
-                    `status` != 'Draft'";
+                    $where .= " AND
+                        IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1) OR ";
 
-                    if (! empty($ufilter) && $ufilter != 'ALL') {
-                        $where .= " AND
-                            IF(status = 'Bidding', IF(`fees`.user_id = $ufilter, 0, 1), 1) OR ";
-
-                    } else {
-                        $where .= " OR ";
-                    }
-                }
-
-                if (($val == 'ALL' || $val == '') && $is_runner == 1 ){
-                    /**
-                     * if current user is a runner and is filtering by ALL status 
-                     * it wont fetch workitems in DRAFT status created by any other
-                     * user
-                     */
-                    $where .= "
-                        status != 'Draft' OR (status = 'Draft' AND creator_id = $userId) OR ";
-                }
-
-                if ($val == 'Draft') {
-                    /**
-                     * if filtering by DRAFT status will only fetch workitems in 
-                     * DRAFT status created by current user
-                     */
-                    $where .= "
-                        (status = 'Draft' AND creator_id = $userId) OR ";
                 } else {
-
-                    if ($val == 'Bidding') {
-                        /**
-                         * runner can see all
-                         */
-                        if ($is_runner || $mobile_filter) {
-                            $where .= "
-                                (status = '$val') OR ";
-                        } else if ($ufilter != 'ALL') {
-                            /**
-                             * if bidding, and user filter is not set to all users,
-                             * we need to check that logged in user is the bidder
-                             * otherwise we reveal other user's tasks they are 
-                             * bidding on
-                             */
-                             $where .= "
-                                (status = 'Bidding' AND (
-                                    (`" . WORKLIST . "`.`id` IN (
-                                        SELECT `worklist_id` FROM `" . BIDS . "`
-                                        WHERE
-                                            `bidder_id` = '$userId' AND
-                                            status = 'Bidding'
-                                        )
-                                    ) OR
-                                runner_id = $userId
-                             )) OR
-                             ";
-                         } else {
-                             $where .= "status = '$val' OR ";
-                         }
-                    } else if ($val == 'Code Review') {
-                        $where .= "status = 'Review' OR ";
-                    } else if ($val == 'Needs-Review') {
-                        $where .= "(status = 'Review' AND code_review_started = 0) OR ";
-                    } else if ($val != 'ALL') {
-                        /**
-                         * if filtering by any status different than ALL and (DRAFT, BIDDING) it 
-                         * won't do any magic
-                         */
-                        $where .= "
-                        status = '$val' OR ";
-                    } else {
-                        $where .= "
-                        status = '$val' OR ";
-                    }
+                    $where .= " OR ";
                 }
+            }
+
+            /**
+             * if current user is a runner and is filtering by ALL status 
+             * it wont fetch workitems in DRAFT status created by any other
+             * user
+             */
+            if ($val == 'ALL' && $is_runner == 1 ) {
+                $where .= "status != 'Draft' OR (status = 'Draft' AND creator_id = $userId) OR ";
+            }
+
+            if ($val == 'Draft') {
+                /**
+                 * if filtering by DRAFT status will only fetch workitems in 
+                 * DRAFT status created by current user
+                 */
+                $where .= " (status = 'Draft' AND creator_id = $userId) OR ";
+            } else {
+
+                if ($val == 'Bidding') {
+                    /**
+                     * runner can see all
+                     */
+                    if ($is_runner || $mobile_filter) {
+                        $where .= "(status = '$val') OR ";
+                    } else if ($ufilter != 'ALL') {
+                        /**
+                         * If bidding, and user filter is not set to all users,
+                         * we need to check that logged in user is the bidder
+                         * otherwise we reveal other user's tasks they are 
+                         * bidding on
+                         */
+                         $where .= "
+                            (status = 'Bidding' AND (
+                                (`" . WORKLIST . "`.`id` IN (
+                                    SELECT `worklist_id` FROM `" . BIDS . "`
+                                    WHERE
+                                        `bidder_id` = '$userId' AND
+                                        status = 'Bidding'
+                                    )
+                                ) OR
+                            runner_id = $userId
+                         )) OR
+                         ";
+                     } else {
+                         $where .= "status = '$val' OR ";
+                     }
+                } else if ($val == 'Code Review') {
+                    $where .= "status = 'Review' OR ";
+                } else if ($val == 'Needs-Review') {
+                    $where .= "(status = 'Review' AND code_review_started = 0) OR ";
+                } else if ($val != 'ALL') {
+                    /**
+                     * if filtering by any status different than ALL and (DRAFT, BIDDING, REVIEW) it 
+                     * won't do any magic
+                     */
+                    $where .= "status = '$val' OR ";
+                }
+            }
         }
 
+        // we append a 0 here to tidy up the hanging 'OR'
         $where .= "0)";
     }
 
@@ -2192,19 +2204,21 @@ function getWorklist() {
                         )
                     ))
                 ";
-            } else if (!$is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
+            } else if (! $is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
                 /**
                  * If current user is a runner and filtering for certain user and 
                  * (BIDDING or SwB) status then fetch all workitems where selected
                  * user is runner, creator or has bids.
                  */ 
-                $where .= $severalStatus . "
-                    ($status_cond (
-                        `runner_id` = '$ufilter' OR
-                        `creator_id` = '$ufilter' OR `" . WORKLIST . "`.`id` IN (
-                            SELECT `worklist_id` FROM `". BIDS ."` WHERE `bidder_id` = '$ufilter'
+                $where .= "
+                    $severalStatus (
+                        $status_cond (
+                            `runner_id` = '$ufilter' OR
+                            `creator_id` = '$ufilter' OR `" . WORKLIST . "`.`id` IN (
+                                SELECT `worklist_id` FROM `". BIDS ."` WHERE `bidder_id` = '$ufilter'
+                            )
                         )
-                    ))
+                    )
                 ";
             } else if (($val == 'Bidding' || $val == 'SuggestedWithBid') && $ufilter != $userId) {
                 /**
@@ -2217,7 +2231,9 @@ function getWorklist() {
                         $status_cond (
                             `mechanic_id` = '$ufilter' OR
                             `runner_id` = '$ufilter' OR
-                            `creator_id` = '$ufilter')
+                            `creator_id` = '$ufilter'
+                        )
+                    )
                     ";
             } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed') {
                 /**
@@ -2225,13 +2241,15 @@ function getWorklist() {
                  * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
                  * all workitems where selected user is mechanic, creator or runner.
                  */ 
-                $where .= "$severalStatus (
+                $where .= "
+                    $severalStatus (
                         $status_cond (
                             `mechanic_id` = '$ufilter' OR
                             `creator_id` = '$ufilter' OR
                             `runner_id` = '$ufilter'
                         )
-                    )";
+                    )
+                ";
             } else  {
                 /**
                  * If current user is filtering for any user (himself or not) and 
@@ -2241,29 +2259,33 @@ function getWorklist() {
                  * creator, runner, mechanic, has fees or has bids
                  */
                 $where .= "
-                    $severalStatus
-                    ($status_cond (
-                        `creator_id` = '$ufilter' OR
-                        `runner_id` = '$ufilter' OR
-                        `mechanic_id` = '$ufilter' OR (
-                            `" . FEES . "`.user_id = '$ufilter' AND
-                            `status` != 'Bidding'
-                        ) OR
-                        `" . WORKLIST . "`.`id` IN (
-                            SELECT `worklist_id` FROM `".BIDS."`
-                            WHERE `bidder_id` = '$ufilter' AND status != 'Bidding'
+                    $severalStatus (
+                        $status_cond (
+                            `creator_id` = '$ufilter' OR
+                            `runner_id` = '$ufilter' OR
+                            `mechanic_id` = '$ufilter' OR (
+                                `" . FEES . "`.user_id = '$ufilter' AND
+                                `status` != 'Bidding'
+                            ) OR `" . WORKLIST . "`.`id` IN (
+                                SELECT `worklist_id` FROM `".BIDS."`
+                                WHERE `bidder_id` = '$ufilter' AND status != 'Bidding'
+                            )
                         )
-                    ))
+                    )
                 ";
             }
+
             $severalStatus = " OR ";
         }
-        
-        $where .= ')';
 
+        // $where .= ')';
+
+        /**
+         * Get the list of jobs that the user has commented on for inclusion
+         */
         $statusCommentFilter = '';
         if (! empty($sfilter) && $sfilter[0] != 'ALL') {
-            $statusCommentFilter = "AND w.status IN ('" . implode("','", $sfilter) . "') ";
+            $statusCommentFilter = "AND status IN ('" . implode("','", $sfilter) . "') ";
         }
 
         $rt = mysql_query("
@@ -2276,7 +2298,6 @@ function getWorklist() {
         $orUserHasCommented = '';
 
         while ($row = mysql_fetch_assoc($rt)) {
-            error_log(print_r($row, true));
             $orUserHasCommented .= $row['worklist_id'] . ',';
         }
 
@@ -2368,7 +2389,9 @@ function getWorklist() {
 
     // only internal users are allowed to view internal jobs
     if (! $currentUser->isInternal()) {
-        $where .= " AND `".WORKLIST."`.is_internal = 0";
+        $where .= ") AND `".WORKLIST."`.is_internal = 0";
+    } else {
+        $where .= ")";
     }
 
     $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
@@ -2463,6 +2486,9 @@ function getWorklist() {
 
     // Construct json for history
     $qry = "$qsel $qbody $qorder";
+
+    error_log('QUERY:');
+    error_log($qbody);
 
     //Don't export mysql errors to the browser by default
     $rtQuery = mysql_query($qry) or error_log('getworklist mysql error: '. mysql_error());
