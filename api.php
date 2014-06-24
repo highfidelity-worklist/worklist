@@ -3346,12 +3346,14 @@ function sendNewUserNotification() {
 function sendJobReport() {
     // Let's fetch the data.
     $sql = "
-        SELECT w.id, u.nickname, w.summary, w.status
+        SELECT w.id, u.nickname, w.summary, w.status, u.first_name, u.last_name
         FROM worklist w
         INNER JOIN users u
-          ON u.id = w.mechanic_id
-        WHERE w.status_changed > DATE_SUB(NOW(), INTERVAL 7 Day)
-          AND w.status IN('Working', 'Review', 'Functional', 'Completed', 'Done')
+          ON u.id = w.runner_id
+        WHERE
+          (w.status IN('Working', 'Review', 'Functional', 'Completed'))
+        OR
+          (w.status_changed > DATE_SUB(NOW(), INTERVAL 7 Day) AND w.status IN('Done'))
         ORDER BY u.nickname, w.id;";
 
     // Build our data
@@ -3371,9 +3373,17 @@ function sendJobReport() {
     // Build the output
     $html = $text = '';
     $img_baseurl = WORKLIST_URL . 'user/avatar/';
+
     foreach ($jobs_data as $user_jobs) {
+        $fullname = trim($user_jobs[key($user_jobs)][0]['first_name'] . ' ' . $user_jobs[key($user_jobs)][0]['last_name']);
         $nickname = $user_jobs[key($user_jobs)][0]['nickname'];
         $img_url = $img_baseurl . $nickname . '/35';
+        if ($fullname == '') {
+          $calling = $nickname;
+        } else {
+          $calling = $fullname . '(' . $nickname . ')';
+        }
+
         $html .=
             '<tr>' .
             '  <td style="width: 35px; padding: 0">' .
@@ -3383,19 +3393,19 @@ function sendJobReport() {
             '  </td>' .
             '  <td style="padding: 0 0 0 10px">' .
             '    <a href="' . WORKLIST_URL . 'user/' . $nickname . '">' .
-            '      <h3 style="color: #007F7C; margin: 0; display: inline-block; font-size: 1.5em">' . $nickname . '</h3>' .
+            '      <h3 style="color: #007F7C; margin: 0; display: inline-block; font-size: 1.5em">' . $calling . '</h3>' .
             '    </a>' .
             '  </td>' .
             '</tr>' .
             '<tr>' .
             '  <td style="width: 35px; padding: 0">&nbsp;</td>' .
             '  <td style="padding: 0 0 0 10px">';
-        $text .= '### ' . $nickname . "\n";
+        $text .= '### ' . $calling . "\n";
 
         // Completed jobs
         if (isset($user_jobs['done'])) {
             $html .=
-                '    <h4 style="margin: 0">Completed Last Week:</h4>' .
+                '    <h4 style="margin: 0">Completed last week:</h4>' .
                 '    <ul style="padding-left: 10px">';
             $text .= "#### Completed Last Week:\n";
             foreach ($user_jobs['done'] as $job) {
