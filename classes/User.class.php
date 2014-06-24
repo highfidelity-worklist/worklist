@@ -1946,6 +1946,576 @@ class User {
             Utils::redirect($redirect_url);
         }
     }
-}
 
- 
+    public function completedJobsWithStats() {
+        $sql = "
+            SELECT w.id, w.summary, f.cost, DATEDIFF(d2.change_date, b.date) days
+            FROM " . WORKLIST . " w
+            # Code is commented out as there is not a reliable 'Working' status date due to issues
+            # in the acceptdBid method. This method has been updated.
+            # LEFT JOIN " . STATUS_LOG . " d1 ON d1.worklist_id = w.id AND d1.status = 'Working'
+            LEFT JOIN " . STATUS_LOG . " d2 ON d2.worklist_id = w.id AND d2.status = 'Completed'
+            # And temporarily using the creation date of the Accepted Bid
+            LEFT JOIN " . FEES . " b ON b.worklist_id = w.id AND b.desc = 'Accepted Bid'
+            LEFT JOIN (
+                SELECT SUM(amount) cost, worklist_id
+                FROM " . FEES . "
+                WHERE withdrawn = 0
+                GROUP BY worklist_id
+            ) f ON f.worklist_id = w.id
+            WHERE
+                (`mechanic_id` = " . $this->getId() . " OR `creator_id` = " . $this->getId() . ") AND
+                w.`status` IN ('Completed', 'Done')
+            GROUP BY w.`id`
+            ORDER BY w.`id` DESC
+            LIMIT 5";
+
+        $res = mysql_query($sql);
+        if ($res) {
+            $ret = array();
+            while ($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
+            }
+            return $ret;
+        }
+        return false;
+    }
+
+    public function followingJobs($page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        $count = $this->followingJobsCount();
+        $sql = "
+            SELECT
+              `w`.`id`,
+              `w`.`summary`,
+              `w`.`status`,
+              `mn`.`nickname` AS `mechanic`,
+              `cn`.`nickname` AS `creator`,`rn`.`nickname` AS `designer`,
+              DATE_FORMAT(`w`.`created`, '%m/%d/%Y') AS `created`
+            FROM `" . WORKLIST . "` `w`
+              LEFT JOIN `" . USERS . "` AS `mn`
+                ON `w`.`mechanic_id` = `mn`.`id`
+              LEFT JOIN `" . USERS . "` AS `rn`
+                ON `w`.`runner_id` = `rn`.`id`
+              LEFT JOIN `" . USERS . "` AS `cn`
+                ON `w`.`creator_id` = `cn`.`id`
+              JOIN `" . TASK_FOLLOWERS . "` AS `tf`
+                ON `tf`.`workitem_id` = `w`.`id` AND `tf`.`user_id` = " . $this->getId() . "
+            ORDER BY `w`.`id` DESC
+            LIMIT " . ($page-1) * $itemsPerPage . ", {$itemsPerPage}";
+        if ($res = mysql_query($sql)) {
+            while ($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'jobs' => $ret
+            );
+        }
+        return false;
+    }
+
+    public function followingJobsCount() {
+        $ret = array();
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . TASK_FOLLOWERS . "` `f`
+            WHERE `f`.`user_id` = " . $this->getId() ;
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            return $row[0];
+        }
+        return false;
+    }
+
+    public function jobsAsDesigner($status = '', $page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+        $count = $this->jobsAsDesignerCount($status);
+        $sql = "
+            SELECT
+              `w`.`id`,
+              `w`.`summary`,
+              `w`.`status`,
+              `mn`.`nickname` AS `mechanic`,
+              `cn`.`nickname` AS `creator`,
+              `rn`.`nickname` AS `designer`,
+              DATE_FORMAT(`w`.`created`, '%m/%d/%Y') AS `created`
+            FROM `" . WORKLIST . "` `w`
+              LEFT JOIN `" . USERS . "` AS `mn`
+                ON `w`.`mechanic_id` = `mn`.`id`
+              LEFT JOIN `" . USERS . "` AS `rn`
+                ON `w`.`runner_id` = `rn`.`id`
+              LEFT JOIN `" . USERS . "` AS `cn`
+                ON `w`.`creator_id` = `cn`.`id`
+            WHERE `w`.`runner_id` = " . $this->getId() . "
+              AND {$statusCond}
+            ORDER BY `w`.`id` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+        $ret = array();
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'jobs' => $ret
+            );
+        }
+        return false;
+    }
+
+    public function jobsAsDesignerCount($status = '') {
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . WORKLIST . "` `w`
+            WHERE `w`.`runner_id` = " . $this->getId() . "
+              AND {$statusCond}";
+        if ($res = mysql_query($sql)){
+            $row = mysql_fetch_row($res);
+            return $row[0];
+        }
+        return false;
+    }
+
+    public function jobs($status = '', $page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+        $count = $this->jobsCount($status);
+        $sql = "
+            SELECT
+              `w`.`id`,
+              `w`.`summary`,
+              `cre`.`nickname` AS `creator`,
+              `des`.`nickname` AS `designer`,
+              `dev`.`nickname` AS `developer`,
+              DATE_FORMAT(`created`, '%m/%d/%Y') AS `created`,
+              `w`.`status`
+            FROM `" . WORKLIST . "` `w`
+              LEFT JOIN `" . USERS . "` `cre`
+                ON `w`.`creator_id` = `cre`.`id`
+              LEFT JOIN `" . USERS . "` `des`
+                ON `w`.`runner_id` = `des`.`id`
+              LEFT JOIN `" . USERS . "` `dev`
+                ON `w`.`mechanic_id` = `dev`.`id`
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
+              AND {$statusCond}
+            ORDER BY `id` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)){
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'jobs' => $ret
+            );
+        }
+        return false;
+    }
+
+    public function jobsCount($status = '') {
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . WORKLIST . "` `w`
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
+              AND {$statusCond}";
+
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            return $row[0];
+        }
+        return false;
+    }
+
+    public function avgJobRunTime() {
+        $query = "
+            SELECT AVG(TIME_TO_SEC(TIMEDIFF(`x`.`doneDate`, `x`.`workingDate`))) AS `avgJobRunTime`
+            FROM (
+              SELECT
+                `w`.id,
+                `s`.change_date AS doneDate,
+                (
+                  SELECT MAX(`date`) AS `workingDate`
+                  FROM `fees`
+                  WHERE `worklist_id`=`w`.`id`
+                    AND `desc` = 'Accepted Bid'
+                ) as `workingDate`
+              FROM `status_log` `s`
+                LEFT JOIN `" . WORKLIST ."` `w`
+                  ON `s`.`worklist_id`=`w`.`id`
+              WHERE `s`.`status` = 'Done'
+                AND `w`.`runner_id` = " . $this->getId() . "
+            ) `x`";
+        if ($result = mysql_query($query)) {
+            $row = mysql_fetch_array($result);
+            return ($row['avgJobRunTime'] > 0)
+                ? relativeTime($row['avgJobRunTime'], false, true, false)
+                : '';
+        }
+        return false;
+    }
+
+    public function totalEarnings() {
+        $sql = "
+            SELECT SUM(amount)
+            FROM `fees`
+            WHERE `paid` = 1
+              AND `withdrawn` = 0
+              AND `expense` = 0
+              AND `user_id` = " . $this->getId();
+        if($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            return (int) $row[0];
+        }
+        return false;
+    }
+
+    public function bonusPaymentsTotal() {
+        $sql = "
+            SELECT
+              IFNULL(`rewarder`.`sum`,0) AS `bonus_tot`
+            FROM `".USERS."`
+              LEFT JOIN (
+                SELECT `user_id`, SUM(amount) AS `sum`
+                FROM `".FEES."`
+                WHERE (`withdrawn` = 0 AND `paid` = 1 AND `user_id` = " . $this->getId() . ")
+                  AND (`rewarder` = 1 OR `bonus` = 1)
+                GROUP BY `user_id`
+              ) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
+            WHERE `id` = " . $this->getId();
+
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            return (int) $row[0];
+        }
+        return false;
+    }
+
+    // gets earning for a number of days back
+    // latestEarnings(30) will give earnings (paid) for last 30 days
+    public function latestEarnings($daysCount) {
+        $startDate = date("Y-m-d", strtotime("- $daysCount days"));
+        $endDate = date("Y-m-d", time());
+        $sql = "
+            SELECT SUM(amount)
+            FROM `" . FEES . "`
+            WHERE `paid` = 1
+              AND `withdrawn`= 0
+              AND `expense`= 0
+              AND `paid_date` >= '$startDate'
+              AND `paid_date` <= '$endDate'
+              AND `user_id` = " . $this->getId();
+
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            return (int) $row[0];
+        }
+        return false;
+    }
+
+    // gets list of fees and jobs associated with them for a number of days back
+    // works similar to latestEarnings(30) - will give earnings with jobs (paid) for last 30 days
+    public function latestEarningsJobs($daysCount, $page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        $startDate = date("Y-m-d", strtotime("- $daysCount days"));
+        $endDate = date("Y-m-d", time());
+
+        $count = 0;
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . FEES . "`
+            WHERE `paid` = 1
+              AND `withdrawn` = 0
+              AND `expense` = 0
+              AND `paid_date` >= '$startDate' AND `paid_date` <= '$endDate'
+              AND `user_id` = " . $this->getId();
+
+        $res = mysql_query($sql);
+        if($res && $row = mysql_fetch_row($res)){
+            $count = $row[0];
+        }
+
+        $sql = "
+            SELECT DISTINCT
+              `f`.`worklist_id`,
+              `f`.`amount`,
+              `w`.`summary`,
+              `f`.`paid_date`,
+              DATE_FORMAT(`f`.`paid_date`, '%m/%d/%Y') AS `paid_formatted`,
+              `cn`.`nickname` AS `creator`,
+              `rn`.`nickname` AS `designer`
+            FROM `" . FEES . "` `f`
+              LEFT JOIN `" . WORKLIST . "` `w`
+                ON `f`.`worklist_id` = `w`.`id`
+              LEFT JOIN `" . USERS . "` AS `cn`
+                ON `w`.`creator_id` = `cn`.`id`
+              LEFT JOIN `" . USERS . "` AS `rn`
+                ON `w`.`runner_id` = `rn`.`id`
+            WHERE `f`.`paid` = 1
+              AND `f`.`withdrawn` = 0
+              AND `f`.`expense` = 0
+              AND `f`.`paid_date` >= '$startDate'
+              AND `f`.`paid_date` <= '$endDate'
+              AND `f`.`user_id` = " . $this->getId() . "
+            ORDER BY `paid_date` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)){
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'jobs' => $ret
+            );
+        }
+        return false;
+    }
+
+    // get total love received by user using sendlove api
+    public function totalLove($page = 1) {
+        $data = $this->sendloveApiRequest('getlove', $page);
+        if($data){
+            return $data;
+        }
+        return false;
+    }
+
+    // get number of total love received by user using sendlove api
+    public function loveCount() {
+        $data = $this->sendloveApiRequest('getcount');
+        if ($data){
+            return (int) $data['count'];
+        }
+        return false;
+    }
+
+    public function uniqueLoveCount() {
+       $data = $this->sendloveApiRequest('getuniquecount');
+        if ($data){
+            return (int) $data['count'];
+        }
+        return false;
+    }
+
+    // sends a request to sendlove api and returns data in case of success
+    // false - if something went wrong
+    private function sendloveApiRequest($action, $page = 1, $itemsPerPage = 10) {
+        $params = array (
+            'action' => $action,
+            'api_key' => SENDLOVE_API_KEY,
+            'page' => $page,
+            'perpage' => $itemsPerPage,
+            'username' => $this->getUsername());
+        $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
+        $sendlove_rsp = postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer));
+        $rsp = json_decode ($sendlove_rsp, true);
+        if ($rsp['status'] == SL_OK){
+            return $rsp['data'];
+        } else {
+            return false;
+        }
+    }
+
+    public function jobsForProject($status, $project, $page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+        $count = $this->jobsForProjectCount($status, $project);
+        $sql = "
+            SELECT
+              `w`.`id`,
+              `w`.`summary`,
+              `cn`.`nickname` AS `creator`,
+              `rn`.`nickname` AS `designer`,
+              DATE_FORMAT(`w`.`created`, '%m/%d/%Y') AS `created`
+            FROM `" . WORKLIST . "` `w`
+                LEFT JOIN `" . USERS . "` AS `cn` ON `w`.`creator_id` = `cn`.`id`
+                LEFT JOIN `" . USERS . "` AS `rn` ON `w`.`runner_id` = `rn`.`id`
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
+              AND {$statusCond}
+              AND `w`.project_id = ". $project . "
+            ORDER BY `w`.`id` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'jobs' => $ret
+            );
+        }
+        return false;
+    }
+
+    public function jobsForProjectCount($status, $project) {
+        if (!$status) {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        if (is_array($status)) {
+            $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
+        } else {
+            $statusCond = "`status` = '{$status}'";
+        }
+
+        $count = 0;
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . WORKLIST . "` `w`
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
+              AND {$statusCond}
+              AND `w`.`project_id` = " . $project;
+
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            $count = $row[0];
+        }
+        return $count;
+    }
+
+    public static function newUserStats() {
+        $sql = "
+            SELECT (
+              SELECT COUNT(DISTINCT(users.id))
+              FROM " . USERS . "
+                INNER JOIN " . FEES . "
+                  ON users.id = fees.user_id AND users.added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsersWithFees, (
+              SELECT COUNT(DISTINCT(users.id))
+              FROM " . USERS . "
+              INNER JOIN " . BIDS . " ON users.id = bids.bidder_id AND users.added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsersWithBids, (
+              SELECT COUNT(*)
+              FROM " . USERS . "
+              WHERE added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            ) AS newUsers, (
+              SELECT COUNT(*)
+              FROM " . USERS . "
+              WHERE added > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+                AND last_seen > added
+            ) AS newUsersLoggedIn";
+
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_assoc($res);
+            return $row;
+        }
+        return false;
+    }
+
+    public function developersForDesigner() {
+        $ret = array();
+        $query = "
+            SELECT
+              `u`.`id`,
+              `u`.`nickname`,
+              count(`w`.`id`) AS `totalJobCount`,
+              sum(`f`.`amount`) AS `totalEarnings`
+            FROM `" . USERS . "` `u`
+              LEFT OUTER JOIN `" . FEES . "` `f`
+                ON `f`.`user_id` = `u`.`id`
+              LEFT OUTER JOIN `" . WORKLIST . "` `w`
+                ON `f`.`worklist_id` = `w`.`id`
+            WHERE `f`.`paid` = 1
+              AND `f`.`withdrawn` = 0
+              AND `f`.`expense` = 0
+              AND `w`.`runner_id` = " . $this->getId() . "
+              AND `u`.`id` <> `w`.`runner_id`
+            GROUP BY `u`.`id`
+            ORDER BY `totalEarnings` DESC";
+        if ($result = mysql_query($query)) {
+            if (mysql_num_rows($result) > 0) {
+                while ($row = mysql_fetch_assoc($result)) {
+                    $ret[$row['id']] = $row;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return $ret;
+    }
+
+    public function projectsForRunner() {
+        $ret = array();
+        $query = "
+            SELECT
+              `p`.`project_id`,
+              `p`.`name`,
+              COUNT(DISTINCT `w`.`id`) AS `totalJobCount`,
+              SUM(`f`.`amount`) AS `totalEarnings`
+            FROM `" .  PROJECTS . "` `p`
+              LEFT OUTER JOIN `" . WORKLIST . "` `w`
+                ON `w`.`project_id` = `p`.`project_id`
+              LEFT OUTER JOIN `" . FEES . "` `f`
+                ON `f`.`worklist_id` = `w`.`id`
+            WHERE `w`.`runner_id` = " . $this->getId() . "
+              AND `w`.`status` IN ('Working', 'Functional', 'Review', 'Completed', 'Done')
+              AND `f`.`paid` = 1
+              AND `f`.`withdrawn` = 0 AND `f`.`expense` = 0
+            GROUP BY `p`.`project_id`
+            ORDER by `totalEarnings` DESC";
+        if ($result = mysql_query($query)) {
+            if (mysql_num_rows($result) > 0) {
+                while ($row = mysql_fetch_assoc($result)) {
+                    $ret[$row['project_id']] = $row;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return $ret;
+    }
+}

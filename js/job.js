@@ -375,12 +375,7 @@ $(document).ready(function(){
     $('#following').click(function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action: 'ToggleFollowing'
-            },
+            url: './job/toggleFollowing/' + workitem_id,
             dataType: 'json',
             success: function(data) {
                 if (data.success) {
@@ -619,29 +614,23 @@ $(document).ready(function(){
                         showDeclineBidReason(bidData.id);
                     });
                     $.ajax({
-                        url: 'api.php?action=getUserStats', 
-                        data: {
-                            id: bidData.bidder_id,
-                            project_id: project_id,
-                            statstype: 'project_history'
-                        },
+                        url: './user/projectHistory/' + bidData.bidder_id + '/' + project_id,
                         dataType: 'json',
                         success: function(json) {
-                            if (!json.joblist) {
+                            if (!json.jobs) {
                                 return;
                             }
                             var html = '';
                             var project_link = '<a href="./' + project_name + '">' + project_name + '</a>';
-                            if (!json.joblist.length) {
-                                html = '<tr><td colspan="2">No prior jobs for '  + project_link + '</td></tr>';
+                            if (!json.jobs.length) {
+                                html = '<tr><td>No prior jobs for '  + project_link + '</td></tr>';
                                 $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
                             } else {
-                                for (var i = 0; i < (json.joblist.length > 3 ? 3 : json.joblist.length); i++) {
-                                    job = json.joblist[i];
+                                for (var i = 0; i < (json.jobs.length > 3 ? 3 : json.jobs.length); i++) {
+                                    job = json.jobs[i];
                                     html += 
                                         '<tr>' +
-                                        '  <td><a href="./' + job.id + '">#' + job.id + '</a></td>' + 
-                                        '  <td>' + job.summary + '</td>' + 
+                                        '  <td><a href="./' + job.id + '">#' + job.id + '</a> ' + job.summary + '</td>' +
                                         '</tr>';
                                     $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
                                 }
@@ -649,11 +638,7 @@ $(document).ready(function(){
                         }
                     });
                     $.ajax({
-                        url: 'api.php?action=getUserStats',
-                        data: {
-                            id: bidData.bidder_id, 
-                            statstype: 'counts'
-                        },
+                        url: './user/counts/' + bidData.bidder_id,
                         dataType: 'json',
                         success: function(json) {
                             $('.modal-body > table + .row > div:last-child td:nth-child(1)', modal).html(

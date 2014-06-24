@@ -20,8 +20,6 @@ var addFromJournal = false;
 var resetOrder = false;
 var skills = null;
 
-stats.setUserId(user_id);
-
 $(document).ready(function() {
 
     // Fix the layout for the User selection box
