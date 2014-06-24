@@ -60,15 +60,18 @@
                             </p>
                             <p class="totals">
                                 <span>Total jobs:</span>
-                                {{#userStats.getTotalJobsCount}}
-                                    <a href="#" id="total-jobs">{{userStats.getTotalJobsCount}}</a>
-                                {{/userStats.getTotalJobsCount}}
-                                {{^userStats.getTotalJobsCount}}
-                                    0
-                                {{/userStats.getTotalJobsCount}}
+                                {{#jobs}}
+                                    <a href="#" id="total-jobs">{{jobs}}</a>
+                                {{/jobs}}
+                                {{^jobs}}0{{/jobs}}
                             </p>
-                            <p class="totals"><span>Total earned:</span> ${{totalEarnings}}</p>
-                            <p class="totals"><span>Last 30 days:</span> ${{latestEarnings}}</p>
+                            <p class="totals">
+                                <span>Total earned:</span> ${{totalEarnings}}
+                            </p>
+                            <p class="totals">
+                                <span>Last 30 days:</span>
+                                <a href="#" id="latest-earnings">${{latestEarnings}}</a>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -147,16 +150,21 @@
                             <tr>
                                 <th>Job ID & Summary</th>
                                 <th class="status">Status</th>
-                                <th class="unfollow">Un-Follow</th>
                             </tr>
                         </thead>
-                        <tbody><tr><td></td></tr>
+                        <tbody>
+                            {{#activeJobs}}
+                            <tr>
+                                <td id="workitem-{{id}}"><a href="./{{id}}">#{{id}}</a> {{summary}}</td>
+                                <td>{{status}}</td>
+                            </tr>
+                            {{/activeJobs}}
                         </tbody>
                     </table>
                 </div>
 
                 <p class = "info-label title-label-medium completed-jobs">Last 5 completed jobs</p>
-                <div id="completed-jobs-table">
+                <div>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -165,7 +173,14 @@
                                 <th class="time">Time</th>
                             </tr>
                         </thead>
-                        <tbody><tr><td></td></tr>
+                        <tbody>
+                            {{#completedJobs}}
+                            <tr>
+                                <td id="workitem-{{id}}"><a href="./{{id}}">#{{id}}</a> {{summary}}</td>
+                                <td>{{#cost}}{{cost}}{{/cost}}{{^cost}}0.00{{/cost}}</td>
+                                <td>{{#days}}{{days}} days{{/days}}{{^days}}1 day{{/days}}</td>
+                            </tr>
+                            {{/completedJobs}}
                         </tbody>
                     </table>
                 </div>
@@ -266,20 +281,21 @@
                                 <tbody>
                                     <tr class="row-role-list-live">
                                         <td>
-                                        {{#userStats.getRunnerTotalJobsCount}}
-                                            <a href = "#" id = "runner-total-jobs">{{userStats.getRunnerTotalJobsCount}}</a>
-                                        {{/userStats.getRunnerTotalJobsCount}}
-                                        {{^userStats.getRunnerTotalJobsCount}}
-                                            0
-                                        {{/userStats.getRunnerTotalJobsCount}}
-                                        {{#userStats.getRunnerActiveJobsCount}}
-                                            / <a href = "#" id = "runner-active-jobs">{{userStats.getRunnerActiveJobsCount}}</a>
-                                        {{/userStats.getRunnerActiveJobsCount}}
-                                        {{^userStats.getRunnerActiveJobsCount}}
-                                            0
-                                        {{/userStats.getRunnerActiveJobsCount}}
+                                        {{#jobsAsDesigner}}
+                                            <a href="#" id="runner-total-jobs">
+                                                {{jobsAsDesigner}}
+                                            </a>
+                                        {{/jobsAsDesigner}}
+                                        {{^jobsAsDesigner}}0{{/jobsAsDesigner}}
+                                        /
+                                        {{#activeJobsAsDesigner}}
+                                            <a href="#" id="runner-active-jobs">
+                                              {{activeJobsAsDesigner}}
+                                            </a>
+                                        {{/activeJobsAsDesigner}}
+                                        {{^activeJobsAsDesigner}}0{{/activeJobsAsDesigner}}
                                         </td>
-                                        <td>{{userStats.getAvgJobRunTime}}</td>
+                                        <td>{{avgJobRunTime}}</td>
                                     </tr>
                                 </tbody>
                             </table>

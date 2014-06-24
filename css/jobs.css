@@ -311,8 +311,8 @@ td.textAlignReport {
 }
 
 /* normal even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child):nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child):nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child):nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child):nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
@@ -322,8 +322,8 @@ td.textAlignReport {
 }
 
 /* normal odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child):nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child):nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child):nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child):nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(249,249,249,0) 0%, rgba(249,249,249,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(249,249,249,0)), color-stop(100%,rgba(249,249,249,1)));
     background: -webkit-linear-gradient(left, rgba(249,249,249,0) 0%,rgba(249,249,249,1) 100%);
@@ -333,12 +333,12 @@ td.textAlignReport {
 }
 
 /* owned jobs odd rows background */
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd) > td {
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(odd) > td {
     background-color: #ffe6cc;
 }
 /* owned jobs odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,230,204,0) 0%, rgba(255,230,204,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,230,204,0)), color-stop(100%,rgba(255,230,204,1)));
     background: -webkit-linear-gradient(left, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
@@ -347,12 +347,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,230,204,0) 0%,rgba(255,230,204,1) 100%);
 }
 /* owned jobs even rows background */
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even) > td {
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(even) > td {
     background-color: #f7dec6;
 }
 /* owned jobs even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowown:nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowown:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,222,198,0) 0%, rgba(247,222,198,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,222,198,0)), color-stop(100%,rgba(247,222,198,1)));
     background: -webkit-linear-gradient(left, rgba(247,222,198,0) 0%,rgba(247,222,198,1) 100%);
@@ -362,12 +362,12 @@ td.textAlignReport {
 }
 
 /* jobs with bid odd rows background */
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td {
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td {
     background-color: #b5e595;
 }
 /* jobs with bid odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(181,229,149,0) 0%, rgba(181,229,149,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(181,229,149,0)), color-stop(100%,rgba(181,229,149,1)));
     background: -webkit-linear-gradient(left, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
@@ -376,12 +376,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(181,229,149,0) 0%,rgba(181,229,149,1) 100%);
 }
 /* jobs with bid even rows background */
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td {
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td {
     background-color: #aedb8e;
 }
 /* jobs with bid even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowbidon:nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowbidon:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(174,219,142,0) 0%, rgba(174,219,142,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(174,219,142,0)), color-stop(100%,rgba(174,219,142,1)));
     background: -webkit-linear-gradient(left, rgba(174,219,142,0) 0%,rgba(174,219,142,1) 100%);
@@ -391,12 +391,12 @@ td.textAlignReport {
 }
 
 /* jobs with bid expired odd rows background */
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td {
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td {
     background-color: #ffb3b3;
 }
 /* jobs with bid expired odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,179,179,0) 0%, rgba(255,179,179,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,179,179,0)), color-stop(100%,rgba(255,179,179,1)));
     background: -webkit-linear-gradient(left, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
@@ -405,12 +405,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,179,179,0) 0%,rgba(255,179,179,1) 100%);
 }
 /* jobs with bid expired even rows background */
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td {
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td {
     background-color: #f7afaf;
 }
 /* jobs with bid expired even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowbidexpired:nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowbidexpired:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,175,175,0) 0%, rgba(247,175,175,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,175,175,0)), color-stop(100%,rgba(247,175,175,1)));
     background: -webkit-linear-gradient(left, rgba(247,175,175,0) 0%,rgba(247,175,175,1) 100%);
@@ -420,12 +420,12 @@ td.textAlignReport {
 }
 
 /* jobs as runner odd rows background */
-.table-striped > tbody > tr.rowrunner:nth-child(odd) > td {
+.table-worklist > tbody > tr.rowrunner:nth-child(odd) > td {
     background-color: #e2eef3;
 }
 /* jobs as runner odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child).rowrunner:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowrunner:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(226,238,243,0) 0%, rgba(226,238,243,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(226,238,243,0)), color-stop(100%,rgba(226,238,243,1)));
     background: -webkit-linear-gradient(left, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
@@ -434,12 +434,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(226,238,243,0) 0%,rgba(226,238,243,1) 100%);
 }
 /* jobs as runner rows background */
-.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td {
+.table-worklist > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td {
     background-color: #dae6ea;
 }
 /* jobs as runner even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowrunner:nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child).rowrunner:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowrunner:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(218,230,234,0) 0%, rgba(218,230,234,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(218,230,234,0)), color-stop(100%,rgba(218,230,234,1)));
     background: -webkit-linear-gradient(left, rgba(218,230,234,0) 0%,rgba(218,230,234,1) 100%);
@@ -449,12 +449,12 @@ td.textAlignReport {
 }
 
 /* jobs as mechanic odd rows background */
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td {
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td {
     background-color: #ffff9e;
 }
 /* jobs as mechanic odd rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(odd):after {
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(odd) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(odd):after {
     background: -moz-linear-gradient(left, rgba(255,255,158,0) 0%, rgba(255,255,158,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,158,0)), color-stop(100%,rgba(255,255,158,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
@@ -463,12 +463,12 @@ td.textAlignReport {
     background: linear-gradient(to right, rgba(255,255,158,0) 0%,rgba(255,255,158,1) 100%);
 }
 /* jobs as mechanic even rows background */
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td {
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td {
     background-color: #f7f79c;
 }
 /* jobs as mechanic even rows overflow fading */
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
-.table-striped > tbody > tr:not(:last-child).rowmechanic:nth-child(even):after {
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(even) > td:nth-child(n+2):not(:last-child):before,
+.table-worklist > tbody > tr:not(:last-child).rowmechanic:nth-child(even):after {
     background: -moz-linear-gradient(left, rgba(247,247,156,0) 0%, rgba(247,247,156,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(247,247,156,0)), color-stop(100%,rgba(247,247,156,1)));
     background: -webkit-linear-gradient(left, rgba(247,247,156,0) 0%,rgba(247,247,156,1) 100%);

@@ -537,21 +537,6 @@ var updateFeeSumsTimes = setInterval(function () {
     });
 }, ajaxRefresh);
 
-$(function() {
-    if ($("#budgetPopup").length > 0) {
-        $("#budgetPopup").dialog({
-            title: "Earning & Budget",
-            autoOpen: false,
-            width: 340,
-            position: ['center',60],
-            modal: true
-        });
-        $("nav a.budget").click(function(){
-            $("#budgetPopup").dialog("open");
-        });
-    }    
-});
-
 /* get analytics info for this page */
 $(function() {
     $.analytics = $('#analytics');

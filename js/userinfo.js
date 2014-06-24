@@ -2,9 +2,6 @@ var available = 0;
 
 $(document).ready(function() {
     UserInfo.init();
-    stats.setUserId(userInfo.user_id);
-    stats.showJobs('activeJobs', 0);
-    stats.showJobs('completedJobsWithStats', 0, 'completed-jobs-table');
 
     $('#profile-nav a').click(function (event) {
         event.preventDefault();
@@ -457,6 +454,26 @@ var UserInfo = {
         if (userInfo.tab != "") {
             $("#" + userInfo.tab).click();
         }
+
+        $('#total-jobs').click(function() {
+            UserStats.showDoneJobs(1, userInfo.user_id);
+            return false;
+        });
+
+        $('#runner-total-jobs').click(function() {
+            UserStats.showDesignerTotalJobs(1, userInfo.user_id);
+            return false;
+        });
+
+        $('#runner-active-jobs').click(function() {
+            UserStats.showDesignerActiveJobs(1, userInfo.user_id);
+            return false;
+        });
+
+        $('#latest-earnings').click(function(){
+            UserStats.showLatestEarnings(1, userInfo.user_id);
+            return false;
+        });
     },
      
     appendPagination: function(page, cPages, table) {

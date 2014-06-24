@@ -6,14 +6,18 @@ class BudgetTools {
         $csv = "Worklist ID,Budget,Summary,Who,Amount,Status,Created,Paid\n";
         
         foreach ($data as $item) {
-            $csv .= $item->id.",";
-            $csv .= $item->budget_id.",";
-            $csv .= str_replace(",", "", $item->summary).",";
-            $csv .= str_replace(",", "", $item->who).",";
-            $csv .= $item->amount.",";
-            $csv .= $item->status.",";
-            $csv .= $item->created.",";
-            $csv .= $item->paid."\n";
+            $who = "";
+            foreach ($item['who'] as $value) {
+                $who .= $value['nickname'] . ' ';
+            }
+            $csv .= $item['id'].",";
+            $csv .= $item['budget_id'].",";
+            $csv .= str_replace(",", "", $item['summary']).",";
+            $csv .= $who.",";
+            $csv .= $item['amount'].",";
+            $csv .= $item['status'].",";
+            $csv .= $item['created'].",";
+            $csv .= $item['paid']."\n";
         }
         
         // Output headers to force download
@@ -27,12 +31,12 @@ class BudgetTools {
         $csv = "Budget ID, Budget, Notes, Who, Amount, Created\n";
         
         foreach ($data as $item) {
-            $csv .= $item->id . ",";
-            $csv .= str_replace(",", "", $item->budget_title) . ",";
-            $csv .= str_replace(",", "", $item->notes) . ",";
-            $csv .= str_replace(",", "", $item->who) . ",";
-            $csv .= $item->amount . ",";
-            $csv .= $item->created . "\n";
+            $csv .= $item['id'] . ",";
+            $csv .= str_replace(",", "", $item['budget_title']) . ",";
+            $csv .= str_replace(",", "", $item['notes']) . ",";
+            $csv .= str_replace(",", "", $item['who']) . ",";
+            $csv .= $item['amount'] . ",";
+            $csv .= $item['created'] . "\n";
         }
         
         // Output headers to force download
@@ -224,24 +228,14 @@ class BudgetTools {
 
     function getWho($id, $getIds=false) {
         $who = "";
-        $sql = "SELECT ".USERS.".`id`,`nickname` FROM ".FEES.
+        $sql = "SELECT `nickname` FROM ".FEES.
                " LEFT JOIN ".USERS." ON ".USERS.".`id`=".FEES.".`user_id`".
                " WHERE ".FEES.".`worklist_id` = {$id} AND ".FEES.".`withdrawn`=0 GROUP BY `nickname`";
-                
-        $sql_q = mysql_query($sql) or die(mysql_error());
-        
-        if ($getIds) {
-            $ids = array();
-            while($row = mysql_fetch_assoc($sql_q)) {
-                $ids[] = $row['id'];
-            }
-            return $ids;
-        } else {
-           while($row = mysql_fetch_assoc($sql_q)) {
-               $who .= $row['nickname'].", ";
-           }
-           return substr($who, 0, -2);
+        $res = mysql_query($sql) or die(mysql_error());
+        while($row = mysql_fetch_assoc($res)) {
+            $who[] = array('nickname' => $row['nickname']);
         }
+        return $who;
     }
 
     function getDateWorking($id) {

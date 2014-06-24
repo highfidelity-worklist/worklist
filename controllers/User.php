@@ -1,6 +1,5 @@
 <?php
 
-require_once ("config.php");
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
@@ -14,6 +13,17 @@ class UserController extends Controller {
             case 'budget':
             case 'countries':
             case 'avatar':
+            case 'following':
+            case 'workingJobs':
+            case 'reviewJobs':
+            case 'completedJobs':
+            case 'doneJobs':
+            case 'designerJobs':
+            case 'activeJobs':
+            case 'love':
+            case 'latestEarnings':
+            case 'projectHistory':
+            case 'counts':
                 $method = $action;
                 break;
             default:
@@ -57,8 +67,30 @@ class UserController extends Controller {
     public function budget($id) {
         $this->view = null;
         $user = User::find($id);
-        $ret = $user->getActiveBudgets();
-        echo json_encode(array('budgets' => $ret));
+        if (!$user) {
+            echo json_encode(array('success' => false));
+            return;
+        }
+        $ret = array(
+            'active' => $user->getActiveBudgets()
+        );
+        if ($user->getId() == getSessionUserId()) {
+            $ret = array_merge($ret, array(
+                'feeSums' => Fee::getSums(),
+                'totalManaged' => money_format('%i', $user->getTotalManaged()),
+                'remainingFunds' => money_format('%i', $user->setRemainingFunds()),
+                'allocated' => money_format('%i', $user->getAllocated()),
+                'submitted' => money_format('%i', $user->getSubmitted()),
+                'paid' => money_format('%i', $user->getPaid()),
+                'transfered' => money_format('%i', $user->getTransfered()),
+                'transfersDetails' => $user->getBudgetTransfersDetails(),
+                'available' => $user->getBudget()
+            ));
+        }
+        echo json_encode(array(
+            'success' => true,
+            'budget' => $ret
+        ));
         return;
     }
 
@@ -233,12 +265,8 @@ class UserController extends Controller {
         $this->write('user', $user);
 
         $this->write('Annual_Salary', $user->getAnnual_salary() > 0 ? $user->getAnnual_salary() : '');
-        $userStats = new UserStats($userId);
         $this->write('manager', $user->getManager());
         $this->write('referred_by', $user->getReferred_by());
-        $hasRunJobs = $userStats->getRunJobsCount();
-        $hasBeenMechanic = $userStats->getMechanicJobCount();
-        $this->write('userStats', $userStats);
 
         if ($action =='create-sandbox') {
             $result = array();
@@ -296,6 +324,7 @@ class UserController extends Controller {
     }
 
     public function countries($cond) {
+        $this->view = null;
         global $countrylist;
         $ret = array();
         foreach($countrylist as $code => $country) {
@@ -308,6 +337,7 @@ class UserController extends Controller {
     }
 
     public function avatar($id, $size) {
+        $this->view = null;
         $user = User::find($id);
         $size = preg_split('/x/', $size, 2);
         $width = count($size) == 2 ? $size[0] : $size[0];
@@ -319,5 +349,108 @@ class UserController extends Controller {
         imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $orig_width, $orig_height);
         header('Content-type: image/jpeg');
         imagejpeg($thumb);
+    }
+
+    public function following($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->followingJobs($page, $itemsPerPage));
+    }
+
+    public function designerJobs($id, $type = 'total', $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        if ($type == 'active') {
+            $status = array('Working', 'Review', 'Functional');
+        } else {
+            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+        }
+        echo json_encode($user->jobsAsDesigner($status, $page, $itemsPerPage));
+    }
+
+    public function activeJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $status = array('Working', 'Functional', 'Review');
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs($status, $page, $itemsPerPage));
+    }
+
+    public function workingJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs('Working', $page, $itemsPerPage));
+    }
+
+    public function reviewJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs('Review', $page, $itemsPerPage));
+    }
+
+    public function completedJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs('Completed', $page));
+    }
+
+    public function doneJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs('Done', $page, $itemsPerPage));
+    }
+
+    public function love($id, $page = 1) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        echo json_encode($user->getTotalLove($page));
+    }
+
+    public function latestEarnings($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->latestEarningsJobs(30, $page, $itemsPerPage));
+    }
+
+    public function projectHistory($id, $project, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $project = Project::find($project);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobsForProject('Done', $project->getProjectId(), $page, $itemsPerPage));
+    }
+
+    public function counts($id) {
+        $this->view = null;
+        $user = User::find($id);
+        setlocale(LC_MONETARY,'en_US');
+        $totalEarnings = $user->totalEarnings(30);
+        $bonusPayments = $user->bonusPaymentsTotal();
+        $latestEarnings = $user->latestEarnings();
+        echo json_encode(array(
+            'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
+            'active_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review')),
+            'total_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($totalEarnings))),
+            'latest_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$latestEarnings)),
+            'bonus_total' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($bonusPayments))),
+            'bonus_percent' => round((($bonusPayments + 0.00000001) / ($totalEarnings + 0.000001)) * 100,2) . '%'
+        ));
     }
 }

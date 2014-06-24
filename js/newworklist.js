@@ -11,7 +11,15 @@ var NewWorklist = {
         });
 
         $('a[href^="./github/login"]').click(NewWorklist.loginClick);
+
+        /**
+         * Initialize js objects used by worklist
+         * previously wrapped on jQuery.load functions
+         */
+        Budget.init();
+        UserStats.init();
     },
+
     loginClick: function(event) {
         event.preventDefault();
 
@@ -53,5 +61,5 @@ var NewWorklist = {
                 },
             });
         }
-    },
+    }
 }

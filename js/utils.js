@@ -78,6 +78,50 @@ var Utils = {
         }
         var defaults = {
             modal_id: id,
+            open: function() {},
+            close: function() {}
+        };
+        var settings = $.extend({}, defaults, data);
+        var path = 'partials/modal/' + name;
+        Utils.parseMustache(path, settings, function(parsed) {
+            $(parsed).appendTo('body');
+            $('#' + id).on('shown.bs.modal', function() {
+                $(this).attr('name', name);
+                if (typeof settings.open == 'function') {
+                    settings.open(this);
+                }
+            });            
+            $('#' + id).on('hidden.bs.modal', function() {
+                if (typeof settings.close == 'function') {
+                    settings.close(this);
+                }
+                $(id).remove();
+            });
+            $('#' + id).modal('show');
+        });
+    },
+
+    modalRefresh: function(modal, data) {
+        var id = $(modal).attr('id');
+        var name = $(modal).attr('name');
+
+        var defaults = {
+            modal_id: id,
+            open: function() {},
+            close: function() {}
+        };
+        var settings = $.extend({}, defaults, data);
+        var path = 'partials/modal/' + name;
+        Utils.parseMustache(path, settings, function(parsed) {
+            $(modal).html($(parsed).html());
+            if (typeof settings.success == 'function') {
+                settings.success(modal);
+            }
+        });
+    },
+
+    emptyModal: function(data) {
+        var defaults = {
             title: '',
             buttons: [],
             open: function() {},
@@ -93,30 +137,27 @@ var Utils = {
                 dismiss: true
             }];
         }
-        var path = 'partials/modal/' + name;
-        Utils.parseMustache(path, settings, function(parsed) {
-            $(parsed).appendTo('body');
-            $('#' + id).on('shown.bs.modal', function() {
-                if (typeof settings.open == 'function') {
-                    settings.open(this);
-                }
-            });            
-            $('#' + id).on('hidden.bs.modal', function() {
-                if (typeof settings.close == 'function') {
-                    settings.close(this);
-                }
-                $(id).remove();
-            });
-            $('#' + id).modal('show');
-        });
-    },
-
-    emptyModal: function(data) {
-        Utils.modal('empty', data);
+        Utils.modal('empty', settings);
     },
 
     emptyFormModal: function(data) {
-        Utils.modal('empty-form', data);
+        var defaults = {
+            title: '',
+            buttons: [],
+            open: function() {},
+            close: function() {}
+        };
+        var settings = $.extend({}, defaults, data);
+        // if no buttons arep provided, let's use an 'Ok' one by default
+        if (settings.buttons.length == 0) {
+            settings.buttons = [{
+                type: 'button',
+                content: 'Ok',
+                className: 'btn-primary',
+                dismiss: true
+            }];
+        }
+        Utils.modal('empty-form', settings);
     },
 
 
