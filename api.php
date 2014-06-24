@@ -2168,11 +2168,6 @@ function getWorklist() {
         $where .= "0)";
     }
 
-    // only internal users are allowed to view internal jobs
-    if (! $currentUser->isInternal()) {
-        $where .= " AND `".WORKLIST."`.is_internal = 0";
-    }
-
     // User filter
     if (!empty($ufilter) && $ufilter != 'ALL') {
         if (empty($where)) {
@@ -2200,14 +2195,16 @@ function getWorklist() {
                  * is mechanic, runner, creator or has bids.
                  */ 
                 $where .= "
-                    $severalStatus ($status_cond (
-                        `mechanic_id` = '$ufilter' OR
-                        `runner_id` = '$ufilter' OR
-                        `creator_id` = '$ufilter' OR
-                        `" . WORKLIST . "`.`id` in (
-                            SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$ufilter'
+                    $severalStatus (
+                        $status_cond (
+                            `mechanic_id` = '$ufilter' OR
+                            `runner_id` = '$ufilter' OR
+                            `creator_id` = '$ufilter' OR
+                            `" . WORKLIST . "`.`id` in (
+                                SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$ufilter'
+                            )
                         )
-                    ))
+                    )
                 ";
             } else if (! $is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
                 /**
@@ -2390,7 +2387,14 @@ function getWorklist() {
         }
     }
 
-    $where .= ")";
+    if ($ufilter != 'ALL') {
+        $where .= ")";
+    }
+
+    // only internal users are allowed to view internal jobs
+    if (! $currentUser->isInternal()) {
+        $where .= " AND `".WORKLIST."`.is_internal = 0";
+    }
 
     $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
 
