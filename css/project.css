@@ -99,7 +99,7 @@ td.noroles {
     margin: 24px 0 0 76px;
     height: 50px;
     font-size: 3.5em;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     padding-bottom: 0px;
 }
@@ -320,7 +320,7 @@ a#projectRepositoryUrl:hover {
 #total_jobs_stats {
     font-size: 3.5em;
     display: inline-block;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
 }
 

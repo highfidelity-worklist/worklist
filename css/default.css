@@ -7,7 +7,7 @@
 
 /* Common / Shortcut styles */
 @font-face {
-    font-family: proxima-nova;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-style: normal;
     font-weight: bold;
 }
@@ -45,7 +45,7 @@ table {
     border-collapse: collapse;
     background-color: white;
     width: 100%;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 .table-popup {
@@ -168,7 +168,7 @@ table tr:hover {
 
 /* Dialogs */
 #budgetPopup {
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     color: #333333;
     font-size: 12px;
 }
@@ -273,7 +273,7 @@ div.documents.filesDescription {
 
 .popup-body select {
     font-size: 14px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     width: 350px;
 }
 
@@ -399,11 +399,11 @@ pre, .pre {
     padding-left: 3px;
     color: #000000 !important;
     font-weight: normal;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 input[type=text], input[type=password], textarea {
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     border: 2px solid #d1cfcf;
     padding:2px 5px;
     margin-bottom:3px;
@@ -468,7 +468,7 @@ input[type=text], input[type=password], textarea {
 
 #searchbar *, 
 .table-worklist * {
-    font-family: proxima-nova, sans-serif !important;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif !important;
 }
 
 .table-worklist tr td:first-child {
@@ -674,7 +674,7 @@ a#addJobButton {
     font-size: 10pt;
     font-weight: bold;
     padding: 5px 15px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     display: inline-block;
 }
 
