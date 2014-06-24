@@ -27,7 +27,7 @@ body {
 .user-info select
 {
     font-size: 14px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     width: 370px;
 }
 
@@ -139,7 +139,7 @@ color:#98AAB2;
 }
 #popup-bid{
     z-index: 1200;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
     color: #666666;
@@ -824,7 +824,7 @@ input {
 #search select,
 #query > fieldset > input {
     margin-bottom: 13px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1em;
     line-height: 1.45em;
 }
@@ -1052,7 +1052,7 @@ input {
 #search select,
 #query > fieldset > input,
 #addJobButton {
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 #search select,

@@ -27,7 +27,7 @@
 .user-info select
 {
     font-size: 14px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     width: 370px;
 }
 
@@ -182,7 +182,7 @@ color:#98AAB2;
 }
 #popup-bid{
     z-index: 1200;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 13px;
     color: #666666;
@@ -688,7 +688,7 @@ input.button-disabled ,
     width: auto;
     text-align: center;
     text-decoration: none;
-    font: 16px/100% proxima-nova, Helvetica, sans-serif;
+    font: 16px/100% Helvetica Neue, Helvetica, Arial, sans-serif;
     height: auto;
     padding: 5px 10px;
     text-shadow: 0 1px 1px rgba(0,0,0,.3);

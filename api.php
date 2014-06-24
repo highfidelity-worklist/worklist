@@ -2258,7 +2258,7 @@ function getWorklist() {
             }
             $severalStatus = " OR ";
         }
-        
+
         $where .= ')';
 
         $statusCommentFilter = '';
@@ -2337,7 +2337,7 @@ function getWorklist() {
                         OR MATCH (`com`.`comment`) AGAINST ('$item')
                     ";
                 }
-                
+
                 if (! empty($ufilter)) {
                     $textMatchAndOr = ' OR ';
                     $partialMatch = '';

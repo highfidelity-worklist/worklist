@@ -1,5 +1,5 @@
 @font-face {
-    font-family: proxima-nova;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-style: normal;
     font-weight: bold;
 }
@@ -60,7 +60,7 @@ span.info-whisper {
     margin-top: 12px !important;
     padding-left: 3px;
     line-height: 36px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
 }
 
@@ -119,7 +119,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .info-summ-big-text {
     margin-left: -2px;
     font-size: 30px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     float: left;
 }
@@ -133,7 +133,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     height: 30px !important;
     padding: 0 9px;
     width: 165px;
-    font-family: proxima-nova,sans-serif !important;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif !important;
 }
 
 #jobStatusFilter {
@@ -528,7 +528,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .buttonContainer input {
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 12px;
 }
 
@@ -629,7 +629,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .popup-body textarea, 
 .popup-body select {
     font-size: 14px;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     width: 370px;
     font-weight: normal;
 }
@@ -820,7 +820,7 @@ input.button-disabled ,
 #active-jobs,
 #user-stats span {
     font-weight:bold;
-    font-family: proxima-nova,sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size:12px;
 }
 

@@ -29,7 +29,7 @@
 }
 
 #all-projects {
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 20px;
     color: #666666;
@@ -384,7 +384,7 @@ input.LV_invalid_field {
     clear: both;
     font-size: 12px !important;
     font-weight: normal;
-    font-family: proxima-nova,sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 #custom-github-info {
