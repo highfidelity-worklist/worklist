@@ -3405,9 +3405,9 @@ function sendJobReport() {
         // Completed jobs
         if (isset($user_jobs['done'])) {
             $html .=
-                '    <h4 style="margin: 0">Completed last week:</h4>' .
+                '    <h4 style="margin: 0">Completed in last week:</h4>' .
                 '    <ul style="padding-left: 10px">';
-            $text .= "#### Completed Last Week:\n";
+            $text .= "#### Completed in last week:\n";
             foreach ($user_jobs['done'] as $job) {
                 $html .=
                     '      <li>' .
