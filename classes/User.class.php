@@ -2124,7 +2124,7 @@ class User {
                 ON `w`.`runner_id` = `des`.`id`
               LEFT JOIN `" . USERS . "` `dev`
                 ON `w`.`mechanic_id` = `dev`.`id`
-            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`runner_id` = " . $this->getId() . ")
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
               AND {$statusCond}
             ORDER BY `id` DESC
             LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
@@ -2155,7 +2155,7 @@ class User {
         $sql = "
             SELECT COUNT(*)
             FROM `" . WORKLIST . "` `w`
-            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`runner_id` = " . $this->getId() . ")
+            WHERE (`w`.`mechanic_id` = " . $this->getId() . " OR `w`.`creator_id` = " . $this->getId() . ")
               AND {$statusCond}";
 
         $res = mysql_query($sql);
