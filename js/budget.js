@@ -485,7 +485,6 @@ var Budget = {
                 }
                 Utils.modal('budget-transfer', {
                     items: json.items,
-                    title: 'Budget Transferred',
                     exportUrl: url + '.csv',
                     open: function(modal) {
                         // todo: add search behavior
