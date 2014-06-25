@@ -1,101 +1,3 @@
-var available = 0;
-
-$(document).ready(function() {
-    UserInfo.init();
-
-    $('#profile-nav a').click(function (event) {
-        event.preventDefault();
-        $(this).tab('show');
-        if ($(this).attr('href') == '#budgethistory') {
-            $.ajax({
-                type: 'post',
-                url: 'api.php',
-                dataType: 'html',
-                data: {
-                    action: 'budgetHistory',
-                    inDiv: 'tabs',
-                    id: userInfo.user_id,
-                    num: 100
-                },
-                success: function(data) {
-                    $('#budgethistory').html(data);
-                }
-            });
-        } else if ($(this).attr('href') == '#mynotes') {
-            $.ajax({
-                type: 'post',
-                url: 'api.php',
-                dataType: 'html',
-                data: {
-                    action: 'userNotes',
-                    method: 'getNote',
-                    userId: userInfo.user_id
-                },
-                success: function(data) {
-                    $('#mynotes').html(data);
-                }
-            });
-        }
-    });
-
-    
-});
-
-$(function () {
-    if ($('#fees-week').length > 0) {
-        $('#fees-week').parents("tr").click(function() {
-            var author = "Guest";
-            if($('#user').length > 0) {
-                author = $('#user').html();
-            }
-            var t = 'Weekly fees for '+author;
-            $('#wFees').dialog({
-                autoOpen: false,
-                title: t,
-                show: 'fade',
-                hide: 'fade'
-            });
-            $('#wFees').dialog( "option", "title", t );
-            $('#wFees').html('<img src="images/loader.gif" />');
-            $('#wFees').dialog('open');
-            $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
-                if (json.error == 1) {
-                    $('#wFees').html('Some error occured or you are not logged in.');
-                } else {
-                  $('#wFees').html(json.output);
-                }
-            });
-        });
-    }
-
-    if($('#fees-month').length > 0){
-        $('#fees-month').parents("tr").click(function() {
-            var author = "Guest";
-            if ($('#user').length > 0) {
-                author = $('#user').html();
-            }
-            var t = 'Monthly fees for '+author;
-            $('#wFees').dialog({
-                autoOpen: false,
-                title: t,
-                show: 'fade',
-                hide: 'fade'
-            });
-            $('#wFees').dialog("option", "title", t);
-            $('#wFees').html('<img src="images/loader.gif" />');
-            $('#wFees').dialog('open');
-            $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
-                if (json.error == 1) {
-                    $('#wFees').html('Some error occured or you are not logged in.');
-                } else {
-                    $('#wFees').html(json.output);
-                }
-            });
-        });
-    }
-});
-
- 
 var UserInfo = {
     init: function() {
         userNotes.init();
@@ -474,6 +376,93 @@ var UserInfo = {
             UserStats.showLatestEarnings(1, userInfo.user_id);
             return false;
         });
+
+        $('#profile-nav a').click(function (event) {
+            event.preventDefault();
+            $(this).tab('show');
+            if ($(this).attr('href') == '#budgethistory') {
+                $.ajax({
+                    type: 'post',
+                    url: 'api.php',
+                    dataType: 'html',
+                    data: {
+                        action: 'budgetHistory',
+                        inDiv: 'tabs',
+                        id: userInfo.user_id,
+                        num: 100
+                    },
+                    success: function(data) {
+                        $('#budgethistory').html(data);
+                    }
+                });
+            } else if ($(this).attr('href') == '#mynotes') {
+                $.ajax({
+                    type: 'post',
+                    url: 'api.php',
+                    dataType: 'html',
+                    data: {
+                        action: 'userNotes',
+                        method: 'getNote',
+                        userId: userInfo.user_id
+                    },
+                    success: function(data) {
+                        $('#mynotes').html(data);
+                    }
+                });
+            }
+        });
+
+        if ($('#fees-week').length > 0) {
+            $('#fees-week').parents("tr").click(function() {
+                var author = "Guest";
+                if($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Weekly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog( "option", "title", t );
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                      $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
+
+        if($('#fees-month').length > 0){
+            $('#fees-month').parents("tr").click(function() {
+                var author = "Guest";
+                if ($('#user').length > 0) {
+                    author = $('#user').html();
+                }
+                var t = 'Monthly fees for '+author;
+                $('#wFees').dialog({
+                    autoOpen: false,
+                    title: t,
+                    show: 'fade',
+                    hide: 'fade'
+                });
+                $('#wFees').dialog("option", "title", t);
+                $('#wFees').html('<img src="images/loader.gif" />');
+                $('#wFees').dialog('open');
+                $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
+                    if (json.error == 1) {
+                        $('#wFees').html('Some error occured or you are not logged in.');
+                    } else {
+                        $('#wFees').html(json.output);
+                    }
+                });
+            });
+        }
     },
      
     appendPagination: function(page, cPages, table) {
