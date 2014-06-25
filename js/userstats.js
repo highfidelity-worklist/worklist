@@ -248,7 +248,15 @@ var UserStats = {
 
     getPaginationData: function(json, page) {
         var pages = [];
-        for (var i = 1; i <= json.pages; i++) {
+        var fromPage = 1;
+        if (json.pages > 10 && page > 6) {
+            if (page + 4 <= json.pages) {
+                fromPage = page - 6;
+            } else {
+                fromPage = json.pages - 10;
+            }
+        }
+        for (var i = fromPage; (i <= (fromPage +10) && i <= json.pages); i++) {
             pages.push({
                 page: i,
                 current: (i == page)
