@@ -109,13 +109,15 @@ var Budget = {
                         isRunner: is_runner,
                         budget: json.budget,
                         open: function(modal) {
-                            $('table:eq(1) > tbody > tr', modal).click(function() {
+                            $('table:eq(1) > tbody td > a', modal).click(function() {
                                 Budget.displayHistory(userId);
+                                return false;
                             });
-                            $('table:eq(2) > tbody td', modal).click(function() {
+                            $('table:eq(2) > tbody td > a', modal).click(function() {
                                 $(modal).modal('hide');
                                 var index = $(this).prevAll().length;
                                 Budget.budgetExpand(index);
+                                return false;
                             });
                         }
                     });
@@ -465,9 +467,11 @@ var Budget = {
                 if (!json.success) {
                     return;
                 }
+                // capitalize first letter for method to be displayed in title
+                var title = 'Budget ' + method.charAt(0).toUpperCase() + method.slice(1);
                 Utils.modal('budget', {
                     items: json.items,
-                    title: 'Budget' + method,
+                    title: title,
                     exportUrl: url + '.csv',
                     open: function(modal) {
                         // todo: add search behavior
@@ -482,7 +486,7 @@ var Budget = {
                 }
                 Utils.modal('budget-transfer', {
                     items: json.items,
-                    title: 'Budget transferred',
+                    title: 'Budget Transferred',
                     exportUrl: url + '.csv',
                     open: function(modal) {
                         // todo: add search behavior
