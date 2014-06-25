@@ -18,6 +18,7 @@ class UserController extends Controller {
             case 'reviewJobs':
             case 'completedJobs':
             case 'doneJobs':
+            case 'totalJobs':
             case 'designerJobs':
             case 'activeJobs':
             case 'love':
@@ -413,6 +414,14 @@ class UserController extends Controller {
         echo json_encode($user->jobs('Done', $page, $itemsPerPage));
     }
 
+    public function totalJobs($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->jobs(array('Working', 'Functional', 'Review', 'Completed', 'Done'), $page, $itemsPerPage));
+    }
+
     public function love($id, $page = 1) {
         $this->view = null;
         $user = User::find($id);
@@ -441,9 +450,9 @@ class UserController extends Controller {
         $this->view = null;
         $user = User::find($id);
         setlocale(LC_MONETARY,'en_US');
-        $totalEarnings = $user->totalEarnings(30);
+        $totalEarnings = $user->totalEarnings();
         $bonusPayments = $user->bonusPaymentsTotal();
-        $latestEarnings = $user->latestEarnings();
+        $latestEarnings = $user->latestEarnings(30);
         echo json_encode(array(
             'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
             'active_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review')),

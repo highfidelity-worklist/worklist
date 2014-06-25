@@ -13,29 +13,16 @@ var UserStats = {
         designerActiveJobs: 1,
         activeJobs: 1
     },
-    stats_page: 1,
 
     init: function() {
-        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
-        $('#jobs-popup').dialog(dialog_options);
-        $('#lovelist-popup').dialog(dialog_options);
-        $('#latest-earnings-popup').dialog(dialog_options);
-
         $("nav.navbar .following").click(function(){
             UserStats.showFollowingJobs(1, userId);
             return false;
         });
-
-        $('#latest-earnings').click(function(){
-            UserStats.showLatestEarnings();
-            return false;
-        });
-
         $('#love').click(function(){
             UserStats.showLove();
             return false;
         });
-
     },
 
     modal: function(name, page, json, user, title, pagination, fAfter) {
@@ -150,6 +137,22 @@ var UserStats = {
         });
     },
 
+    showTotalJobs: function(page, user, modal) {
+        UserStats.page.doneJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/totalJobs/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                var title = "Total jobs for <a href='./user/'" + user + "'>" + user + "</a>";
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showTotalJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showTotalJobs);
+                }
+            }
+        });
+    },
+
     showDesignerTotalJobs: function(page, user, modal) {
         UserStats.page.designerTotalJobs = page = (page ? page : 1);
         $.ajax({
@@ -257,7 +260,15 @@ var UserStats = {
 
     getPaginationData: function(json, page) {
         var pages = [];
-        for (var i = 1; i <= json.pages; i++) {
+        var fromPage = 1;
+        if (json.pages > 10 && page > 6) {
+            if (page + 4 <= json.pages) {
+                fromPage = page - 6;
+            } else {
+                fromPage = json.pages - 10;
+            }
+        }
+        for (var i = fromPage; (i <= (fromPage +10) && i <= json.pages); i++) {
             pages.push({
                 page: i,
                 current: (i == page)

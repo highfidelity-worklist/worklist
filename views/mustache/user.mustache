@@ -7,7 +7,7 @@
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
         {{/profileUser.getIs_runner}}
         <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
-        <li><a href="#budgethistory" data-toggle="tab">Budget History</a></li>
+        <li><a href="#budgetHistory" data-toggle="tab">Budget History</a></li>
     {{/currentUser.is_runner}}
     {{^currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">User Info</a></li>
@@ -18,7 +18,7 @@
             <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
         {{/reqUserId}}
         <li>
-            <a href="#budgethistory" data-toggle="tab">Budget History</a>
+            <a href="#budgetHistory" data-toggle="tab">Budget History</a>
         </li>
 
     {{/currentUser.is_runner}}
@@ -338,7 +338,7 @@
         </div>
         <div class="tab-pane" id="mynotes">
         </div>
-        <div class="tab-pane" id="budgethistory">
+        <div class="tab-pane" id="budgetHistory">
         </div>
     </div>
 </section>
@@ -353,6 +353,9 @@
         nickName: '{{profileUser.getNickName}}',
         tab: '{{tab}}'
     };
+    $(function() {
+        UserInfo.init();
+    });
 </script>
 
 <!-- popup div's -->

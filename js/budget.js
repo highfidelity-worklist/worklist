@@ -109,13 +109,15 @@ var Budget = {
                         isRunner: is_runner,
                         budget: json.budget,
                         open: function(modal) {
-                            $('table:eq(1) > tbody > tr', modal).click(function() {
+                            $('table:eq(1) > tbody td > a', modal).click(function() {
                                 Budget.displayHistory(userId);
+                                return false;
                             });
-                            $('table:eq(2) > tbody td', modal).click(function() {
+                            $('table:eq(2) > tbody td > a', modal).click(function() {
                                 $(modal).modal('hide');
-                                var index = $(this).prevAll().length;
+                                var index = $(this).parent().prevAll().length;
                                 Budget.budgetExpand(index);
+                                return false;
                             });
                         }
                     });
@@ -394,7 +396,7 @@ var Budget = {
     },
     
     displayHistory: function(user_id) {
-        window.location = './user/' + user_id + '?tab=tabBudgetHistory';
+        window.location = './user/' + user_id + '#budgetHistory';
     },
         
     /**
@@ -457,7 +459,6 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
-
         if (section < 3) {
             var method = (section == 0) ? 'allocated' : (section == 1) ? 'submitted' : 'paid';
             var url = './budget/' + method + '/' + (budget_id ? budget_id : '0');
@@ -465,9 +466,11 @@ var Budget = {
                 if (!json.success) {
                     return;
                 }
+                // capitalize first letter for method to be displayed in title
+                var title = 'Budget ' + method.charAt(0).toUpperCase() + method.slice(1);
                 Utils.modal('budget', {
                     items: json.items,
-                    title: 'Budget' + method,
+                    title: title,
                     exportUrl: url + '.csv',
                     open: function(modal) {
                         // todo: add search behavior
@@ -482,7 +485,6 @@ var Budget = {
                 }
                 Utils.modal('budget-transfer', {
                     items: json.items,
-                    title: 'Budget transferred',
                     exportUrl: url + '.csv',
                     open: function(modal) {
                         // todo: add search behavior
