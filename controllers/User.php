@@ -441,9 +441,9 @@ class UserController extends Controller {
         $this->view = null;
         $user = User::find($id);
         setlocale(LC_MONETARY,'en_US');
-        $totalEarnings = $user->totalEarnings(30);
+        $totalEarnings = $user->totalEarnings();
         $bonusPayments = $user->bonusPaymentsTotal();
-        $latestEarnings = $user->latestEarnings();
+        $latestEarnings = $user->latestEarnings(30);
         echo json_encode(array(
             'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
             'active_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review')),
