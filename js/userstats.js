@@ -13,29 +13,20 @@ var UserStats = {
         designerActiveJobs: 1,
         activeJobs: 1
     },
-    stats_page: 1,
 
     init: function() {
-        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, width: '685px', show: 'fade', hide: 'fade'};
-        $('#jobs-popup').dialog(dialog_options);
-        $('#lovelist-popup').dialog(dialog_options);
-        $('#latest-earnings-popup').dialog(dialog_options);
-
         $("nav.navbar .following").click(function(){
             UserStats.showFollowingJobs(1, userId);
             return false;
         });
-
         $('#latest-earnings').click(function(){
             UserStats.showLatestEarnings();
             return false;
         });
-
         $('#love').click(function(){
             UserStats.showLove();
             return false;
         });
-
     },
 
     modal: function(name, page, json, user, title, pagination, fAfter) {
