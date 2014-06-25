@@ -115,7 +115,7 @@ var Budget = {
                             });
                             $('table:eq(2) > tbody td > a', modal).click(function() {
                                 $(modal).modal('hide');
-                                var index = $(this).prevAll().length;
+                                var index = $(this).parent().prevAll().length;
                                 Budget.budgetExpand(index);
                                 return false;
                             });
@@ -459,7 +459,6 @@ var Budget = {
                 $(this).fadeIn('fast');
             });
         });
-
         if (section < 3) {
             var method = (section == 0) ? 'allocated' : (section == 1) ? 'submitted' : 'paid';
             var url = './budget/' + method + '/' + (budget_id ? budget_id : '0');
