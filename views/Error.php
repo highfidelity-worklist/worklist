@@ -12,7 +12,6 @@ class ErrorView extends View {
     );
 
     public $scripts = array(
-        '//use.typekit.net/xyu1mnf.js',
         'js/error.js'
     );
 

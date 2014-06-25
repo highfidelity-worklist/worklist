@@ -13,7 +13,7 @@ div.row {
 
 a {
     color: #336666;
-    font: bold 18px proxima-nova, sans-serif;
+    font: bold 18px Helvetica Neue, Helvetica, Arial, sans-serif;
     text-decoration: underline;
 }
 
@@ -22,7 +22,7 @@ a:hover {
 }
 
 p {
-    font: bold 36px proxima-nova, sans-serif;
+    font: bold 36px Helvetica Neue, Helvetica, Arial, sans-serif;
     margin: 10px auto 15px auto;
     width: auto;
 }

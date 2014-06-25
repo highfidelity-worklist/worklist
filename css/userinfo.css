@@ -1,5 +1,5 @@
 @font-face {
-  font-family: proxima-nova;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: bold;
 }
@@ -70,7 +70,7 @@ p.small-text{
     line-height: 48px;
     font-weight: bold;
     letter-spacing: -2px;
-    font-family:proxima-nova;
+    font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 .info-label {
@@ -367,7 +367,7 @@ p.bottom {
     vertical-align: top;
     padding: 6px 11px;
     width: 293px;
-    font-family:proxima-nova;
+    font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     display: inline-block;
     margin-bottom: 45px;

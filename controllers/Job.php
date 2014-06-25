@@ -1434,9 +1434,9 @@ class JobController extends Controller {
      * we pass the session user to the method
      */
     protected function toggleInternal($job_id) {
-        $this->view = null;
         $workitem = new WorkItem($job_id);
         $resp = $workitem->toggleInternal($_SESSION['userid']);
+        $this->view = null;
 
         echo json_encode(array(
             'success' => true,

@@ -50,7 +50,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .white-theme .ui-dialog-content label {
     font-size:1.1em !important;
     color: #666666 !important;
-    font-family: proxima-nova, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     display: block;
     text-align: left;
     padding-bottom: 0.5em;
@@ -145,7 +145,7 @@ input[type=submit].wide {
 
 .white-theme .ui-dialog-title {
     display: none;
-    font-family: proxima-nova,sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     padding: 0 0 0 37px;
     font-weight: bold;
     font-size: 1.3em;
