@@ -2280,7 +2280,7 @@ function getWorklist() {
             $severalStatus = " OR ";
         }
 
-        $where .= ')';
+        // $where .= ')';
 
         /**
          * Get the list of jobs that the user has commented on for inclusion
