@@ -396,7 +396,7 @@ var Budget = {
     },
     
     displayHistory: function(user_id) {
-        window.location = './user/' + user_id + '?tab=tabBudgetHistory';
+        window.location = './user/' + user_id + '#budgetHistory';
     },
         
     /**
