@@ -141,6 +141,22 @@ var UserStats = {
         });
     },
 
+    showTotalJobs: function(page, user, modal) {
+        UserStats.page.doneJobs = page = (page ? page : 1);
+        $.ajax({
+            url: './user/totalJobs/' + user + '/' + page,
+            dataType: 'json',
+            success: function(json) {
+                var title = "Total jobs for <a href='./user/'" + user + "'>" + user + "</a>";
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('jobs', page, json, user, title, UserStats.showTotalJobs);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showTotalJobs);
+                }
+            }
+        });
+    },
+
     showDesignerTotalJobs: function(page, user, modal) {
         UserStats.page.designerTotalJobs = page = (page ? page : 1);
         $.ajax({
