@@ -380,7 +380,7 @@ var UserInfo = {
         $('#profile-nav a').click(function (event) {
             event.preventDefault();
             $(this).tab('show');
-            if ($(this).attr('href') == '#budgethistory') {
+            if ($(this).attr('href') == '#budgetHistory') {
                 $.ajax({
                     type: 'post',
                     url: 'api.php',
@@ -392,7 +392,7 @@ var UserInfo = {
                         num: 100
                     },
                     success: function(data) {
-                        $('#budgethistory').html(data);
+                        $('#budgetHistory').html(data);
                     }
                 });
             } else if ($(this).attr('href') == '#mynotes') {
@@ -411,6 +411,10 @@ var UserInfo = {
                 });
             }
         });
+        var tab = document.URL.split('#').pop();
+        if ($('#profile-nav a[href="#' + tab + '"]').length) {
+            $('#profile-nav a[href="#' + tab + '"]').click();
+        }
 
         if ($('#fees-week').length > 0) {
             $('#fees-week').parents("tr").click(function() {
