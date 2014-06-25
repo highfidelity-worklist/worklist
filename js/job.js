@@ -641,15 +641,33 @@ $(document).ready(function(){
                         url: './user/counts/' + bidData.bidder_id,
                         dataType: 'json',
                         success: function(json) {
-                            $('.modal-body > table + .row > div:last-child td:nth-child(1)', modal).html(
-                                json.total_jobs + ' / ' + json.active_jobs
+                            $('.modal-body > .row > div:last-child td:nth-child(1)', modal).html(
+                                '<a href="#">' + json.total_jobs + '</a> / ' +
+                                '<a href="#">' + json.active_jobs + '</a>'
                             );
-                            $('.modal-body > table + .row > div:last-child td:nth-child(2)', modal).html(
-                                '$' + json.total_earnings + ' / $' + json.latest_earnings
+                            $('.modal-body > .row > div:last-child td:nth-child(1) a:first-child', modal).click(function() {
+                                $(modal).modal('hide');
+                                UserStats.showTotalJobs(1, bidData.nickname);
+                                return false;
+                            });
+                            $('.modal-body > .row > div:last-child td:nth-child(1) a:last-child', modal).click(function() {
+                                $(modal).modal('hide');
+                                UserStats.showActiveJobs(1, bidData.nickname);
+                                return false;
+                            });
+                            $('.modal-body > .row > div:last-child td:nth-child(2)', modal).html(
+                                '$' + json.total_earnings + ' / ' +
+                                '<a href="#">$' + json.latest_earnings + '</a>'
                             );
-                            $('.modal-body > table + .row > div:last-child td:nth-child(3)', modal).html(
+                            $('.modal-body > .row > div:last-child td:nth-child(2) a:last-child', modal).click(function() {
+                                $(modal).modal('hide');
+                                UserStats.showLatestEarnings(1, bidData.nickname);
+                                return false;
+                            });
+                            $('.modal-body > .row > div:last-child td:nth-child(3)', modal).html(
                                 '$' + json.bonus_total + ' / ' + json.bonus_percent
                             );
+
                         }
                     });
                 }
