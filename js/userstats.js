@@ -19,10 +19,6 @@ var UserStats = {
             UserStats.showFollowingJobs(1, userId);
             return false;
         });
-        $('#latest-earnings').click(function(){
-            UserStats.showLatestEarnings();
-            return false;
-        });
         $('#love').click(function(){
             UserStats.showLove();
             return false;
