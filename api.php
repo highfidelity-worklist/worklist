@@ -2309,16 +2309,6 @@ function getWorklist() {
         }
     }
 
-    // Project filter
-    if (!empty($pfilter) && $pfilter != 'All') {
-        if (empty($where)) {
-            $where = "WHERE ";
-        } else {
-            $where .= " AND "; 
-        }
-        $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
-    }
-
     $commentsjoin = "";
 
     if ($query != '' && $query != 'Search...') {
@@ -2361,7 +2351,7 @@ function getWorklist() {
                     ";
                 }
 
-                if (! empty($ufilter)) {
+                if ($ufilter !== 'ALL') {
                     $textMatchAndOr = ' OR ';
                     $partialMatch = '';
                 } else {
@@ -2391,6 +2381,16 @@ function getWorklist() {
 
     if ($ufilter != 'ALL') {
         $where .= ")";
+    }
+
+    // Project filter
+    if (!empty($pfilter) && $pfilter != 'All') {
+        if (empty($where)) {
+            $where = "WHERE ";
+        } else {
+            $where .= " AND "; 
+        }
+        $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
     }
 
     // only internal users are allowed to view internal jobs
