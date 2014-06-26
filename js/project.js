@@ -100,34 +100,6 @@ $(document).ready(function() {
     }
     getProjectRunners();
     
-    $("#addrunner-textbox").autocomplete({source: autocompleteUserSource});
-    $('#addRunner-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding designer to your project...</span>', false);
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                projectid: projectid,
-                nickname: $('.add-runner').val(),
-                action: 'addRunnerToProject'
-            },
-            dataType: 'json',
-            success: function(data) {
-                $('.add-runner').val('');
-                closeNotifyOverlay();
-                openNotifyOverlay('<span>' + data.data + '<span>', true);
-                if (data.success) {
-                    getProjectRunners();
-                    closeAddRunnerForm();
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        
-        return false;
-    });
 
     $('#removerunner').click(function(event) {
         Utils.infoDialog('Removing Designer','Removing selected user(s) as Designer(s) for this project. ' +
@@ -159,7 +131,6 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#addcodereviewer-textbox").autocomplete({source: autocompleteUserSource});
     // Get the project reviewers
     getProjectCodeReviewers = function() {
         $('#projectCodeReviewRights tbody').html('Loading ...');
@@ -194,34 +165,6 @@ $(document).ready(function() {
         });
     }
     getProjectCodeReviewers();
-
-    $('#addcodereviewer-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding Code Reviewer to your project...</span>', false);
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                projectid: projectid,
-                nickname: $('.add-codeReviewer').val(),
-                action: 'addCodeReviewerToProject'
-            },
-            dataType: 'json',
-            success: function(data) {
-                $('.add-codeReviewer').val('');
-                closeNotifyOverlay();
-                openNotifyOverlay('<span>' + data.data + '<span>', true);
-                if (data.success) {
-                    getProjectCodeReviewers();
-                    $('#add-codereviewer').dialog('close');
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        
-        return false;
-    });
     
     $('#removecodereviewer').click(function(event) {
         openNotifyOverlay(
@@ -281,48 +224,88 @@ $(document).ready(function() {
     }
     
     //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
-    $('tr.role').click(function() {
-        $.metadata.setType("elem", "script");
-        var roleData = $(this).metadata();
+    $('tr.role').click(showRoleInfoModal);
 
-        // row has role data attached
-        if(roleData.id){
-            $('#popup-role-info input[name="role_id"]').val(roleData.id);
-            $('#popup-role-info #info-title').text(roleData.role_title);
-            $('#popup-role-info #info-percentage').text(roleData.percentage);
-            $('#popup-role-info #info-min-amount').text(roleData.min_amount);
-            //future functions to display more information as well as enable disable removal edition
-            $('#popup-role-info').dialog('open');
-        }
-    });
 
-    $('#editRole').click(function(){
-        // row has role data attached
-        $('#popup-role-info').dialog('close');
-            $('#popup-edit-role input[name="role_id"]').val($('#popup-role-info input[name="role_id"]').val());
-            $('#popup-edit-role #role_title_edit').val($('#popup-role-info #info-title').text());
-            $('#popup-edit-role #percentage_edit').val($('#popup-role-info #info-percentage').text());
-            $('#popup-edit-role #min_amount_edit').val($('#popup-role-info #info-min-amount').text());
-            $('#popup-edit-role').dialog('open');
-    });
-
-    //popup for adding Project Runner and reviewers
-    $('#add-runner, #add-codereviewer').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        resizable: false,
-        modal: true,
-        show: 'fade',
-        hide: 'fade',
-        width: 480,
-    });
-    
     $('#addrunner').click(function() {
-        $('#add-runner').dialog('open');
+        Utils.emptyFormModal({
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-6">' +
+                '    <label for="newdesigner">New Designer</label>' +
+                '  </div>' +
+                '  <div class="col-md-6">' +
+                '    <input type="text" class="form-control" id="newdesigner" name="newdesigner">' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'adddesigner',
+                    content: 'Add Designer',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('input[name="newdesigner"]', modal).autocomplete({source: autocompleteUserSource});
+                $('form', modal).submit(function() {
+                    var designer = $('input[name="newdesigner"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './project/addDesigner/' + projectName + '/' + designer,
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                getProjectRunners();
+                            }
+                        }
+                    });
+                    $(modal).modal('hide');
+                    return false;
+                });
+            }
+        });
+        return false;
     });
     
     $('#addcodereviewer').click(function() {
-        $('#add-codereviewer').dialog('open');
+        Utils.emptyFormModal({
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-6">' +
+                '    <label for="codereviewer">New Code Reviewer</label>' +
+                '  </div>' +
+                '  <div class="col-md-6">' +
+                '    <input type="text" class="form-control" id="codereviewer" name="codereviewer">' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'addcodereviewer',
+                    content: 'Add Code Reviewer',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('input[name="codereviewer"]', modal).autocomplete({source: autocompleteUserSource});
+                $('form', modal).submit(function(e) {
+                    var user = $('input[name="codereviewer"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './project/addCodeReviewer/' + projectid + '/' + user,
+                        dataType: 'json',
+                        success: function(data) {
+                            getProjectCodeReviewers();
+                        }
+                    });
+                    $(modal).modal('hide')
+                    return false;
+                });
+            }
+        });
     });
     
     //popup for removing Project Runner
@@ -336,32 +319,6 @@ $(document).ready(function() {
         height: 450,
     });
     
-    // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
-    $('#popup-addrole').dialog({ 
-        autoOpen: false, 
-        modal: true, 
-        maxWidth: 600, 
-        width: 300, 
-        show: 'fade', 
-        hide: 'fade'
-    });
-    $('#popup-role-info').dialog({ 
-        autoOpen: false, 
-        modal: true, 
-        maxWidth: 600, 
-        width: 350, 
-        show: 'fade', 
-        hide: 'fade'
-    });
-    $('#popup-edit-role').dialog({ 
-        autoOpen: false, 
-        dialogClass: 'white-theme', 
-        modal: true, 
-        maxWidth: 600, 
-        width: 250, 
-        show: 'fade', 
-        hide: 'fade' 
-    });
     $('#popup-testflight').dialog({ 
         autoOpen: false, 
         maxWidth: 600, 
@@ -384,19 +341,197 @@ $(document).ready(function() {
 });
 
 function showAddRoleForm() {
-    $('#popup-addrole').dialog('open');
+    Utils.emptyFormModal({
+        action: './' + projectName,
+        content:
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Role Title</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <input type="text" class="form-control" name="role_title" id="role_title">' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="percentage">Percentage</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="percentage" id="percentage">' +
+            '      <span class="input-group-addon">%</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="min_amount">Minimum Amount</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="min_amount" id="min_amount">' +
+            '      <span class="input-group-addon">USD</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>',
+        buttons: [
+            {
+                type: 'submit',
+                name: 'save_role',
+                content: 'Save',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ],
+        open: function(modal) {
+            $('form', modal).submit(function(e) {
+                // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                // but without dollar sign 22-NOV-2010 <krumch>
+                var regex_amount = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                var regex_percent = /^100$|^\d{0,2}(\.\d{1,2})?$/;
+                var min_amount = new LiveValidation($('input[name="min_amount"]', modal)[0], { onlyOnSubmit: true });
+                min_amount.add( Validate.Format, { pattern: regex_amount, failureMessage: "Invalid Input!" });
+                var percentage = new LiveValidation($('input[name="min_amount"]', modal)[0],{ onlyOnSubmit: true });
+                percentage.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                percentage.add( Validate.Format, { pattern: regex_percent, failureMessage: "Invalid Input!" });
+                var role_title = new LiveValidation($('input[name="role_title"]', modal)[0], { onlyOnSubmit: true});
+                    role_title.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                var massValidation = LiveValidation.massValidate([min_amount, percentage, role_title]);
+                if (!massValidation) {
+                    return false;
+                }
+            });
+        }
+    });
+
     return false;
 }
 
-function showAddRunnerForm() {
-    $('#add-runner').dialog('open');
+function showRoleInfoModal() {
+    $.metadata.setType("elem", "script");
+    var roleData = $(this).metadata();
+    Utils.emptyFormModal({
+        title: 'Role Info',
+        action: './' + projectName,
+        content:
+            '<input type="hidden" name="role_id" value="' + roleData.id + '" />' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Role Title</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    ' + roleData.role_title +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Percentage</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    $' + roleData.percentage +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="min_amount">Minimum Amount</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    $' + roleData.min_amount +
+            '  </div>' +
+            '</div>',
+        buttons: [
+            {
+                type: 'submit',
+                name: 'delete_role',
+                content: 'Delete',
+                className: 'btn-primary',
+                dismiss: false
+            },
+            {
+                name: 'edit',
+                content: 'Edit',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ],
+        open: function(modal) {
+            $('button[name="edit"]', modal).click(function() {
+                $(modal).modal('hide');
+                showEditRoleModal(roleData);
+                return false;
+            });
+        }
+    });
+}
+
+
+function showEditRoleModal(roleData) {
+    Utils.emptyFormModal({
+        action: './' + projectName,
+        content:
+            '<input type="hidden" name="role_id" value="' + roleData.id + '" />' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Role Title</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <input type="text" class="form-control" name="role_title" id="role_title" value="' + roleData.role_title + '">' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="percentage">Percentage</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="percentage" id="percentage" value="' + roleData.percentage + '">' +
+            '      <span class="input-group-addon">%</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="min_amount">Minimum Amount</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="min_amount" id="min_amount" value="' + roleData.min_amount + '">' +
+            '      <span class="input-group-addon">USD</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>',
+        buttons: [
+            {
+                type: 'submit',
+                name: 'edit_role',
+                content: 'Save',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ],
+        open: function(modal) {
+            $('form', modal).submit(function(e) {
+                // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                // but without dollar sign 22-NOV-2010 <krumch>
+                var regex_amount = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                var regex_percent = /^100$|^\d{0,2}(\.\d{1,2})?$/;
+                var min_amount = new LiveValidation($('input[name="min_amount"]', modal)[0], { onlyOnSubmit: true });
+                min_amount.add( Validate.Format, { pattern: regex_amount, failureMessage: "Invalid Input!" });
+                var percentage = new LiveValidation($('input[name="min_amount"]', modal)[0],{ onlyOnSubmit: true });
+                percentage.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                percentage.add( Validate.Format, { pattern: regex_percent, failureMessage: "Invalid Input!" });
+                var role_title = new LiveValidation($('input[name="role_title"]', modal)[0], { onlyOnSubmit: true});
+                    role_title.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                var massValidation = LiveValidation.massValidate([min_amount, percentage, role_title]);
+                if (!massValidation) {
+                    return false;
+                }
+            });
+        }
+    });
     return false;
 }
 
-function closeAddRunnerForm() {
-    $('#add-runner').dialog('close');
-    return false;
-}
 
 function showTestFlightForm(project_id) {
     $('#popup-testflight').dialog('open');

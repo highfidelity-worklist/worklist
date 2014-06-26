@@ -96,8 +96,14 @@ class Dispatcher {
             'default' => array('method' => 'index')
         ));
 
-        $dispatcher->get('/:project', array('Project'));
-        $dispatcher->post('/:project', array('Project'));
+        $dispatcher->any('/:id', array('Project', 'view'));
+        $dispatcher->any('/project/:method(/:param)', array('Project'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'run')
+        ));
 
         $dispatcher->any('/login', array('Github', 'federated'));
         $dispatcher->any('/signup', array('Github', 'federated'));
