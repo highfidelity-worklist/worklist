@@ -6,7 +6,7 @@ class ProjectController extends Controller {
         switch($action) {
             case 'view':
             case 'addCodeReviewer':
-            case 'addRunner':
+            case 'addDesigner':
                 $method = $action;
                 break;
             default:
@@ -187,7 +187,7 @@ class ProjectController extends Controller {
         }
     }
 
-    function addRunner($id, $user_id) {
+    function addDesigner($id, $user_id) {
         $this->view = null;
         try {
             $project = Project::find($id);

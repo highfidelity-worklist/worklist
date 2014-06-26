@@ -100,29 +100,6 @@ $(document).ready(function() {
     }
     getProjectRunners();
     
-    $("#addrunner-textbox").autocomplete({source: autocompleteUserSource});
-    $('#addRunner-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding designer to your project...</span>', false);
-        $.ajax({
-            type: 'post',
-            url: './project/addRunner/' + projectName + '/' + $('.add-runner').val(),
-            dataType: 'json',
-            success: function(data) {
-                $('.add-runner').val('');
-                closeNotifyOverlay();
-                openNotifyOverlay('<span>' + data.data + '<span>', true);
-                if (data.success) {
-                    getProjectRunners();
-                    closeAddRunnerForm();
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        
-        return false;
-    });
 
     $('#removerunner').click(function(event) {
         Utils.infoDialog('Removing Designer','Removing selected user(s) as Designer(s) for this project. ' +
@@ -272,19 +249,46 @@ $(document).ready(function() {
             $('#popup-edit-role').dialog('open');
     });
 
-    //popup for adding Project Runner and reviewers
-    $('#add-runner').dialog({
-        autoOpen: false,
-        dialogClass: 'white-theme',
-        resizable: false,
-        modal: true,
-        show: 'fade',
-        hide: 'fade',
-        width: 480,
-    });
-    
     $('#addrunner').click(function() {
-        $('#add-runner').dialog('open');
+        Utils.emptyFormModal({
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-6">' +
+                '    <label for="newdesigner">New Designer</label>' +
+                '  </div>' +
+                '  <div class="col-md-6">' +
+                '    <input type="text" class="form-control" id="newdesigner" name="newdesigner">' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'adddesigner',
+                    content: 'Add Designer',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('input[name="newdesigner"]', modal).autocomplete({source: autocompleteUserSource});
+                $('form', modal).submit(function() {
+                    var designer = $('input[name="newdesigner"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './project/addDesigner/' + projectName + '/' + designer,
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                getProjectRunners();
+                            }
+                        }
+                    });
+                    $(modal).modal('hide');
+                    return false;
+                });
+            }
+        });
+        return false;
     });
     
     $('#addcodereviewer').click(function() {
@@ -449,16 +453,6 @@ function showAddRoleForm() {
         }
     });
 
-    return false;
-}
-
-function showAddRunnerForm() {
-    $('#add-runner').dialog('open');
-    return false;
-}
-
-function closeAddRunnerForm() {
-    $('#add-runner').dialog('close');
     return false;
 }
 
