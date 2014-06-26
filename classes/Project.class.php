@@ -556,6 +556,7 @@ class Project {
             }
         }
     }
+    
 
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
@@ -662,7 +663,7 @@ class Project {
     /**
         Return an array of all projects containing all fields
     **/    
-    public function getProjects($active = true, $selections = array(), $onlyInactive = false, $namesOnly = false) {
+    public function getProjects($active = true, $selections = array(), $onlyInactive = false, $namesOnly = false, $public_only = true) {
         $query = "
             SELECT
                 " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
@@ -677,6 +678,7 @@ class Project {
         if (mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
                 if (!$namesOnly) {
+                    $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
                     $query = "SELECT
                                 SUM(status IN ('Done', 'Completed')) AS completed,
                                 SUM(status IN ('Working', 'Review', 'SvnHold', 'Functional')) AS underway,
@@ -684,7 +686,8 @@ class Project {
                               FROM
                                 " . WORKLIST . "
                               WHERE
-                                project_id = " . $project['project_id'];
+                                project_id = " . $project['project_id']
+                                .$internalCond;
                     $resultCount = mysql_query($query);
                     $resultCount = mysql_fetch_object($resultCount);
 
@@ -1179,12 +1182,14 @@ class Project {
         return $contributors;
     }
 
-    public function getActiveJobs() {
+    public function getActiveJobs($public_only = true) {
+        $internalCond = $public_only ? ' AND `w`.`is_internal` = 0' : '';
         $query = "
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
                 WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
                     AND w.project_id = " . $this->getProjectId() . "
+                    {$internalCond}
                 ORDER BY w.created ASC";
         $result = mysql_query($query);
         if($result) {

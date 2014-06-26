@@ -88,7 +88,7 @@ class ProjectView extends View {
     }
 
     public function projectActiveJobs() {
-        return $this->project->getActiveJobs();
+        return $this->project->getActiveJobs(!$this->currentUser['is_internal']);
     }
 
     public function projectActiveJobsCount() {

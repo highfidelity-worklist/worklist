@@ -91,6 +91,7 @@ class View extends AppObject {
             $this->currentUser['can'] = array(
                 'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())
             );
+            $this->currentUser['is_internal'] = $user->isInternal();
         }
 
         $this->app['self_url'] = $_SERVER['PHP_SELF'];
