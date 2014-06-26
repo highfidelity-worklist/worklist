@@ -556,6 +556,7 @@ class Project {
             }
         }
     }
+    
 
     protected function insert() {
         $query = "INSERT INTO " . PROJECTS . "
@@ -686,7 +687,7 @@ class Project {
                               WHERE
                                 project_id = " . $project['project_id'];
                     $currentUser = new User(getSessionUserId());
-                    if ($currentUser != null && !$currentUser->isInternal()) {
+                    if (!$currentUser->isInternal()) {
                         $query .= " AND is_internal = 0";
                     }     
                     $resultCount = mysql_query($query);
@@ -1188,8 +1189,12 @@ class Project {
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
                 WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
-                    AND w.project_id = " . $this->getProjectId() . "
-                ORDER BY w.created ASC";
+                AND w.project_id = " . $this->getProjectId();
+        $currentUser = new User(getSessionUserId());
+        if (!$currentUser->isInternal()) {
+            $query .= " And w.is_internal = 0";
+        }
+        $query .= " ORDER BY w.created ASC";
         $result = mysql_query($query);
         if($result) {
             $jobs = array();
