@@ -286,7 +286,6 @@ $(document).ready(function(){
     // default dialog options
     var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
     $('#popup-bid').dialog(dialog_options);
-    $('#popup-review-started').dialog(dialog_options);
 
     $('#popup-ineligible').dialog({
         dialogClass: 'white-theme',
@@ -975,7 +974,11 @@ function CheckCodeReviewStatus() {
 
                 //now check the returned data. if review has already been started show dialog
                 if(data[0].code_review_started == 1 ) {
-                    $('#popup-review-started').dialog('open');
+                    Utils.emptyModal({
+                        title: 'Code Review already started',
+                        content:
+                            '<p>This Job is already being reviewed by another developer.</p>'
+                    });
                 }
                 else {
                     showReviewForm();
