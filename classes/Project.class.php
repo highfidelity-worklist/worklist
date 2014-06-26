@@ -685,6 +685,10 @@ class Project {
                                 " . WORKLIST . "
                               WHERE
                                 project_id = " . $project['project_id'];
+                    $currentUser = new User(getSessionUserId());
+                    if ($currentUser != null && !$currentUser->isInternal()) {
+                        $query .= " AND is_internal = 0";
+                    }     
                     $resultCount = mysql_query($query);
                     $resultCount = mysql_fetch_object($resultCount);
 
