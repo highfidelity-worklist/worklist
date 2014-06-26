@@ -390,7 +390,70 @@ $(document).ready(function() {
 });
 
 function showAddRoleForm() {
-    $('#popup-addrole').dialog('open');
+    //$('#popup-addrole').dialog('open');
+    Utils.emptyFormModal({
+        action: './' + projectName,
+        content:
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Role Title</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <input type="text" class="form-control" name="role_title" id="role_title">' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="role_title">Percentage</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="percentage" id="percentage">' +
+            '      <span class="input-group-addon">%</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' +
+            '    <label for="min_amount">Minimum Amount</label>' +
+            '  </div>' +
+            '  <div class="col-md-6">' +
+            '    <div class="input-group">' +
+            '      <input type="text" class="form-control" name="min_amount" id="min_amount">' +
+            '      <span class="input-group-addon">USD</span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>',
+        buttons: [
+            {
+                type: 'submit',
+                name: 'save_role',
+                content: 'Save',
+                className: 'btn-primary',
+                dismiss: false
+            }
+        ],
+        open: function(modal) {
+            $('form', modal).submit(function(e) {
+                // see http://regexlib.com/REDetails.aspx?regexp_id=318
+                // but without dollar sign 22-NOV-2010 <krumch>
+                var regex_amount = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                var regex_percent = /^100$|^\d{0,2}(\.\d{1,2})?$/;
+                var min_amount = new LiveValidation($('input[name="min_amount"]', modal)[0], { onlyOnSubmit: true });
+                min_amount.add( Validate.Format, { pattern: regex_amount, failureMessage: "Invalid Input!" });
+                var percentage = new LiveValidation($('input[name="min_amount"]', modal)[0],{ onlyOnSubmit: true });
+                percentage.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                percentage.add( Validate.Format, { pattern: regex_percent, failureMessage: "Invalid Input!" });
+                var role_title = new LiveValidation($('input[name="role_title"]', modal)[0], { onlyOnSubmit: true});
+                    role_title.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                var massValidation = LiveValidation.massValidate([min_amount, percentage, role_title]);
+                if (!massValidation) {
+                    return false;
+                }
+            });
+        }
+    });
+
     return false;
 }
 
