@@ -105,11 +105,11 @@ class ProjectController extends Controller {
             }
 
             if (isset($_POST['edit_role'])) {
-                $args = array('role_id','role_title_edit', 'percentage_edit', 'min_amount_edit');
+                $args = array('role_id','role_title', 'percentage', 'min_amount');
                 foreach ($args as $arg) {
                     $$arg = mysql_real_escape_string($_POST[$arg]);
                 }
-                $res = $project->editRole($role_id, $role_title_edit, $percentage_edit, $min_amount_edit);
+                $res = $project->editRole($role_id, $role_title, $percentage, $min_amount);
             }
 
             if (isset($_POST['delete_role'])) {
