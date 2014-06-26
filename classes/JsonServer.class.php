@@ -899,62 +899,6 @@ class JsonServer
             ));
         }
     }
-    
-    protected function actionAddRunnerToProject() {
-        $project = new Project();
-        $user = new User();
-        $founder = new User();
-        try {
-            $request_user = $this->getUser();
-            
-            $project->loadById($this->getRequest()->getParam('projectid'));
-            if (! $project->getProjectId()) {
-                throw new Exception('Not a project in our system');
-            }
-            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
-                throw new Exception('Not enough rights');
-            }
-            $user->findUserByNickname($this->getRequest()->getParam('nickname'));
-            if (!$user->getId()) {
-                throw new Exception('Not a user in our system');
-            }
-            if ($project->isProjectRunner($user->getId())) {
-                throw new Exception('Entered user is already a designer for this project');
-            }
-
-            if (! $project->addRunner($user->getId())) {
-                throw new Exception('Could not add the user as a designer for this project');
-            }
-            
-            $founder->findUserById($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
-            $data = array(
-                'nickname' => $user->getNickname(),
-                'projectName' => $project->getName(),
-                'projectUrl' => Project::getProjectUrl($project->getProjectId()),
-                'projectFounder' => $founder->getNickname(),
-                'projectFounderUrl' => $founderUrl
-            );
-            if (! sendTemplateEmail($user->getUsername(), 'project-runner-added', $data)) { 
-                error_log("JsonServer:actionAddRunnerToProject: send email to user failed");
-            }
-            // Add a journal notification
-            $journal_message = '@' . $user->getNickname() . ' has been granted Designer rights for project **' . $project->getName() . '**';
-            sendJournalNotification($journal_message);
-            
-            return $this->setOutput(array(
-                'success' => true,
-                'data' => 'Designer added successfully'
-            ));
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-            return $this->setOutput(array(
-                'success' => false,
-                'data' => $error
-            ));
-        }
-    }
-
 
     /**
      * This method handles the upload of the W9 form

@@ -105,12 +105,7 @@ $(document).ready(function() {
         openNotifyOverlay('<span>Adding designer to your project...</span>', false);
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                projectid: projectid,
-                nickname: $('.add-runner').val(),
-                action: 'addRunnerToProject'
-            },
+            url: './project/addRunner/' + projectName + '/' + $('.add-runner').val(),
             dataType: 'json',
             success: function(data) {
                 $('.add-runner').val('');
