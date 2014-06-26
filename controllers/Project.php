@@ -11,7 +11,8 @@ class ProjectController extends Controller {
                 $method = 'view';
                 $param = $action;
         }
-        $this->$method($param);
+        $params = preg_split('/\//', $param);
+        call_user_func_array(array($this, $method), $params);
     }
 
     public function view($id) {
