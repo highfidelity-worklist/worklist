@@ -159,7 +159,6 @@ $(document).ready(function() {
         return false;
     });
 
-    $("#addcodereviewer-textbox").autocomplete({source: autocompleteUserSource});
     // Get the project reviewers
     getProjectCodeReviewers = function() {
         $('#projectCodeReviewRights tbody').html('Loading ...');
@@ -194,34 +193,6 @@ $(document).ready(function() {
         });
     }
     getProjectCodeReviewers();
-
-    $('#addcodereviewer-form').submit(function(event) {
-        openNotifyOverlay('<span>Adding Code Reviewer to your project...</span>', false);
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                projectid: projectid,
-                nickname: $('.add-codeReviewer').val(),
-                action: 'addCodeReviewerToProject'
-            },
-            dataType: 'json',
-            success: function(data) {
-                $('.add-codeReviewer').val('');
-                closeNotifyOverlay();
-                openNotifyOverlay('<span>' + data.data + '<span>', true);
-                if (data.success) {
-                    getProjectCodeReviewers();
-                    $('#add-codereviewer').dialog('close');
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        
-        return false;
-    });
     
     $('#removecodereviewer').click(function(event) {
         openNotifyOverlay(
@@ -307,7 +278,7 @@ $(document).ready(function() {
     });
 
     //popup for adding Project Runner and reviewers
-    $('#add-runner, #add-codereviewer').dialog({
+    $('#add-runner').dialog({
         autoOpen: false,
         dialogClass: 'white-theme',
         resizable: false,
@@ -322,7 +293,42 @@ $(document).ready(function() {
     });
     
     $('#addcodereviewer').click(function() {
-        $('#add-codereviewer').dialog('open');
+        Utils.emptyFormModal({
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-6">' +
+                '    <label for="codereviewer">New Code Reviewer</label>' +
+                '  </div>' +
+                '  <div class="col-md-6">' +
+                '    <input type="text" class="form-control" id="codereviewer" name="codereviewer">' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'addcodereviewer',
+                    content: 'Add Code Reviewer',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('input[name="codereviewer"]', modal).autocomplete({source: autocompleteUserSource});
+                $('form', modal).submit(function(e) {
+                    var user = $('input[name="codereviewer"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './project/addCodeReviewer/' + projectid + '/' + user,
+                        dataType: 'json',
+                        success: function(data) {
+                            getProjectCodeReviewers();
+                        }
+                    });
+                    $(modal).modal('hide')
+                    return false;
+                });
+            }
+        });
     });
     
     //popup for removing Project Runner

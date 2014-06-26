@@ -5,6 +5,7 @@ class ProjectController extends Controller {
         $method = '';
         switch($action) {
             case 'view':
+            case 'addCodeReviewer':
                 $method = $action;
                 break;
             default:
@@ -134,6 +135,55 @@ class ProjectController extends Controller {
         $this->write('is_owner', $is_owner);
 
         parent::run();
+    }
+
+    function addCodeReviewer($id, $user_id) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            $user = User::find($user_id);
+            $request_user = User::find(getSessionUserId());
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            if (!$user->getId()) {
+                throw new Exception('Not a user in our system');
+            }
+            if ($project->isProjectCodeReviewer($user->getId())) {
+                throw new Exception('Entered user is already a Code Reviewer for this project');
+            }
+            if (! $project->addCodeReviewer($user->getId())) {
+                throw new Exception('Could not add the user as a designer for this project');
+            }
+            $founder = User::find($project->getOwnerId());
+            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+            $data = array(
+                'nickname' => $user->getNickname(),
+                'projectName' => $project->getName(),
+                'projectUrl' => Project::getProjectUrl($project->getProjectId()),
+                'projectFounder' => $founder->getNickname(),
+                'projectFounderUrl' => $founderUrl
+            );
+            if (! sendTemplateEmail($user->getUsername(), 'project-codereviewer-added', $data)) {
+                error_log("ProjectController:addCodeReviewer: send email to user failed");
+            }
+            // Add a journal notification
+            $journal_message = '@' . $user->getNickname() . ' has been granted *Review* rights for project **' . $project->getName() . '**';
+            sendJournalNotification($journal_message);
+            echo json_encode(array(
+                'success' => true,
+                'data' => 'Code Reviewer added successfully'
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
     }
 }
 
