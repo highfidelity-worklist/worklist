@@ -346,7 +346,7 @@ class UserController extends Controller {
         $thumb = imagecreatetruecolor($width, $height);
         $filename = $user->getAvatar();
         list($orig_width, $orig_height) = getimagesize($filename);
-        $source = imagecreatefromjpeg($filename);
+        $source = imagecreatefromstring(file_get_contents($filename));
         imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $orig_width, $orig_height);
         header('Content-type: image/jpeg');
         imagejpeg($thumb);
