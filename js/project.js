@@ -341,15 +341,6 @@ $(document).ready(function() {
         height: 450,
     });
     
-    // new dialog for adding and editing roles <mikewasmike 16-jun-2011>
-    $('#popup-addrole').dialog({ 
-        autoOpen: false, 
-        modal: true, 
-        maxWidth: 600, 
-        width: 300, 
-        show: 'fade', 
-        hide: 'fade'
-    });
     $('#popup-role-info').dialog({ 
         autoOpen: false, 
         modal: true, 
