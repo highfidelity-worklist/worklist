@@ -1426,7 +1426,6 @@ function getProjects($public_only = true) {
         // Define values for sorting a display
         $limit = 10;
         // Get listing of all inactive projects
-        
         $projectListing = $projectHandler->getProjects(false, array(), true,false, $public_only);
 
         // Create content for each page

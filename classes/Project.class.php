@@ -1187,8 +1187,8 @@ class Project {
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
                 WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
-                     AND w.project_id = " . $this->getProjectId() . "
-                     {$internalCond}
+                    AND w.project_id = " . $this->getProjectId() . "
+                    {$internalCond}
                 ORDER BY w.created ASC";
         $result = mysql_query($query);
         if($result) {
