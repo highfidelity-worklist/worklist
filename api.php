@@ -173,7 +173,9 @@ if(validateAction()) {
                 getMultipleBidList();
                 break;
             case 'getProjects':
-                getProjects();
+                $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
+                $currentUser = User::find($userId);
+                getProjects(!$currentUser->isInternal());
                 break;
             case 'getReport':
                 getReport();
@@ -1412,7 +1414,7 @@ function getMultipleBidList() {
     return;
 }
 
-function getProjects() {
+function getProjects($public_only = true) {
     // Create project object
     $projectHandler = new Project();
 
@@ -1424,7 +1426,8 @@ function getProjects() {
         // Define values for sorting a display
         $limit = 10;
         // Get listing of all inactive projects
-        $projectListing = $projectHandler->getProjects(false, array(), true);
+        
+        $projectListing = $projectHandler->getProjects(false, array(), true,false, $public_only);
 
         // Create content for each page
         // Select projects that match the letter chosen and construct the array for
@@ -1470,7 +1473,7 @@ function getProjects() {
 
     } else {
         // Get listing of active projects
-        $projectsOnPage = $projectHandler->getProjects(true);
+        $projectsOnPage = $projectHandler->getProjects(true,array(), false,false,$public_only);
         usort($projectsOnPage, function($a, $b) { 
             if ( $b["bCount"] < $a["bCount"] ) return -1;
             if ( $b["bCount"] > $a["bCount"] ) return 1;
