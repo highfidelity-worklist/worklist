@@ -686,7 +686,8 @@ class Project {
                               FROM
                                 " . WORKLIST . "
                               WHERE
-                                project_id = " . $project['project_id'].$internalCond;
+                                project_id = " . $project['project_id']
+                                .$internalCond;
                     $resultCount = mysql_query($query);
                     $resultCount = mysql_fetch_object($resultCount);
 

@@ -173,7 +173,7 @@ if(validateAction()) {
                 getMultipleBidList();
                 break;
             case 'getProjects':
-                $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
+                $userId = isset($_SESSION['userid']) ? $_SESSION['userid'] : 0;
                 $currentUser = User::find($userId);
                 getProjects(!$currentUser->isInternal());
                 break;
