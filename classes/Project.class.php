@@ -1189,10 +1189,10 @@ class Project {
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
                 WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
-                AND w.project_id = " . $this->getProjectId();
+                    AND w.project_id = " . $this->getProjectId();
         $currentUser = new User(getSessionUserId());
         if (!$currentUser->isInternal()) {
-            $query .= " And w.is_internal = 0";
+            $query .= " AND w.is_internal = 0";
         }
         $query .= " ORDER BY w.created ASC";
         $result = mysql_query($query);
