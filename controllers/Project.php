@@ -1,17 +1,22 @@
 <?php
 
 class ProjectController extends Controller {
-    public function run($project_name) {
-        if (empty($project_name)) {
-            $this->view = null;
-            Utils::redirect('./projects');
+    public function run($action, $param = '') {
+        $method = '';
+        switch($action) {
+            case 'view':
+                $method = $action;
+                break;
+            default:
+                $method = 'view';
+                $param = $action;
         }
+        $this->$method($param);
+    }
 
-        $projectName = mysql_real_escape_string($project_name);
-
-        $project = new Project();
+    public function view($id) {
         try {
-            $project->loadByName($projectName);
+            $project = Project::find($id);
         } catch(Exception $e) {
             $error  = $e->getMessage();
             die($error);

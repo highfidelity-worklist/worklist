@@ -81,7 +81,7 @@ class Project {
     }
     
     public function loadByName($name) {
-        $query = "SELECT project_id FROM `".PROJECTS."` WHERE `name`='" . $name . "'";
+        $query = "SELECT project_id FROM `".PROJECTS."` WHERE `name`='" . mysql_real_escape_string($name) . "'";
         $result = mysql_query($query);
         if (mysql_num_rows($result)) {
             $row = mysql_fetch_assoc($result);
