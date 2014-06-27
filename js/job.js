@@ -327,12 +327,6 @@ $(document).ready(function(){
             $('select[name=quick-status]').val(origStatus);
         }
     });
-    if (mechanic_id == user_id) {
-        $('#popup-addtip').dialog({ dialogClass: 'white-theme', autoOpen: false, modal: true, width: 365, height: 385, show: 'fade', hide: 'fade' });
-        $('.addTip').click(function() {
-            $('#popup-addtip').dialog('open');
-        });
-    }
 
    $('#commentform input[name=newcomment]').click(function(event) {
         event.preventDefault();
