@@ -138,8 +138,7 @@
                                 </tbody>
                             </table>
                             <div class="buttonContainer">
-                                <input type="submit" value="Add Role" onClick="return showAddRoleForm('bid');" /
-                                > 
+                                <button class="btn btn-primary">Add Role</button>
                             </div>
                         </div>
                     </div>
@@ -242,26 +241,6 @@
                     {{/edit_mode}}
                 </div>
             </li>  
-            <li id="projectTestFlight">
-                <h3>TestFlight</h3>
-                <div>
-                    <input type="checkbox" class="wlcheckbox" name="testflight_enabled" id="testflight_enabled"
-                        {{^edit_mode}}disabled="disabled"{{/edit_mode}}
-                        {{#project.getTestFlightEnabled}}checked="checked"{{/project.getTestFlightEnabled}} />
-                    <label for="testflight_enabled">Enabled</label>
-                </div>
-                {{#edit_mode}}
-                    <label for="testflight_team_token">Team token</label>
-                    <input name="testflight_team_token" id="testflight_team_token" type="text" value="{{project.getTestFlightTeamToken}}" />
-                {{/edit_mode}}
-                {{^edit_mode}}
-                    {{#showTestFlightButton}}
-                        <div class="buttonContainer">
-                            <input id="testFlightButton" type="submit" onClick="javascript:;" value="TestFlight" />
-                        </div>
-                    {{/showTestFlightButton}}
-                {{/edit_mode}}
-            </li>
         </ul>
     </div>
     <div class="rightCol">
@@ -380,10 +359,12 @@
     </div>
 </div>
 </form>
-{{> popup-testflight}}
 <script type="text/javascript">
     var projectid = {{project_id}};
     var projectName = '{{project.getName}}';
     var edit_mode = {{#edit_mode}}true{{/edit_mode}}{{^edit_mode}}false{{/edit_mode}};
     var is_owner = {{#is_owner}}true{{/is_owner}}{{^is_owner}}false{{/is_owner}};
+    $(function() {
+        Project.init();
+    });
 </script>

@@ -5,8 +5,12 @@ class ProjectController extends Controller {
         $method = '';
         switch($action) {
             case 'view':
-            case 'addCodeReviewer':
             case 'addDesigner':
+            case 'designers':
+            case 'removeDesigner':
+            case 'addCodeReviewer':
+            case 'codeReviewers':
+            case 'removeCodeReviewer':
                 $method = $action;
                 break;
             default:
@@ -57,8 +61,6 @@ class ProjectController extends Controller {
                 ->setShortDescription($_REQUEST['short_description']);
 
             $project->setWebsite($_REQUEST['website']);
-            $project->setTestFlightEnabled(isset($_REQUEST['testflight_enabled']) ? 1 : 0);
-            $project->setTestFlightTeamToken($_REQUEST['testflight_team_token']);
             $cr_anyone = ($_REQUEST['cr_anyone']) ? 1 : 0;
             $cr_3_favorites = ($_REQUEST['cr_3_favorites']) ? 1 : 0;
             $cr_project_admin = isset($_REQUEST['cr_project_admin']) ? 1 : 0;
@@ -235,5 +237,152 @@ class ProjectController extends Controller {
             ));
         }
     }
-}
 
+    public function designers($id) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if ($designers = $project->getRunners()) {
+                foreach ($designers as $designer) {
+                    $data[] = array(
+                        'id'=> $designer['id'],
+                        'nickname' => $designer['nickname'],
+                        'totalJobCount' => $designer['totalJobCount'],
+                        'lastActivity' => $project->getRunnersLastActivity($designer['id']),
+                        'owner' => $designer['owner']
+                    );
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('designers' => $data)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function removeDesigner($id) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $runners = array_slice(func_get_args(), 1);
+            $deleted_runners = array();
+            foreach($runners as $runner) {
+                if ($project->deleteRunner($runner)) {
+                    $deleted_runners[] = $runner;
+                    $user = User::find($runner);
+                    $founder = User::find($project->getOwnerId());
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $data = array(
+                        'nickname' => $user->getNickname(),
+                        'projectName' => $project->getName(),
+                        'projectUrl' => Project::getProjectUrl($project->getProjectId()),
+                        'projectFounder' => $founder->getNickname(),
+                        'projectFounderUrl' => $founderUrl
+                    );
+                    if (! sendTemplateEmail($user->getUsername(), 'project-runner-removed', $data)) {
+                        error_log("ProjectController::removeDesigner: send_email to user failed");
+                    }
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('deleted_runners' => $deleted_runners)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function codeReviewers($id) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if ($codeReviewers = $project->getCodeReviewers()) {
+                foreach ($codeReviewers as $codeReviewer) {
+                    $data[] = array(
+                        'id'=> $codeReviewer['id'],
+                        'nickname' => $codeReviewer['nickname'],
+                        'totalJobCount' => $codeReviewer['totalJobCount'],
+                        'lastActivity' => $project->getCodeReviewersLastActivity($codeReviewer['id']),
+                        'owner' => $codeReviewer['owner']
+                    );
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('codeReviewers' => $data)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function removeCodeReviewer($id) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $codeReviewers = array_slice(func_get_args(), 1);
+            $deleted_codeReviewers = array();
+            foreach($codeReviewers as $codeReviewer) {
+                if ($project->deleteCodeReviewer($codeReviewer)) {
+                    $deleted_codeReviewers[] = $codeReviewer;
+                    $user = User::find($codeReviewer);
+                    $founder = User::find($project->getOwnerId());
+                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $data = array(
+                        'nickname' => $user->getNickname(),
+                        'projectName' => $project->getName(),
+                        'projectUrl' => Project::getProjectUrl($project->getProjectId()),
+                        'projectFounder' => $founder->getNickname(),
+                        'projectFounderUrl' => $founderUrl
+                    );
+                    if (! sendTemplateEmail($user->getUsername(), 'project-codereview-removed', $data)) {
+                        error_log("ProjectController::removeCodeReviewer: send_email to user failed");
+                    }
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('deleted_codereviewers' => $deleted_codeReviewers)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+ }
