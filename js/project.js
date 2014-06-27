@@ -180,7 +180,7 @@ var Project = {
                 '    <label for="role_title">Percentage</label>' +
                 '  </div>' +
                 '  <div class="col-md-6">' +
-                '    $' + roleData.percentage +
+                '    ' + roleData.percentage + '%' +
                 '  </div>' +
                 '</div>' +
                 '<div class="row">' +
