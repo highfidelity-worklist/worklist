@@ -41,7 +41,7 @@
                             var buttonElement = $('.endCr');
                             buttonElement.remove();
                             var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review"' +
-                                ' onclick="return CheckCodeReviewStatus();" alt="">';
+                                ' onclick="return Job.showReviewForm();" alt="">';
                             $('#review-pointer').before(startcrButton);
                             $('#popup-endreview').dialog('close');
                             MapToolTips();

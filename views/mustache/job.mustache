@@ -270,7 +270,7 @@
                     <strong>View the diff</strong> to see the code, then start the review ...
                     {{^workitem.getCRStarted}}
                         {{#userHasRights}}
-                            <input type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"
+                            <input type="submit" value="Start Code Review" onClick="return Job.showReviewForm();"
                               title="Start a code review on this job." data-toggle="tooltip" />
                         {{/userHasRights}}
                         {{^userHasRights}}
@@ -281,7 +281,7 @@
                     {{#workitem.getCRStarted}}
                         {{^workitem.getCRCompleted}}
                             {{#canEndReview}}
-                                <input type="submit" value="End Code Review" onClick="return showEndReviewForm();"
+                                <input type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"
                                   title="End a code review on this job." data-toggle="tooltip" />
                             {{/canEndReview}}
                         {{/workitem.getCRCompleted}}
@@ -302,10 +302,10 @@
                                     {{#canBid}}
                                         <input type="submit" value="{{addBidMsg}}" data-toggle="tooltip"
                                           title="Make an offer to do this job."
-                                          onClick="return {{#userIsEligible}}showConfirmForm('bid'){{/userIsEligible}}{{^userIsEligible}}showIneligible('bid');{{/userIsEligible}};" />
+                                          onClick="return Job.showBid{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
                                         {{#canAcceptBids}}
                                             <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
-                                              onClick="javascript:AcceptMultipleBidOpen();"/>
+                                              onClick="javascript:Job.AcceptMultipleBidOpen();"/>
                                         {{/canAcceptBids}}
                                      {{/canBid}}
                                 {{/currentUser.id}}
@@ -339,7 +339,7 @@
                                     {{/userIsMechanic}}
                                     <input type="submit" value="Add a Fee" data-toggle="tooltip"
                                       title="Add a fee you would like to be paid for work done on this job." 
-                                      onClick="return {{#userIsEligible}}showConfirmForm('fee');{{/userIsEligible}}{{^userIsEligible}}showIneligible('fee'){{/userIsEligible}}" />
+                                      onClick="return Job.showFee{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
                                 {{/statusDone}}
                             </span>
                         </caption>
@@ -433,6 +433,9 @@
     var userinfotoshow = {{userinfotoshow}};
     var origStatus = '{{worklist.status}}';
     var showBidderStatistics = {{#showBidderStatistics}}true{{/showBidderStatistics}}{{^showBidderStatistics}}false{{/showBidderStatistics}};
+    $(function() {
+        Job.init();
+    });
 </script>
 <script type="text/html" id="uploadedFiles">
     <div id="accordion">
