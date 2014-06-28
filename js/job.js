@@ -786,7 +786,7 @@ var Job = {
 
     showFeeForm: function() {
         $.get(
-            './user/index/all',
+            './user/index',
             function(data) {
                 Utils.modal('addfee', {
                     job_id: workitem_id,
