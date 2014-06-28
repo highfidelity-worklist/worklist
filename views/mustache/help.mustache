@@ -106,34 +106,34 @@
         </p>
         <h5>Stage One: Preparation &gt; Job Setup</h5>
         <ul>
-          <li><strong>Suggested -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When
-          Suggested Jobs are added, Designers are notified via email and they decide whether or not to move them into Bidding.</li>
-          <li><strong>SuggestedWithBid -</strong> Sometimes when a Developer has a suggestion, they will also have a particular solution
-          in mind and be willing to do the work. Once a Developer adds a Suggested Job, they have the ability to add a bid which in
-          turn changes the status to SuggestedWithBid.  Designers are again notified and make the final decision on whether or not to go
+          <li><strong>Suggestion -</strong> Worklist allows anyone to make suggestions for improvements to any active project. When
+          Suggestion Jobs are added, Designers are notified via email and they decide whether or not to move them into Bidding.</br>
+          Sometimes when a Developer has a suggestion, they will also have a particular solution
+          in mind and be willing to do the work. Once a Developer adds a Suggestion Job, they have the ability to add a bid which in
+          turn changes the status to Bidding.  Designers are again notified and make the final decision on whether or not to go
           ahead with the Job.</li>
           <li><strong>Pass -</strong> If for some reason a Designer decides not to move an Job into Bidding, they will set the
-          Job to Pass.  Jobs in Suggested and SuggestedWithBid status are also auto-passed once they age 30 days.</li>
+          Job to Pass.  Jobs in Suggestion are also auto-passed once they age 30 days.</li>
           <li><strong>Bidding -</strong> Once a Job is set to Bidding by a Designer, any Developer can put in their offer.
           Designers will review bids and accept based upon the best match to the Job requirements.</li>
         </ul>
         <h5>Stage Two: In Progress &gt; Getting Jobs Done</h5>
         <ul>
-          <li><strong>Working -</strong> Once a bid has been accepted, the Job will automatically set to Working status. It will remain
+          <li><strong>In Progress -</strong> Once a bid has been accepted, the Job will automatically set to In Progress status. It will remain
           there until the Developer is done with the work.</li>
-          <li><strong>Functional -</strong> When the Developer is ready for their work to be functionally tested, they will commit the
-          changes to their branch (no Pull Request at this point)  and set the Job to Functional. At this step in the process, the
+          <li><strong>QA Ready -</strong> When the Developer is ready for their work to be functionally tested, they will commit the
+          changes to their branch (no Pull Request at this point)  and set the Job to QA Ready. At this step in the process, the
           Designer will test the functionality in the Developer's sandbox and then either ask for modifications or indicate their approval
           to move to Code Review.  Setting the Job to Code Review will automatically generate a Pull Request(PR) in GitHub.</li>
           <li><strong>Code Review -</strong> Code Review means the new code is ready to be reviewed by another Developer. If the reviewer
           finds any problems, they are either worked out in real-time in our <a href='http://gitter.im/highfidelity/worklist' target='_blank'>Gitter</a>
-          or via comments added to the Job ticket. Once all requirements have been fulfilled, the Developer commits the code and sets the
-          Job to Completed.</li>
+          or via comments added to the Job ticket. Once all requirements have been fulfilled, the Developer commits the code, verifies that
+          the changes have been merged into the live repository and sets then sets the Job to Merged.</li>
         </ul>
         <h5>Stage Three: Finished &gt; Your Job is Done</h5>
         <ul>
-          <li><strong>Completed -</strong> Once your Job is merged into the GitHub Master Repository, the Developer sets the Job to
-          Completed. The Job Designer will again be notified via email. This stage allows Designers additional time once the Job is
+          <li><strong>Merged -</strong> Once your Job is merged into the GitHub Master Repository, the Developer sets the Job to
+          Merged. The Job Designer will again be notified via email. This stage allows Designers additional time once the Job is
           live to verify the new functionality in production. If all is good, they will move the Job to the final status: Done!</li>
           <li><strong>Done -</strong> The Developer will not be paid until the Job is moved into Done status. Done Jobs will be picked
           up in our payment system during the next payment run via Paypal, currently twice a week.</li>
@@ -167,7 +167,7 @@
       <section id="df8">
         <h4>After I have completed my work, how do I get paid?</h4>
         <p>
-          Once you've finished work and it has had a functional and code review completed, you should set the Job to Completed.
+          Once you've finished work and it has had a functional and code review completed, you should set the Job to Merged.
           The project Designer will then need to verify it works in production and will then set the Job to Done. You will not get paid until this
           happens. Please view the <a href ="ff6"> Project Status</a> flow for more information.  All payments are
           currently handled through Paypal. When you create your worklist account, you'll be asked to supply your Paypal email address. We will pay as

@@ -30,10 +30,10 @@ class JobController extends Controller {
     }
 
     public function view($job_id) {
-        $this->write('statusListRunner', array("Draft", "Suggested", "SuggestedWithBid", "Bidding", "Working", "Functional", "Code Review", "Completed", "Done", "Pass"));
-        $statusListMechanic = array("Working", "Functional", "Code Review", "Completed", "Pass");
+        $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
+        $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
-        $this->write('statusListCreator', array("Suggested", "Pass"));
+        $this->write('statusListCreator', array("Suggestion", "Pass"));
 
         if (! defined("WORKITEM_URL")) { define("WORKITEM_URL", SERVER_URL); }
         if (! defined("WORKLIST_REDIRECT_URL")) { define("WORKLIST_REDIRECT_URL", SERVER_URL); }
@@ -543,8 +543,8 @@ class JobController extends Controller {
                         AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
                     }
                     $notifyEmpty = false;
-                    if ($status_review == 'FUNCTIONAL') {
-                        $status_change = '-functional';
+                    if ($status_review == 'QA Ready') {
+                        $status_change = '-QA Ready';
                         Notification::workitemNotify(array(
                             'type' => 'modified',
                             'workitem' => $workitem,
@@ -572,7 +572,7 @@ class JobController extends Controller {
                     if ($workitem->save() == false) {
                         $status_error = "Error in save workitem process. Could not change the status.";
                     } else {
-                        if ($status == 'Completed') {
+                        if ($status == 'Merged') {
                             $workitem->addFeesToCompletedJob();
                         }
 
@@ -584,8 +584,8 @@ class JobController extends Controller {
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
-                                if ($status == 'Functional') {
-                                    Notification::workitemNotify(array('type' => 'new_functional',
+                                if ($status == 'QA Ready') {
+                                    Notification::workitemNotify(array('type' => 'new_qa',
                                         'workitem' => $workitem,
                                         'status_change' => $status_change,
                                         'job_changes' => $job_changes,
@@ -686,8 +686,8 @@ class JobController extends Controller {
                      'workitem' => $workitem,
                      'recipients' => array('runner'),
                      'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
-                     'totalJobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
-                     'activeJobs' => $user->jobsCount(array('Working', 'Functional', 'Review'))
+                     'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
+                     'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
                 );
                 $data = array(
                      'done_in' => $done_in,
@@ -701,10 +701,10 @@ class JobController extends Controller {
                 Notification::workitemNotify($options, $data);
 
                 $status=$workitem->loadStatusByBidId($bid_id);
-                if ($status == "SuggestedWithBid") {
+                 if ($status == "Bidding" && $creator_id = $_SESSION['userid'] && !$runner_id) {
                     if ($this->changeStatus($workitem, $status, $user)) {
                         $new_update_message = 'Status set to *' . $status . '*. ';
-                        $notifyEmpty = false;
+                        $notifyEmpty = true;
                         $journal_message .= $new_update_message;
                     }
                 }
@@ -712,15 +712,6 @@ class JobController extends Controller {
                 $data['new_update_message'] = $new_update_message;
                 Notification::workitemNotifyHipchat($options, $data);
                 
-                if(!$notifyEmpty) {
-                    $options = array(
-                        'type' => 'suggestedwithbid',
-                        'workitem' => $workitem,
-                        'recipients' => array('projectRunners')
-                    );
-                    $data = array('notes' => $notes);
-                    Notification::workitemNotify($options, $data);
-                }
             } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             }
@@ -843,8 +834,7 @@ class JobController extends Controller {
                 }
                 // only runners can accept bids        
                 if (($is_project_runner || $workitem->getRunnerId() == $_SESSION['userid'] || ($user->getIs_admin() == 1
-                     && $is_runner) && !$workitem->hasAcceptedBids() &&
-                    $workitem->getStatus() == "Bidding" || $workitem->getStatus() == "SuggestedWithBid")) {
+                     && $is_runner) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding")) {
                     // query to get a list of bids (to use the current class rather than breaking uniformity)
                     // I could have done this quite easier with just 1 query and an if statement..
                     $bids = (array) $workitem->getBids($workitem->getId());
@@ -866,7 +856,7 @@ class JobController extends Controller {
                             // Journal notification
                             $journal_message .= '@' . $_SESSION['nickname'] .
                                 " accepted {$bid_info['bid_amount']} from ".
-                                $bid_info['nickname'] . " on #" .$bid_info['worklist_id'] ." Status set to Working";
+                                $bid_info['nickname'] . " on #" .$bid_info['worklist_id'] ." Status set to *In Progress*.";
                             
                             $options = array(
                                 'type' => 'bid_accepted',
@@ -926,13 +916,7 @@ class JobController extends Controller {
                 if (count($bid_id) > 0) {
                 //only runners can accept bids
                     if (($is_project_runner || $workitem->getRunnerId() == getSessionUserId() ||
-                         ($user->getIs_admin() == 1 && $is_runner)
-                        ) &&
-                        !$workitem->hasAcceptedBids() &&
-                        (
-                            $workitem->getStatus() == "Bidding" ||
-                            $workitem->getStatus() == "SuggestedWithBid"
-                        )) {
+                         ($user->getIs_admin() == 1 && $is_runner)) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding") {
                         $total = 0;
                         foreach ($bid_id as $bid) {
                             $currentBid = new Bid();
@@ -961,7 +945,7 @@ class JobController extends Controller {
                                     // Journal notification
                                     $journal_message .= '@' . $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
                                         $bid_info['nickname'] . " " . ($is_mechanic ? ' as Developer ' : '') . 
-                                        "on #".$bid_info['worklist_id']. " Status set to Working";
+                                        "on #".$bid_info['worklist_id']. " Status set to *In Progress*.";
                                     // mail notification
                                     Notification::workitemNotify(array('type' => 'bid_accepted',
                                                  'workitem' => $workitem,
@@ -1072,8 +1056,7 @@ class JobController extends Controller {
                     //break;
                 }
 
-                if (!($user->getId() == $bid['bidder_id'] 
-                 || $user->isRunnerOfWorkitem($workitem) || ($worklist['status'] == 'SuggestedWithBid' && $workitem->getIsRelRunner())))  {
+                if (!($user->getId() == $bid['bidder_id'] || $user->isRunnerOfWorkitem($workitem) || $workitem->getIsRelRunner()))  {
                     if ($user->getIs_admin() == 0) {
                         $bid['nickname'] = '*name hidden*';
                         $bid['bid_amount'] = '***';
@@ -1173,8 +1156,7 @@ class JobController extends Controller {
         $allowEdit = false;
         $classEditable = "";
         if (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) ||
-            ($creator_id == $user_id && $worklist['status'] == 'Suggested' && is_null($worklist['runner_id'])) ||
-            ($creator_id == $user_id && $worklist['status'] == 'SuggestedWithBid' && is_null($worklist['runner_id']))) {
+             ($creator_id == $user_id && $worklist['status'] == 'Suggestion' && is_null($worklist['runner_id']))) {
             $allowEdit = true;
             if ($action !="edit") {
                 $classEditable = " editable";
@@ -1184,7 +1166,7 @@ class JobController extends Controller {
         $this->write('allowEdit', $allowEdit);
 
         $hideFees = false;
-        if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'Suggested' || $worklist['status'] == 'SuggestedWithBid') {
+        if ($worklist['status'] == 'Bidding' || $worklist['status'] == 'Suggestion') {
             $hideFees = true;
         }
         $this->write('hideFees', $hideFees);
@@ -1253,7 +1235,7 @@ class JobController extends Controller {
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
         $skills = $_REQUEST['skills'];
-        $status = $user->getIs_runner() ? 'Bidding' : 'Suggested';
+        $status = $user->getIs_runner() ? 'Bidding' : 'Suggestion';
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
@@ -1362,7 +1344,7 @@ class JobController extends Controller {
         }
 
         // Notify Runners of new suggested task
-        if ($status == 'Suggested' && $project_id != '') {
+        if ($status == 'Suggestion' && $project_id != '') {
             $options = array(
                 'type' => 'suggested',
                 'workitem' => $workitem,
@@ -1482,7 +1464,7 @@ class JobController extends Controller {
 
     function changeStatus($workitem, $newStatus, $user) {
 
-        $allowable = array("Draft", "Suggested", "SuggestedWithBid", "Code Review", "Functional", "Pass", "Completed");
+        $allowable = array("Draft", "Suggestion", "Code Review", "QA Ready", "Pass", "Merged");
 
         if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && ($is_runner))) {
             if($newStatus == 'Bidding' && in_array($workitem->getStatus(), $allowable)) {
@@ -1550,7 +1532,7 @@ class JobController extends Controller {
             } 
         }
         
-        if ($newStatus == 'Functional' && $repoType == 'git') {
+        if ($newStatus == 'QA Ready' && $repoType == 'git') {
             $runner = $workitem->getRunnerId();
             $GitHubUser = new User($runner);
             $runnerEmail = $GitHubUser->getUsername();
@@ -1567,11 +1549,11 @@ class JobController extends Controller {
             );
             $senderEmail = 'Worklist <contact@worklist.net>';
             sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);
-        } else if ($newStatus =='Functional' && ! ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 ))) {
+        } else if ($newStatus =='QA Ready' && ! ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 ))) {
             return true;
         } 
 
-        if ($newStatus == 'Working') {
+        if ($newStatus == 'In Progress') {
             $thisProject->setActive(1);
             $thisProject->save();
             $options = array(
@@ -1600,17 +1582,6 @@ class JobController extends Controller {
                 'workitem' => $workitem,
             );
             Notification::massStatusNotify($workitem);
-        }
-        if ($newStatus != 'SuggestedWithBid') {
-            $options = array(
-                'type' => 'status-notify',
-                'workitem' => $workitem,
-            );
-            $data = array(
-                'nick' => $user->getNickname(),
-                'status' => $newStatus,
-            );
-            Notification::workitemNotifyHipchat($options, $data);
         }
         return true;
     }

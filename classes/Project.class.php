@@ -194,7 +194,7 @@ class Project {
                      WHERE F.worklist_id = W.id
                      AND W.project_id = " . $project_id  . "
                      AND F.withdrawn = 0
-                     AND W.status IN ('Completed', 'Done')";
+                     AND W.status IN ('Merged', 'Done')";
         $feesQueryResult = mysql_query($feesQuery);
         if (mysql_num_rows($feesQueryResult)) {
             $feesCountArray = mysql_fetch_array($feesQueryResult);
@@ -680,8 +680,8 @@ class Project {
                 if (!$namesOnly) {
                     $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
                     $query = "SELECT
-                                SUM(status IN ('Done', 'Completed')) AS completed,
-                                SUM(status IN ('Working', 'Review', 'SvnHold', 'Functional')) AS underway,
+                                SUM(status IN ('Done', 'Merged')) AS completed,
+                                SUM(status IN ('In Progress', 'Review', 'QA Ready')) AS underway,
                                 SUM(status='Bidding') AS bidding
                               FROM
                                 " . WORKLIST . "
@@ -703,7 +703,7 @@ class Project {
                                 WHERE F.worklist_id = W.id
                                 AND F.withdrawn = 0
                                 AND W.project_id = " . $project['project_id'] . "
-                                AND W.status IN ('Completed', 'Done')";
+                                AND W.status IN ('merged', 'done')";
                         $feesQueryResult = mysql_query($feesQuery);
                         if (mysql_num_rows($feesQueryResult)) {
                             $feesCountArray = mysql_fetch_array($feesQueryResult);
@@ -918,7 +918,7 @@ class Project {
                 FROM " . WORKLIST . " w 
                 LEFT JOIN " . PROJECT_RUNNERS . " p on w.project_id = p.project_id 
                 WHERE w.runner_id = u.id 
-                AND w.status IN('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')  
+                AND w.status IN('Bidding', 'In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
                 AND p.project_id = " . $this->getProjectId() . "
             ) totalJobCount 
             FROM " . USERS . " u 
@@ -952,7 +952,7 @@ class Project {
         FROM " . WORKLIST . " w
         LEFT JOIN " . REL_PROJECT_CODE_REVIEWERS . " p on w.project_id = p.project_id
         WHERE (w.runner_id = u.id OR w.creator_id = u.id OR w.mechanic_id = u.id)
-        AND w.status IN('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+        AND w.status IN('Bidding', 'In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
         AND p.project_id = " . $this->getProjectId() . "
         ) totalJobCount
         FROM " . USERS . " u
@@ -1119,7 +1119,7 @@ class Project {
                         FROM " . WORKLIST . " w 
                             LEFT JOIN " . PROJECTS . " p on w.project_id = p.project_id 
                         WHERE ( w.mechanic_id = u.id OR w.creator_id = u.id) 
-                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done') 
+                            AND w.status IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
                         AND p.project_id = "  . $this->getProjectId() . "
                     ) as totalJobCount,
                     (
@@ -1128,7 +1128,7 @@ class Project {
                             LEFT OUTER JOIN " . WORKLIST . " w on F.worklist_id = w.id 
                             LEFT JOIN " . PROJECTS . " p on p.project_id = w.project_id 
                         WHERE (F.paid = 1 AND F.withdrawn = 0 AND F.expense = 0 AND F.user_id = u.id)
-                            AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')                 
+                            AND w.status IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
                             AND p.project_id = " . $this->getProjectId() . "
                     ) as totalEarnings
                     
@@ -1137,7 +1137,7 @@ class Project {
                     LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
                     LEFT JOIN " . USERS . " u ON b.bidder_id = u.id 
                 WHERE b.accepted = 1 
-                    AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+                    AND w.status IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
                     AND p.project_id = " . $this->getProjectId() . " 
                 ORDER BY totalEarnings DESC";
         if($result = mysql_query($query)) {
@@ -1163,7 +1163,7 @@ class Project {
                     LEFT JOIN " . PROJECTS . " p ON p.project_id = w.project_id 
                     LEFT JOIN " . USERS . " u ON f.user_id = u.id 
                 WHERE f.paid = 1 
-                    AND w.status IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')
+                    AND w.status IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
                     AND p.project_id = " . $this->getProjectId() . "
                 ORDER BY f.date DESC";
         $result = mysql_query($query);
@@ -1187,7 +1187,7 @@ class Project {
         $query = "
                 SELECT `id`, `summary`, `status`, `sandbox`
                 FROM " . WORKLIST . " w
-                WHERE w.status IN ('Bidding', 'Working', 'Functional', 'SvnHold', 'Review', 'Completed')
+                WHERE w.status IN ('Bidding', 'In Progress', 'QA Ready', 'Review', 'Merged')
                     AND w.project_id = " . $this->getProjectId() . "
                     {$internalCond}
                 ORDER BY w.created ASC";
@@ -1401,7 +1401,7 @@ class Project {
                 sendJournalNotification($message);
                 
                 if ($payload->pull_request->merged == 'true') {
-                    $journal_message = "Job #" . $jobNumber . ' has been automatically set to *Completed*';
+                    $journal_message = "Job #" . $jobNumber . ' has been automatically set to *Merged*';
                     sendJournalNotification($journal_message);
                     $workItem->setStatus('Completed');
                     $workItem->addFeesToCompletedJob(true);

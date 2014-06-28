@@ -31,27 +31,23 @@ class JobsView extends View {
         if ($this->currentUser['is_runner']) {
             $status_array = array(
                 "Draft",
-                "Suggested", 
-                "SuggestedWithBid", 
+                "Suggestion",
                 "Bidding", 
-                "Working", 
-                "Functional", 
-                "SvnHold", 
-                "Code Review", 
-                "Completed", 
+                "In Progress",
+                "QA Ready",
+                "Code Review",
+                "Merged",
                 "Done", 
                 "Pass"
             );
         } else {
             $status_array = array(
-                "Suggested", 
-                "SuggestedWithBid", 
+                "Suggestion",
                 "Bidding", 
-                "Working", 
-                "Functional", 
-                "SvnHold", 
+                "In Progress",
+                "QA Ready",
                 "Code Review", 
-                "Completed", 
+                "Merged",
                 "Done", 
                 "Pass"
             );
@@ -78,13 +74,8 @@ class JobsView extends View {
                             $selected = ' selected="selected"';
                         }
                         break;
-                    case 'SuggestedWithBid':
-                        if ($req_status == 'suggestedwithbid') { 
-                            $selected = ' selected="selected"';
-                        }
-                        break;    
-                    case 'Working':
-                        if ($req_status == 'working') { 
+                    case 'In Progress':
+                        if ($req_status == 'in progress') {
                             $selected = ' selected="selected"';
                         }
                         //must be left in tact for the Jobs Underway link to produce accurate data
@@ -93,16 +84,8 @@ class JobsView extends View {
                             $selected = ' selected="selected"';
                         }
                         break;
-                    case 'Functional':
-                        if ($req_status == 'functional') { 
-                            $selected = ' selected="selected"';
-                        }
-                        if ($req_status == 'underway') { 
-                            $selected = ' selected="selected"';
-                        }
-                        break;
-                    case 'SvnHold':
-                        if ($req_status == 'svnhold') { 
+                    case 'QA Ready':
+                        if ($req_status == 'qa ready') {
                             $selected = ' selected="selected"';
                         }
                         if ($req_status == 'underway') { 
@@ -120,7 +103,7 @@ class JobsView extends View {
                             $selected = ' selected="selected"';
                         }
                         break;
-                    case 'Completed':
+                    case 'Merged':
                         if ($req_status == 'completed') { 
                             $selected = ' selected="selected"';
                         }

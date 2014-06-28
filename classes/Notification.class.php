@@ -344,10 +344,10 @@ class Notification {
             case 'modified':
                 if ($workitem->getStatus() != 'Draft') {
                     $from_changes = "";
-                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'Functional')) {
+                    if (!empty($options['status_change']) &&($workitem->getStatus() == 'QA Ready')) {
                         $status_change = '-' . strtolower($workitem->getStatus());
                         $headers['From'] = '"' . $project_name . $status_change . '" ' . $from_address;
-                        $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+                        $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to QA Ready.<br /><br />'
                         . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
                         . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
                         . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
@@ -401,8 +401,8 @@ class Notification {
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
 
-            case 'new_functional':
-                $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to Functional.<br /><br />'
+            case 'new_qa':
+                $body = $_SESSION['nickname'] . ' set ' . $itemLink . ' to QA Ready.<br /><br />'
                 . 'Check out the work: ' . $workitem->getSandbox() . '<br /><br />'
                 . 'Checkout the branch created for this job: git checkout ' . $workitem->getSandbox() . ' .<br /><br />'
                 . '<a href="' . WORKLIST_URL . $itemId . '">Leave a comment on the Job</a>';
@@ -421,8 +421,8 @@ class Notification {
                 $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
-                
             break;
+
             case 'suggested':
                 $body =  'Summary: ' . $itemLink . '<br /><br />'
                 . 'Project: ' . $project_name . '<br />'
@@ -437,21 +437,7 @@ class Notification {
                 . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
                 . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
             break;
-            case 'suggestedwithbid':
-                $body =  'Summary: ' . $itemLink . '<br /><br />'
-                . 'Project: ' . $project_name . '<br />'
-                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                }
-                if($workitem->getMechanic() != '') {
-                $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;                       
-            break;
-            
+
             case 'code-review-completed':
                 $headers['From'] = '"' . $project_name . '-review complete" ' . $from_address;
                 $body = '<p>Hello,</p>';
@@ -653,7 +639,7 @@ class Notification {
                 $nick = $data['nick'];
                 $bid_amount = $data['bid_amount'];
                 $nickname = $data['nickname'];
-                $message = "{$nick} accepted {$bid_amount} from {$nickname} on item {$itemLink}. Status set to Working.";
+                $message = "{$nick} accepted {$bid_amount} from {$nickname} on item {$itemLink}. Status set to In Progress.";
             break;
             
             case 'bid_placed':

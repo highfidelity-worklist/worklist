@@ -558,38 +558,6 @@ class JsonServer
             Notification::workitemNotifyHipchat($options, $data);
             
             return $this->setOutput(array('success' => true,'data' => $journal_message));
-        } else {
-            $workItem->setStatus('SvnHold');
-            $workItem->save();
-
-            $message = '';
-            if ($status & 4) { //sandbox not updated
-                $message .= " - Sandbox is not up-to-date\n";
-            }
-            if ($status & 8) { //sandbox has conflicts
-                $message .= " - Sandbox contains conflicted files\n";
-            }
-            if ($status & 16) { //sandbox has not-included files
-                $message .= " - Sandbox contains 'not-included' files\n";
-            }
-            
-            $user_is_mechanic = $workItem->getMechanic()->getId() == $user_id;
-            require_once('Notification.class.php');
-            
-            //post comment
-            $comment = new Comment();
-            $comment->setWorklist_id((int)$workitem_id);
-            $comment->setUser_id((int) $user_id);
-            $comment->setComment($message);
-            $comment->save();
-            
-            $journalMessage = str_replace("\n", '', $message);
-            sendJournalNotification("@Otto could not authorize sandbox for #" . $workitem_id . $journalMessage . ' Status set to *SvnHold*');
-            return $this->setOutput(array(
-                    'success' => false, 
-                    'data' => 'Sandbox verification failed. Alerting developer to resolve.'
-                )
-            );
         }
     }
 

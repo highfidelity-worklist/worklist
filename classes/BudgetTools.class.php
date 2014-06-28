@@ -54,7 +54,7 @@ class BudgetTools {
         $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` " .
                " FROM " . WORKLIST . " w " .
                " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id ".
-               " WHERE {$filter} `status` IN ('functional', 'svnhold', 'working', 'review', 'completed')";
+               " WHERE {$filter} `status` IN ('qa ready', 'in progress', 'review', 'merged')";
 
         $sql_q = mysql_query($sql) or die(mysql_error());
         $items = array();

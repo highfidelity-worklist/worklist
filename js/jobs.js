@@ -172,7 +172,7 @@ function AppendRow (json, prepend, moreJson, idx) {
         '</td>';
 
     var bidCount = '';
-    if ((json[2] == 'Bidding' || json[2] == 'SuggestedWithBid') && json[10] > 0) {
+    if ((json[2] == 'Bidding' && json[10] > 0) {
         bidCount = ' (' + json[10] + ')';
     }
     colStatus = json[2].replace(/\s/g, '');
@@ -197,7 +197,7 @@ function AppendRow (json, prepend, moreJson, idx) {
                who + 
            '</td>';
     
-    if (json[2] == 'Working' && json[11] != null) {
+    if (json[2] == 'In Progress' && json[11] != null) {
         var pastDuePre = '', 
             pastDuePost = '',
             strAge = RelativeTime(json[11], true);

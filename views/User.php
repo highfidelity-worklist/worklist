@@ -285,7 +285,7 @@ class UserView extends View {
     }
 
     public function jobs() {
-        return $this->profileUser->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done'));
+        return $this->profileUser->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done'));
     }
 
     public function jobsAsDesigner() {
@@ -293,7 +293,7 @@ class UserView extends View {
     }
 
     public function activeJobsAsDesigner() {
-        return $this->profileUser->jobsAsDesignerCount(array('Working', 'Review', 'Functional'));
+        return $this->profileUser->jobsAsDesignerCount(array('In Progress', 'Review', 'QA Ready'));
     }
 
     public function avgJobRunTime() {

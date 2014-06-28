@@ -501,7 +501,7 @@ class User {
         $allocatedFunds = 0;
         $sql = 'SELECT SUM(`' . FEES . '`.`amount`) AS `allocated` FROM `' . FEES . '`, `' . WORKLIST . '`, `' . BUDGETS . '` WHERE `' . 
                 WORKLIST . '`.`runner_id` = ' . $this->getId() . ' AND `' . FEES . '`.`worklist_id` = `' . 
-                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("Working", "Functional", "SvnHold", "Review", "Completed") AND `' . 
+                WORKLIST . '`.`id` AND `' . WORKLIST . '`.`status` IN ("In Progress", "QA Ready", "Review", "Merged") AND `' .
                 FEES . '`.`withdrawn` != 1 ' . $budget_filter;
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
@@ -2033,7 +2033,7 @@ class User {
     public function jobsAsDesigner($status = '', $page = 1, $itemsPerPage = 10) {
         $ret = array();
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2078,7 +2078,7 @@ class User {
 
     public function jobsAsDesignerCount($status = '') {
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2100,7 +2100,7 @@ class User {
     public function jobs($status = '', $page = 1, $itemsPerPage = 10) {
         $ret = array();
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2145,7 +2145,7 @@ class User {
 
     public function jobsCount($status = '') {
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2360,7 +2360,7 @@ class User {
     public function jobsForProject($status, $project, $page = 1, $itemsPerPage = 10) {
         $ret = array();
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2400,7 +2400,7 @@ class User {
 
     public function jobsForProjectCount($status, $project) {
         if (!$status) {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         if (is_array($status)) {
             $statusCond = "`w`.`status` IN ('" . implode("', '", $status) . "')";
@@ -2500,7 +2500,7 @@ class User {
               LEFT OUTER JOIN `" . FEES . "` `f`
                 ON `f`.`worklist_id` = `w`.`id`
             WHERE `w`.`runner_id` = " . $this->getId() . "
-              AND `w`.`status` IN ('Working', 'Functional', 'Review', 'Completed', 'Done')
+              AND `w`.`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
               AND `f`.`paid` = 1
               AND `f`.`withdrawn` = 0 AND `f`.`expense` = 0
             GROUP BY `p`.`project_id`
