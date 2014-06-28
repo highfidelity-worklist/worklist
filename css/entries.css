@@ -33,14 +33,11 @@
 }
 
 /* suggested & swb status change entries colors */
-#entries li[type="worklist"].statusSuggested:before,
-#entries li[type="worklist"].statusSuggestedWithBid:before {
+#entries li[type="worklist"].statusSuggestion:before {
     background-color: #ffcc66;
 }
-#entries li[type="worklist"].statusSuggested em,
-#entries li[type="worklist"].statusSuggested a[href^="./"],
-#entries li[type="worklist"].statusSuggestedWithBid em,
-#entries li[type="worklist"].statusSuggestedWithBid a[href^="./"] {
+#entries li[type="worklist"].statusSuggestion em,
+#entries li[type="worklist"].statusSuggestion a[href^="./"] {
     color: #ffcc66;
 }
 
@@ -54,38 +51,38 @@
 }
 
 /* working status change entries colors */
-#entries li[type="worklist"].statusWorking:before {
+#entries li[type="worklist"].statusInProgress:before {
     background-color: #22bc7a;
 }
-#entries li[type="worklist"].statusWorking em,
-#entries li[type="worklist"].statusWorking a[href^="./"] {
+#entries li[type="worklist"].statusInProgress em,
+#entries li[type="worklist"].statusInProgress a[href^="./"] {
     color: #22bc7a;
 }
 
 /* functional status change entries colors */
-#entries li[type="worklist"].statusFunctional:before {
+#entries li[type="worklist"].statusQAReady:before {
     background-color: #1c658e;
 }
-#entries li[type="worklist"].statusFunctional em,
-#entries li[type="worklist"].statusFunctional a[href^="./"] {
+#entries li[type="worklist"].statusQAReady em,
+#entries li[type="worklist"].statusQAReady a[href^="./"] {
     color: #1c658e;
 }
 
 /* review status change entries colors */
-#entries li[type="worklist"].statusReview:before {
+#entries li[type="worklist"].statusCode:before {
     background-color: #ff5582;
 }
-#entries li[type="worklist"].statusReview em,
-#entries li[type="worklist"].statusReview a[href^="./"] {
+#entries li[type="worklist"].statusCode em,
+#entries li[type="worklist"].statusCode a[href^="./"] {
     color: #ff5582;
 }
 
 /* completed status change entries colors */
-#entries li[type="worklist"].statusCompleted:before {
+#entries li[type="worklist"].statusMerged:before {
     background-color: #999999;
 }
-#entries li[type="worklist"].statusCompleted em,
-#entries li[type="worklist"].statusCompleted a[href^="./"] {
+#entries li[type="worklist"].statusMerged em,
+#entries li[type="worklist"].statusMerged a[href^="./"] {
     color: #999999;
 }
 

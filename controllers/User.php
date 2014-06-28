@@ -366,9 +366,9 @@ class UserController extends Controller {
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
         if ($type == 'active') {
-            $status = array('Working', 'Review', 'Functional');
+            $status = array('In Progress', 'Review', 'QA Ready');
         } else {
-            $status = array('Working', 'Functional', 'Review', 'Completed', 'Done');
+            $status = array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done');
         }
         echo json_encode($user->jobsAsDesigner($status, $page, $itemsPerPage));
     }
@@ -376,7 +376,7 @@ class UserController extends Controller {
     public function activeJobs($id, $page = 1, $itemsPerPage = 10) {
         $this->view = null;
         $user = User::find($id);
-        $status = array('Working', 'Functional', 'Review');
+        $status = array('In Progress', 'QA Ready', 'Review');
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
         echo json_encode($user->jobs($status, $page, $itemsPerPage));
@@ -387,7 +387,7 @@ class UserController extends Controller {
         $user = User::find($id);
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
-        echo json_encode($user->jobs('Working', $page, $itemsPerPage));
+        echo json_encode($user->jobs('In Progress', $page, $itemsPerPage));
     }
 
     public function reviewJobs($id, $page = 1, $itemsPerPage = 10) {
@@ -403,7 +403,7 @@ class UserController extends Controller {
         $user = User::find($id);
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
-        echo json_encode($user->jobs('Completed', $page));
+        echo json_encode($user->jobs('Merged', $page));
     }
 
     public function doneJobs($id, $page = 1, $itemsPerPage = 10) {
@@ -419,7 +419,7 @@ class UserController extends Controller {
         $user = User::find($id);
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
-        echo json_encode($user->jobs(array('Working', 'Functional', 'Review', 'Completed', 'Done'), $page, $itemsPerPage));
+        echo json_encode($user->jobs(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done'), $page, $itemsPerPage));
     }
 
     public function love($id, $page = 1) {
@@ -454,8 +454,8 @@ class UserController extends Controller {
         $bonusPayments = $user->bonusPaymentsTotal();
         $latestEarnings = $user->latestEarnings(30);
         echo json_encode(array(
-            'total_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review', 'Completed', 'Done')),
-            'active_jobs' => $user->jobsCount(array('Working', 'Functional', 'Review')),
+            'total_jobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
+            'active_jobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review')),
             'total_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($totalEarnings))),
             'latest_earnings' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',$latestEarnings)),
             'bonus_total' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($bonusPayments))),

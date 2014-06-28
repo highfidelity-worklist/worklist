@@ -792,30 +792,23 @@ class WorkItem {
             $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
                        VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), FROM_UNIXTIME('$bid_expires'), '$done_in', '$notes')";
         }
-        else if($this->status == 'SuggestedWithBid' || $this->status == 'Suggested') {
+        else if($this->status == 'Suggestion') {
             $query =  "INSERT INTO `".BIDS."` (`id`, `bidder_id`, `email`, `worklist_id`, `bid_amount`, `bid_created`, `bid_expires`, `bid_done_in`, `notes`)
                        VALUES (NULL, '$mechanic_id', '$username', '$itemid', '$bid_amount', NOW(), '1 years', '$done_in', '$notes')";
-            }
-        
-        if($this->status == 'Suggested') {
-            mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET  `" . WORKLIST . "` . `status` = 'SuggestedWithBid',
-                                    `status_changed`=NOW() WHERE  `" . WORKLIST . "` . `id` = '$itemid'");
-            }
+            mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET  `" . WORKLIST . "` . `status` = 'Bidding',
+                                        `status_changed`=NOW() WHERE  `" . WORKLIST . "` . `id` = '$itemid'");
+             }
         return mysql_query($query) ? mysql_insert_id() : null;
     
         }
     
     public function updateBid($bid_id, $bid_amount, $done_in, $bid_expires, $timezone, $notes) {
         $bid_expires = strtotime($bid_expires);
-        if ($bid_id > 0 && $this->status != 'SuggestedWithBid') {
+        if ($bid_id > 0) {
         $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = FROM_UNIXTIME({$bid_expires}), `notes` = '".$notes."' WHERE id = '".$bid_id."'";
             mysql_query($query);
         }
-        if ($bid_id > 0 && $this->status == 'SuggestedWithBid') {
-        $query =  "UPDATE `".BIDS."` SET `bid_amount` = '".$bid_amount."' ,`bid_done_in` = '$done_in', `bid_expires` = '1 years', `notes` = '".$notes."' WHERE id = '".$bid_id."'";
-        mysql_query($query);
-        }
-        
+
         return $bid_id;
     }
     
@@ -991,7 +984,7 @@ class WorkItem {
             $sql = "UPDATE `" . WORKLIST  ."` SET " .
                 ($is_mechanic ? "`mechanic_id` =  '" . $bid_info['bidder_id'] . "', " : '') .
                 ($is_runner && $user_id > 0 && $workitem_info['runner_id'] == 0 ? "`runner_id` =  '".$user_id."', " : '') .
-                " `status` = 'Working',`status_changed`=NOW(),`sandbox` = '" . $bid_info['sandbox'] . "',`budget_id` = " . $budget_id .
+                " `status` = 'In Progress',`status_changed`=NOW(),`sandbox` = '" . $bid_info['sandbox'] . "',`budget_id` = " . $budget_id .
                 " WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'];
             if (! $myresult = mysql_query($sql)) {
                 error_log("AcceptBid:UpdateMechanic failed: ".mysql_error());
@@ -1158,11 +1151,9 @@ class WorkItem {
 
             case 'place_bid':
                 if ($this->getStatus() != 'Bidding') {
-                    if ($this->getStatus() != 'SuggestedWithBid') {
-                        if ($this->getStatus() != 'Suggested') {
+                    if ($this->getStatus() != 'Suggestion') {
                             $action_error = 'Cannot place bid when workitem is in this status';
                             return false;
-                        }
                     }
                 }
                     
@@ -1171,11 +1162,9 @@ class WorkItem {
             
             case 'edit_bid':
                 if ($this->getStatus() != 'Bidding') {
-                    if ($this->getStatus() != 'SuggestedWithBid') {
-                        if ($this->getStatus() != 'Suggested') {
+                    if ($this->getStatus() != 'Suggestion') {
                     $action_error = 'Cannot edit bid for this workitem status';
                     return false;
-                        }
                     }
                 }
                     
@@ -1192,8 +1181,8 @@ class WorkItem {
                 break;
 
             case 'add_tip':
-                if ($this->getStatus()== 'Done' || $this->getStatus() == 'Pass' || $this->getStatus() == 'Suggested') {
-                    $action_error = 'Cannot add tip when status is Done, Pass or Suggested';
+                if ($this->getStatus()== 'Done' || $this->getStatus() == 'Pass' || $this->getStatus() == 'Suggestion') {
+                    $action_error = 'Cannot add tip when status is Done, Pass or Suggestion';
                     return false;
                 }
                 
@@ -1202,11 +1191,9 @@ class WorkItem {
                 
             case 'view_bid':
                 if ($this->getStatus() != 'Bidding') {
-                    if ($this->getStatus() != 'SuggestedWithBid') {
-                        if ($this->getStatus() != 'Suggested') {
+                    if ($this->getStatus() != 'Suggestion') {
                     $action_error = 'Cannot accept bid when status is not Bidding';
                     return false;
-                        }
                     }
                 }
                 
@@ -1215,11 +1202,9 @@ class WorkItem {
                 
             case 'accept_bid':
                 if ($this->getStatus() != 'Bidding') {
-                    if ($this->getStatus() != 'SuggestedWithBid') {
-                        if ($this->getStatus() != 'Suggested') {
+                    if ($this->getStatus() != 'Suggestion') {
                     $action_error = 'Cannot accept bid when status is not Bidding';
                     return false;
-                        }
                     }
                 }
                 
@@ -1228,11 +1213,9 @@ class WorkItem {
 
             case 'accept_multiple_bid':
                 if ($this->getStatus() != 'Bidding') {
-                    if ($this->getStatus() != 'SuggestedWithBid') {
-                        if ($this->getStatus() != 'Suggested') {
+                    if ($this->getStatus() != 'Suggestion') {
                     $action_error = 'Cannot accept bid when status is not Bidding';
                     return false;
-                        }
                     }
                 }
                 
