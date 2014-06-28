@@ -1,5 +1,5 @@
 <?php
-//  Copyright (c) 2010, LoveMachine Inc.
+//  Copyright (c) 2014, High Fidelity Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
