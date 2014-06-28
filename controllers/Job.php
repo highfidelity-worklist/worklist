@@ -701,7 +701,7 @@ class JobController extends Controller {
                 Notification::workitemNotify($options, $data);
 
                 $status=$workitem->loadStatusByBidId($bid_id);
-                if ($status == "Bidding" && $creator_id = $_SESSION['userid'] && !$runner_id) {
+                if ($status == "Bidding" && $creator_id == $_SESSION['userid'] && !$runner_id) {
                     if ($this->changeStatus($workitem, $status, $user)) {
                         $new_update_message = 'Status set to *' . $status . '*. ';
                         $notifyEmpty = true;
