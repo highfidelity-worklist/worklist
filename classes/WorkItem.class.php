@@ -1315,20 +1315,6 @@ class WorkItem {
         }
             return $reviewNotifs;
     }
-    function getSelfNotifsId() {
-    $user_id = $_SESSION['userid'];
-        $selfNotifs = array();
-        $query = 'SELECT u.`id`
-            FROM `' . USERS . '` u
-            WHERE `self_notif` = 1
-            AND `id` == ' . $user_id . '
-            AND `is_active` = 1';
-        $res = mysql_query($query);
-        while($row = mysql_fetch_row($res)) {
-            $selfNotifs[]= $row[0];
-        }
-            return $selfNotifs;
-    }
     public function getSandboxPath() {
 
         $url_array = parse_url($this->sandbox);
