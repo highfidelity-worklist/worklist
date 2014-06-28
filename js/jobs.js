@@ -172,7 +172,7 @@ function AppendRow (json, prepend, moreJson, idx) {
         '</td>';
 
     var bidCount = '';
-    if ((json[2] == 'Bidding' && json[10] > 0) {
+    if (json[2] == 'Bidding' && json[10] > 0) {
         bidCount = ' (' + json[10] + ')';
     }
     colStatus = json[2].replace(/\s/g, '');

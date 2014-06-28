@@ -47,7 +47,7 @@ class BudgetController extends JsonController {
         $sql = "SELECT w.`id`, w.`budget_id`, w.`summary`, w.`status`, b.`reason` " .
                " FROM " . WORKLIST . " w " .
                " LEFT JOIN " . BUDGETS . " b ON w.budget_id = b.id ".
-               " WHERE {$filter} `status` IN ('qaready', 'in progress', 'review', 'merged')";
+               " WHERE {$filter} `status` IN ('QA Ready', 'In Progress', 'Review', 'Merged')";
 
         $sql_q = mysql_query($sql) or die(mysql_error());
         $items = array();

@@ -703,7 +703,7 @@ class Project {
                                 WHERE F.worklist_id = W.id
                                 AND F.withdrawn = 0
                                 AND W.project_id = " . $project['project_id'] . "
-                                AND W.status IN ('merged', 'done')";
+                                AND W.status IN ('Merged', 'Done')";
                         $feesQueryResult = mysql_query($feesQuery);
                         if (mysql_num_rows($feesQueryResult)) {
                             $feesCountArray = mysql_fetch_array($feesQueryResult);
