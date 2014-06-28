@@ -1027,5 +1027,62 @@ var Job = {
             $('#following').attr('title', 'Click to receive updates for this job');
             $('#following').html('Follow this job');
         }
+    },
+
+    cancelStartReview: function() {
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                workitem: workitem_id,
+                userid: user_id,
+                action:'cancelCodeReview'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    $('#popup-startreview').dialog('close');
+                }
+            }
+        });
+        return false;
+    },
+
+    changeButton: function() {
+        var buttonElement = $('.cR');
+        buttonElement.remove();
+        var endcrButton = '<input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"/>';
+        $('#review-pointer').before(endcrButton);
+        $('#popup-startreview').dialog('close');
+        MapToolTips();
+    },
+
+    closeEndReviewDialog: function() {
+        $('#popup-endreview').dialog('close');
+    },
+
+    cancelReview: function() {
+        $.ajax({
+            type: 'post',
+            url: 'jsonserver.php',
+            data: {
+                workitem: workitem_id,
+                userid: user_id,
+                action:'cancelCodeReview'
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    var buttonElement = $('.endCr');
+                    buttonElement.remove();
+                    var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review"' +
+                        ' onclick="return Job.showReviewForm();" alt="">';
+                    $('#review-pointer').before(startcrButton);
+                    $('#popup-endreview').dialog('close');
+                    MapToolTips();
+                }
+            }
+        });
+        return false;
     }
 };

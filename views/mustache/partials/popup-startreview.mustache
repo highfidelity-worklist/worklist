@@ -4,38 +4,10 @@
     <form name="popup-form" id="popup-form-startreview" action="" method="post">
             <input type="hidden" name="itemid" value="" />
             <p class="info-label" style="display:block">Reviewer: <em>{{currentUser.nickname}}</em></p>
-             <script type="text/javascript">
-                function cancelStartReview() {
-                    $.ajax({
-                        type: 'post',
-                        url: 'jsonserver.php',
-                        data: {
-                            workitem: workitem_id,
-                            userid: user_id,
-                            action:'cancelCodeReview'
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.success) {
-                                $('#popup-startreview').dialog('close');
-                            }
-                        }
-                    });
-                    return false;
-                }
-                function changeButton() {
-                    var buttonElement = $('.cR');
-                    buttonElement.remove();
-                    var endcrButton = '<input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"/>';
-                    $('#review-pointer').before(endcrButton);
-                    $('#popup-startreview').dialog('close');
-                    MapToolTips();
-                }
-            </script>
          <input type='hidden' name='mechanic_id' id='mechanic_id' value='{{currentUser.id}}' />
         <div class="buttonContainer">
-            <input type="button" name="cancelme" value="Cancel" onClick="cancelStartReview();" id="cancelstartcodereview"/>
-            <input type="button" name="changebutton" value="Ok" onClick="changeButton();" id="startcodereview"/>
+            <input type="button" name="cancelme" value="Cancel" onClick="Job.cancelStartReview();" id="cancelstartcodereview"/>
+            <input type="button" name="changebutton" value="Ok" onClick="Job.changeButton();" id="startcodereview"/>
         </div>
             </form>
 </div><!-- end of popup-startreview -->
