@@ -16,7 +16,7 @@
                     {{#canFeeOthers}}
                         <select name="mechanic_id" id="mechanicFee" data-placeholder="Select user">
                             {{#users}}
-                                <option value="{{id}}">{{nickname}}</option>
+                                <option value="{{id}}" {{#current}}selected="selected"{{/current}}>{{nickname}}</option>
                             {{/users}}
                         </select>
                     {{/canFeeOthers}}

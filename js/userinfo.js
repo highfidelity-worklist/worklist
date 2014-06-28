@@ -133,18 +133,6 @@ var UserInfo = {
             });
         });
 
-        $('#popup-pingtask').dialog({
-            autoOpen: false, 
-            width: 50, 
-            height: "auto",
-            resizable: false,
-            position: [ 'top' ],
-            show: 'fade',
-            hide: 'fade',
-            close: function() {
-                $('#ping-msg').val('').css("height", "50px");
-            }
-        });
         $('#ping-msg').autogrow(80, 150);
        
         $('#send-ping-btn').click(function() {
@@ -194,13 +182,6 @@ var UserInfo = {
         
         WReview.initList();    
        
-        $('#nickname-ping, .nickname-ping').click(function() {
-        $('#popup-pingtask').dialog('option', 'title', 'Message user: ' + $(this).text());
-        $('#popup-pingtask form h5').html('Ping message:');
-        $('#popup-pingtask').dialog('open');
-            return false;
-        });
-
         $('#give').click(function(){
             $('#budget-give-modal').modal('show');
         });           

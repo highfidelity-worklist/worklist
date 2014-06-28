@@ -828,49 +828,6 @@ class JobController extends Controller {
             }
         }
 
-        if ($action == "add_tip") {
-            $args = array('itemid', 'tip_amount', 'tip_desc', 'mechanic_id');
-            foreach ($args as $arg) {
-                if (isset($_REQUEST[$arg])) {
-                    $$arg = mysql_real_escape_string($_REQUEST[$arg]);
-                } else {
-                    $$arg = '';
-                }
-            }
-
-            $itemid = (int) $itemid;
-            $fee_amount = (float) $tip_amount;
-            $mechanic_id = (int) $mechanic_id;
-
-            // is the logged in user the mechanic on the task?
-            if ($workitem->getMechanicId() == getSessionUserId()) {
-                $journal_message = AddTip($itemid, $tip_amount, $tip_desc, $mechanic_id);
-
-                // notify recipient of new tip
-                $recipient = new User();
-                $recipient->findUserById($mechanic_id);
-                
-                $options = array(
-                    'type' => 'tip_added',
-                    'workitem' => $workitem,
-                    'emails' => array($recipient->getUsername())
-                );
-                $data = array(
-                    'tip_adder' => $user->getNickname(),
-                    'tip_desc' => $tip_desc,
-                    'tip_amount' => $tip_amount
-                );
-                
-                Notification::workitemNotify($options, $data);
-                
-                $data['nick'] = $_SESSION['nickname'];
-                $data['tipped_nickname'] = $recipient->getNickname();
-                Notification::workitemNotifyHipchat($options, $data);
-            }
-
-            $redirectToDefaultView = true;
-        }
-
         // Accept a bid
         if ($action == 'accept_bid') {
             if (!isset($_REQUEST['bid_id']) ||

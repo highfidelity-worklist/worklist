@@ -50,15 +50,15 @@ class UserController extends Controller {
         echo json_encode($ret);
     }
 
-    public function index($cond) {
+    public function index() {
         $this->view = null;
         $users = User::getUserList(getSessionUserId(), true);
         $ret = array();
         foreach ($users as $user) {
             $ret[] = array(
                 'id' => $user->getId(),
-                'nickname' => $user->getNickname()
-
+                'nickname' => $user->getNickname(),
+                'current' => ($user->getId() == getSessionUserId())
             );
         }
         echo json_encode(array('users' => $ret));

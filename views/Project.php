@@ -80,7 +80,7 @@ class ProjectView extends View {
 
     public function showTestFlightButton() {
         $project = $this->project;
-        return $this->runnerOrOwner && $project->getTestFlightEnabled() && $project->getTestFlightTeamToken();
+        return $this->runnerOrOwner() && $project->getTestFlightEnabled() && $project->getTestFlightTeamToken();
     }
 
     public function projectAvgBidFeeFormated() {
