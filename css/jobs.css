@@ -1140,13 +1140,13 @@ input {
 td.statusDraft > i,
 td.statusSuggestion > i,
 td.statusBidding > i,
-td.statusWorking > i,
-td.statusFunctional > i,
+td.statusInProgress > i,
+td.statusQAReady > i,
 td.statusReview > i,
 td.statusNeedsReview > i,
 td.statusInReview > i,
 td.statusReviewed > i,
-td.statusCompleted > i,
+td.statusMerged > i,
 td.statusPass > i,
 td.statusDone > i {
     content: ' ';
