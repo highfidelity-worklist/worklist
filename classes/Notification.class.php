@@ -551,7 +551,7 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-                        if(($username = $rUser->getUsername())){
+                        if(($username = $rUser->getUsername()) && ($workitem->isInternal() ? $rUser->isInternal() : true)){
                             // check if we already sending email to this user
                             //if(!in_array($username, $emails)){
                                 array_push($emails, $username);
