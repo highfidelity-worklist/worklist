@@ -8,11 +8,13 @@ var Entries = {
                 text += $(this).text();
             });
 
-            var updated_regex = /\w+\s+(?:accepted|updated|created)\s.+Status\sset\sto\s+(\w+)\.?\s*$/i;
+            var updated_regex = /\w+\s+(?:accepted|updated|created).+Status\sset\sto\s+(.+?)\.\s*$/i;
             var ret = updated_regex.exec(text);
             if (ret && ret[1]) {
                 $(this).addClass('status' + ret[1]);
+                $(this).addClass('status' + ret[1].replace(' ', ''));
             }
         });
     }
 }
+//$string =~ s/\s//g;

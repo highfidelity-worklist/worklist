@@ -547,7 +547,7 @@ function autoPassSuggestedJobs() {
         die('Could not connect: ' . mysql_error());
     }
     mysql_select_db(DB_NAME, $con);
-    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'Suggested' , 'SuggestedWithBid', 'Bidding') AND DATEDIFF(now() , status_changed) > 30";
+    $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'Suggestion', 'Bidding') AND DATEDIFF(now() , status_changed) > 30";
     
     $result = mysql_query($sql);
     $delay = 0;
@@ -1824,7 +1824,7 @@ function getUserItems() {
           . " TIMESTAMPDIFF(SECOND, NOW(), `" . BIDS . "`.`bid_done`) AS `future_delta` FROM `" . WORKLIST . "`"
           . " LEFT JOIN `" . BIDS . "` ON `bidder_id` = `mechanic_id`"
           . " AND `" . BIDS . "`.`accepted`= 1 AND `" . BIDS . "`.`withdrawn`= 0 AND `worklist_id` = `" . WORKLIST . "`.`id`"
-          . " WHERE `mechanic_id` = $userId AND status = 'Working'";
+          . " WHERE `mechanic_id` = $userId AND status = 'In Progress'";
     $rt = mysql_query($query);
 
     $items = array();
@@ -1890,8 +1890,8 @@ function getUserList() {
         IFNULL(`earnings30`.`sum`,0) AS `earnings30`,
         IFNULL(`rewarder`.`sum`,0)AS `rewarder`
         FROM `".USERS."` 
-        LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id` 
-        LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id` 
+        LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id`
+        LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `paid` = 1 AND `withdrawn`=0 AND (`rewarder`=1 OR `bonus`=1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`  
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL AND `paid_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) AND `expense`=0 GROUP BY `user_id`) AS `earnings30` ON `".USERS."`.`id` = `earnings30`.`user_id`
@@ -1906,8 +1906,8 @@ function getUserList() {
         IFNULL(`rewarder`.`sum`,0)AS `rewarder`
         FROM `".USERS."` 
         LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `".FEES."` WHERE `paid` = 1 AND `amount` != 0 AND `withdrawn` = 0 AND `expense` = 0 GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
-        LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id` 
-        LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('Working', 'Functional', 'SvnHold', 'Review', 'Completed', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id` 
+        LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id`
+        LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `paid` = 1 AND `withdrawn`=0 AND (`rewarder`=1 OR `bonus`= 1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL AND `paid_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) AND `expense`=0 GROUP BY `user_id`) AS `earnings30` ON `".USERS."`.`id` = `earnings30`.`user_id` 
@@ -2187,7 +2187,7 @@ function getWorklist() {
             
             if ($val == 'Bidding' && $mobile_filter) {
                 $where .= $severalStatus . "( $status_cond 1)";
-            } else if ($is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
+            }  else if ($is_runner && $val == 'Bidding') {
                 /**
                  * If current user is a runner and filtering for himself and 
                  * (BIDDING or SwB) status then fetch all workitems where he 
@@ -2205,7 +2205,7 @@ function getWorklist() {
                         )
                     )
                 ";
-            } else if (! $is_runner && $val == 'Bidding' || $val == 'SuggestedWithBid' && $ufilter == $userId) {
+            }  else if (!$is_runner && $val == 'Bidding') {
                 /**
                  * If current user is a runner and filtering for certain user and 
                  * (BIDDING or SwB) status then fetch all workitems where selected
@@ -2221,7 +2221,7 @@ function getWorklist() {
                         )
                     )
                 ";
-            } else if (($val == 'Bidding' || $val == 'SuggestedWithBid') && $ufilter != $userId) {
+            } else if ($val == 'Bidding' && $ufilter != $userId) {
                 /**
                  * If current user is not a runner and is filtering for certain user
                  * and (BIDDING or SwB) status then fetch all workitems where selected
@@ -2236,7 +2236,7 @@ function getWorklist() {
                         )
                     )
                     ";
-            } else if ($val == 'Working' || $val =='Review' || $val =='Functional' || $val =='Completed') {
+            } else if ($val == 'In Progress' || $val =='Review' || $val =='QA Ready' || $val =='Merged') {
                 /**
                  * If current user is filtering for any user (himself or not) and 
                  * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
@@ -2412,14 +2412,12 @@ function getWorklist() {
     if ($ofilter == 'status') {
         $ofilter = 'status_order';
         $qsel .= "(CASE
-            WHEN status = 'Suggested' THEN 1
-            WHEN status = 'SuggestedWithBid' THEN 2
+            WHEN status = 'Suggestion' THEN 1
             WHEN status = 'Bidding' THEN 3
-            WHEN status = 'Working' THEN 4
-            WHEN status = 'Functional' THEN 5
-            WHEN status = 'SvnHold' THEN 6
+            WHEN status = 'In Progress' THEN 4
+            WHEN status = 'QA Ready' THEN 5
             WHEN status = 'Review' THEN 7
-            WHEN status = 'Completed' THEN 8
+            WHEN status = 'Merged' THEN 8
             WHEN status = 'Done' THEN 9
             WHEN status = 'Pass' THEN 10
         END) `status_order`,";
@@ -2452,9 +2450,9 @@ function getWorklist() {
     // Highlight jobs I bid on in a different color
     // 14-JUN-2010 <Tom>
     if ((isset($_SESSION['userid']))) {
-        $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0  AND (`".WORKLIST."`.`status`='Bidding' OR `".WORKLIST."`.`status`='SuggestedWithBid') ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+        $qsel .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0  AND `".WORKLIST."`.`status`='Bidding' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
         $qsel .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-        $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND (`".WORKLIST."`.`status`='Bidding' OR `".WORKLIST."`.`status`='SuggestedWithBid') AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
+        $qsel .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND `".WORKLIST."`.`status`='Bidding' AND `".BIDS."`.`bidder_id` = ".$_SESSION['userid']." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
     }
 
     $qbody = "FROM `".WORKLIST."`
@@ -3301,7 +3299,7 @@ function sendJobReport() {
         INNER JOIN users u
           ON u.id = w.runner_id
         WHERE
-          (w.status IN('Working', 'Review', 'Functional', 'Completed'))
+          (w.status IN('In Progress', 'Review', 'QA Ready', 'Merged'))
         OR
           (w.status_changed > DATE_SUB(NOW(), INTERVAL 7 Day) AND w.status IN('Done'))
         ORDER BY u.nickname, w.id;";

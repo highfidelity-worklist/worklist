@@ -67,7 +67,7 @@ class JobView extends View {
     }
 
     public function runSandboxCheck() {
-        return $this->worklist['status'] == 'Functional' && $this->currentUser['is_runner'];
+        return $this->worklist['status'] == 'QA Ready' && $this->currentUser['is_runner'];
     }
 
     public function canUpload() {
@@ -142,13 +142,13 @@ class JobView extends View {
             }
         } else if (
              $worklist['creator_id']== $this->currentUser['id'] 
-          && $worklist['status'] != 'Working' 
-          && $worklist['status'] != 'Functional' && $worklist['status'] != 'Review' 
-          && $worklist['status'] != 'Completed' && $worklist['status'] != 'Done' 
+          && $worklist['status'] != 'In Progress'
+          && $worklist['status'] != 'QA Ready' && $worklist['status'] != 'Review'
+          && $worklist['status'] != 'Merged' && $worklist['status'] != 'Done'
         ) {
             //creator
             foreach ($statusListCreator as $status) {
-                if (!($status == 'Suggested' && $worklist['status'] == 'SuggestedWithBid') && $status != $worklist['status']) {
+                if (!($status == 'Suggestion' && $status != $worklist['status'])) {
                     $printStatus = $status == 'Review' ? 'Code Review' : $status;
                     $ret .= '<option value="' . $status . '">' . $printStatus . '</option>';
                 }
@@ -273,8 +273,7 @@ class JobView extends View {
              (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && $worklist['status']!='Done') 
           || (
                  $worklist['creator_id'] == $this->currentUser['id']  
-              && ($worklist['status']=='Suggested' || $worklist['status']=='SuggestedWithBid') 
-              && is_null($worklist['runner_id'])
+              && ($worklist['status']=='Suggestion') && is_null($worklist['runner_id'])
             )
         );
     }
@@ -369,7 +368,7 @@ class JobView extends View {
         $user = $this->user;
         $is_runner = $this->currentUser['is_runner'];
         return (
-             (strcasecmp($worklist['status'], 'Working') == 0 || strcasecmp($worklist['status'], 'Review') == 0 || strcasecmp($worklist['status'], 'Functional') == 0) 
+             (strcasecmp($worklist['status'], 'In Progress') == 0 || strcasecmp($worklist['status'], 'Review') == 0 || strcasecmp($worklist['status'], 'QA Ready') == 0)
           && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) ||($worklist['mechanic_id'] == $this->currentUser['id']))
         );
     }
@@ -380,9 +379,9 @@ class JobView extends View {
         $user = $this->user;
         $is_project_founder = $this->read('is_project_founder');
         return (
-             ($worklist['status'] == 'Functional' || $worklist['status'] == 'Review')
+             ($worklist['status'] == 'QA Ready' || $worklist['status'] == 'Review')
           && $worklist['sandbox'] != 'N/A' 
-          || ($worklist['status'] == 'Working' && ($user->isRunnerOfWorkitem($workitem) || $is_project_founder || $user->getId() == $worklist['mechanic_id']))
+          || ($worklist['status'] == 'In Progress' && ($user->isRunnerOfWorkitem($workitem) || $is_project_founder || $user->getId() == $worklist['mechanic_id']))
         );
     }
 
@@ -478,8 +477,7 @@ class JobView extends View {
     public function canBid() {
         $worklist = $this->worklist;
         return $worklist['status'] == 'Bidding' 
-          || $worklist['status'] == 'SuggestedWithBid' 
-          || ($worklist['status'] == 'Suggested' && $worklist['creator_id'] == $this->currentUser['id']);
+          || ($worklist['status'] == 'Suggestion' && $worklist['creator_id'] == $this->currentUser['id']);
     }
 
     public function userIsEligible() {
@@ -496,7 +494,7 @@ class JobView extends View {
           && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner) || $this->currentUser['id'] == $workitem->getRunnerId()) 
           && count($bids) >1 
           && !$workitem->hasAcceptedBids()
-          && ((($workitem->getStatus()) == "Bidding") || $workitem->getStatus() == "SuggestedWithBid")
+          && ((($workitem->getStatus()) == "Bidding"))
         );
     }
 
@@ -531,7 +529,7 @@ class JobView extends View {
                 $expired_class = '';
             }
             $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) ||
-                         $user->getId() == $bid['bidder_id'] || ($worklist['status'] == 'SUGGESTEDwithBID' && $workitem->getIsRelRunner());
+                         $user->getId() == $bid['bidder_id'];
             $row_class = "";
             $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
             $row_class .= ($this->read('view_bid_id') == $bid['id']) ? ' view_bid_id ' : '' ;
@@ -651,7 +649,7 @@ class JobView extends View {
                     '<td colspan="5" class="bid-notes">' .
                         '<p>' . $fee['desc'] . '</p>' .
                         (
-                            ($fee['desc'] == 'Accepted Bid' && ($worklist['status'] == 'Review' || $worklist['status'] == 'Completed' || $worklist['status'] == 'Done'))
+                            ($fee['desc'] == 'Accepted Bid' && ($worklist['status'] == 'Review' || $worklist['status'] == 'Merged' || $worklist['status'] == 'Done'))
                                 ? "<p><strong>Bid Notes:</strong>\n" . $fee['bid_notes'] . '</p>' : ''
                         ) .
                         '</td>' .
@@ -693,7 +691,7 @@ class JobView extends View {
     public function insufficientRightsToEdit() {
         $worklist = $this->worklist;
         return (int) (
-            (!$worklist['status'] == 'Suggested' || !$worklist['status'] == 'SuggestedWithBid') 
+            (!$worklist['status'] == 'Suggestion')
           && !$worklist['creator_id'] == $this->currentUser['id']
         );
     }
@@ -713,10 +711,10 @@ class JobView extends View {
         $worklist = $this->worklist;
         return (int) (
              $worklist['status'] != 'Done' 
-          && $worklist['status'] != 'Working' 
-          && $worklist['status'] != 'Functional' 
+          && $worklist['status'] != 'In Progress'
+          && $worklist['status'] != 'QA Ready'
           && $worklist['status'] != 'Review' 
-          && $worklist['status'] != 'Completed'
+          && $worklist['status'] != 'Merged'
         );
     }
 
@@ -726,7 +724,7 @@ class JobView extends View {
         $user = $this->user;
         return (int) (
             ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']) || ($worklist['mechanic_id'] == $this->currentUser['id'])) &&
-            (strcasecmp($worklist['status'], 'Done') != 0 && strcasecmp($worklist['status'], 'Completed') != 0)
+            (strcasecmp($worklist['status'], 'Done') != 0 && strcasecmp($worklist['status'], 'Merged') != 0)
         );
     }
 
@@ -740,12 +738,8 @@ class JobView extends View {
         return number_format($this->read('crFee'), 2);
     }
 
-    public function statusSuggested() {
-        return $this->worklist['status'] == "Suggested";
-    }
-
-    public function statusSuggestedAny() {
-        return $this->worklist['status'] == "Suggested" || $this->worklist['status'] == "SuggestedWithBid";
+    public function statusSuggestion() {
+        return $this->worklist['status'] == "Suggestiion";
     }
 
     public function canFeeOthers() {

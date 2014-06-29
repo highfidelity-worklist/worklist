@@ -648,8 +648,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
 
         if (! in_array($job['status'], array(
             'Draft',
-            'Suggested',
-            'SuggestedWithBid',
+            'Suggestion',
             'Bidding',
             'Done'
         ))) {
@@ -672,7 +671,7 @@ function withdrawBid($bid_id, $withdraw_reason) {
         }
 
         // additional changes if status is WORKING, SVNHOLD, FUNCTIONAL or REVIEW
-        if (($job['status'] == 'Working' || $job['status'] == 'SVNHold' || $job['status'] == 'Review' || $job['status'] == 'Functional') 
+        if (($job['status'] == 'In Progress' || $job['status'] == 'Review' || $job['status'] == 'QA Ready')
         && ($bid->accepted == 1) && (is_runner() || ($bid->bidder_id == $_SESSION['userid']))) {
             // change status of worklist item
             mysql_unbuffered_query("UPDATE `" . WORKLIST . "`
@@ -686,8 +685,8 @@ function withdrawBid($bid_id, $withdraw_reason) {
         $res = mysql_query('SELECT count(*) AS count_bids FROM `' . BIDS . '` WHERE `worklist_id` = ' . $job['id'] . ' AND `withdrawn` = 0');
         $bidCount = mysql_fetch_assoc($res);
         
-        if ($bidCount['count_bids'] == 1 && $job['status'] == 'SuggestedWithBid') {
-        mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET `status` = 'Suggested' WHERE `id` = $bid->worklist_id LIMIT 1 ;");
+        if ($bidCount['count_bids'] == 1 && $job['status'] == 'Bidding' && ($bid->bidder_id == $_SESSION['userid']) && $job['runner_id'] = 0) {
+        mysql_unbuffered_query("UPDATE `" . WORKLIST . "` SET `status` = 'Suggestion' WHERE `id` = $bid->worklist_id LIMIT 1 ;");
         }
 
         // change bid to withdrawn and set bids.accepted to 0
@@ -1496,7 +1495,7 @@ function templateReplace($templateData, $replacements){
 function getStats($req = 'table', $interval = 30) {
     if( $req == 'currentlink' ) {
         $query_b = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'" );
-        $query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'Working' or status = 'Review' or status = 'Functional'" );
+        $query_w = mysql_query( "SELECT status FROM ".WORKLIST." WHERE status = 'In Progress' or status = 'Review' or status = 'QA Ready'" );
         $count_b = mysql_num_rows( $query_b );
         $count_w = mysql_num_rows( $query_w );
         return array(
@@ -1514,7 +1513,7 @@ function getStats($req = 'table', $interval = 30) {
 
     } else if( $req == 'current' ) {
         $query_b = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Bidding'");
-        $query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'Working'");
+        $query_w = mysql_query("SELECT status FROM ".WORKLIST." WHERE status = 'In Progress'");
         $count_b = mysql_num_rows( $query_b );
         $count_w = mysql_num_rows( $query_w );
         $res = array( $count_b, $count_w );
@@ -1590,7 +1589,7 @@ function getStats($req = 'table', $interval = 30) {
                     ".USERS.".id = ".FEES.".user_id WHERE ".USERS.".nickname=nick AND
                     ".USERS.".is_runner=1) AS fee_no, (SELECT COUNT(*) FROM ".FEES." LEFT JOIN
                     ".USERS." ON ".USERS.".id=".FEES.".user_id LEFT JOIN ".WORKLIST." ON
-                    ".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='Working'
+                    ".WORKLIST.".id=".FEES.".worklist_id WHERE ".WORKLIST.".status='In Progress'
                     AND ".USERS.".nickname=nick) AS working_no FROM ".USERS." ORDER BY fee_no DESC" );
 
         $info = array();
@@ -1611,7 +1610,7 @@ function getStats($req = 'table', $interval = 30) {
                     AND `".BIDS."`.`accepted`='1') AS bid_no,
                     (SELECT COUNT(*) FROM ".WORKLIST." LEFT JOIN ".USERS." ON 
                     ".WORKLIST.".mechanic_id=".USERS.".id WHERE ".USERS.".nickname=nick AND
-                    ".WORKLIST.".status='Working') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
+                    ".WORKLIST.".status='In Progress') AS work_no FROM ".USERS." ORDER BY work_no DESC" );
 
         $info = array();
         // Get user nicknames
@@ -1647,7 +1646,7 @@ function getStats($req = 'table', $interval = 30) {
         $info_q = mysql_query( "SELECT nickname AS nick,(SELECT COUNT(*) FROM ".BIDS." LEFT JOIN ".USERS." ON
                     ".USERS.".id=".BIDS.".bidder_id LEFT JOIN ".WORKLIST." ON
                     ".WORKLIST.".id=".BIDS.".worklist_id WHERE ".USERS.".nickname=nick
-                    AND ".WORKLIST.".status='Working' AND `".BIDS."`.`accepted`='1'
+                    AND ".WORKLIST.".status='In Progress' AND `".BIDS."`.`accepted`='1'
                     AND bid_done < NOW()) AS past_due
                     FROM ".USERS." ORDER BY past_due DESC" );
 
