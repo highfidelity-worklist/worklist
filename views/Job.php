@@ -739,7 +739,7 @@ class JobView extends View {
     }
 
     public function statusSuggestion() {
-        return $this->worklist['status'] == "Suggestiion";
+        return $this->worklist['status'] == "Suggestion";
     }
 
     public function canFeeOthers() {
