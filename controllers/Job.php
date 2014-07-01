@@ -670,9 +670,7 @@ class JobController extends Controller {
 
             if ($user->isEligible()) {
                 $bid_id = $workitem->placeBid($mechanic_id, $username, $worklist_id, $bid_amount, $done_in, $bid_expires, $notes);
-                // Journal notification
-                $journal_message = 'A bid was placed on #' . $worklist_id;
-                //sending email to the runner of worklist item
+                //sending email to the runner of worklist item or all runners if not assigned
 
                 $row = $workitem->getRunnerSummary($worklist_id);
                 if(!empty($row)) {
@@ -682,13 +680,15 @@ class JobController extends Controller {
                 }
                 
                 $options = array(
-                     'type' => 'bid_placed',
-                     'workitem' => $workitem,
-                     'recipients' => array('runner'),
-                     'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
-                     'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
-                     'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
-                );
+                    'type' => 'bid_placed',
+                    'workitem' => $workitem,
+                    'recipients' => array($workitem->getRunnerId() == '' ? 'projectRunners' : 'runner'),
+                    'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
+                    'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
+                    'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
+                    );
+                $journal_message = 'A bid was placed on #' . $worklist_id;
+
                 $data = array(
                      'done_in' => $done_in,
                      'bid_expires' => $bid_expires,
@@ -701,21 +701,12 @@ class JobController extends Controller {
                 Notification::workitemNotify($options, $data);
 
                 $status=$workitem->loadStatusByBidId($bid_id);
-                if ($status == "Bidding" && $creator_id == $_SESSION['userid'] && !$runner_id) {
-                    if ($this->changeStatus($workitem, $status, $user)) {
-                        $new_update_message = 'Status set to *' . $status . '*. ';
-                        $notifyEmpty = true;
-                        $journal_message .= $new_update_message;
-                    }
-                }
-                
                 $data['new_update_message'] = $new_update_message;
                 Notification::workitemNotifyHipchat($options, $data);
                 
             } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             }
-
             $redirectToDefaultView = true;
         }
 
