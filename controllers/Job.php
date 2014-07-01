@@ -679,25 +679,14 @@ class JobController extends Controller {
                     $username = $row['username'];
                 }
                 
-                if ($workitem->getRunnerId() == '') {
-                    $options = array(
-                        'type' => 'bid_placed',
-                        'workitem' => $workitem,
-                        'recipients' => array('projectRunners'),
-                        'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
-                        'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
-                        'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
+                $options = array(
+                    'type' => 'bid_placed',
+                    'workitem' => $workitem,
+                    'recipients' => array($workitem->getRunnerId() == '' ? 'projectRunners' : 'runner'),
+                    'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
+                    'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
+                    'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
                     );
-                } else {
-                    $options = array(
-                        'type' => 'bid_placed',
-                        'workitem' => $workitem,
-                        'recipients' => array('runner'),
-                        'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
-                        'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
-                        'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
-                    );
-                }
                 $journal_message = 'A bid was placed on #' . $worklist_id;
 
                 $data = array(
