@@ -1386,6 +1386,7 @@ class JobController extends Controller {
             $myRunner = User::find($workitem->getRunnerId());
             $myRunner->updateBudget(-$fee, $workitem->getBudget_id());
             $journal_message = '@' . $_SESSION['nickname'] . ' has completed their code review for #' . $workitem->getId();
+            sendJournalNotification($journal_message);
             $options = array(
                 'type' => 'code-review-completed',
                 'workitem' => $workitem,
@@ -1654,5 +1655,3 @@ class JobController extends Controller {
         return 0;
     }
 }
-
-
