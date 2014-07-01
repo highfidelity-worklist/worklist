@@ -715,10 +715,9 @@ class JobController extends Controller {
                 $data['new_update_message'] = $new_update_message;
                 Notification::workitemNotifyHipchat($options, $data);
                 
-                } else {
+            } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
-                }
-
+            }
             $redirectToDefaultView = true;
         }
 
