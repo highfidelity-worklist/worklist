@@ -1,0 +1,40 @@
+<section id="code-review" {{#codeReview.started}}started="1"{{/codeReview.started}}>
+  <form>
+    {{^codeReview.started}}
+      <h4>Time for a code review!</h4>
+      <p>
+        The code written for this job is ready to be reviewed.
+        <strong>View the diff</strong> to see the code, then start the review.
+      </p>
+      <button type="submit" class="btn btn-primary">Start Code Review</button>
+  {{/codeReview.started}}
+  {{#codeReview.started}}
+    <h4>Code review started</h4>
+    <p>Please fill the form when you are done.</p>
+    <div class="row">
+      <div class="col-md-2">
+        <label for="codeReviewAmount">Fee:</label>
+      </div>
+      <div class="col-md-5">
+        <div class="input-group">
+          <input type="text" class="form-control" name="fee"
+            value="{{codeReview.feeAmount}}" id="codeReviewAmount" />
+          <div class="input-group-addon">USD</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <label for="codeReviewAmount">Notes:</label>
+      </div>
+      <div class="col-md-10">
+        <input type="text" class="form-control" name="desc" value="" />
+      </div>
+    </div>
+    <p class="text-right">
+      <button type="submit" class="btn btn-primary btn-sm">End</button>
+      <button type="button" class="btn btn-primary btn-sm">Cancel</button>
+    </p>
+  {{/codeReview.started}}
+  </form>
+</section>

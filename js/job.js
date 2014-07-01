@@ -115,36 +115,6 @@ var Job = {
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
 
-        // default dialog options
-        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
-        $('#popup-bid').dialog(dialog_options);
-
-        $('#popup-ineligible').dialog({
-            dialogClass: 'white-theme',
-            modal: true,
-            title: "Your account is ineligible",
-            autoOpen: false,
-            width: 300,
-            position: ['top'],
-            open: function() {
-                $('#button_settings').click(function() {
-                    document.location.href = './settings#payment-info';
-                });
-            }
-        });
-
-        $('#popup-startreview').dialog({
-            closeOnEscape: false,
-            dialogClass: 'white-theme',
-            autoOpen: false,
-            modal: false,
-            width: 400,
-            show: 'fade',
-            hide: 'fade',
-            open: function(event, ui) {
-                $(".ui-dialog-titlebar-close").hide();
-            }
-        });
         $('#popup-paid').dialog({ dialogClass: 'white-theme', autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
         $('#popup-reviewurl').dialog({
@@ -520,15 +490,6 @@ var Job = {
             });
 
         }
-            $('#bid').click(function(e){
-                if ( already_bid
-                    && $(this).parent().find('#mechanic_id').val() == user_id
-                  && !confirm("You have already placed a bid, do you want to place a new one?")
-                ) {
-                    $('#popup-bid').dialog('close');
-                    return false;
-                }
-            });
 
         $('select[name="quick-status"]').change(function(ev) {
             if ($(this).val() == 'Done' && budget_id == 0) {
@@ -566,6 +527,8 @@ var Job = {
                 $('#popup-reviewurl').dialog('open');
             });
         }
+
+        Job.setCodeReviewEvents();
     },
 
     postComment: function() {
@@ -862,49 +825,6 @@ var Job = {
         return false;
     },
 
-    showReviewForm: function() {
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'startCodeReview'
-            },
-            dataType: 'json',
-            success: function(data) {
-                closeNotifyOverlay();
-                if (data.success) {
-                    $('#popup-startreview').dialog('open');
-                } else {
-                    openNotifyOverlay(data.data);
-                    $("#sent-notify").css({'min-height': '80px', 'text-align': 'left'});
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500);
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        return false;
-    },
-
-    showEndReviewForm: function() {
-        $('#popup-endreview').dialog({
-            dialogClass: 'white-theme',
-            closeOnEscape: false,
-            autoOpen: false,
-            modal: false,
-            width: 650,
-            open: function(event, ui) {
-                $(".ui-dialog-titlebar-close").hide();
-            }
-        });
-        $('#popup-endreview').dialog('open');
-    },
-
     saveWorkitem: function() {
         var massValidation;
 
@@ -1029,58 +949,60 @@ var Job = {
         }
     },
 
-    cancelStartReview: function() {
+    refreshCodeReviewPartial: function(data) {
+        Utils.parseMustache('partials/job/codeReview', data, function(parsed) {
+            $('#code-review').remove();
+            $('.skills').after(parsed);
+            Job.setCodeReviewEvents();
+        });
+    },
+
+    setCodeReviewEvents: function() {
+        $('#code-review > form').submit(function() {
+            if ($(this).parent().attr('started') == '1') {
+                Job.endCodeReview();
+            } else {
+                Job.startCodeReview();
+            }
+            return false;
+        });
+        $('#code-review > form button[type="button"]').click(Job.cancelCodeReview);
+    },
+
+    startCodeReview: function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'cancelCodeReview'
-            },
+            url: './job/startCodeReview/' + workitem_id,
             dataType: 'json',
             success: function(data) {
-                if (data.success) {
-                    $('#popup-startreview').dialog('close');
-                }
+                Job.refreshCodeReviewPartial(data);
             }
         });
         return false;
     },
 
-    changeButton: function() {
-        var buttonElement = $('.cR');
-        buttonElement.remove();
-        var endcrButton = '<input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"/>';
-        $('#review-pointer').before(endcrButton);
-        $('#popup-startreview').dialog('close');
-        MapToolTips();
-    },
-
-    closeEndReviewDialog: function() {
-        $('#popup-endreview').dialog('close');
-    },
-
-    cancelReview: function() {
+    cancelCodeReview: function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'cancelCodeReview'
-            },
+            url: './job/cancelCodeReview/' + workitem_id,
             dataType: 'json',
             success: function(data) {
-                if (data.success) {
-                    var buttonElement = $('.endCr');
-                    buttonElement.remove();
-                    var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review"' +
-                        ' onclick="return Job.showReviewForm();" alt="">';
-                    $('#review-pointer').before(startcrButton);
-                    $('#popup-endreview').dialog('close');
-                    MapToolTips();
-                }
+                Job.refreshCodeReviewPartial(data);
+            }
+        });
+        return false;
+    },
+
+    endCodeReview: function() {
+        var fee = parseFloat($('#code-review > form input[name="fee"]').val());
+        var desc = $('#code-review > form input[name="desc"]').val();
+        $.ajax({
+            type: 'post',
+            data: {desc: desc},
+            url: './job/endCodeReview/' + workitem_id + '/' + fee,
+            dataType: 'json',
+            success: function(data) {
+                $('#code-review').remove();
             }
         });
         return false;
