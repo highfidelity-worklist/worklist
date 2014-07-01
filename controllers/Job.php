@@ -717,7 +717,7 @@ class JobController extends Controller {
                 
                 } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
-            }
+                }
 
             $redirectToDefaultView = true;
         }
