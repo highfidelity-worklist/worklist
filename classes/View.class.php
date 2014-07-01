@@ -60,18 +60,25 @@ class View extends AppObject {
     
     public $stylesheets = array();
     public $scripts = array();
+
+    protected $globalsLoaded = false;
     
     /**
      * Constructor method
      */
     public function __construct() {
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
+        $this->loadGlobals();
     }
 
     /**
      * Load default views global values/properties
      */
-    public function loadGlobals() {
+    public function loadGlobals($force = false) {
+        if ($this->globalsLoaded && !$force) {
+            return;
+        }
+
         $user_id = getSessionUserId();
         $user = new User();
         if ($user_id) {
@@ -103,6 +110,7 @@ class View extends AppObject {
         $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
 
         $this->redir_url = Dispatcher::$url;
+        $this->globalsLoaded = true;
     }
     
     /**

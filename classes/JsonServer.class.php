@@ -521,69 +521,7 @@ class JsonServer
         ));
     }
 
-    protected function actionStartCodeReview() {
-        $workitem_id = $this->getRequest()->getParam('workitem');
-        $user_id = $this->getRequest()->getParam('userid');
-        $workItemToCheckCodeReview = new WorkItem($workitem_id);
-         
-        // This loop waits its turn to check for review. Shared memory is used for this
-        // 2nd, third etc reviewers code will halt here
-        do {
-            $sem_id = shmop_open($workitem_id, "n", 0644, 10);
-        } while ($sem_id === false);
-        
-        $workItem = new WorkItem($workitem_id);
-        
-        $user = new User();
-        $user->findUserById($user_id);
-        
-        $status = $workItem->startCodeReview($user_id);
-        
-        sleep(4); // we want a 3 sec delay to ensure that database update statement executes
-        shmop_delete($sem_id); // Delete shared memory
-        
-        if ($status === null) {
-            return $this->setOutput(array('success' => false, 'data' => nl2br('Code Review not available right now')));
-        } else if ($status === true || (int)$status == 0) {
-            $journal_message = '@' . $user->getNickname() . ' has started a code review for #' . $workitem_id. ' ';
-            sendJournalNotification($journal_message);
-            
-            $options = array(
-                'type' => 'code-review-started',
-                'workitem' => $workItem,
-            );
-            $data = array(
-                'nick' => $user->getNickname()
-            );
-            Notification::workitemNotifyHipchat($options, $data);
-            
-            return $this->setOutput(array('success' => true,'data' => $journal_message));
-        }
-    }
-
     protected function actionCancelCodeReview() {
-        $workitem_id = $this->getRequest()->getParam('workitem');
-        $user_id = $this->getRequest()->getParam('userid');
-        $workitem = new WorkItem();
-        $workitem->loadById($workitem_id);
-        $user = new User();
-        $user->findUserById($user_id);
-        $workitem->setCRStarted(0);
-        $workitem->setCReviewerId(0);
-        $workitem->save();
-        $journal_message = '@' . $user->getNickname() . ' has canceled their code review for #' . $workitem_id;
-        sendJournalNotification($journal_message);
-        
-        $options = array(
-            'type' => 'code-review-canceled',
-            'workitem' => $workitem,
-        );
-        $data = array(
-            'nick' => $user->getNickname(),
-        );
-        Notification::workitemNotifyHipchat($options, $data);
-        
-        return $this->setOutput(array('success' => true,'data' => $journal_message));
     }
     
     protected function actionGetFilesForWorkitem() {

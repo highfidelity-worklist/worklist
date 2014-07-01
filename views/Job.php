@@ -63,6 +63,12 @@ class JobView extends View {
 
         $this->reviewer = $this->read('reviewer');
 
+        $this->codeReview = array(
+            'canI' => $this->canReview(),
+            'started' => $this->workitem->getCRStarted(),
+            'feeAmount' => $this->crFee()
+        );
+
         return parent::render();
     }
 
@@ -293,7 +299,7 @@ class JobView extends View {
                 $ret .= '<option value="' . $status . '"' . ($status == $worklist['status'] ? ' selected="selected"' : '') .'>' . $status . '</option>';
             }
             $ret .= '</select>';
-        } else if ($worklist['creator_id'] == $this->currentUser['id'] && $mechanic_id == $user_id) {
+        } else if ($worklist['creator_id'] == $this->currentUser['id'] && $mechanic_id == $this->currentUser['user_id']) {
             $ret .= '<select id="status" name="status">';
             foreach ($statusListCreator as $status) {
                 $ret .= '<option value="' . $status . '"' . ($status == $worklist['status'] ? ' selected="selected"' : '') . '>' . $status . '</option>';
@@ -447,7 +453,12 @@ class JobView extends View {
         $user = $this->user;
         $is_runner = $this->currentUser['is_runner'];
         return (
-             ($this->currentUser['id'] > 0 && $user->isEligible() && $worklist['mechanic_id'] != $this->currentUser['id'])
+             (
+                   $this->currentUser['id'] > 0
+                && $user->isEligible()
+                && $worklist['mechanic_id'] != $this->currentUser['id']
+                && $this->read('userHasRights')
+              )
           && (
                  $worklist['status'] == 'Review' 
               && (! $workitem->getCRCompleted())
@@ -466,12 +477,13 @@ class JobView extends View {
         $user = $this->user;
         $is_runner = $this->currentUser['is_runner'];
         return 
-             $this->read('userHasRights') 
+             $workitem->getCRStarted()
           && (
                  $this->currentUser['id'] == $workitem->getCReviewerId() 
               || $workitem->getIsRelRunner() 
               || ($user->getIs_admin() == 1 && $is_runner)
-            );
+            )
+          && !$workitem->getCRCompleted();
     }
 
     public function canBid() {
@@ -703,7 +715,7 @@ class JobView extends View {
 
         return (int) (
             ($worklist['status'] == 'Bidding' && ($is_project_runner || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']))
-          ||(isset($worklist['runner_id']) && $user_id == $worklist['runner_id']))
+          ||(isset($worklist['runner_id']) && $this->currentUser['user_id'] == $worklist['runner_id']))
         );
     }
 
