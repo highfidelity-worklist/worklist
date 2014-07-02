@@ -1107,7 +1107,7 @@ class JobController extends Controller {
         $user = new User();
         $user->findUserById( $userId );
         $nick = $user->getNickname();
-
+        $runner_id = $user->getIs_runner() ? $userId : '';
         $itemid = $_REQUEST['itemid'];
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
@@ -1127,7 +1127,7 @@ class JobController extends Controller {
         }
         $workitem->setSummary($summary);
         $skillsArr = explode(',', $skills);
-        $workitem->setRunnerId(0);
+        $workitem->setRunnerId($runner_id);
         $workitem->setProjectId($project_id);
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
