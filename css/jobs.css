@@ -1013,21 +1013,18 @@ input {
     }
 }
 
-#query > fieldset,
-#addJobButton {
+#query > fieldset {
     margin-top: 35px;
 }
 
 @media (max-width: 1024px) {
-    #query > fieldset,
-    #addJobButton {
+    #query > fieldset {
         margin-top: 15px;
     }
 
 }
 @media (max-width: 767px) {
-    #query > fieldset,
-    #addJobButton {
+    #query > fieldset {
         margin-top: 5px;
         width: 100%;
     }
@@ -1050,8 +1047,7 @@ input {
 }
 
 #search select,
-#query > fieldset > input,
-#addJobButton {
+#query > fieldset > input {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
@@ -1087,26 +1083,6 @@ input {
 #search select.error + div > .chosen-choices,
 #search select.error + div > .chosen-single {
     border-color: #007F7C;
-}
-
-
-#addJobButton {
-    background-color: #608e96;
-    padding: 8px 10px 7px;
-    color: #fff;
-    font-size: 1em;
-    border: 0;
-    display: inline-block;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-    width: 100%;
-}
-
-#addJobButton:hover {
-    background-color: #007F7c;
 }
 
 #buttons {
