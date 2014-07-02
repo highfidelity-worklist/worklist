@@ -218,6 +218,7 @@ body > .container-fluid {
 }
 
 /* won't display the footer on addjob */
-section#footer {
-    display: none;
+section#footer,
+#addJobButton {
+    display: none !important;
 }
