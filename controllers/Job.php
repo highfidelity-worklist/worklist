@@ -360,12 +360,13 @@ class JobController extends Controller {
                                     $emailTemplate = 'workitem-mention';
                                     $data = array(
                                         'job_id' => $workitem->getId(),
+                                        'summary' => $workitem->getSummary(),
                                         'author' => $_SESSION['nickname'],
                                         'text' => $comment,
                                         'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
                                     );
 
-                                    $senderEmail = 'Worklist <contact@worklist.net>';
+                                    $senderEmail = 'Worklist - ' . $_SESSION['nickname'] . ' <contact@worklist.net> ';
                                     sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
                                 }
                             }
@@ -1205,12 +1206,13 @@ class JobController extends Controller {
                             $emailTemplate = 'workitem-mention';
                             $data = array(
                                 'job_id' => $workitem->getId(),
+                                'summary' => $workitem->getSummary(),
                                 'author' => $_SESSION['nickname'],
                                 'text' => $workitem->getNotes(),
                                 'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
                             );
 
-                            $senderEmail = 'Worklist <contact@worklist.net>';
+                            $senderEmail = 'Worklist - ' . $_SESSION['nickname'] . ' <contact@worklist.net> ';
                             sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
                         }
                     }
