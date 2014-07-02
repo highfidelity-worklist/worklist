@@ -139,10 +139,10 @@ class Notification {
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
-        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId . '</a>';
+        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
-        $itemLinkTitle = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId . ' - ' . $workitem -> getSummary() . '</a>';
+        $itemLinkTitle = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . ' - ' . $workitem -> getSummary() . '</a>';
         $body = '';
         $subject = '#' . $itemId . ' ' . html_entity_decode($workitem -> getSummary(), ENT_QUOTES);
         $from_address = '<noreply-'.$project_name.'@worklist.net>';
