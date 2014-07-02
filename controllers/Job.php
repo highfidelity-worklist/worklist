@@ -284,7 +284,7 @@ class JobController extends Controller {
             if ($workitem->getStatus() != 'Draft') {
                 $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
                                     $new_update_message . $related;
-                
+
                 $options = array(
                     'type' => 'workitem-update',
                     'workitem' => $workitem
@@ -302,7 +302,7 @@ class JobController extends Controller {
             if ((isset($_REQUEST['worklist_id']) && !empty($_REQUEST['worklist_id'])) &&
                 (isset($_REQUEST['user_id'])     && !empty($_REQUEST['user_id']))     &&
                 (isset($_REQUEST['comment'])     && !empty($_REQUEST['comment']))) {
-                
+
                 if (isset($_REQUEST['comment_id']) && !empty($_REQUEST['comment_id'])) {
                     $parent_comment = (int) $_REQUEST['comment_id'];
                 } else {
@@ -320,7 +320,7 @@ class JobController extends Controller {
                 if ($workitem->getStatus() != 'Draft') {
                     $related = getRelated($comment);
                     $journal_message .= '@' . $_SESSION['nickname'] . ' posted a comment on #' . $worklist_id . $related;
-                    
+
                     $options = array(
                         'type' => 'comment',
                         'workitem' => $workitem,
@@ -333,7 +333,7 @@ class JobController extends Controller {
                         'comment' => $comment,
                         'related' => $related
                     );
-                    
+
                     Notification::workitemNotify($options, $data, false);
                     Notification::workitemNotifyHipchat($options, $data);
 
@@ -396,14 +396,14 @@ class JobController extends Controller {
         }
 
         if($action =='save-review-url') {
-            if(!($is_project_runner || 
+            if(!($is_project_runner ||
             ($mechanic_id == $user_id) &&
             ($worklist['status'] != 'Done'))) {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             } else {
                 $sandbox = (!empty($_REQUEST['sandbox-url'])) ? $_REQUEST['sandbox-url'] : $workitem->getSandbox();
                 $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
-                
+
                 $status_review = $_REQUEST['quick-status-review'];
                 $status_error = '';
 
@@ -587,7 +587,7 @@ class JobController extends Controller {
                     $summary = $row['summary'];
                     $username = $row['username'];
                 }
-                
+
                 $options = array(
                     'type' => 'bid_placed',
                     'workitem' => $workitem,
@@ -605,14 +605,14 @@ class JobController extends Controller {
                      'notes' => replaceEncodedNewLinesWithBr($notes),
                      'bid_id' => $bid_id,
                 );
-                
+
                 // notify runner of new bid
                 Notification::workitemNotify($options, $data);
 
                 $status=$workitem->loadStatusByBidId($bid_id);
                 $data['new_update_message'] = $new_update_message;
                 Notification::workitemNotifyHipchat($options, $data);
-                
+
             } else {
                 error_log("Input forgery detected for user $userId: attempting to $action.");
             }
@@ -650,7 +650,7 @@ class JobController extends Controller {
                     $summary = $row['summary'];
                     $username = $row['username'];
                 }
-                
+
                 $options = array(
                     'type' => 'bid_updated',
                     'workitem' => $workitem,
@@ -663,11 +663,11 @@ class JobController extends Controller {
                     'notes' => replaceEncodedNewLinesWithBr($notes),
                     'bid_id' => $bid_id
                 );
-                
+
                 // notify runner of new bid
                 Notification::workitemNotify($options, $data);
                 Notification::workitemNotifyHipchat($options, $data);
-              
+
             }
             $redirectToDefaultView = true;
         }
@@ -703,9 +703,9 @@ class JobController extends Controller {
                         'fee_desc' => $fee_desc,
                         'mechanic_id' => $mechanic_id,
                     );
-                    
+
                     Notification::workitemNotify($options, $data);
-                    
+
                     $data['nick'] = $_SESSION['nickname'];
                     Notification::workitemNotifyHipchat($options, $data);
 
@@ -713,7 +713,7 @@ class JobController extends Controller {
                     $runner = new User();
                     $runner->findUserById($workitem->getRunnerId());
                     $runner->updateBudget(-$fee_amount, $workitem->getBudget_id());
-                   
+
                 }
                 $redirectToDefaultView = true;
             }
@@ -727,12 +727,12 @@ class JobController extends Controller {
             } else {
                 $bid_id = intval($_REQUEST['bid_id']);
                 $budget_id = intval($_REQUEST['budget_id']);
-                
+
                 $budget = new Budget();
                 if (!$budget->loadById($budget_id) ) {
                     $_SESSION['workitem_error'] = "Invalid budget!";
                 }
-                // only runners can accept bids        
+                // only runners can accept bids
                 if (($is_project_runner || $workitem->getRunnerId() == $_SESSION['userid'] || ($user->getIs_admin() == 1
                      && $is_runner) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding")) {
                     // query to get a list of bids (to use the current class rather than breaking uniformity)
@@ -752,33 +752,33 @@ class JobController extends Controller {
                         if($bid_amount <= $remainingFunds) {
                             $bid_info = $workitem->acceptBid($bid_id, $budget_id);
                             $budget->recalculateBudgetRemaining();
-                            
+
                             // Journal notification
                             $journal_message .= '@' . $_SESSION['nickname'] .
                                 " accepted {$bid_info['bid_amount']} from ".
                                 $bid_info['nickname'] . " on #" .$bid_info['worklist_id'] ." Status set to *In Progress*.";
-                            
+
                             $options = array(
                                 'type' => 'bid_accepted',
                                 'workitem' => $workitem,
                                 'recipients' => array('mechanic', 'followers')
                             );
-                            
+
                             // mail notification - including any data returned from acceptBid
                             Notification::workitemNotify($options, $bid_info);
-                            
+
                             $data = $bid_info;
                             $data['nick'] = $_SESSION['nickname'];
                             Notification::workitemNotifyHipchat($options, $data);
 
                             $bidder = new User();
                             $bidder->findUserById($bid_info['bidder_id']);
-                            
+
                             // Update Budget
                             $runner = new User();
                             $runner->findUserById($workitem->getRunnerId());
                             $runner->updateBudget(-$bid_amount, $workitem->getBudget_id());
-                           
+
                             // Send email to not accepted bidders
                             $this->sendMailToDiscardedBids($worklist_id);
                         } else {
@@ -823,7 +823,7 @@ class JobController extends Controller {
                             $currentBid->findBidById($bid);
                             $total = $total + $currentBid->getBid_amount();
                         }
-                        
+
                         $remainingFunds = $budget->getRemainingFunds();
                         if ($total <= $remainingFunds) {
                             foreach ($bid_id as $bid) {
@@ -843,8 +843,8 @@ class JobController extends Controller {
                                 if ($exists) {
                                     $bid_info = $workitem->acceptBid($bid, $budget_id, $is_mechanic);
                                     // Journal notification
-                                    $journal_message .= '@' . $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ". 
-                                        $bid_info['nickname'] . " " . ($is_mechanic ? ' as Developer ' : '') . 
+                                    $journal_message .= '@' . $_SESSION['nickname'] . " accepted {$bid_info['bid_amount']} from ".
+                                        $bid_info['nickname'] . " " . ($is_mechanic ? ' as Developer ' : '') .
                                         "on #".$bid_info['worklist_id']. " Status set to *In Progress*.";
                                     // mail notification
                                     Notification::workitemNotify(array('type' => 'bid_accepted',
@@ -1076,7 +1076,7 @@ class JobController extends Controller {
         $this->write('currentUserHasBid', $currentUserHasBid);
         $this->write('has_budget', $has_budget);
         $this->write('promptForReviewUrl', $promptForReviewUrl);
-        $this->write('status_error', $status_error);        
+        $this->write('status_error', $status_error);
         $this->write('{{userinfotoshow}}', (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0);
 
         parent::run();
@@ -1113,7 +1113,7 @@ class JobController extends Controller {
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
         $skills = $_REQUEST['skills'];
-        $status = $user->getIs_runner() ? 'Bidding' : 'Suggestion';
+        $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
@@ -1405,7 +1405,7 @@ class JobController extends Controller {
         $project = new Project();
         $project->loadById($workitem->getProjectId());
         $users_favorite = new Users_Favorite();
-        
+
         if($project->getCrUsersSpecified()) { // if only specified users are allowed
             if($project->isProjectCodeReviewer($userId)){
                 return true;
@@ -1471,7 +1471,7 @@ class JobController extends Controller {
                 $workitem->setRunnerId($user->getId());
             }
         }
-        
+
         if ($newStatus == 'Done' && $workitem->getProjectId() == 0) {
             return false;
         }
@@ -1487,7 +1487,7 @@ class JobController extends Controller {
         $projectId = $workitem->getProjectId();
         $thisProject = new Project($projectId);
         $repoType = $thisProject->getRepo_type();
-        
+
         // Generate diff and send to pastebin if we're in REVIEW
         if ($newStatus == "Code Review") {
             //reset code_review flags
@@ -1521,17 +1521,17 @@ class JobController extends Controller {
                     $codeReviewURL = $pullResults['data']['html_url'] . '/files';
                     $comment = "Code Review available here:\n" . $codeReviewURL;
                 } else {
-                    $comment = $pullResults['error'] 
-                        ? "We had problems making your request to GitHub\n" 
+                    $comment = $pullResults['error']
+                        ? "We had problems making your request to GitHub\n"
                         : "The following error was returned when making your pull request:\n";
-                    $comment .= isset($pullResults['data']['errors']) 
-                        ? $pullResults['data']['errors'][0]['message'] 
-                        : "Unknown error"; 
+                    $comment .= isset($pullResults['data']['errors'])
+                        ? $pullResults['data']['errors'][0]['message']
+                        : "Unknown error";
                 }
                 $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
-            } 
+            }
         }
-        
+
         if ($newStatus == 'QA Ready' && $repoType == 'git') {
             $runner = $workitem->getRunnerId();
             $GitHubUser = new User($runner);
@@ -1551,7 +1551,7 @@ class JobController extends Controller {
             sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);
         } else if ($newStatus =='QA Ready' && ! ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 ))) {
             return true;
-        } 
+        }
 
         if ($newStatus == 'In Progress') {
             $thisProject->setActive(1);
@@ -1596,7 +1596,7 @@ class JobController extends Controller {
 
         if (isset($parent_comment_id)) {
             $comment->setComment_id((int) $parent_comment_id);
-            $originalComment = new Comment(); 
+            $originalComment = new Comment();
             $originalComment->findCommentById((int) $parent_comment_id);
             $cuser = new User();
             $cuser->findUserById($originalComment->getUser_id());
@@ -1609,14 +1609,14 @@ class JobController extends Controller {
                 $correspondent = array();
             }
         }
-        
+
         $comment->setComment($comment_text);
 
         try {
             $id = $comment->save();
         } catch(Exception $e) {
-            error_log("Failure saving comment:\n".$e); 
-        }  
+            error_log("Failure saving comment:\n".$e);
+        }
         $redirectToDefaultView = true;
         $result = array('correspondent' => $correspondent, 'id' => $id);
         return $result;
