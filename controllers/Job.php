@@ -360,12 +360,13 @@ class JobController extends Controller {
                                     $emailTemplate = 'workitem-mention';
                                     $data = array(
                                         'job_id' => $workitem->getId(),
+                                        'summary' => $workitem->getSummary(),
                                         'author' => $_SESSION['nickname'],
                                         'text' => $comment,
                                         'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
                                     );
 
-                                    $senderEmail = 'Worklist <contact@worklist.net>';
+                                    $senderEmail = 'Worklist - ' . $_SESSION['nickname'] . ' <contact@worklist.net> ';
                                     sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
                                 }
                             }
@@ -1107,7 +1108,7 @@ class JobController extends Controller {
         $user = new User();
         $user->findUserById( $userId );
         $nick = $user->getNickname();
-
+        $runner_id = $user->getIs_runner() ? $userId : '';
         $itemid = $_REQUEST['itemid'];
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
@@ -1127,7 +1128,7 @@ class JobController extends Controller {
         }
         $workitem->setSummary($summary);
         $skillsArr = explode(',', $skills);
-        $workitem->setRunnerId(0);
+        $workitem->setRunnerId($runner_id);
         $workitem->setProjectId($project_id);
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
@@ -1205,12 +1206,13 @@ class JobController extends Controller {
                             $emailTemplate = 'workitem-mention';
                             $data = array(
                                 'job_id' => $workitem->getId(),
+                                'summary' => $workitem->getSummary(),
                                 'author' => $_SESSION['nickname'],
                                 'text' => $workitem->getNotes(),
                                 'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the workitem</a>'
                             );
 
-                            $senderEmail = 'Worklist <contact@worklist.net>';
+                            $senderEmail = 'Worklist - ' . $_SESSION['nickname'] . ' <contact@worklist.net> ';
                             sendTemplateEmail($recipient->getUsername(), $emailTemplate, $data, $senderEmail);
                         }
                     }
