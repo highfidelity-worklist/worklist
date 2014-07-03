@@ -519,7 +519,8 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-                        if ($workitem->isInternal() ? $rUser->isInternal() : true) {
+                        $sendNotification = ($workitem->isInternal() ? $rUser->isInternal() : true) && ($options['type'] == 'comment' ? $rUser->getSelf_notif() : true);
+                        if ($sendNotification) {
                             if(($username = $rUser->getUsername())) {
                                 array_push($emails, $username);
                             }
