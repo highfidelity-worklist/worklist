@@ -12,6 +12,8 @@ class ProjectsView extends View {
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.infinitescroll.min.js',
         'js/ajaxupload/ajaxupload.js',
+        'js/filedrop/filedrop-min.js',
+        'js/spin.js/spin.min.js',
         'js/projects.js',
         'js/github.js'
     );

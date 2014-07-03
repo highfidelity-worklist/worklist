@@ -1,4 +1,12 @@
 var Projects = {
+    uploadedFile: null,
+    filesUploading: 0,
+
+    init: function() {
+        Projects.populateListing();
+        $('#add-project').click(Projects.addProject);
+    },
+
     populateListing: function() {
         $.ajax({
             type: "GET",
@@ -89,6 +97,60 @@ var Projects = {
     },
 
     addProject: function() {
+        Utils.modal('addproject', {
+            open: function(modal) {
+                Projects.initFileUpload();
+                $('form', modal).submit(function(event) {
+                    event.preventDefault();
+                    var name = new LiveValidation($('input[name="name"]', modal)[0], { onlyOnSubmit: true }),
+                        description = new LiveValidation($('textarea[name="description"]', modal)[0], { onlyOnSubmit: true }),
+                        githubRepoUrl = new LiveValidation($('input[name="repourl"]', modal)[0], { onlyOnSubmit: true }),
+                        githubClientId =  new LiveValidation($('input[name="githubid"]', modal)[0], { onlyOnSubmit: true }),
+                        githubClientSecret =  new LiveValidation($('input[name="githubsecret"]', modal)[0], { onlyOnSubmit: true });
+
+                    name.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                    name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
+                    name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
+                    name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
+
+                    description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
+                    var regex_url = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                    githubRepoUrl.add(Validate.Format, { pattern: regex_url, failureMessage: "Repo URL is not valid" });
+
+                    githubRepoUrl.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                    githubClientId.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+                    githubClientSecret.add(Validate.Presence, { failureMessage: "Can't be empty!" });
+
+                    if (!LiveValidation.massValidate([name, description, githubRepoUrl, githubClientId, githubClientSecret])) {
+                        return false;
+                    }
+
+                    $.ajax({
+                        url: './project/add/' + $('input[name="name"]', modal).val(),
+                        dataType: 'json',
+                        data: {
+                            description: $('textarea[name="description"]', modal).val(),
+                            website: $('input[name="website"]', modal).val(),
+                            github_repo_url: $('input[name="repourl"]', modal).val(),
+                            github_client_id: $('input[name="githubid"]', modal).val(),
+                            github_client_secret: $('input[name="githubsecret"]', modal).val(),
+                            logo: Projects.uploadedFile
+                        },
+                        type: 'POST',
+                        success: function(data) {
+                            if (data.success) {
+                                window.location = './' + $('input[name="name"]', modal).val();
+                            }
+                        }
+                    });
+
+                    return false;
+                });
+            }
+        })
+        return false;
+
+
         $('#popup-addproject').dialog({ 
             autoOpen: false, 
             dialogClass: 'white-theme',
@@ -108,56 +170,6 @@ var Projects = {
 
             // focus the submit button
             $('#save_project').focus();
-
-            var optionsLiveValidation = { onlyOnSubmit: true };
-
-            var project_name = new LiveValidation('name', optionsLiveValidation);
-            var project_description = new LiveValidation('description', optionsLiveValidation);
-            var github_repo_url = new LiveValidation('githubRepoURL', optionsLiveValidation),
-                vGithubClientId =  new LiveValidation('githubClientId', optionsLiveValidation),
-                vGithubClientSecret =  new LiveValidation('githubClientSecret', optionsLiveValidation);
-
-            project_name.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-            project_name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
-            project_name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
-            project_name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
-
-            project_description.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-            var regex_url = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-            github_repo_url.add(Validate.Format, { pattern: regex_url, failureMessage: "Repo URL is not valid" });
-            var gitHubValidator = [Validate.Presence, { failureMessage: "Can't be empty!" }];
-
-            github_repo_url.add(gitHubValidator[0], gitHubValidator[1]);
-            vGithubClientId.add(gitHubValidator[0], gitHubValidator[1]);
-            vGithubClientSecret.add(gitHubValidator[0], gitHubValidator[1]);
-
-            $('#checkGitHub').unbind('click').click( function () {
-                // if checked
-                if (this.checked) {
-                    $('#github-info').show();
-                    github_repo_url.enable();
-                } else {
-                    $('#github-info').hide();
-                    github_repo_url.disable();
-                }
-            });
-
-            $('#checkDefaultGitHub').unbind('click').click( function () {
-                // if checked
-                if (this.checked) {
-                    $('#custom-github-info').hide();
-                    vGithubClientId.disable();
-                    vGithubClientSecret.disable();
-                } else {
-                    $('#custom-github-info').show();
-                    vGithubClientId.enable();
-                    vGithubClientSecret.enable();
-                }
-            });
-
-            $('#cancel').click(function() {
-                $('#popup-addproject').dialog('close');
-            });
 
             $('#save_project').click(function() {
                 var validateFields = new Array(
@@ -247,12 +259,86 @@ var Projects = {
                 document.location = './signup';
             });
         }
+    },
+
+    initFileUpload: function() {
+        var options = {iframe: {url: './file/add'}};
+        var zone = new FileDrop('projectlogoupload', options);
+
+        zone.event('send', function (files) {
+            files.each(function (file) {
+                file.event('done', Projects.fileUploadDone);
+                file.event('error', Projects.fileUploadError);
+                file.sendTo('./file/add');
+                Projects.filesUploading++;
+                Projects.animateUploadSpin();
+            });
+        });
+        zone.multiple(false);
+
+        $('#projectlogoupload > label > em').click(function() {
+            $('#projectlogoupload input.fd-file').click();
+        })
+    },
+
+    fileUploadDone: function(xhr) {
+        var fileData = $.parseJSON(xhr.responseText);
+        $.ajax({
+            url: './file/scan/' + fileData.fileid,
+            type: 'POST',
+            dataType: "json",
+            success: function(json) {
+                if (json.success == true) {
+                    fileData.url = json.url;
+                }
+                Utils.parseMustache('partials/upload-document', fileData, function(parsed) {
+                    $('#projectlogoupload > ul').html(parsed);
+                    $('#projectlogoupload li[attachment=' + fileData.fileid + '] > i').click(Projects.removeFile);
+                    Projects.uploadedFile = fileData.fileid;
+                });
+                Projects.fileUploadFinished();
+            }
+        });
+    },
+
+    fileUploadError: function(e, xhr) {
+        Projects.fileUploadFinished();
+    },
+
+    fileUploadFinished: function() {
+        Projects.filesUploading--;
+        if (Projects.filesUploading == 0) {
+            Projects.stopUploadSpin();
+        }
+    },
+
+    removeFile: function(event) {
+        var id = parseInt($(this).parent().attr('attachment'))
+        $('#projectlogoupload li[attachment=' + id + ']').remove();
+        Project.uploadedFile = null;
+    },
+
+    animateUploadSpin: function() {
+        if ($('#projectlogoupload > .loading').length) {
+            return;
+        }
+        $('<div>').addClass('loading').prependTo('#projectlogoupload');
+        var target = $('#projectlogoupload > .loading')[0];
+        var spinner = new Spinner({
+            lines: 9,
+            length: 3,
+            width: 4,
+            radius: 6,
+            corners: 1,
+            rotate: 12,
+            direction: 1,
+            color: '#000',
+            speed: 1.1,
+            trail: 68
+          }).spin(target);
+    },
+
+    stopUploadSpin: function() {
+        $('#projectlogoupload > .loading').remove();
     }
-
 }
-
-$(function() {
-    Projects.populateListing();
-    $('#add-project').click(Projects.addProject);
-});
-
