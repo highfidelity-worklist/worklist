@@ -396,58 +396,6 @@ var UserInfo = {
         if ($('#profile-nav a[href="#' + tab + '"]').length) {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
-
-        if ($('#fees-week').length > 0) {
-            $('#fees-week').parents("tr").click(function() {
-                var author = "Guest";
-                if($('#user').length > 0) {
-                    author = $('#user').html();
-                }
-                var t = 'Weekly fees for '+author;
-                $('#wFees').dialog({
-                    autoOpen: false,
-                    title: t,
-                    show: 'fade',
-                    hide: 'fade'
-                });
-                $('#wFees').dialog( "option", "title", t );
-                $('#wFees').html('<img src="images/loader.gif" />');
-                $('#wFees').dialog('open');
-                $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
-                    if (json.error == 1) {
-                        $('#wFees').html('Some error occured or you are not logged in.');
-                    } else {
-                      $('#wFees').html(json.output);
-                    }
-                });
-            });
-        }
-
-        if($('#fees-month').length > 0){
-            $('#fees-month').parents("tr").click(function() {
-                var author = "Guest";
-                if ($('#user').length > 0) {
-                    author = $('#user').html();
-                }
-                var t = 'Monthly fees for '+author;
-                $('#wFees').dialog({
-                    autoOpen: false,
-                    title: t,
-                    show: 'fade',
-                    hide: 'fade'
-                });
-                $('#wFees').dialog("option", "title", t);
-                $('#wFees').html('<img src="images/loader.gif" />');
-                $('#wFees').dialog('open');
-                $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
-                    if (json.error == 1) {
-                        $('#wFees').html('Some error occured or you are not logged in.');
-                    } else {
-                        $('#wFees').html(json.output);
-                    }
-                });
-            });
-        }
     },
      
     appendPagination: function(page, cPages, table) {

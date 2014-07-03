@@ -115,7 +115,6 @@ var Job = {
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
 
-        $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
         $('#popup-reviewurl').dialog({
             autoOpen: false,
             dialogClass: 'white-theme',
@@ -135,21 +134,6 @@ var Job = {
         });
 
         $('#commentform input[name=cancel]').addClass('hidden');
-
-        $("#switchmode_edit").click(function(event) {
-            if (!is_project_runner && insufficientRightsToEdit) {
-                     $("#workitem_no_edit").dialog({
-                         title: "Insufficient User Rights",
-                         autoOpen: false,
-                         height: 120,
-                         width: 370,
-                         position: ['center','center'],
-                         modal: true
-                });
-                $("#workitem_no_edit").dialog("open");
-                event.preventDefault();
-            }
-        });
 
         if ($('#is_internal').length) {
             $('#is_internal').on('click', function() {

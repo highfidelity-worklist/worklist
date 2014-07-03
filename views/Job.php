@@ -700,14 +700,6 @@ class JobView extends View {
         return (int) $this->workitem->hasAcceptedBids();
     }
 
-    public function insufficientRightsToEdit() {
-        $worklist = $this->worklist;
-        return (int) (
-            (!$worklist['status'] == 'Suggestion')
-          && !$worklist['creator_id'] == $this->currentUser['id']
-        );
-    }
-
     public function showPingBidderButton() {
         $worklist = $this->worklist;
         $is_project_runner = $this->read('is_project_runner');
