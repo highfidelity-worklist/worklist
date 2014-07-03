@@ -115,19 +115,6 @@ var Job = {
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
 
-        $('#popup-reviewurl').dialog({
-            autoOpen: false,
-            dialogClass: 'white-theme',
-            modal: true,
-            width: 450,
-            show: 'fade',
-            hide: 'fade',
-            resizable: false,
-            close: function() {
-                $('select[name=quick-status]').val(origStatus);
-            }
-        });
-
        $('#commentform input[name=newcomment]').click(function(event) {
             event.preventDefault();
             Job.postComment();
@@ -414,26 +401,23 @@ var Job = {
                 var html = "<span>Changing status from <strong>" + job_status + "</strong> to <strong>"
                     + $(this).val() +"</strong></span>";
 
-                if ($(this).val() == 'Functional') {
+                if ($(this).val() == 'QA Ready') {
                     if(mechanic_id == user_id && promptForReviewUrl) {
-                    $('#sandbox-url').val(sandbox_url);
-                        $('#quick-status-review').val($(this).val());
-                        $('#popup-reviewurl').dialog('open');
-                    } else {
-                        openNotifyOverlay(html, false, false);
-                        $('#quick-status form').submit();
+                        Job.reviewUrlModal(function() {
+                            $('#quick-status form').submit();
+                        });
                     }
                 } else {
                     openNotifyOverlay(html, false, false);
                     $('#quick-status form').submit();
                 }
             }
+            return false;
         });
 
         if (showReviewUrlPopup) {
             $('#edit_review_url').click(function(e){
-                $('#sandbox-url').val(sandbox_url);
-                $('#popup-reviewurl').dialog('open');
+                Job.reviewUrlModal();
             });
         }
 
@@ -984,5 +968,58 @@ var Job = {
             }
         });
         return false;
+    },
+
+    reviewUrlModal: function(fAfter) {
+        Utils.emptyFormModal({
+            title: 'Sandbox URL',
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-4">' +
+                '    <label for="sburl">QA Reviews URL</label>' +
+                '  </div>' +
+                '  <div class="col-md-8">' +
+                '    <input type="text" class="form-control" name="url" ' +
+                '      id="sburl" value="' + sandbox_url + '">' +
+                '  </div>' +
+                '</div>' +
+                '<div class="row">' +
+                '  <div class="col-md-12">' +
+                '    <label for="sburlnotes">Notes</label>' +
+                '    <textarea id="sburlnotes" name="notes" class="form-control"></textarea>' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'save',
+                    content: 'Save',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('form', modal).submit(function() {
+                    var url = $('input[name="url"]', modal).val();
+                    var notes = $('textarea[name="notes"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './job/updateSandboxUrl/' + workitem_id,
+                        data: {
+                            url: url,
+                            notes: notes
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            $(modal).modal('hide');
+                            if (fAfter) {
+                                fAfter();
+                            }
+                        }
+                    });
+                  return false;
+                });
+            }
+        });
     }
 };
