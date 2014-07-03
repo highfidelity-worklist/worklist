@@ -121,7 +121,7 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
-       
+        $current_user = User::find(getSessionUserId());
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
         } else {
@@ -139,9 +139,10 @@ class Notification {
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
-        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId . '</a>';
+        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
+        $itemLinkTitle = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . ' - ' . $workitem -> getSummary() . '</a>';
         $body = '';
         $subject = '#' . $itemId . ' ' . html_entity_decode($workitem -> getSummary(), ENT_QUOTES);
         $from_address = '<noreply-'.$project_name.'@worklist.net>';
@@ -150,21 +151,12 @@ class Notification {
             case 'comment':
                 $headers['From'] = '"' . $project_name . '-comment" ' . $from_address;
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
-                $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
-                $body .= $data['who'] . ' says:<br />'
-                      . nl2br($data['comment']) . '<br /><br />'
-                      . 'Project: ' . $project_name . '<br />'
-                      . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                      if($workitem->getRunner() != '') {
-                          $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                      }
-                      if($workitem->getMechanic() != '') {
-                          $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                      }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
-            break;
+                $body .= $data['who'] . ' commented on ' . $itemLink . ':<br>'
+                      . nl2br($data['comment']) . '<br /><br />';
+                if ($current_user->getSelf_notif()) {
+                    array_push($emails, $current_user->getUsername());
+                }
+           break;
             
             case 'fee_added':
                 if ($workitem->getStatus() != 'Draft') {
@@ -413,18 +405,7 @@ class Notification {
             break;
 
             case 'new_review':
-                $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
-                . 'Project: ' . $project_name . '<br />'
-                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                }
-                if($workitem->getMechanic() != '') {
-                    $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
+                $body = "Now ready for a code review: " . $itemLinkTitle . ' <br /><br />';
             break;
 
             case 'suggested':
@@ -521,9 +502,6 @@ class Notification {
             break;
 
         }
-    
-        $current_user = new User();
-        $current_user->findUserById(getSessionUserId());
         if($recipients) {
             foreach($recipients as $recipient) {
                 /**
@@ -541,7 +519,8 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-                        if ($workitem->isInternal() ? $rUser->isInternal() : true) {
+                        $sendNotification = ($workitem->isInternal() ? $rUser->isInternal() : true) && (($options['type'] == 'comment' && $rUser->getId() == getSessionUserId()) ? $rUser->getSelf_notif() : true);
+                        if ($sendNotification) {
                             if(($username = $rUser->getUsername())) {
                                 array_push($emails, $username);
                             }

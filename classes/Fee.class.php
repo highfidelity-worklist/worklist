@@ -138,4 +138,33 @@ class Fee
         return $sum;
     }
 
+    public static function getFee($id) {
+        $id = (int) $id;
+        $query = "
+            SELECT *
+            FROM " . FEES . " `f`
+            WHERE `f`.`id` = '{$id}'";
+
+        $result = mysql_query($query);
+        if ($result && $row = mysql_fetch_assoc($result)) {
+            return $row;
+        }
+        return null;
+    }
+
+    public static function getFundId($fee_id) {
+        $sql = "
+            SELECT `p`.`fund_id` AS `fund_id`
+            FROM `" . FEES . "` `f`
+              LEFT JOIN `" . WORKLIST . "` `w`
+                ON `f`.`worklist_id` = `w`.`id`
+              LEFT JOIN `" . PROJECTS . "` `p`
+                ON `w`.`project_id` = `p`.`project_id`
+            WHERE `f`.`id` = {$fee_id}";
+        $result = mysql_query($sql);
+        if ($result && $row = mysql_fetch_array($result)) {
+            return $row['fund_id'];
+        }
+        return false;
+    }
 }
