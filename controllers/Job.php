@@ -18,6 +18,7 @@ class JobController extends Controller {
             case 'startCodeReview':
             case 'cancelCodeReview':
             case 'endCodeReview':
+            case 'updateSandboxUrl':
                 $method = $action;
                 break;
             default:
@@ -135,8 +136,6 @@ class JobController extends Controller {
             $action = "accept_multiple_bid";
         } else if(isset($_REQUEST['status-switch'])) {
             $action = "status-switch";
-        } else if(isset($_REQUEST['save-review-url'])) {
-            $action = "save-review-url";
         } else if (isset($_REQUEST['newcomment'])) {
             $action = 'new-comment';
         }
@@ -393,82 +392,6 @@ class JobController extends Controller {
             echo $json;
             ob_end_flush();
             exit;
-        }
-
-        if($action =='save-review-url') {
-            if(!($is_project_runner || 
-            ($mechanic_id == $user_id) &&
-            ($worklist['status'] != 'Done'))) {
-                error_log("Input forgery detected for user $userId: attempting to $action.");
-            } else {
-                $sandbox = (!empty($_REQUEST['sandbox-url'])) ? $_REQUEST['sandbox-url'] : $workitem->getSandbox();
-                $notes = (!empty($_REQUEST['review-notes'])) ? $_REQUEST['review-notes'] : null;
-                
-                $status_review = $_REQUEST['quick-status-review'];
-                $status_error = '';
-
-                if(! empty($status_review) && $workitem->getStatus() != $status_review) {
-                    $old_status = $workitem->getStatus();
-
-                    $status = $this->changeStatus($workitem, $status_review, $user);
-
-                    if ($status !== true) {
-                        // status change failed due to sandbox issues
-                        $message = '';
-                        if ($status & 4) { //sandbox not updated
-                            $message .= " - Sandbox is not up-to-date\n";
-                        }
-                        if ($status & 8) { //sandbox has conflicts
-                            $message .= " - Sandbox contains conflicted files\n";
-                        }
-                        if ($status & 16) { //sandbox has not-included files
-                            $message .= " - Sandbox contains 'not-included' files\n";
-                        }
-
-                        $status_error = "Sandbox verification failed. " . $message;
-                        // revert to the old status, but still save the sandbox change
-                        $workitem->setStatus($old_status);
-                    }
-                }
-                $workitem->setSandbox($sandbox);
-                $workitem->save();
-                if (!$status_error) {
-                    $new_update_message = " sandbox url : $sandbox ";
-                    if(!empty($status_review)) {
-                        $new_update_message .= " Status set to {$status_review}. ";
-                        $status_change = '-' . ucfirst(strtolower($status_review));
-                        Notification::massStatusNotify($workitem);
-                    } else {
-                        $job_changes[] = '-sandbox';
-                    }
-                    if ($notes) {
-                        //add review notes
-                        $fee_amount = 0.00;
-                        $fee_desc = 'Review Notes:'. $notes;
-                        $mechanic_id = $user->getId();
-                        $itemid = $workitem->getId();
-                        $is_expense = 1;
-                        $fee_category = '';
-                        AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
-                    }
-                    $notifyEmpty = false;
-                    if ($status_review == 'QA Ready') {
-                        $status_change = '-QA Ready';
-                        Notification::workitemNotify(array(
-                            'type' => 'modified',
-                            'workitem' => $workitem,
-                            'status_change' => $status_change,
-                            'job_changes' => $job_changes,
-                            'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
-                            array('changes' => $new_update_message));
-                      $notifyEmpty = true;
-                    }
-
-                    $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
-                }
-
-                $promptForReviewUrl = false;
-            }
         }
 
         if ($action =='status-switch') {
@@ -1391,6 +1314,42 @@ class JobController extends Controller {
             ));
             echo json_encode(array(
                 'success' => true,
+                'message' => $journal_message
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function updateSandboxUrl($id) {
+        $this->view = null;
+        try {
+            $workitem = new WorkItem($id);
+            $user = User::find(getSessionUserId());
+            if (($workitem->getMechanicId() != $user->getId() && !$workitem->getIsRelRunner()) || $workitem->getStatus() == 'Done') {
+                throw new Exception('Action not allowed');
+            }
+            $url = trim($_POST['url']);
+            $notes = trim($_POST['notes']) ? trim($_POST['notes']) : null;
+            $workitem->setSandbox($url);
+            $workitem->save();
+            if ($notes) {
+                //add review notes
+                $fee_amount = 0.00;
+                $fee_desc = 'Review Notes: ' . $notes;
+                $mechanic_id = $workitem->getMechanicId();
+                $itemid = $workitem->getId();
+                $is_expense = 1;
+                $fee_category = '';
+                AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
+            }
+            $journal_message = '\\#' . $workitem->getId() . ' updated by @' . $user->getNickname() . " Sandbox URL: $url";
+            sendJournalNotification($journal_message);
+            echo json_encode(array(
+                'success' => false,
                 'message' => $journal_message
             ));
         } catch (Exception $e) {

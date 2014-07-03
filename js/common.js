@@ -459,62 +459,6 @@ $(function () {
 
     $('textarea.autogrow').autosize();
 
-    if ($('#fees-week').length > 0) {
-        $('#fees-week').parents("tr").click(function() {
-            var author = "Guest";
-            if($('#user').length > 0) {
-                author = $('#user').html();
-            }
-            var t = 'Weekly fees for '+author;
-            $('#wFees').dialog({
-                autoOpen: false,
-                title: t,
-                dialogClass: 'white-theme',
-                show: 'fade',
-                hide: 'fade'
-            });
-            $('#wFees').dialog( "option", "title", t );
-            $('#wFees').addClass('table-popup');
-            $('#wFees').html('<img src="images/loader.gif" />');
-            $('#wFees').dialog('open');
-            $.getJSON('api.php?action=getFeeSums&type=weekly', function(json) {
-                if (json.error == 1) {
-                    $('#wFees').html('Some error occured or you are not logged in.');
-                } else {
-                  $('#wFees').html(json.output);
-                }
-            });
-        });
-    }
-
-    if($('#fees-month').length > 0){
-        $('#fees-month').parents("tr").click(function() {
-            var author = "Guest";
-            if ($('#user').length > 0) {
-                author = $('#user').html();
-            }
-            var t = 'Monthly fees for '+author;
-            $('#wFees').dialog({
-                autoOpen: false,
-                title: t,
-                dialogClass: 'white-theme',
-                show: 'fade',
-                hide: 'fade'
-            });
-            $('#wFees').dialog("option", "title", t);
-            $('#wFees').addClass('table-popup');
-            $('#wFees').html('<img src="images/loader.gif" />');
-            $('#wFees').dialog('open');
-            $.getJSON('api.php?action=getFeeSums&type=monthly', function(json) {
-                if (json.error == 1) {
-                    $('#wFees').html('Some error occured or you are not logged in.');
-                } else {
-                    $('#wFees').html(json.output);
-                }
-            });
-        });
-    }
-
     $('a.feesum').tooltip({
         delay: 300,
         showURL: false,
@@ -525,17 +469,6 @@ $(function () {
         positionLeft: false
     });
 });
-
-var updateFeeSumsTimes = setInterval(function () {
-    $.get('api.php?action=getFeeSums', function(data) {
-        var sum = eval('('+data+')');
-        if (typeof sum != 'object') {
-            return false;
-        }
-        $('#fees-week').html ('$'+sum.week);
-        $('#fees-month').html ('$'+sum.month);
-    });
-}, ajaxRefresh);
 
 /* get analytics info for this page */
 $(function() {

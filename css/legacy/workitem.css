@@ -988,12 +988,6 @@ div.mechanic_id ul {
     clear: both;
 }
 
-#popup-fee-info table,
-#popup-fee-info table th,
-#popup-fee-info table td {
-    border: 0;
-}
-
 #info-fee-notes {
     overflow: auto;
     max-height: 180px

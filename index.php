@@ -21,6 +21,14 @@ class Dispatcher {
             'default' => array('method' => 'info')
         ));
 
+        $dispatcher->any('/fee/:method(/:param)', array('Fee'), array(
+            'require' => array(
+                'method' => '[a-zA-Z0-9]+',
+                'param' => '.*'
+            ),
+            'default' => array('method' => 'info')
+        ));
+
         $dispatcher->get('/confirmation', array('Confirmation'));
         $dispatcher->post('/confirmation', array('Confirmation'));
         $dispatcher->get('/feedlist', array('FeedList'));

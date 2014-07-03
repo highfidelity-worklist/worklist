@@ -359,16 +359,7 @@
 {{#editing}}
     </form>
 {{/editing}}
-{{#message}}
-    <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
-        <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
-    </div>
-{{/message}}
-{{> popup-fees}}
-{{> popup-fee-info}}
 {{> review-url-dialog}}
-{{> popup-paid}}
-{{> popup-runner-job-edit}}
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
@@ -395,7 +386,6 @@
     var is_project_runner = {{is_project_runner}};
     var showAcceptBidButton = {{showAcceptBidButton}};
     var hasAcceptedBids = {{hasAcceptedBids}};
-    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
     var showPingBidderButton = {{showPingBidderButton}};
     var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
     var job_status = '{{worklist.status}}';
