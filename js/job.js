@@ -115,7 +115,6 @@ var Job = {
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
 
-        $('#popup-paid').dialog({ dialogClass: 'white-theme', autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
         $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
         $('#popup-reviewurl').dialog({
             autoOpen: false,
@@ -235,81 +234,7 @@ var Job = {
         })(jQuery);
 
         if (user_id) {
-            $('.paid-link').click(function(e){
-                e.stopPropagation();
-                var fee_id = $(this).attr('id').substr(8);
-                if ($('#feeitem-' + fee_id).html() == "Yes") {
-                    $('#paid_check').attr('checked', "1");
-                } else if ($('#feeitem-' + fee_id).html() == "No" ) {
-                    $('#notpaid_check').attr('checked', "1");
-                }
-
-                $('#paid_check').click(function() {
-                       var $checkbox = $('#notpaid_check');
-                       $checkbox.attr('checked', !$checkbox.attr('checked'));
-                });
-                $('#notpaid_check').click(function() {
-                       var $checkbox = $('#paid_check');
-                       $checkbox.attr('checked', !$checkbox.attr('checked'));
-                });
-                AjaxPopup('#popup-paid',
-                    'Pay Fee',
-                    'api.php?action=getFeeItem',
-                    fee_id,
-                    [ ['input', 'itemid', 'keyId', 'eval'],
-                    ['textarea', 'paid_notes', 'json[2]', 'eval'],
-                    ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
-                    $('.paidnotice').empty();
-                    $('#popup-paid').dialog('open');
-
-                    // onSubmit event handler for the form
-                    $('#popup-paid > form').submit(function() {
-                        // now we save the payment via ajax
-                        $.ajax({
-                            url: 'api.php',
-                            dataType: 'json',
-                            data: {
-                                action: 'payCheck',
-                                itemid: $('#' + this.id + ' input[name=itemid]').val(),
-                                paid_check: $('#' + this.id + ' input[name=paid_check]').prop('checked') ? 1 : 0,
-                                paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
-                            },
-                            success: function(data) {
-                                // We need to empty the notice field before we refill it
-                                if (!data.success) {
-                                    // Failure message
-                                    var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-error ui-corner-all">' +
-                                                    '<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-                                                    '<strong>Alert:</strong> ' + data.message + '</p>' +
-                                                '</div>';
-                                    $('.paidnotice').append(html);
-                                    // Fire the failure event
-                                    $('#popup-paid > form').trigger('failure');
-                                } else {
-                                    // Success message
-                                    var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">' +
-                                                    '<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-                                                    '<strong>Info:</strong> ' + data.message + '</p>' +
-                                                '</div>';
-                                    $('.paidnotice').append(html);
-                                    // Fire the success event
-                                    $('#popup-paid > form').trigger('success');
-                                }
-                            }
-                        });
-
-                        return false;
-                    });
-
-                    // Here we need to capture the event and fire a new one to the upper container
-                    $('#popup-paid > form').bind('success', function(e, d) {
-                        $('.table-feelist tbody').empty();
-                        //TODO Make this use a refresh when this page supports AJAX data refresh in future
-                        location.reload();
-                    });
-
-                return false;
-            });
+            $('.paid-link').click(Job.paidModal);
 
             $('.wd-link').click(function(e) {
                 e.stopPropagation();
@@ -1003,6 +928,75 @@ var Job = {
             dataType: 'json',
             success: function(data) {
                 $('#code-review').remove();
+            }
+        });
+        return false;
+    },
+
+    paidModal: function(e) {
+        e.stopPropagation();
+        var fee_id = $(this).attr('id').substr(8);
+        $.ajax({
+            url: './fee/info/' + fee_id,
+            dataType: 'json',
+            success: function(data) {
+                var paidCheckedStr = (parseInt(data.paid) ? ' checked="checked"' : '');
+                var notPaidCheckedStr = (!parseInt(data.paid) ? ' checked="checked"' : '');
+                Utils.emptyFormModal({
+                    title: 'Fee paid status',
+                    content:
+                        '<div class="row">' +
+                        '  <div class="col-md-6">' +
+                        '    <label>Fee status</label>' +
+                        '  </div>' +
+                        '  <div class="col-md-3">' +
+                        '    <input type="radio" class="wlradiobox" name="paid" id="paid"' + paidCheckedStr +  '>' +
+                        '    <label for="paid">Paid</label>' +
+                        '  </div>' +
+                        '  <div class="col-md-3">' +
+                        '    <input type="radio" class="wlradiobox" name="paid" id="notpaid"' + notPaidCheckedStr +  '>' +
+                        '    <label for="notpaid">Not Paid</label>' +
+                        '  </div>' +
+                        '</div>' +
+                        '<div class="row">' +
+                        '  <div class="col-md-12">' +
+                        '    <label for="paidnotes">Notes</label>' +
+                        '    <textarea id="paidnotes" name="notes" class="form-control">' + data.notes + '</textarea>' +
+                        '  </div>' +
+                        '</div>',
+                    buttons: [
+                        {
+                            type: 'button',
+                            name: 'cancel',
+                            content: 'Cancel',
+                            className: 'btn-primary',
+                            dismiss: true
+                        },
+                        {
+                            type: 'submit',
+                            name: 'save',
+                            content: 'Save',
+                            className: 'btn-primary',
+                            dismiss: false
+                        }
+                    ],
+                    open: function(modal) {
+                        $('form', modal).submit(function() {
+                            var paid = $('input[name="paid"]:eq(0)', modal)[0].checked;
+                            var notes = $('textarea[name="notes"]', modal).val();
+                            $.ajax({
+                                url: './fee/setPaid/' + fee_id + '/' + (paid ? '1' : '0'),
+                                type: 'post',
+                                data: {notes: notes},
+                                dataType: 'json',
+                                success: function(data) {
+                                    $(modal).modal('hide');
+                                }
+                            });
+                            return false;
+                        });
+                    }
+                });
             }
         });
         return false;
