@@ -42,13 +42,24 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-4">
+          {{#currentUser.is_runner}}
+              <select id="itemStatusCombo" name="itemStatus">
+                  <option value="Draft">Draft</option>
+                  <option value="Suggestion">Suggestion</option>
+                  <option value="Bidding" selected="selected">Bidding</option>
+                  <option value="In Progress">In Progress</option>
+              </select>
+          {{/currentUser.is_runner}}
+        </div>
+
         {{#userIsInternal}}
-        <div class="col-sm-offset-6 col-sm-3">
+        <div class="col-sm-offset-2 col-sm-3">
             <input type="checkbox" name="is_internal" id="is_internal" />
             <label for="is_internal">Internal</label>
         {{/userIsInternal}}
         {{^userIsInternal}}
-        <div class="col-sm-offset-7 col-sm-2">
+        <div class="col-sm-offset-3 col-sm-2">
         {{/userIsInternal}}
             <button class="btn btn-primary" type="submit" name="save_item">Add job</button>
         </div>

@@ -205,8 +205,19 @@ body > .container-fluid {
   margin: 0;
 }
 
+/* Styles the status dropdown: */
+#addJob #itemStatusCombo_chosen {
+  text-align: left;
+}
+#addJob #itemStatusCombo_chosen .chosen-search {
+  display: none;
+}
+#addJob #itemStatusCombo_chosen .chosen-drop {
+  border: 1px solid #e0e0e0;
+}
+
 /**
- * validation messages 
+ * validation messages
  */
 .LV_validation_message {
     position: absolute;
