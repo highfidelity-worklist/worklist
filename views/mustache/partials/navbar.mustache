@@ -19,9 +19,16 @@
                 <li><a class="wl-icon-help" href="./help">Help</a></li>
             </ul>
             
-            <ul class="nav navbar-nav navbar-right col-sm-3 dd-max-width">
+            <ul class="nav navbar-nav navbar-right {{#currentUser.id}} navbar-right-log-in {{/currentUser.id}} {{^currentUser.id}} navbar-right-log-out {{/currentUser.id}} col-sm-3 dd-max-width">
                 {{#currentUser.id}}
-                    <li class="dropdown col-sm-12">
+                    <li class="col-sm-5">
+                        <div id="buttons">
+                            <a href="./job/add" id="addJobButton" title="Suggest a Feature or Report a Bug">Add job</a>
+                        </div>
+                    </li>
+                {{/currentUser.id}}
+                {{#currentUser.id}}
+                    <li class="dropdown col-sm-7">
                         <a href="#" class="dropdown-toggle text-right text-left-xs" data-toggle="dropdown">
                             {{currentUser.nickname}}
                         <b class="caret"></b></a>

@@ -501,7 +501,11 @@ button:focus, a:focus {
     padding: 0 15px 0 0;
 }
 
-.navbar-nav.navbar-right {
+.navbar-nav.navbar-right-log-in {
+    max-width: 295px;
+}
+
+.navbar-nav.navbar-right-log-out {
     max-width: 170px;
 }
 
@@ -1174,4 +1178,19 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 }
 .modal[name='jobs'] ul.pagination {
     margin: 0 auto;
+}
+#addJobButton {
+    background-color: #007F7c;
+    padding: 8px 10px 7px;
+    color: #fff;
+    font-size: 1em;
+    border: 0;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    margin-top: 13px;
 }
