@@ -121,7 +121,7 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
-       
+        $current_user = User::find(getSessionUserId());
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
         } else {
@@ -153,6 +153,9 @@ class Notification {
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
                 $body .= $data['who'] . ' commented on ' . $itemLink . ':<br>'
                       . nl2br($data['comment']) . '<br /><br />';
+                if ($current_user->getSelf_notif()) {
+                    array_push($emails, $current_user->getUsername());
+                }
            break;
             
             case 'fee_added':
@@ -499,9 +502,6 @@ class Notification {
             break;
 
         }
-    
-        $current_user = new User();
-        $current_user->findUserById(getSessionUserId());
         if($recipients) {
             foreach($recipients as $recipient) {
                 /**
@@ -519,7 +519,8 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-                        if ($workitem->isInternal() ? $rUser->isInternal() : true) {
+                        $sendNotification = ($workitem->isInternal() ? $rUser->isInternal() : true) && (($options['type'] == 'comment' && $rUser->getId() == getSessionUserId()) ? $rUser->getSelf_notif() : true);
+                        if ($sendNotification) {
                             if(($username = $rUser->getUsername())) {
                                 array_push($emails, $username);
                             }
