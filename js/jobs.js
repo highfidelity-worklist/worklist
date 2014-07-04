@@ -323,7 +323,6 @@ function GetWorklist(npage, update, reload) {
     }
     if (search_nickname != '') {
         $('#query input[type="text"]').val(search_nickname);
-        $('#query input[type="text"]').focus();
     }
     $.ajax({
         type: "POST",
