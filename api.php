@@ -2381,6 +2381,7 @@ function getWorklist() {
     if ($ufilter != 'ALL') {
         $where .= ")";
     }
+
     // Project filter
     if (!empty($pfilter) && $pfilter != 'All') {
         if (empty($where)) {
