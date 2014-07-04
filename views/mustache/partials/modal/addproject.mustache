@@ -1,0 +1,65 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="" method="post">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add a project</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="projectname">Name</label>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="projectname" name="name" value="" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <label for="projectwebsite">Website</label>
+            </div>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="projectwebsite" name="website" value="" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="projectdescription">Description</label>
+              <textarea class="form-control" id="projectdescription" name="description"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <fieldset id="projectlogoupload">
+                <label>Drag &amp; drop or <em>select files</em> files to attach a logo.</label>
+                <ul></ul>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="projectrepourl">GitHub Repo URL</label>
+            </div>
+            <div class="col-md-8">
+              <input type="text" class="form-control" id="projectrepourl" name="repourl" value="" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="projectgithubid">GitHub Client ID</label>
+              <input type="text" class="form-control" id="projectgithubid" name="githubid" value="" />
+            </div>
+            <div class="col-md-8">
+              <label for="projectgithubsecret">GitHub Client Secret</label>
+              <input type="text" class="form-control" id="projectgithubsecret" name="githubsecret" value="" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
