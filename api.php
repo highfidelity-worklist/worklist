@@ -2019,7 +2019,7 @@ function getWorklist() {
 
     $query = false;
     $ufilter = 'ALL';
-    $searchUserId = isset($_REQUEST['user']) ? intval($_REQUEST['user']) : 0;
+
     if (array_key_exists('query', $_REQUEST)) {
         $query = trim($_REQUEST['query']);
 
@@ -2394,11 +2394,6 @@ function getWorklist() {
     // only internal users are allowed to view internal jobs
     if (! $currentUser->isInternal()) {
         $where .= " AND `".WORKLIST."`.is_internal = 0";
-    }
-    if ($searchUserId != 0) {
-        $where .= " AND (`creator_id` = {$searchUserId}
-                    OR `mechanic_id` = {$searchUserId}
-                    OR `runner_id` = {$searchUserId} )";
     }
 
     $qcnt  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
