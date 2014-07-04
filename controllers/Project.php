@@ -173,6 +173,7 @@ class ProjectController extends Controller {
             $project->setContactInfo($user->getUsername());
             $project->setOwnerId($user->getId());
             $project->setActive(true);
+            $project->setInternal(true);
             $project->setLogo($logo);
             $project->setRepo_type('git');
             $project->setRepository($_POST['github_repo_url']);
