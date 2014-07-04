@@ -59,9 +59,7 @@ class JobsController extends Controller {
         if (! empty($_REQUEST['user'])) {
             $filter->setUser($_REQUEST['user']);
         } else {
-            if (array_key_exists('user', $_REQUEST)) {
-                $filter->setUser(0);
-            }
+           $filter->setUser(0);
         }
 
         // Prevent reposts on refresh
