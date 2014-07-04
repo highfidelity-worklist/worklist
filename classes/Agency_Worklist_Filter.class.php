@@ -35,6 +35,7 @@ class Agency_Worklist_Filter {
     // Additional filter for worklist
     // 15-JAN-2011 <Reji>
     protected $subsort = "delta";
+    protected $nickname = "";
     
     public function getPaidstatus()
     {
@@ -589,5 +590,22 @@ class Agency_Worklist_Filter {
         if (isset($_COOKIE['FilterCookie'])) {
             $this->setOptions(unserialize($_COOKIE['FilterCookie']));
         }
+    }
+
+    /**
+     * @return the $nickname
+     */
+    public function getNickname()
+    {
+        return $this->nickname;
+    }
+
+    /**
+     * @param $nickname the $nickname to set
+     */
+    public function setNickname($nickname)
+    {
+        $this->nickname = (string)$nickname;
+        return $this;
     }
 }

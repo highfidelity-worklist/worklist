@@ -55,6 +55,7 @@ $(document).ready(function() {
 
     $('#query input[type="text"]').keypress(function(event) {
         if (event.keyCode == '13') {
+            search_nickname = '';
             event.preventDefault();
             $("#search").submit();
         }
@@ -63,6 +64,7 @@ $(document).ready(function() {
     $('#query input[type="text"] + button').click(function(e){
         e.preventDefault();
         $('#query input[type="text"]').val('');
+        search_nickname = '';
         affectedHeader = false;
         resetOrder = true;
         sort = 'null';
@@ -302,13 +304,11 @@ function GetWorklist(npage, update, reload) {
         clearTimeout(timeoutId);
     }
     var search_status = '',
-        search_user = '0',
         search_project = '0',
         save_filter = true,
         mobile_filter = false;
     
     search_project = $('select[name="project"]').val();
-    search_user = $('select[name="user"]').val();
 
     search_status = '';    
     if (search_status == 'Review' && only_needs_review_jobs) {
@@ -321,7 +321,9 @@ function GetWorklist(npage, update, reload) {
         search_status = 'ALL';
         mobile_filter = true;
     }
-
+    if (search_nickname != '') {
+        $('#query input[type="text"]').val(search_nickname);
+    }
     $.ajax({
         type: "POST",
         url: 'api.php',
@@ -333,7 +335,6 @@ function GetWorklist(npage, update, reload) {
             status: search_status,
             sort: sort,
             dir: dir,
-            user: search_user,
             query: $('#query input[type="text"]').val(),
             reload: ((reload == undefined) ? false : true),
             save: save_filter,
