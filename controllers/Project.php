@@ -163,8 +163,7 @@ class ProjectController extends Controller {
             $logo = '';
             if (!empty($_POST['logo'])) {
                 $file->findFileById($_POST['logo']);
-                $file->save();
-                $logo = $file->getTitle();
+                $logo = basename($file->getUrl());
             }
 
             $project = new Project();
@@ -180,6 +179,12 @@ class ProjectController extends Controller {
             $project->setGithubId($_POST['github_client_id']);
             $project->setGithubSecret($_POST['github_client_secret']);
             $project->save();
+
+            if ($file->getId()) {
+                $file->setProjectId($project->getProjectId());
+                $file->save();
+            }
+
             $journal_message = '@' . $user->getNickname() . ' added project *' . $name . '*';
             sendJournalNotification($journal_message);
             echo json_encode(array(
