@@ -1,5 +1,6 @@
 <div id="info-top">
     <div class="info-summ-big">
+        <div class="visits-box">Viewed <span class="visits">0</span> times</div>
         <div class="info-ID">
             <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
         </div>
@@ -30,7 +31,6 @@
     #{{worklist.id}}
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
-<div class="visits-box">viewed: <span class="visits"></span></div>
 {{#editing}}
     <form id="workitem-form" method="post" action="./{{worklist.id}}">
 {{/editing}}
