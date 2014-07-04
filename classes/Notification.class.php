@@ -5,20 +5,23 @@
  * subscriptions
  */
 class Notification {
-    public static function getBidNotificationEmails($workitem = 0) {
+    public static function getBidNotificationEmails($internal_only = false) {
+        $internalCond = $internal_only ? ' AND `is_internal` = 1' : '';
         $result = array();
             $uid = getSessionUserId();
             $sql = "SELECT u.username
                 FROM `" . USERS . "` u
                 WHERE `bidding_notif` = 1
-                AND `is_active` = 1";
+                AND `is_active` = 1
+                {$internalCond}";
             $res = mysql_query($sql);
             while($row = mysql_fetch_row($res)) {
             $bidNotifs[]= $row[0];
         }
             return $bidNotifs;
     }
-    public static function getReviewNotificationEmails($workitem = 0) {
+    public static function getReviewNotificationEmails($internal_only = false) {
+        $internalCond = $internal_only ? ' AND `is_internal` = 1' : '';
         $result = array();
             $uid = getSessionUserId();
             $sql = "SELECT u.username
@@ -26,7 +29,8 @@ class Notification {
                 WHERE ((`review_notif` = 1
                 AND `id` != $uid)
                 OR (self_notif = 1 and `id` = $uid)
-                AND `is_active` = 1)";
+                AND `is_active` = 1)
+                {$internalCond}";
             $res = mysql_query($sql);
             while($row = mysql_fetch_row($res)) {
             $reviewNotifs[]= $row[0];
@@ -56,7 +60,7 @@ class Notification {
     public static function statusNotify($workitem) {
         switch($workitem->getStatus()) {
             case 'Bidding':
-                $emails = self::getBidNotificationEmails();
+                $emails = self::getBidNotificationEmails($workitem->isInternal());
                 $options = array('type' => 'new_bidding',
                     'workitem' => $workitem,
                     'emails' => $emails);
@@ -66,7 +70,7 @@ class Notification {
         switch($workitem->getStatus()) {
             case 'Review':
                 if (!empty($options['status_change']) &&($workitem->getStatus() == 'Code Review')) {
-                    $emails = self::getReviewNotificationEmails();
+                    $emails = self::getReviewNotificationEmails($workitem->isInternal());
                     $options = array('type' => 'new_review',
                         'workitem' => $workitem,
                         'emails' => $emails);
@@ -117,7 +121,7 @@ class Notification {
         $emails = isset($options['emails']) ? $options['emails'] : array();
 
         $workitem = $options['workitem'];
-       
+        $current_user = User::find(getSessionUserId());
         if (isset($options['project_name'])) {
             $project_name = $options['project_name'];
         } else {
@@ -135,9 +139,10 @@ class Notification {
         $revision = isset($options['revision']) ? $options['revision'] : null;
         
         $itemId = $workitem -> getId();
-        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '"">#' . $itemId . '</a>';
+        $itemLink = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . '</a>';
         $itemTitle = '#' . $itemId  . ' (' . $workitem -> getSummary() . ')';
         $itemTitleWithProject = '#' . $itemId  . ': ' . $project_name . ': (' . $workitem -> getSummary() . ')';
+        $itemLinkTitle = '<a href="' . WORKLIST_URL . $itemId . '">#' . $itemId . ' - ' . $workitem -> getSummary() . '</a>';
         $body = '';
         $subject = '#' . $itemId . ' ' . html_entity_decode($workitem -> getSummary(), ENT_QUOTES);
         $from_address = '<noreply-'.$project_name.'@worklist.net>';
@@ -146,21 +151,12 @@ class Notification {
             case 'comment':
                 $headers['From'] = '"' . $project_name . '-comment" ' . $from_address;
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
-                $body  = 'New comment was added to the item ' . $itemLink . '.<br>';
-                $body .= $data['who'] . ' says:<br />'
-                      . nl2br($data['comment']) . '<br /><br />'
-                      . 'Project: ' . $project_name . '<br />'
-                      . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                      if($workitem->getRunner() != '') {
-                          $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                      }
-                      if($workitem->getMechanic() != '') {
-                          $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                      }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
-            break;
+                $body .= $data['who'] . ' commented on ' . $itemLink . ':<br>'
+                      . nl2br($data['comment']) . '<br /><br />';
+                if ($current_user->getSelf_notif()) {
+                    array_push($emails, $current_user->getUsername());
+                }
+           break;
             
             case 'fee_added':
                 if ($workitem->getStatus() != 'Draft') {
@@ -409,18 +405,7 @@ class Notification {
             break;
 
             case 'new_review':
-                $body = "New item is available for review: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
-                . 'Project: ' . $project_name . '<br />'
-                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                }
-                if($workitem->getMechanic() != '') {
-                    $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You can view the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
+                $body = "Now ready for a code review: " . $itemLinkTitle . ' <br /><br />';
             break;
 
             case 'suggested':
@@ -517,9 +502,6 @@ class Notification {
             break;
 
         }
-    
-        $current_user = new User();
-        $current_user->findUserById(getSessionUserId());
         if($recipients) {
             foreach($recipients as $recipient) {
                 /**
@@ -537,11 +519,11 @@ class Notification {
                         //Does the recipient exists
                         $rUser = new User();
                         $rUser->findUserById($recipientUser);
-                        if(($username = $rUser->getUsername())){
-                            // check if we already sending email to this user
-                            //if(!in_array($username, $emails)){
+                        $sendNotification = ($workitem->isInternal() ? $rUser->isInternal() : true) && (($options['type'] == 'comment' && $rUser->getId() == getSessionUserId()) ? $rUser->getSelf_notif() : true);
+                        if ($sendNotification) {
+                            if(($username = $rUser->getUsername())) {
                                 array_push($emails, $username);
-                            //}
+                            }
                         }
                     }
                 }

@@ -5,6 +5,7 @@ class ProjectController extends Controller {
         $method = '';
         switch($action) {
             case 'view':
+            case 'add':
             case 'addDesigner':
             case 'designers':
             case 'removeDesigner':
@@ -140,7 +141,67 @@ class ProjectController extends Controller {
         parent::run();
     }
 
-    function addCodeReviewer($id, $user_id) {
+    public function add($name) {
+        $this->view = null;
+        try {
+            $user = User::find(getSessionUserId());
+            if (!$user->getId() || !$user->getIs_admin()) {
+                throw new Exception('Action not allowed.');
+            }
+            if (!ctype_alnum($name) || !ctype_alpha($name[0])) {
+                throw new Exception('The name of the project can only contain letters (A-Z) and numbers (0-9) and must start with a letter.');
+            }
+            try {
+                $project = Project::find($name);
+            } catch (Exception $e) {}
+
+            if (is_object($project) && $project->getProjectId($name)) {
+                throw new Exception('Project with the same name already exists!');
+            }
+
+            $file = new File();
+            $logo = '';
+            if (!empty($_POST['logo'])) {
+                $file->findFileById($_POST['logo']);
+                $logo = basename($file->getUrl());
+            }
+
+            $project = new Project();
+            $project->setName($name);
+            $project->setDescription($_POST['description']);
+            $project->setWebsite($_POST['website']);
+            $project->setContactInfo($user->getUsername());
+            $project->setOwnerId($user->getId());
+            $project->setActive(true);
+            $project->setInternal(true);
+            $project->setLogo($logo);
+            $project->setRepo_type('git');
+            $project->setRepository($_POST['github_repo_url']);
+            $project->setGithubId($_POST['github_client_id']);
+            $project->setGithubSecret($_POST['github_client_secret']);
+            $project->save();
+
+            if ($file->getId()) {
+                $file->setProjectId($project->getProjectId());
+                $file->save();
+            }
+
+            $journal_message = '@' . $user->getNickname() . ' added project *' . $name . '*';
+            sendJournalNotification($journal_message);
+            echo json_encode(array(
+                'success' => true,
+                'message' => $journal_message
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'message' => $error
+            ));
+        }
+    }
+
+    public function addCodeReviewer($id, $user_id) {
         $this->view = null;
         try {
             $project = Project::find($id);
@@ -189,7 +250,7 @@ class ProjectController extends Controller {
         }
     }
 
-    function addDesigner($id, $user_id) {
+    public function addDesigner($id, $user_id) {
         $this->view = null;
         try {
             $project = Project::find($id);

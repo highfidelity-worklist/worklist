@@ -5,6 +5,7 @@ var AddJob = {
 
     init: function() {
         $('select[name="itemProject"]').chosen({width: '100%'});
+        $('select[name="itemStatus"]').chosen({width: '100%'});
 
         $('form#addJob').submit(AddJob.formSubmit);
 
@@ -109,7 +110,7 @@ var AddJob = {
 
         var itemProject = new LiveValidation('itemProjectCombo');
         itemProject.add(Validate.Exclusion, {
-            within: ['select'], 
+            within: ['select'],
             partialMatch: true,
             failureMessage: "You have to choose a project!"
         });
@@ -137,6 +138,7 @@ var AddJob = {
                 notes: $("textarea[name='notes']").val(),
                 page: $("input[name='page']").val(),
                 project_id: $("select[name='itemProject']").val(),
+                status: $("select[name='itemStatus']").val(),
                 skills: skills,
                 fileUpload: {uploads: AddJob.uploadedFiles}
             },

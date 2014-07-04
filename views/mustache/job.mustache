@@ -264,32 +264,9 @@
                 <div class="skills-label">Labels:</div>
                 {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}<i>None</i>{{/skillsCount}}
             </div>
-            {{#canReview}}
-                <div class="code-review">
-                    <h4>Time for a code review!</h4>
-                    The code written for this job is ready to be reviewed.
-                    <strong>View the diff</strong> to see the code, then start the review ...
-                    {{^workitem.getCRStarted}}
-                        {{#userHasRights}}
-                            <input type="submit" value="Start Code Review" onClick="return Job.showReviewForm();"
-                              title="Start a code review on this job." data-toggle="tooltip" />
-                        {{/userHasRights}}
-                        {{^userHasRights}}
-                            <input type="submit" value="Start Code Review" onClick="return false;"
-                              title="You are not authorized to Code Review this job." data-toggle="tooltip" />
-                        {{/userHasRights}}
-                    {{/workitem.getCRStarted}}
-                    {{#workitem.getCRStarted}}
-                        {{^workitem.getCRCompleted}}
-                            {{#canEndReview}}
-                                <input type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"
-                                  title="End a code review on this job." data-toggle="tooltip" />
-                            {{/canEndReview}}
-                        {{/workitem.getCRCompleted}}
-                    {{/workitem.getCRStarted}}
-                    <div id="review-pointer"></div>
-                </div>
-            {{/canReview}}
+            {{#codeReview.canI}}
+              {{> job/codeReview }}
+            {{/codeReview.canI}}
         {{/editing}}
         {{^editing}}
         <div id="for_view">
@@ -383,18 +360,7 @@
 {{#editing}}
     </form>
 {{/editing}}
-{{#message}}
-    <div id="message" style="display:none; padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">
-        <p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span><strong>Info:</strong>{{message}}</p>
-    </div>
-{{/message}}
-{{> popup-startreview}}
-{{> popup-endreview}}
-{{> popup-fees}}
-{{> popup-fee-info}}
 {{> review-url-dialog}}
-{{> popup-paid}}
-{{> popup-runner-job-edit}}
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
@@ -421,7 +387,6 @@
     var is_project_runner = {{is_project_runner}};
     var showAcceptBidButton = {{showAcceptBidButton}};
     var hasAcceptedBids = {{hasAcceptedBids}};
-    var insufficientRightsToEdit = {{insufficientRightsToEdit}};
     var showPingBidderButton = {{showPingBidderButton}};
     var showWithdrawOrDeclineButtons = {{showWithdrawOrDeclineButtons}};
     var job_status = '{{worklist.status}}';

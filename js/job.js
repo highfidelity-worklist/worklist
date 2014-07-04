@@ -117,72 +117,12 @@ var Job = {
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
 
-        // default dialog options
-        var dialog_options = { dialogClass: 'white-theme', autoOpen: false, modal: true, maxWidth: 600, width: 485, show: 'fade', hide: 'fade', resizable: false };
-        $('#popup-bid').dialog(dialog_options);
-
-        $('#popup-ineligible').dialog({
-            dialogClass: 'white-theme',
-            modal: true,
-            title: "Your account is ineligible",
-            autoOpen: false,
-            width: 300,
-            position: ['top'],
-            open: function() {
-                $('#button_settings').click(function() {
-                    document.location.href = './settings#payment-info';
-                });
-            }
-        });
-
-        $('#popup-startreview').dialog({
-            closeOnEscape: false,
-            dialogClass: 'white-theme',
-            autoOpen: false,
-            modal: false,
-            width: 400,
-            show: 'fade',
-            hide: 'fade',
-            open: function(event, ui) {
-                $(".ui-dialog-titlebar-close").hide();
-            }
-        });
-        $('#popup-paid').dialog({ dialogClass: 'white-theme', autoOpen: false, maxWidth: 600, width: 450, show: 'fade', hide: 'fade' });
-        $('#message').dialog({ dialogClass: 'white-theme', autoOpen: true, show: 'fade', hide: 'fade' });
-        $('#popup-reviewurl').dialog({
-            autoOpen: false,
-            dialogClass: 'white-theme',
-            modal: true,
-            width: 450,
-            show: 'fade',
-            hide: 'fade',
-            resizable: false,
-            close: function() {
-                $('select[name=quick-status]').val(origStatus);
-            }
-        });
-
        $('#commentform input[name=newcomment]').click(function(event) {
             event.preventDefault();
             Job.postComment();
         });
 
         $('#commentform input[name=cancel]').addClass('hidden');
-
-        $("#switchmode_edit").click(function(event) {
-            if (!is_project_runner && insufficientRightsToEdit) {
-                     $("#workitem_no_edit").dialog({
-                         title: "Insufficient User Rights",
-                         autoOpen: false,
-                         height: 120,
-                         width: 370,
-                         position: ['center','center'],
-                         modal: true
-                });
-                $("#workitem_no_edit").dialog("open");
-                event.preventDefault();
-            }
-        });
 
         if ($('#is_internal').length) {
             $('#is_internal').on('click', function() {
@@ -267,81 +207,7 @@ var Job = {
         })(jQuery);
 
         if (user_id) {
-            $('.paid-link').click(function(e){
-                e.stopPropagation();
-                var fee_id = $(this).attr('id').substr(8);
-                if ($('#feeitem-' + fee_id).html() == "Yes") {
-                    $('#paid_check').attr('checked', "1");
-                } else if ($('#feeitem-' + fee_id).html() == "No" ) {
-                    $('#notpaid_check').attr('checked', "1");
-                }
-
-                $('#paid_check').click(function() {
-                       var $checkbox = $('#notpaid_check');
-                       $checkbox.attr('checked', !$checkbox.attr('checked'));
-                });
-                $('#notpaid_check').click(function() {
-                       var $checkbox = $('#paid_check');
-                       $checkbox.attr('checked', !$checkbox.attr('checked'));
-                });
-                AjaxPopup('#popup-paid',
-                    'Pay Fee',
-                    'api.php?action=getFeeItem',
-                    fee_id,
-                    [ ['input', 'itemid', 'keyId', 'eval'],
-                    ['textarea', 'paid_notes', 'json[2]', 'eval'],
-                    ['checkbox', 'paid_check', 'json[1]', 'eval'] ]);
-                    $('.paidnotice').empty();
-                    $('#popup-paid').dialog('open');
-
-                    // onSubmit event handler for the form
-                    $('#popup-paid > form').submit(function() {
-                        // now we save the payment via ajax
-                        $.ajax({
-                            url: 'api.php',
-                            dataType: 'json',
-                            data: {
-                                action: 'payCheck',
-                                itemid: $('#' + this.id + ' input[name=itemid]').val(),
-                                paid_check: $('#' + this.id + ' input[name=paid_check]').prop('checked') ? 1 : 0,
-                                paid_notes: $('#' + this.id + ' textarea[name=paid_notes]').val()
-                            },
-                            success: function(data) {
-                                // We need to empty the notice field before we refill it
-                                if (!data.success) {
-                                    // Failure message
-                                    var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-error ui-corner-all">' +
-                                                    '<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-                                                    '<strong>Alert:</strong> ' + data.message + '</p>' +
-                                                '</div>';
-                                    $('.paidnotice').append(html);
-                                    // Fire the failure event
-                                    $('#popup-paid > form').trigger('failure');
-                                } else {
-                                    // Success message
-                                    var html = '<div style="padding: 0 0.7em; margin: 0.7em 0;" class="ui-state-highlight ui-corner-all">' +
-                                                    '<p><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-                                                    '<strong>Info:</strong> ' + data.message + '</p>' +
-                                                '</div>';
-                                    $('.paidnotice').append(html);
-                                    // Fire the success event
-                                    $('#popup-paid > form').trigger('success');
-                                }
-                            }
-                        });
-
-                        return false;
-                    });
-
-                    // Here we need to capture the event and fire a new one to the upper container
-                    $('#popup-paid > form').bind('success', function(e, d) {
-                        $('.table-feelist tbody').empty();
-                        //TODO Make this use a refresh when this page supports AJAX data refresh in future
-                        location.reload();
-                    });
-
-                return false;
-            });
+            $('.paid-link').click(Job.paidModal);
 
             $('.wd-link').click(function(e) {
                 e.stopPropagation();
@@ -522,15 +388,6 @@ var Job = {
             });
 
         }
-            $('#bid').click(function(e){
-                if ( already_bid
-                    && $(this).parent().find('#mechanic_id').val() == user_id
-                  && !confirm("You have already placed a bid, do you want to place a new one?")
-                ) {
-                    $('#popup-bid').dialog('close');
-                    return false;
-                }
-            });
 
         $('select[name="quick-status"]').change(function(ev) {
             if ($(this).val() == 'Done' && budget_id == 0) {
@@ -546,28 +403,27 @@ var Job = {
                 var html = "<span>Changing status from <strong>" + job_status + "</strong> to <strong>"
                     + $(this).val() +"</strong></span>";
 
-                if ($(this).val() == 'Functional') {
+                if ($(this).val() == 'QA Ready') {
                     if(mechanic_id == user_id && promptForReviewUrl) {
-                    $('#sandbox-url').val(sandbox_url);
-                        $('#quick-status-review').val($(this).val());
-                        $('#popup-reviewurl').dialog('open');
-                    } else {
-                        openNotifyOverlay(html, false, false);
-                        $('#quick-status form').submit();
+                        Job.reviewUrlModal(function() {
+                            $('#quick-status form').submit();
+                        });
                     }
                 } else {
                     openNotifyOverlay(html, false, false);
                     $('#quick-status form').submit();
                 }
             }
+            return false;
         });
 
         if (showReviewUrlPopup) {
             $('#edit_review_url').click(function(e){
-                $('#sandbox-url').val(sandbox_url);
-                $('#popup-reviewurl').dialog('open');
+                Job.reviewUrlModal();
             });
         }
+
+        Job.setCodeReviewEvents();
     },
 
     postComment: function() {
@@ -864,49 +720,6 @@ var Job = {
         return false;
     },
 
-    showReviewForm: function() {
-        $.ajax({
-            type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'startCodeReview'
-            },
-            dataType: 'json',
-            success: function(data) {
-                closeNotifyOverlay();
-                if (data.success) {
-                    $('#popup-startreview').dialog('open');
-                } else {
-                    openNotifyOverlay(data.data);
-                    $("#sent-notify").css({'min-height': '80px', 'text-align': 'left'});
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500);
-                }
-            },
-            error: function() {
-                closeNotifyOverlay();
-            }
-        });
-        return false;
-    },
-
-    showEndReviewForm: function() {
-        $('#popup-endreview').dialog({
-            dialogClass: 'white-theme',
-            closeOnEscape: false,
-            autoOpen: false,
-            modal: false,
-            width: 650,
-            open: function(event, ui) {
-                $(".ui-dialog-titlebar-close").hide();
-            }
-        });
-        $('#popup-endreview').dialog('open');
-    },
-
     saveWorkitem: function() {
         var massValidation;
 
@@ -1031,58 +844,129 @@ var Job = {
         }
     },
 
-    cancelStartReview: function() {
+    refreshCodeReviewPartial: function(data) {
+        Utils.parseMustache('partials/job/codeReview', data, function(parsed) {
+            $('#code-review').remove();
+            $('.skills').after(parsed);
+            Job.setCodeReviewEvents();
+        });
+    },
+
+    setCodeReviewEvents: function() {
+        $('#code-review > form').submit(function() {
+            if ($(this).parent().attr('started') == '1') {
+                Job.endCodeReview();
+            } else {
+                Job.startCodeReview();
+            }
+            return false;
+        });
+        $('#code-review > form button[type="button"]').click(Job.cancelCodeReview);
+    },
+
+    startCodeReview: function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'cancelCodeReview'
-            },
+            url: './job/startCodeReview/' + workitem_id,
             dataType: 'json',
             success: function(data) {
-                if (data.success) {
-                    $('#popup-startreview').dialog('close');
-                }
+                Job.refreshCodeReviewPartial(data);
             }
         });
         return false;
     },
 
-    changeButton: function() {
-        var buttonElement = $('.cR');
-        buttonElement.remove();
-        var endcrButton = '<input class="iToolTip endCr smbutton" type="submit" value="End Code Review" onClick="return Job.showEndReviewForm();"/>';
-        $('#review-pointer').before(endcrButton);
-        $('#popup-startreview').dialog('close');
-        MapToolTips();
-    },
-
-    closeEndReviewDialog: function() {
-        $('#popup-endreview').dialog('close');
-    },
-
-    cancelReview: function() {
+    cancelCodeReview: function() {
         $.ajax({
             type: 'post',
-            url: 'jsonserver.php',
-            data: {
-                workitem: workitem_id,
-                userid: user_id,
-                action:'cancelCodeReview'
-            },
+            url: './job/cancelCodeReview/' + workitem_id,
             dataType: 'json',
             success: function(data) {
-                if (data.success) {
-                    var buttonElement = $('.endCr');
-                    buttonElement.remove();
-                    var startcrButton = '<input class="iToolTip cR smbutton" type="submit" value="Start Code Review"' +
-                        ' onclick="return Job.showReviewForm();" alt="">';
-                    $('#review-pointer').before(startcrButton);
-                    $('#popup-endreview').dialog('close');
-                    MapToolTips();
-                }
+                Job.refreshCodeReviewPartial(data);
+            }
+        });
+        return false;
+    },
+
+    endCodeReview: function() {
+        var fee = parseFloat($('#code-review > form input[name="fee"]').val());
+        var desc = $('#code-review > form input[name="desc"]').val();
+        $.ajax({
+            type: 'post',
+            data: {desc: desc},
+            url: './job/endCodeReview/' + workitem_id + '/' + fee,
+            dataType: 'json',
+            success: function(data) {
+                $('#code-review').remove();
+            }
+        });
+        return false;
+    },
+
+    paidModal: function(e) {
+        e.stopPropagation();
+        var fee_id = $(this).attr('id').substr(8);
+        $.ajax({
+            url: './fee/info/' + fee_id,
+            dataType: 'json',
+            success: function(data) {
+                var paidCheckedStr = (parseInt(data.paid) ? ' checked="checked"' : '');
+                var notPaidCheckedStr = (!parseInt(data.paid) ? ' checked="checked"' : '');
+                Utils.emptyFormModal({
+                    title: 'Fee paid status',
+                    content:
+                        '<div class="row">' +
+                        '  <div class="col-md-6">' +
+                        '    <label>Fee status</label>' +
+                        '  </div>' +
+                        '  <div class="col-md-3">' +
+                        '    <input type="radio" class="wlradiobox" name="paid" id="paid"' + paidCheckedStr +  '>' +
+                        '    <label for="paid">Paid</label>' +
+                        '  </div>' +
+                        '  <div class="col-md-3">' +
+                        '    <input type="radio" class="wlradiobox" name="paid" id="notpaid"' + notPaidCheckedStr +  '>' +
+                        '    <label for="notpaid">Not Paid</label>' +
+                        '  </div>' +
+                        '</div>' +
+                        '<div class="row">' +
+                        '  <div class="col-md-12">' +
+                        '    <label for="paidnotes">Notes</label>' +
+                        '    <textarea id="paidnotes" name="notes" class="form-control">' + data.notes + '</textarea>' +
+                        '  </div>' +
+                        '</div>',
+                    buttons: [
+                        {
+                            type: 'button',
+                            name: 'cancel',
+                            content: 'Cancel',
+                            className: 'btn-primary',
+                            dismiss: true
+                        },
+                        {
+                            type: 'submit',
+                            name: 'save',
+                            content: 'Save',
+                            className: 'btn-primary',
+                            dismiss: false
+                        }
+                    ],
+                    open: function(modal) {
+                        $('form', modal).submit(function() {
+                            var paid = $('input[name="paid"]:eq(0)', modal)[0].checked;
+                            var notes = $('textarea[name="notes"]', modal).val();
+                            $.ajax({
+                                url: './fee/setPaid/' + fee_id + '/' + (paid ? '1' : '0'),
+                                type: 'post',
+                                data: {notes: notes},
+                                dataType: 'json',
+                                success: function(data) {
+                                    $(modal).modal('hide');
+                                }
+                            });
+                            return false;
+                        });
+                    }
+                });
             }
         });
         return false;
@@ -1092,9 +976,61 @@ var Job = {
         $.ajax({
             url: 'api.php?action=visitQuery&jobid=' + workitem_id,
             dataType: 'json',
-            success: function(json) {
+            success: function (json) {
                 $('.visits').text(json.visits);
-                $('.visits-box').css('visibility', 'visible');
+            }
+        });
+    },
+
+    reviewUrlModal: function(fAfter) {
+        Utils.emptyFormModal({
+            title: 'Sandbox URL',
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-4">' +
+                '    <label for="sburl">QA Reviews URL</label>' +
+                '  </div>' +
+                '  <div class="col-md-8">' +
+                '    <input type="text" class="form-control" name="url" ' +
+                '      id="sburl" value="' + sandbox_url + '">' +
+                '  </div>' +
+                '</div>' +
+                '<div class="row">' +
+                '  <div class="col-md-12">' +
+                '    <label for="sburlnotes">Notes</label>' +
+                '    <textarea id="sburlnotes" name="notes" class="form-control"></textarea>' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'save',
+                    content: 'Save',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('form', modal).submit(function() {
+                    var url = $('input[name="url"]', modal).val();
+                    var notes = $('textarea[name="notes"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './job/updateSandboxUrl/' + workitem_id,
+                        data: {
+                            url: url,
+                            notes: notes
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            $(modal).modal('hide');
+                            if (fAfter) {
+                                fAfter();
+                            }
+                        }
+                    });
+                  return false;
+                });
             }
         });
     }

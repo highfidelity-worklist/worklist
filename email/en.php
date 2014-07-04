@@ -351,7 +351,7 @@ replacement data:
     '
 ),
 'workitem-mention' => array(
-    'subject' => '{author} mentioned you on #{job_id}',
+    'subject' => '#{job_id} {summary}',
     'body' => '
         {author} mentioned you:<br /><br />
         {text}<br /><br />

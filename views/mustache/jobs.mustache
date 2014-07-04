@@ -1,5 +1,5 @@
 <form class="row" id="search">
-    <div id="query" class="col-sm-4 col-md-4">
+    <div id="query" class="col-sm-6 col-md-6">
       <fieldset>
         <input type="text" name="query" placeholder="Search" value="{{getQuery}}" />
         <button href="#" class="glyphicon glyphicon-remove" title="Clear Search Parameters"></button>
@@ -8,23 +8,9 @@
     <div class="col-sm-3 col-md-3 filter">
       {{& projectSelect}}
     </div>
-    {{#currentUser.id}}
     <div class="col-sm-3 col-md-3 filter">
       {{& statusSelect}}
     </div>
-    <div id="buttons" class="col-xs-12 col-sm-2 col-md-2">
-        <p>
-            <a href="./job/add" id="addJobButton" title="Suggest a Feature or Report a Bug">
-                Add job
-            </a>
-        </p>
-    </div>
-    {{/currentUser.id}}
-    {{^currentUser.id}}
-    <div class="col-sm-5 col-md-5 filter">
-      {{& statusSelect}}
-    </div>
-    {{/currentUser.id}}
 </form>
 <section class="row">
     <table class="table table-striped table-worklist">

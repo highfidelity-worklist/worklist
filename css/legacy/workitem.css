@@ -422,31 +422,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-size: 14px;
 }
 
-.code-review {
-    border-bottom: 2px solid #e1e8ea;
-    font-size: 14px;
-    padding: 9px 0 9px 9px;
-    line-height: 21px;
-    margin-bottom: 8px;
-}
-
-.code-review span {
-    font-size: 18px;
-    font-weight: bold;
-    float: left;
-    width: 100%;
-}
-
-.code-review .buttonContainer {
-    top: 4px !important;
-    right: 3px;
-    background-color: #9A3018 !important;
-}
-
-.code-review .buttonContainer .smbutton{
-    border-color: #9a6566 !important;
-}
-
 .skills {
     padding-left: 10px;
 }
@@ -930,16 +905,6 @@ a.profile-link {
     color: #FF0000;
 }
 
-#cancelstartcodereview,
-#cancelendreview,
-#startcodereview {
-    cursor: pointer;
-}
-
-#cancelendreview {
-    float: left;
-}
-
 #following,
 .switchmode,
 .switchmode-done {
@@ -1021,12 +986,6 @@ div.mechanic_id ul {
 
 .clear {
     clear: both;
-}
-
-#popup-fee-info table,
-#popup-fee-info table th,
-#popup-fee-info table td {
-    border: 0;
 }
 
 #info-fee-notes {
@@ -1120,17 +1079,6 @@ h1.newProject {
     width: 165px;
 }
 
-
-#popup-form-endreview,
-#popup-endreview .field,
-#popup-reviewurl .field {
-    margin-top: 10px;
-}
-
-#popup-endreview li {
-    font-size: 16px;
-    list-style-type: square;
-}
 
 .ui-menu .ui-menu-item a.ui-state-hover,
 .ui-menu .ui-menu-item a.ui-state-active {

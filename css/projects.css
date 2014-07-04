@@ -172,221 +172,96 @@
 }
 
 /**
- * Popups
+ * Attachments styling
  */
-.signupLink {
-    font-size: 1.3em;
-    color: #5488D1 !important;
+#projectlogoupload {
+    background-color: #E9EEEF;
+    border: 1px dashed #cbcbcb;
+    padding: 10px;
+    color: #007F7c;
 }
 
-.headerTitle{
-    padding: 10px 20px;
-}
-
-.headerText {
-    font-size: 1.5em;
-    padding: 0px 20px;
-    width: 76%;
+#projectlogoupload > .loading {
     float: right;
-    color: #666;
+    width: 12px;
+    height: 12px;
+    position: relative;
+    opacity: .4;
+    margin: 6px 10px;
 }
 
-.headerButtons {
-    float: left;
-    padding-left: 20px;
+#projectlogoupload > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
-.headerButtons  input{
-    font-weight: bold;
-} 
-
-#save_project {
-    float: right;
+#projectlogoupload > ul > li {
+    margin: 6px 3px;
+    display: inline-block;
+    z-index: 2;
 }
 
-#signup {
-    float: right;
+#projectlogoupload > ul > li > i {
+    margin-right: -5px;
+}
+
+#projectlogoupload > ul > li {
+    padding: 2px 5px;
+    background-color: #e9eeef;
+    font-size: 12px;
+    color: #608E96;
+    border-width: 1px;
+}
+
+#projectlogoupload > ul > li,
+#projectlogoupload > ul > li > i {
+    border-color: #cbcbcb;
+    border-style: solid;
+}
+
+#projectlogoupload > ul > li > i {
     cursor: pointer;
-    margin: 20px;
+    color: #000000;
+    padding: 4px 0 4px 5px;
+    border-width: 0 0 0 1px;
+    margin: -2px 2px;
+    line-height: 1.3em;
 }
 
-#popup-addproject .smbutton {
-    color: #FFFFFF !important;
-    background: none !important;
-    font-size: 13px !important;
-    border-left: 1px solid #83a8a6 !important;
-    padding: 1px 0 0 8px !important;
-    width: auto !important;
-    position: relative;
-    height: 28px !important;
-    top: -1px;
-    margin: 0 !important;
-    letter-spacing: 1px !important;
-    right: -2px;
+#projectlogoupload label em {
+    color: #333;
+    font-weight: none;
+    text-decoration: underline;
+    cursor: pointer;
+    font-style: normal;
 }
 
-#popup-addproject .uploadbutton .smbutton {
-    padding: 7px 3px 6px 9px !important;
-    right: -5px !important;
-    top: 6px;
+
+/* Hides <input type="file"> while simulating "Browse" button: */
+#projectlogoupload .fd-file {
+  opacity: 0;
+  font-size: 118px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  filter: alpha(opacity=0);
+  font-family: sans-serif;
 }
 
-#popup-addproject .fileUploadButton {
-    background: url("../images/icons/clip.png") no-repeat scroll left top transparent;
-    height: 32px;
-    line-height: 32px;
-    margin: 10px 0;
-    padding-left: 35px;
+/* Provides visible feedback when use drags a file over the drop zone: */
+#projectlogoupload.fd-zone.over {
+    border-color: #007F7c;
+    background: #eee;
 }
 
-#popup-addproject .buttonContainer {
-    display: inline;
-    float: left;
-    position: relative;
-    top: -16px;
-    margin: 11px 0 4px 0;
-    text-align:right;
-    background-color: #608E96;
-    border-radius: 4px;
-    height: 27px;
-    padding: 1px 14px 0 27px;
-}
-
-#popup-addproject .uploadbutton {
-    background-image: url('../images/primaryIcons-WL.png') !important;
-    background-position: 7px -1013px !important;
-    background-repeat: no-repeat !important;
-    padding-left: 28px !important;
-    line-height: 15px;
-}
-
-#popup-addproject {
-    padding: 10px 31px 55px 30px !important;
-    margin-top: -29px;
-}
-
-#popup-addproject div.addproject {
-    padding-top: 9px; 
-    padding-bottom: 9px;  
-    background-color: #E8EFF0; 
-    position: relative; 
-    float: left;
-    width: 539px;
-    margin-left: -22px;
-    margin-top: -3px;
-    margin-bottom: -37px;
-}
-
-#popup-addproject div.addproject input {
-    margin: 10px 22px !important; 
-    font-size: 18px;
-    font-weight: normal !important;
-    padding: 0 18px;
-    height: 44px;
-    width: 134px;
-    background-color: #007F7C !important;
-}
-
-#popup-addproject .help {
-    width: 341px;
-    float: left;
-    font-size: 12px;
-    padding: 0 56px 28px 15px;
-    margin-top: -10px;
-    line-height: 16px;
-    color: #797979;
-}
-
-#popup-addproject .help strong {
-    color: #666666 !important;
-}
-
-#popup-addproject .help a {
-    color: #007F7C !important;
-    font-weight: bold;
-}
-
-#popup-addproject .upload {
-    width: 205px;
-    float: left;
-    font-size: 12px;
-    padding: 4px 137px 14px 11px;
-    margin-top: -10px;
-    line-height: 16px;
-}
-
-#popup-addproject .info-label span.title {
-    font-size: 18px;
-    color: #608e96;
-}
-
-#popup-addproject .info-label textarea,
-#popup-addproject .info-label input[type=text] {
-    width: 474px;
-    border: 1px solid #d1cdc3;
-    margin: 3px 0 15px 0;
-}
-
-#popup-addproject .info-label textarea {
-    margin: 6px 0 14px 0;
-    height: 173px;
-    padding: 6px 8px 6px 10px;
-    line-height: 18px;
-}
-
-#popup-addproject .info-label input[type=text] {
-    height: 17px;
-    font-weight: bold;
-}
-
-#popup-addproject .info-label #name {
-    font-size: 16px;
-    padding: 8px 9px 7px 9px !important;
-    margin-top: 4px;
-}
-
-#popup-addproject .info-label #website {
-    padding: 7px 9px 8px 9px !important;
-    margin-top: 5px;
-}
-
-.addproject_img {
-    cursor: auto;  
-}
-
-.LV_validation_message {
-    font-size: 12px;
-    background-image: none;
-    margin-left: 76px;
-    font-weight: bold !important;
-}
-
-.error-submit {
-    font-size: 12px;
-    float: left;
-    margin-left: 171px;
-    margin-top: -47px;
-    width: 300px;
-    font-weight: bold;
-    display:none;
-}
-
-.error-submit strong {
-    color: #d45955!important;
-}
-
-textarea.LV_invalid_field,
-input.LV_invalid_field {
-    border-color: #d45955!important;
-}
-
-#github_container {
-    clear: both;
-    font-size: 12px !important;
-    font-weight: normal;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-}
-
-#custom-github-info {
-    padding-bottom: 15px;
+/* Essential FileDrop zone element configuration: */
+#projectlogoupload.fd-zone {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
 }

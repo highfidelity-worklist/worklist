@@ -1089,77 +1089,6 @@ function dump_row_values($row) {
     return $dump;
 }
 
-function addProject() {
-    $journal_message = '';
-    $nick = '';
-
-    $userId = getSessionUserId();
-    if ($userId) {
-        initUserById($userId);
-        $user = new User();
-        $user->findUserById( $userId );
-        $nick = $user->getNickname();
-
-        $project = new Project();
-        $cr_3_favorites = $_REQUEST["cr_3_favorites"];
-        $args = array(
-            'name',
-            'description',
-            'logo',
-            'website',
-            'checkGitHub',
-            'github_repo_url',
-            'defaultGithubApp',
-            'githubClientId',
-            'githubClientSecret'
-        );
-
-        foreach ($args as $arg) {
-            $$arg = !empty($_POST[$arg]) ? $_POST[$arg] : '';
-        }
-        
-        if (!ctype_alnum($name)) {
-            die(json_encode(array('error' => "The name of the project can only contain letters (A-Z) and numbers (0-9). Please review and try again.")));
-        }
-        $repository = $name;
-
-        if ($project->getIdFromName($name)) {
-            die(json_encode(array('error' => "Project with the same name already exists!")));
-        }
-
-        $project->setName($name);
-        $project->setDescription($description);
-        $project->setWebsite($website);
-        $project->setContactInfo($user->getUsername());
-        $project->setOwnerId($userId);
-        $project->setActive(true);
-        $project->setLogo($logo);
-        if ($checkGitHub == 'true') {
-            $project->setRepo_type('git');
-            $project->setRepository($github_repo_url);
-
-            if ($defaultGithubApp == 'false') {
-                $project->setGithubId($githubClientId);
-                $project->setGithubSecret($githubClientSecret);
-            }
-        } else {
-            $project->setRepo_type('svn');
-            $project->setRepository($name);
-        }
-        $project->save();
-        
-        $journal_message = '@' . $nick . ' added project *' . $name . '*';
-        if (!empty($journal_message)) {
-            //sending journal notification
-            sendJournalNotification($journal_message);
-        }
-
-        echo json_encode(array( 'return' => "Done!"));
-    } else {
-        echo json_encode(array( 'error' => "You must be logged in to add a new project!"));
-    }
-}
-
 function setFavorite() {
     if ( !isset($_REQUEST['favorite_user_id']) ||
          !isset($_REQUEST['newVal']) ) {
@@ -1181,7 +1110,7 @@ function setFavorite() {
             $favorite_user->findUserById($favorite_user_id);
             if ($newVal == 1) {
                                     
-                $resetUrl = SECURE_SERVER_URL . 'jobs#userid=' . $favorite_user_id ;
+                $resetUrl = SECURE_SERVER_URL . 'user/' . $favorite_user_id ;
                 $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
                 $data = array();
                 $data['link'] = $resetUrl;
@@ -2590,80 +2519,6 @@ function payBonus() {
     }
     $json = json_encode(array('success' => !$error, 'message' => $message));
     echo $json;
-}
-
-function payCheck() {
-    $is_payer = !empty($_SESSION['is_payer']) ? true : false;
-    // Check if we have a payer
-    if (!$is_payer) {
-        exit('{"success": false, "message": "Nothing to see here. Move along!" }');
-    }
-
-    // Get clean data
-    if (isset($_REQUEST['paid_check']) && ($_REQUEST['paid_check'] == '1')) {
-        $paid_check = 1;
-    } else {
-        $paid_check = 0;
-    }
-    $paid_notes = $_REQUEST['paid_notes'];
-    if (isset($paid_notes) && !empty($paid_notes)) {
-        $paid_notes = mysql_real_escape_string($_REQUEST['paid_notes']);
-    } else {
-        die('{"success": false, "message": "You must write a note!" }');
-    }
-
-    if (isset($_REQUEST['itemid']) && !empty($_REQUEST['itemid'])) {
-        $fee_id = mysql_real_escape_string($_REQUEST['itemid']);
-    } else {
-        die('{"success": false, "message": "No fee set!" }');
-    }
-
-    // What user is paying
-    $user = $_SESSION['userid'];
-
-    // get the fund_id from the project that the fee/workitem belongs to
-    $fund_query = "
-        SELECT p.fund_id AS fund_id
-        FROM " . FEES . " f
-        LEFT JOIN " . WORKLIST . " w ON  f.worklist_id = w.id
-        LEFT JOIN " . PROJECTS . " p ON w.project_id = p.project_id
-        WHERE f.id = {$fee_id}";
-        
-    if ($fund_result = mysql_query($fund_query)) {
-        $fund_row = mysql_fetch_array($fund_result);
-        $fund_id = $fund_row['fund_id'];
-    } else {
-        $fund_id = 0;
-    }
-
-    // Exit of this script
-    if (Fee::markPaidById($fee_id, $user, $paid_notes, $paid_check, false, $fund_id)) {
-        /* Only send the email when marking as paid. */
-        if ($paid_check) {
-            $fees_query  =  'SELECT  `amount`,`user_id`,`worklist_id`,`desc` FROM '.FEES.'  WHERE `id` =  '.$fee_id;
-            $result1 = mysql_query($fees_query);
-            $fee_pay= mysql_fetch_array($result1);
-            $total_fee_pay = $fee_pay['amount'];
-       
-            $summary =  getWorkItemSummary($fee_pay['worklist_id']);
-
-            $mail = 'SELECT `username` FROM '.USERS.' WHERE `id` = '.$fee_pay['user_id'].'';
-            $userData = mysql_fetch_array(mysql_query($mail));
-
-            $subject = "Worklist.net paid you " . $total_fee_pay ." for ". $summary;
-            $body  = "Your Fee was marked paid.<br/>";
-            $body .= "Job <a href='./" . $fee_pay['worklist_id'] . "' />#" . $fee_pay['worklist_id'] . 
-              "</a>: <a href='./" . $fee_pay['worklist_id'] . "' />" . SERVER_URL . $fee_pay['worklist_id'] . "</a><br/>";
-            $body .= "Fee Description : ".nl2br($fee_pay['desc'])."<br/>";
-            $body .= "Paid Notes : ".nl2br($_REQUEST['paid_notes'])."<br/><br/>";
-            $body .= "Contact the job Designer with any questions<br/><br/>Worklist.net<br/>";
-
-            if(!send_email($userData['username'], $subject, $body)) { error_log("paycheck: send_email failed"); }
-        }
-        die('{"success": true, "message": "Payment has been saved!" }');
-    } else {
-        die('{"success": false, "message": "Hmm, that was unexpected... Payment Failed!" }');
-    }
 }
 
 function pingTask() {
