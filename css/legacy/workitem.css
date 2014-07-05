@@ -46,7 +46,6 @@ span.info-whisper {
     border-bottom: 2px solid #e1e8ea;
     float: left;
     color: #666;
-    font-weight: 100;
 }
 
 @media (max-width: 480px) {
