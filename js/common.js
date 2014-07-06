@@ -492,3 +492,16 @@ $(function() {
         });
     }
 });
+
+$(document).ready(function(){
+
+    $('.mentions').mention({
+        delimiter: '@',
+        sensitive : true,
+        queryBy: ['name, nickname, username'],
+        ajax : true, 
+        ajaxUrl : 'api.php?action=getMentionsList',
+        users: [{ }]
+    });
+
+});
