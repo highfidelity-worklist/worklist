@@ -1006,7 +1006,8 @@ class JobController extends Controller {
     }
 
     public function add() {
-        checkLogin();
+
+        $is_this_api = checkApiLogin();
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $this->view = new AddJobView();
@@ -1021,7 +1022,12 @@ class JobController extends Controller {
 
         $workitem = new WorkItem();
 
-        $userId = getSessionUserId();
+        if ( $is_this_api != true) {
+            $userId = getSessionUserId();
+        } else {
+            $userId = $_REQUEST["creator"];
+        }
+
         if (!$userId > 0 ) {
             echo json_encode(array('error' => "Invalid parameters !"));
             return;
