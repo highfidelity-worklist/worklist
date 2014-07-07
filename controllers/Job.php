@@ -1007,17 +1007,19 @@ class JobController extends Controller {
 
     public function add() {
 
-        if( ! isset($_REQUEST["api_key"])) {
-            checkLogin();
-            $is_this_api = false;
+        $this->view = null;
+        if (isset($_POST['api_key'])) {
+            validateAPIKey();
+            $user = User::find($_POST['creator']);
+            $userId = $user->getId();
         } else {
-            if($_REQUEST["api_key"] == API_KEY) {
-                $is_this_api = true;
-            } else {
-                error_log("Wrong api key provided.");
-                header('HTTP/1.1 401 Unauthorized', true, 401);
-                die();
-            }
+            checkLogin();
+            $userId = getSessionUserId();
+        }
+        if (!$userId) {
+            header('HTTP/1.1 401 Unauthorized', true, 401);
+            echo json_encode(array('error' => "Invalid parameters !"));
+            return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -1032,17 +1034,6 @@ class JobController extends Controller {
         $nick = '';
 
         $workitem = new WorkItem();
-
-        if ( $is_this_api != true) {
-            $userId = getSessionUserId();
-        } else {
-            $userId = $_REQUEST["creator"];
-        }
-
-        if (!$userId > 0 ) {
-            echo json_encode(array('error' => "Invalid parameters !"));
-            return;
-        }
 
         initUserById($userId);
         $user = new User();
