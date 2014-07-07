@@ -1007,7 +1007,18 @@ class JobController extends Controller {
 
     public function add() {
 
-        $is_this_api = checkApiLogin();
+        if( ! isset($_REQUEST["api_key"])) {
+            checkLogin();
+            $is_this_api = false;
+        } else {
+            if($_REQUEST["api_key"] == API_KEY) {
+                $is_this_api = true;
+            } else {
+                error_log("Wrong api key provided.");
+                header('HTTP/1.1 401 Unauthorized', true, 401);
+                die();
+            }
+        }
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $this->view = new AddJobView();
