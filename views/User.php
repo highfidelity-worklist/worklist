@@ -13,7 +13,6 @@ class UserView extends View {
         'js/jquery/jquery.blockUI.js',
         'js/paginator.js',
         'js/userNotes.js',
-        'js/review.js',
         'js/favorites.js',
         'js/userinfo.js'
     );

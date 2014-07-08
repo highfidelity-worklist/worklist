@@ -576,3 +576,8 @@ p.bottom {
 body .white-theme .ui-dialog-content label {
     font-size: 0.8em !important;
 }
+
+.reviewAddLink {
+    float:right;
+    font-size:10px;
+}

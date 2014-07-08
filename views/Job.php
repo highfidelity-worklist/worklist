@@ -7,7 +7,6 @@ class JobView extends View {
 
     public $stylesheets = array(
         'css/legacy/workitem.css',
-        'css/review.css',
         'css/favorites.css',
         'css/budget.css',
         'css/entries.css',
@@ -24,10 +23,8 @@ class JobView extends View {
         'js/dragdealer/dragdealer.js',
         'js/datepicker.js',
         'js/timepicker.js',
-        'js/review.js',
         'js/favorites.js',
         'js/github.js',
-        'js/entries.js',
         'js/job.js'
     );
 
@@ -55,7 +52,6 @@ class JobView extends View {
         $this->is_project_founder = (int) $this->read('is_project_founder');
         $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
         $this->status_error =  (int) $this->read('status_error');
-        $this->displayDialogAfterDone =  (int) $this->read('displayDialogAfterDone');
         $this->userinfotoshow =  (int) $this->read('userinfotoshow');
 
         $this->erroneous = $this->read('erroneous');

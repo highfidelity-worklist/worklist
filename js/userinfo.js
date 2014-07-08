@@ -180,7 +180,7 @@ var UserInfo = {
             return false;
         });
         
-        WReview.initList();    
+        $('.reviewAddLink').click(UserInfo.reviewDialog);
        
         $('#give').click(function(){
             $('#budget-give-modal').modal('show');
@@ -466,5 +466,53 @@ var UserInfo = {
                 }
             }
         });
+    },
+
+    reviewDialog: function() {
+        $.ajax({
+            url: './user/review/' + userInfo.nickName,
+            dataType: 'json',
+            success: function(data) {
+                Utils.emptyFormModal({
+                    title: 'My review for <a href="./user/' + userInfo.nickName + '">' + userInfo.nickName + '</a>',
+                    content:
+                        '<div class="row">' +
+                        '  <div class="col-md-12">' +
+                        '    <label for="myreview">My Review:</label>' +
+                        '    <textarea class="form-control" id="myreview" name="myreview">' + data.myReview + '</textarea>' +
+                        '  </div>' +
+                        '</div>',
+                    buttons: [
+                        {
+                            type: 'submit',
+                            name: 'save',
+                            content: 'Save',
+                            className: 'btn-primary',
+                            dismiss: false
+                        }
+                    ],
+                    open: function(modal) {
+                        $('form', modal).submit(function() {
+                            $.ajax({
+                                type: 'POST',
+                                url: './user/review/' + userInfo.nickName,
+                                data: {
+                                    userReview: $('textarea[name="myreview"]', modal).val()
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    if (data.success) {
+                                        $(modal).modal('hide');
+                                        window.location = './user/' + userInfo.nickName;
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+                    }
+                });
+            }
+        });
+        return false;
     }
  };

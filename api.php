@@ -218,9 +218,6 @@ if(validateAction()) {
             case 'refreshFilter':
                 refreshFilter();
                 break;
-            case 'userReview':
-                userReview();
-                break;
             case 'workitemSandbox':
                 workitemSandbox();
                 break;
@@ -2694,14 +2691,6 @@ function refreshFilter() {
     }
 
     echo(json_encode($json));    
-}
-
-function userReview() {
-    $userReview = new UserReview();
-    $userReview->validateRequest(array('method'));
-
-    $method = $_REQUEST['method'];
-    $userReview->$method();
 }
 
 function workitemSandbox() {

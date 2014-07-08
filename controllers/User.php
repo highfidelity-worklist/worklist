@@ -25,6 +25,7 @@ class UserController extends Controller {
             case 'latestEarnings':
             case 'projectHistory':
             case 'counts':
+            case 'review':
                 $method = $action;
                 break;
             default:
@@ -461,5 +462,76 @@ class UserController extends Controller {
             'bonus_total' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($bonusPayments))),
             'bonus_percent' => round((($bonusPayments + 0.00000001) / ($totalEarnings + 0.000001)) * 100,2) . '%'
         ));
+    }
+
+    public function review($id) {
+        $this->view = null;
+        try {
+            checkLogin();
+            $user = User::find($id);
+            $currentUser = User::find(getSessionUserId());
+            if (!$user->getId() || $user->getId() == $currentUser->getId()) {
+                throw new Exception('Invalid user id');
+            }
+            $review = new Review();
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $userReview = trim($_POST['userReview']);
+                if ($review->loadById($currentUser->getId(), $user->getId())) {
+                    if (!$userReview) {
+                        $oReview = $review->getReviews($user->getId(), $currentUser->getId(), ' AND r.reviewer_id=' . $reviewer_id);
+                        $cond = 'reviewer_id = ' . $currentUser->getId() . ' AND reviewee_id = ' . $user->getId();
+                        if (!$review->removeRow($cond)) {
+                            throw new Exception('Cannot delete review! Please retry later');
+                        }
+                        sendReviewNotification($user->getId(), "delete", $oReview);
+                        $message = 'Review deleted';
+                    } else {
+                        if (!strcmp($review->review, $userReview)) {
+                            throw new Exception('No changes made');
+                        }
+                        $review->review = $userReview;
+                        $review->journal_notified = 0;
+                        if (!$review->save('reviewer_id', 'reviewee_id')) {
+                            throw new Exception('Cannot update review! Please retry later');
+                        }
+                        $message = 'Review updated';
+                    }
+                } else {
+                    if (!$userReview) {
+                        throw new Exception('New empty review is not saved');
+                    }
+                    if (!$review->insertNew(array(
+                        'reviewer_id' => $currentUser->getId(),
+                        'reviewee_id' => $user->getId(),
+                        'review' => $userReview,
+                        'journal_notified' => -1
+                    ))) {
+                        throw new Exception('Cannot create new review! Please retry later');
+                    }
+                    $myReview = $review->getReviews($user->getId(), $currentUser->getId(), ' AND r.reviewer_id = ' . $currentUser->getId());
+                    if (count($myReview) == 0) {
+                        $cond = 'reviewer_id = ' . $currentUser->getId() . ' AND reviewee_id = ' . $user->getId();
+                        $review->removeRow($cond);
+                        throw new Exception('Review with no paid fee is not allowed');
+                    }
+                    $message = 'Review saved';
+                }
+            } else {
+                $userReview = $message = '';
+                if ($review->loadById($currentUser->getId(), $user->getId())) {
+                    $userReview = $review->review;
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'message' => $message,
+                'myReview' => $userReview
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
     }
 }

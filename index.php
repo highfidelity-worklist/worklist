@@ -83,7 +83,7 @@ class Dispatcher {
         $dispatcher->get('/timeline', array('Timeline'));
         $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
 
-        $dispatcher->get('/user/:method(/:param)', array('User'), array(
+        $dispatcher->any('/user/:method(/:param)', array('User'), array(
             'require' => array(
                 'method' => '[a-zA-Z0-9]+',
                 'param' => '.*'
