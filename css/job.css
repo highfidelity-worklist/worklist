@@ -23,6 +23,8 @@
     cursor: pointer;
     text-decoration: underline !important;
     color: #608e96 !important;
+    background-image: url('../images/wl-icons/tweet~hover.png');
+    background-image: url('../images/wl-icons/tweet~hover.svg');
 }
 
 @media (max-width: 480px) {
@@ -264,7 +266,7 @@ section#footer li:nth-child(-n+3) {
 	JUN-03-2014 <victorargote> */
 .top-bar {
     background-color: #e1e8ea;
-    padding: 14px 0;
+    padding-top: 14px;
     margin-top: 13px !important;
     font-size: 14px;
 }
