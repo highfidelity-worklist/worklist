@@ -25,6 +25,7 @@ class UserController extends Controller {
             case 'latestEarnings':
             case 'projectHistory':
             case 'counts':
+            case 'mentionsList':
                 $method = $action;
                 break;
             default:
@@ -461,5 +462,40 @@ class UserController extends Controller {
             'bonus_total' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($bonusPayments))),
             'bonus_percent' => round((($bonusPayments + 0.00000001) / ($totalEarnings + 0.000001)) * 100,2) . '%'
         ));
+    }
+
+    function mentionsList() {
+        $data = array();
+
+        if (isset($_REQUEST['startsWith']) && !empty($_REQUEST['startsWith'])) {
+            $model = new User();
+            $result = $model->mentionsList($_REQUEST['startsWith']);
+
+            while ($result && $row = mysql_fetch_assoc($result)) {
+                $fullname = '';
+                if (! empty($row['first_name'])) {
+                    $fullname .= $row['first_name'];
+                }
+
+                if (! empty($row['last_name'])) {
+                    $fullname .= " " . $row['last_name'];
+                }
+
+                if (! empty($fullname)) {
+                    $row['name'] = $fullname;
+                }
+
+                $data[] = array_merge($row, array(
+                    'username' => $row['nickname'],
+                    'image' => $row['picture'] . "s=30"
+                ));
+            }
+        }
+
+        $users = array(
+            $data
+        );
+
+        echo json_encode($data);
     }
 }

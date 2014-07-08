@@ -200,9 +200,6 @@ if(validateAction()) {
             case 'getUsersList':
                 getUsersList();
                 break;
-            case 'getMentionsList':
-                getMentionsList();
-                break;
             case 'getWorkitem':
                 getWorkitem();
                 break;
@@ -1896,54 +1893,6 @@ function getUsersList() {
     }
 
     echo json_encode($data);    
-}
-
-function getMentionsList() {
-    $likeString = "dontmatch";
-    if (isset($_REQUEST['startsWith']) && !empty($_REQUEST['startsWith'])) {
-        $likeString =  'LIKE "%' . mysql_real_escape_string($_REQUEST['startsWith']) . '%"';
-    }
-
-    $query = "
-        SELECT id, nickname, username, picture, first_name, last_name
-        FROM " . USERS . "
-        WHERE (
-            nickname {$likeString} OR
-            first_name {$likeString} OR
-            last_name {$likeString}
-            ) AND
-            picture IS NOT NULL AND picture LIKE \"%http%\"
-        ORDER BY nickname LIMIT 0, 10
-    ";
-
-    $result = mysql_query($query);
-    $data = array();
-
-    while ($result && $row = mysql_fetch_assoc($result)) {
-        $fullname = '';
-        if (! empty($row['first_name'])) {
-            $fullname .= $row['first_name'];
-        }
-
-        if (! empty($row['last_name'])) {
-            $fullname .= " " . $row['last_name'];
-        }
-
-        if (! empty($fullname)) {
-            $row['name'] = $fullname;
-        }
-
-        $data[] = array_merge($row, array(
-            'username' => $row['nickname'],
-            'image' => $row['picture'] . "s=30"
-        ));
-    }
-
-    $users = array(
-        $data
-    );
-
-    echo json_encode($data);
 }
 
 function getWorkitem() {
