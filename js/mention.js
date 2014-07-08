@@ -11,7 +11,7 @@
                 queryBy: ['name', 'username'],
                 ajax: false, 
                 ajaxUrl: '',
-                ajaxParam: 'startsWith',
+                ajaxParam: 'contains',
                 typeaheadOpts: {}
             };
 

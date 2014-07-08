@@ -464,12 +464,13 @@ class UserController extends Controller {
         ));
     }
 
-    function mentionsList() {
+    public function mentionsList() {
+        $this->view = null;
+
         $data = array();
 
-        if (isset($_REQUEST['startsWith']) && !empty($_REQUEST['startsWith'])) {
-            $model = new User();
-            $result = $model->mentionsList($_REQUEST['startsWith']);
+        if (isset($_REQUEST['contains']) && !empty($_REQUEST['contains'])) {
+            $result = User::mentionsList($_REQUEST['contains']);
 
             while ($result && $row = mysql_fetch_assoc($result)) {
                 $fullname = '';

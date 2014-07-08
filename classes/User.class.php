@@ -2522,11 +2522,11 @@ class User {
     /**
      * Find users by nickname or full name (first_name, last_name)
      *
-     * @param string $startsWith
+     * @param string $contains
      */
-    public function mentionsList($startsWith) {
+    public function mentionsList($contains) {
 
-        $likeString =  'LIKE "%' . mysql_real_escape_string($startsWith) . '%"';
+        $likeString =  'LIKE "%' . mysql_real_escape_string($contains) . '%"';
 
         $query = "
             SELECT id, nickname, username, picture, first_name, last_name
