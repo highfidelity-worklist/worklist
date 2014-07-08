@@ -494,7 +494,6 @@ $(function() {
 });
 
 $(document).ready(function(){
-
     $('.mentions').mention({
         delimiter: '@',
         sensitive : true,
@@ -503,5 +502,4 @@ $(document).ready(function(){
         ajaxUrl : 'api.php?action=getMentionsList',
         users: [{ }]
     });
-
 });
