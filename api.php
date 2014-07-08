@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright (c) 2014, High Fidelity Inc.
- * All Rights Reserved. 
+ * All Rights Reserved.
  *
  * http://highfidelity.io
  */
@@ -92,7 +92,7 @@ if(validateAction()) {
                 validateAPIKey();
                 processPendingReviewsNotifications();
                 break;
-            case 'pruneJournalEntries' : 
+            case 'pruneJournalEntries' :
                 validateAPIKey();
                 pruneJournalEntries();
                 break;
@@ -279,18 +279,6 @@ function validateRequest() {
     }
 }
 
-function validateAPIKey() {
-    if( ! isset($_REQUEST["api_key"])) {
-        error_log("No api key defined.");
-        die("No api key defined.");
-    } else if(strcmp($_REQUEST["api_key"],API_KEY) != 0 ) {
-        error_log("Wrong api key provided.");
-        die("Wrong api key provided.");
-    } else {
-        return true;
-    }
-}
-
 /*
 * Setting session variables for the user so he is logged in
 */
@@ -351,7 +339,7 @@ function uploadProfilePicture() {
         File::s3Upload($tempFile, $path);
 
         $query = "
-            UPDATE `" . USERS . "` 
+            UPDATE `" . USERS . "`
             SET `picture` = '" . mysql_real_escape_string($imgName) . "' ,
             `s3bucket` = '" . S3_BUCKET ."'
             WHERE `id` = " . (int) $_REQUEST['userid'] . "
@@ -374,11 +362,11 @@ function uploadProfilePicture() {
         $success = false;
         $error = 'There was a problem uploading your file';
         error_log(__FILE__.": Error uploading images to S3:\n$e");
-            
+
         return $this->setOutput(array(
             'success' => false,
             'message' => 'An error occured while uploading the file, please try again!'
-        ));            
+        ));
     }
 
 
@@ -423,7 +411,7 @@ function getSystemDrawerJobs(){
          . " WHERE w.status = 'Bidding' OR (w.status = 'Review' "
          .   " AND w.code_review_completed = 0 "
          .   " AND w.code_review_started = 0);";
-    
+
     $result = mysql_query($sql);
     if ($result && ($row = mysql_fetch_assoc($result))) {
         $bidding_count = $row['bidding'];
@@ -435,18 +423,18 @@ function getSystemDrawerJobs(){
                 .  " WHERE w.status = 'Review' "
                 .    " AND w.code_review_completed = 0 "
                 .    " AND w.code_review_started = 0"
-                .  " LIMIT 7;"; 
+                .  " LIMIT 7;";
             $result = mysql_query($sql);
             while ($row = mysql_fetch_assoc($result)) {
                 $need_review[] = array(
                     'id' => $row['id'],
-                    'summary' => $row['summary'] 
+                    'summary' => $row['summary']
                 );
             }
         }
         respond(array(
-            'success' => true, 
-            'bidding' => $bidding_count, 
+            'success' => true,
+            'bidding' => $bidding_count,
             'review' => $review_count,
             'need_review' => $need_review
         ));
@@ -548,7 +536,7 @@ function autoPassSuggestedJobs() {
     }
     mysql_select_db(DB_NAME, $con);
     $sql = "SELECT id FROM `" . WORKLIST ."` WHERE  status  IN ( 'Suggestion', 'Bidding') AND DATEDIFF(now() , status_changed) > 30";
-    
+
     $result = mysql_query($sql);
     $delay = 0;
     if(mysql_num_rows($result) > 1) {
@@ -558,20 +546,20 @@ function autoPassSuggestedJobs() {
         $status = 'Pass';
         $workitem = new WorkItem($row['id']);
         $prev_status = $workitem->getStatus();
-        
+
         // change status of the workitem to PASS.
         $workitem->setStatus($status);
         if ($workitem->save()) {
-            
+
             $recipients = array('creator');
             $emails = array();
             $data = array('prev_status' => $prev_status);
-            
+
             if ($prev_status == 'Bidding') {
                 $recipients[] = 'usersWithBids';
                 $emails = preg_split('/[\s]+/', ADMINS_EMAILS);
             }
-            
+
             //notify
             Notification::workitemNotify(
                 array(
@@ -582,17 +570,17 @@ function autoPassSuggestedJobs() {
                 ),
                 $data
             );
-            
-            //sendJournalnotification 
+
+            //sendJournalnotification
             $journal_message =  "\\\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
-            sendJournalNotification(stripslashes($journal_message));            
+            sendJournalNotification(stripslashes($journal_message));
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
         }
         sleep($delay);
     }
     mysql_free_result($result);
-    mysql_close($con); 
+    mysql_close($con);
 }
 
 function getTimezone() {
@@ -641,7 +629,7 @@ function processPendingReviewsNotifications() {
                 sendReviewNotification($tReview->reviewee_id, 'update',
                     $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
             } else {
-                sendReviewNotification($tReview->reviewee_id, 'new', 
+                sendReviewNotification($tReview->reviewee_id, 'new',
                     $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
             }
             $tReview->journal_notified = 1;
@@ -661,7 +649,7 @@ function canProcessNotifications() {
         return true;
     } else {
         $hour = (int) file_get_contents($file);
-        $serverHour = (int) date('H'); 
+        $serverHour = (int) date('H');
         if ($serverHour == $hour) {
             return true;
         } else {
@@ -745,11 +733,11 @@ function createSandbox() {
     if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
         && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
         try {
-            if ($sandBoxUtil->createSandbox($_REQUEST['username'], 
+            if ($sandBoxUtil->createSandbox($_REQUEST['username'],
                                         $_REQUEST['nickname'],
-                                        $_REQUEST['unixusername'], 
-                                        $_REQUEST['projectname'], 
-                                        null, 
+                                        $_REQUEST['unixusername'],
+                                        $_REQUEST['projectname'],
+                                        null,
                                         $_REQUEST['newuser'])) {
                 $user = new User();
                 $user->findUserByNickname($_REQUEST['nickname']);
@@ -794,7 +782,7 @@ function modifyConfigFile() {
     $sandBoxUtil = new SandBoxUtil();
     if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
         && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
-        if ($sandBoxUtil->modifyConfigFile($_REQUEST['unixusername'], 
+        if ($sandBoxUtil->modifyConfigFile($_REQUEST['unixusername'],
                                            $_REQUEST['projectname'],
                                            $_REQUEST['dbuser'])) {
             echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
@@ -864,12 +852,12 @@ function getTwilioCountries() {
         ));
         return;
     }
-    
+
     $list = array();
     while ($row = mysql_fetch_assoc($result)) {
         $list[$row['country_code']] = $row['country_phone_prefix'];
     }
-    
+
     echo json_encode(array(
         'success' => true,
         'list' => $list
@@ -897,7 +885,7 @@ function saveSoundSettings() {
     try {
         $settings = 0;
         $settings_arr = preg_split('/:/', $_REQUEST['settings'], 5);
-        
+
         if ((int) $settings_arr[0]) {
             $settings = $settings | JOURNAL_CHAT_SOUND;
         }
@@ -913,7 +901,7 @@ function saveSoundSettings() {
         if ((int) $settings_arr[4]) {
             $settings = $settings | JOURNAL_EMERGENCY_ALERT;
         }
-        
+
         $user = new User();
         $user->findUserById($userid);
         $user->setSound_settings($settings);
@@ -949,23 +937,23 @@ function sendNotifications() {
 function checkInactiveProjects() {
     $report_message = '';
     $db = new Database();
-    
+
     $sql_inactive_projects = "
-        SELECT w.project_id, p.name, p.contact_info, u.nickname, MAX(status_changed) AS last_change 
-        FROM " . WORKLIST . " AS w 
-        INNER JOIN " . PROJECTS . " AS p ON w.project_id=p.project_id 
-        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id 
+        SELECT w.project_id, p.name, p.contact_info, u.nickname, MAX(status_changed) AS last_change
+        FROM " . WORKLIST . " AS w
+        INNER JOIN " . PROJECTS . " AS p ON w.project_id=p.project_id
+        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id
         WHERE p.active = 1 OR 1
-        GROUP BY w.project_id HAVING last_change < DATE_SUB(NOW(), INTERVAL 90 DAY) 
+        GROUP BY w.project_id HAVING last_change < DATE_SUB(NOW(), INTERVAL 90 DAY)
         ORDER BY p.name ASC";
-    
+
     // Delete accounts which exists for at least 45 days and never have been used.
     $result = $db->query($sql_inactive_projects);
-    
+
     while ($row = mysql_fetch_assoc($result)) {
         $project = new Project($row['project_id']);
         // send email
-        $data = array( 
+        $data = array(
             'owner' => $row['nickname'],
             'projectUrl' => Project::getProjectUrl($row['project_id']),
             'projectName' => $row['name']
@@ -985,7 +973,7 @@ function checkInactiveProjects() {
         $subject = "Inactive Projects Report";
         $body = $report_message;
         if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
-            error_log ('checkActiveProjects cron: Failed to send email report'); 
+            error_log ('checkActiveProjects cron: Failed to send email report');
         }
     }
 }
@@ -995,17 +983,17 @@ function checkRemovableProjects() {
     $db = new Database();
 
     $sql_projects = "
-        SELECT p.project_id, p.name, u.nickname, p.creation_date 
-        FROM " . PROJECTS . " AS p 
-        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id 
-        WHERE p.project_id NOT IN (SELECT DISTINCT w1.project_id 
+        SELECT p.project_id, p.name, u.nickname, p.creation_date
+        FROM " . PROJECTS . " AS p
+        LEFT JOIN " . USERS . " AS u ON u.id=p.owner_id
+        WHERE p.project_id NOT IN (SELECT DISTINCT w1.project_id
         FROM " . WORKLIST . " AS w1)
           AND p.creation_date < DATE_SUB(NOW(), INTERVAL 180 DAY)";
-    
+
     $result = $db->query($sql_projects);
     while ($row = mysql_fetch_assoc($result)) {
         // send email
-        $data = array( 
+        $data = array(
             'owner' => $row['nickname'],
             'projectUrl' => Project::getProjectUrl($row['project_id']),
             'projectName' => $row['name'],
@@ -1027,7 +1015,7 @@ function checkRemovableProjects() {
         while ($row_temp = mysql_fetch_assoc($result_temp)) {
             $report_message .= dump_row_values($row_temp);
         }
-        
+
         $sql_remove_project_users = "DELETE FROM " . PROJECT_USERS . " WHERE project_id = " . $row['project_id'];
         $db->query($sql_remove_project_users);
 
@@ -1052,14 +1040,14 @@ function checkRemovableProjects() {
         $db->query($sql_remove_project_roles);
 
         $url = TOWER_API_URL;
-        $fields = array( 
+        $fields = array(
                 'action' => 'staging_cleanup',
                 'name' => $row['name']
         );
-                
+
         $result = CURLHandler::Post($url, $fields);
 
-        // Remove project 
+        // Remove project
         $report_message .= '<p> Project id ' . $row['project_id'] . ' removed </p>';
         $sql_get_project = "SELECT * FROM " . PROJECTS . " WHERE project_id = " . $row['project_id'];
         $result_temp = $db->query($sql_get_project);
@@ -1075,7 +1063,7 @@ function checkRemovableProjects() {
         $subject = "Removed Projects Report";
         $body = $report_message;
         if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
-            error_log ('checkActiveProjects cron: Failed to send email report'); 
+            error_log ('checkActiveProjects cron: Failed to send email report');
         }
     }
 }
@@ -1109,16 +1097,16 @@ function setFavorite() {
             $favorite_user = new User();
             $favorite_user->findUserById($favorite_user_id);
             if ($newVal == 1) {
-                                    
+
                 $resetUrl = SECURE_SERVER_URL . 'user/' . $favorite_user_id ;
                 $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
                 $data = array();
                 $data['link'] = $resetUrl;
                 $nick = $favorite_user->getNickname();
-                if (! sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) { 
+                if (! sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) {
                     error_log("setFavorite: send_email failed on favorite notification");
                 }
-            
+
                 // get favourite count
                 $count = $users_favorites->getUserFavoriteCount($favorite_user_id);
                 if ($count > 0) {
@@ -1187,7 +1175,7 @@ function getBidItem() {
         } else {
             echo $blankjson;
         }
-    }    
+    }
 }
 
 function getBonusHistory() {
@@ -1246,8 +1234,8 @@ function getBonusHistory() {
 function getCodeReviewStatus() {
     $id = (int) $_REQUEST['workitemid'];
     $query = "
-        SELECT id, code_reviewer_id, code_review_started, code_review_completed 
-        FROM " . WORKLIST . " 
+        SELECT id, code_reviewer_id, code_review_started, code_review_completed
+        FROM " . WORKLIST . "
         WHERE id = '" . $id . "'";
     $result = mysql_query($query);
     $data = array();
@@ -1268,7 +1256,7 @@ function getFeeItem() {
     $row = mysql_fetch_assoc($rt);
 
     $json = json_encode(array($row['id'], $row['paid'], $row['notes']));
-    echo $json;    
+    echo $json;
 }
 
 function getFeeSums() {
@@ -1301,7 +1289,7 @@ function getJobInformation() {
         if (!empty($itemid)) {
             try {
                 $workitem->loadById($itemid);
-                $summary= "#". $workitem->getId()." - ". $workitem->getSummary();           
+                $summary= "#". $workitem->getId()." - ". $workitem->getSummary();
             } catch(Exception $e) {
                 //Item id doesnt exist
                 $summary="";
@@ -1309,9 +1297,9 @@ function getJobInformation() {
         } else {
             $summary='';
         }
-        
+
         $returnString=$summary;
-        
+
     } else {
         echo json_encode(array('error' => "Invalid parameters !"));
         return;
@@ -1399,14 +1387,14 @@ function getProjects($public_only = true) {
     } else {
         // Get listing of active projects
         $projectsOnPage = $projectHandler->getProjects(true,array(), false,false,$public_only);
-        usort($projectsOnPage, function($a, $b) { 
+        usort($projectsOnPage, function($a, $b) {
             if ( $b["bCount"] < $a["bCount"] ) return -1;
             if ( $b["bCount"] > $a["bCount"] ) return 1;
             if ( $b["cCount"] < $a["cCount"] ) return -1;
-            if ( $b["cCount"] > $a["cCount"] ) return 1; 
+            if ( $b["cCount"] > $a["cCount"] ) return 1;
             if ( $b["feesCount"] > $a["feesCount"] ) return -1;
-            if ( $b["feesCount"] < $a["feesCount"] ) return 1;         
-            return 0; 
+            if ( $b["feesCount"] < $a["feesCount"] ) return 1;
+            return 0;
         });
     }
 
@@ -1466,13 +1454,13 @@ function getReport() {
 
     if ($sfilter){
         if($sfilter != 'ALL') {
-            $where .= " AND `" . WORKLIST . "`.status = '$sfilter' "; 
+            $where .= " AND `" . WORKLIST . "`.status = '$sfilter' ";
         }
     }
     if ($pfilter) {
         // ignore the fund filter?
         if($pfilter != 'ALL') {
-          $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' "; 
+          $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' ";
         } elseif ($fundFilter) {
             $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
         }
@@ -1511,7 +1499,7 @@ function getReport() {
         case 'desc':
             $orderby .= "`".FEES."`.`desc`";
             break;
-            
+
         case 'summary':
             $orderby .= "`".WORKLIST."`.`summary`";
             break;
@@ -1629,7 +1617,7 @@ function getReport() {
               LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
               LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
               LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
-              
+
               WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
         $qgroup = " GROUP BY fee_date";
 
@@ -1645,10 +1633,10 @@ function getReport() {
                }
             }
         }
-        $json_data = array('fees' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType), 
-            'uniquePeople' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType), 
-            'feeCount' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType), 
-            'labels' => ReportTools::fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType), 
+        $json_data = array('fees' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType),
+            'uniquePeople' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType),
+            'feeCount' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType),
+            'labels' => ReportTools::fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType),
             'fromDate' => $fromDate, 'toDate' => $toDate);
         $json = json_encode($json_data);
         echo $json;
@@ -1656,7 +1644,7 @@ function getReport() {
         $payee_report = array();
         $page = $filter->getPage();
         $count_query = " SELECT count(1) FROM ";
-        $query = " SELECT   `nickname` AS payee_name, count(1) AS jobs, sum(`amount`) / count(1) AS average, sum(`amount`) AS total  FROM `".FEES."` 
+        $query = " SELECT   `nickname` AS payee_name, count(1) AS jobs, sum(`amount`) / count(1) AS average, sum(`amount`) AS total  FROM `".FEES."`
                    LEFT JOIN `".USERS."` ON `".FEES."`.`user_id` = `".USERS."`.`id`
                    LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
                    LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
@@ -1673,14 +1661,14 @@ function getReport() {
         $payee_report[] = array($items, $page, $countPages);
         if(!empty($_REQUEST['defaultSort']) && $_REQUEST['defaultSort'] == 'total_fees') {
             $query .= " ORDER BY total DESC";
-        } else { 
+        } else {
             $query .= $orderby." ".$dir;
         }
         $query .= "  LIMIT " . ($page - 1) * $limit . ",$limit";
         $result = mysql_query($query);
         if($result && mysql_num_rows($result) > 0) {
           while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-             $payee_name = $row['payee_name']; 
+             $payee_name = $row['payee_name'];
              $jobs = $row['jobs'];
              $total = number_format($row['total'], 2, '.', '');
              $average =  number_format($row['average'], 2, '.', '');
@@ -1701,7 +1689,7 @@ function getSkills() {
         $data[] = $row['skill'];
     }
 
-    echo json_encode($data);    
+    echo json_encode($data);
 }
 
 function getUserItem() {
@@ -1717,7 +1705,7 @@ function getUserItem() {
             $json_array[] = $item;
         }
         echo json_encode( $json_array );
-        
+
     } else if ( $req == 'item' )    {
         $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
         if ( empty($item) ) {
@@ -1729,11 +1717,11 @@ function getUserItem() {
 
         $rt = mysql_query($query);
         $row = mysql_fetch_assoc($rt);
-        $json_row = array(); 
+        $json_row = array();
         foreach($row as $item){
             $json_row[] = $item;
         }
-        
+
         //changing timezone to human-readable
         if( $json_row[7] )  {
             $json_row[7] = $timezoneTable[$json_row[7]];
@@ -1741,7 +1729,7 @@ function getUserItem() {
 
         $json = json_encode($json_row);
         echo $json;
-    }   
+    }
 }
 
 function getUserItems() {
@@ -1760,13 +1748,13 @@ function getUserItems() {
 
     while($row = mysql_fetch_assoc($rt)){
 
-        $row['relative'] = relativeTime($row['future_delta']);      
+        $row['relative'] = relativeTime($row['future_delta']);
         $items[] = $row;
     }
 
     $json = json_encode($items);
-    
-    echo $json;    
+
+    echo $json;
 }
 
 function getUserList() {
@@ -1795,36 +1783,36 @@ function getUserList() {
 
     if( $active == 'FALSE' )    {
         $rt = mysql_query("SELECT COUNT(*) FROM `".USERS."` WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1 $myfavorite_cond");
-        
+
         $row = mysql_fetch_row($rt);
         $users = intval($row[0]);
-        
+
     }   else if( $active == 'TRUE' )    {
         $rt = mysql_query("
-        SELECT COUNT(*) FROM `".USERS."` 
+        SELECT COUNT(*) FROM `".USERS."`
         LEFT JOIN (SELECT `user_id`,MAX(`paid_date`) AS `date` FROM `".FEES."` WHERE `paid_date` IS NOT NULL AND `paid` = 1 AND `withdrawn` != 1 GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
         WHERE `date` > DATE_SUB(NOW(), INTERVAL $sfilter DAY) AND `is_active` = 1 AND `nickname` REGEXP '^$letter' $myfavorite_cond");
-        
+
         $row = mysql_fetch_row($rt);
         $users = intval($row[0]);
     }
     //SELECT `id`, `nickname`,DATE_FORMAT(`added`, '%m/%d/%Y') AS `joined`, `budget`,
-    $cPages = ceil($users/$limit); 
+    $cPages = ceil($users/$limit);
 
     if( $active == 'FALSE' ) {
         $query = "
         SELECT `id`, `nickname`,`added` AS `joined`, `budget`,
-        IFNULL(`creators`.`count`,0) + IFNULL(`mechanics`.`count`,0) AS `jobs_count`, 
+        IFNULL(`creators`.`count`,0) + IFNULL(`mechanics`.`count`,0) AS `jobs_count`,
         IFNULL(`earnings`.`sum`,0) AS `earnings`,
         IFNULL(`earnings30`.`sum`,0) AS `earnings30`,
         IFNULL(`rewarder`.`sum`,0)AS `rewarder`
-        FROM `".USERS."` 
+        FROM `".USERS."`
         LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id`
         LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `paid` = 1 AND `withdrawn`=0 AND (`rewarder`=1 OR `bonus`=1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
-        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`  
+        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL AND `paid_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) AND `expense`=0 GROUP BY `user_id`) AS `earnings30` ON `".USERS."`.`id` = `earnings30`.`user_id`
-        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE ($sfilter AND `withdrawn`=0 AND `paid` = 1) AND `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`  
+        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE ($sfilter AND `withdrawn`=0 AND `paid` = 1) AND `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`
         WHERE `nickname` REGEXP '^$letter' AND `is_active` = 1 $myfavorite_cond ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
     }    else if( $active == 'TRUE' )    {
         $query = "
@@ -1833,14 +1821,14 @@ function getUserList() {
         IFNULL(`earnings`.`sum`,0) AS `earnings`,
         IFNULL(`earnings30`.`sum`,0) AS `earnings30`,
         IFNULL(`rewarder`.`sum`,0)AS `rewarder`
-        FROM `".USERS."` 
+        FROM `".USERS."`
         LEFT JOIN (SELECT `user_id`,MAX(`date`) AS `date` FROM `".FEES."` WHERE `paid` = 1 AND `amount` != 0 AND `withdrawn` = 0 AND `expense` = 0 GROUP BY `user_id`) AS `dates` ON `".USERS."`.id = `dates`.user_id
         LEFT JOIN (SELECT `mechanic_id`, COUNT(`mechanic_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) GROUP BY `mechanic_id`) AS `mechanics` ON `".USERS."`.`id` = `mechanics`.`mechanic_id`
         LEFT JOIN (SELECT `creator_id`, COUNT(`creator_id`) AS `count` FROM `" . WORKLIST . "` WHERE (`status` IN ('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')) AND `creator_id` != `mechanic_id` GROUP BY `creator_id`) AS `creators` ON `".USERS."`.`id` = `creators`.`creator_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `paid` = 1 AND `withdrawn`=0 AND (`rewarder`=1 OR `bonus`= 1) GROUP BY `user_id`) AS `rewarder` ON `".USERS."`.`id` = `rewarder`.`user_id`
         LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE $sfilter AND `withdrawn`=0 AND `expense`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL GROUP BY `user_id`) AS `earnings` ON `".USERS."`.`id` = `earnings`.`user_id`
-        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL AND `paid_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) AND `expense`=0 GROUP BY `user_id`) AS `earnings30` ON `".USERS."`.`id` = `earnings30`.`user_id` 
-        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE ($sfilter AND `withdrawn`=0 AND `paid` = 1) AND `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`  
+        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE `withdrawn`=0 AND `paid` = 1 AND `paid_date` IS NOT NULL AND `paid_date` > DATE_SUB(NOW(), INTERVAL 30 DAY) AND `expense`=0 GROUP BY `user_id`) AS `earnings30` ON `".USERS."`.`id` = `earnings30`.`user_id`
+        LEFT JOIN (SELECT `user_id`, SUM(amount) AS `sum` FROM `".FEES."` WHERE ($sfilter AND `withdrawn`=0 AND `paid` = 1) AND `expense`=1 GROUP BY `user_id`) AS `expenses_billed` ON `".USERS."`.`id` = `expenses_billed`.`user_id`
         WHERE `date` > DATE_SUB(NOW(), INTERVAL $sfilter DAY) AND `nickname` REGEXP '^$letter' AND `is_active` = 1 $myfavorite_cond ORDER BY `$order` $order_dir LIMIT " . ($page-1)*$limit . ",$limit";
     }
     $rt = mysql_query($query);
@@ -1854,16 +1842,16 @@ function getUserList() {
         if ($row['budget'] < 1){
             $row['budget'] = 'NONE';
         } else {
-            $row['budget'] = '$'.number_format($user->getRemainingFunds(), 0);  
+            $row['budget'] = '$'.number_format($user->getRemainingFunds(), 0);
         }
         $row['earnings'] = $user->totalEarnings();
-        $diffseconds = strtotime($row['joined']);    
-        $row['joined'] = formatableRelativeTime($diffseconds,2);        
+        $diffseconds = strtotime($row['joined']);
+        $row['joined'] = formatableRelativeTime($diffseconds,2);
         $userlist[] = $row;
     }
-                          
+
     $json = json_encode($userlist);
-    echo $json;   
+    echo $json;
 }
 
 function getUsersList() {
@@ -1889,10 +1877,10 @@ function getUsersList() {
         } else {
             $data[] = $row;
         }
-            
+
     }
 
-    echo json_encode($data);    
+    echo json_encode($data);
 }
 
 function getWorkitem() {
@@ -1924,7 +1912,7 @@ function getWorkitem() {
         $row['notes'] = truncateText($row['notes']);
         $query1 = ' SELECT c.comment, u.nickname '
                 . ' FROM ' . COMMENTS . ' AS c '
-                . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id ' 
+                . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id '
                 . ' WHERE c.worklist_id = ' . $row['id']
                 . ' ORDER BY c.id DESC '
                 . ' LIMIT 1';
@@ -2012,7 +2000,7 @@ function getWorklist() {
             }
 
             /**
-             * If current user is not a runner and is filtering by ALL 
+             * If current user is not a runner and is filtering by ALL
              * status, we need to prevent any draft jobs from being returned
              */
             if ($val == 'ALL' && !$is_runner) {
@@ -2034,7 +2022,7 @@ function getWorklist() {
             }
 
             /**
-             * if current user is a runner and is filtering by ALL status 
+             * if current user is a runner and is filtering by ALL status
              * it wont fetch workitems in DRAFT status created by any other
              * user
              */
@@ -2044,7 +2032,7 @@ function getWorklist() {
 
             if ($val == 'Draft') {
                 /**
-                 * if filtering by DRAFT status will only fetch workitems in 
+                 * if filtering by DRAFT status will only fetch workitems in
                  * DRAFT status created by current user
                  */
                 $where .= " (status = 'Draft' AND creator_id = $userId) OR ";
@@ -2060,7 +2048,7 @@ function getWorklist() {
                         /**
                          * If bidding, and user filter is not set to all users,
                          * we need to check that logged in user is the bidder
-                         * otherwise we reveal other user's tasks they are 
+                         * otherwise we reveal other user's tasks they are
                          * bidding on
                          */
                          $where .= "
@@ -2084,7 +2072,7 @@ function getWorklist() {
                     $where .= "(status = 'Review' AND code_review_started = 0) OR ";
                 } else if ($val != 'ALL') {
                     /**
-                     * if filtering by any status different than ALL and (DRAFT, BIDDING, REVIEW) it 
+                     * if filtering by any status different than ALL and (DRAFT, BIDDING, REVIEW) it
                      * won't do any magic
                      */
                     $where .= "status = '$val' OR ";
@@ -2113,15 +2101,15 @@ function getWorklist() {
                     `status` = '$val' AND
                 ";
             }
-            
+
             if ($val == 'Bidding' && $mobile_filter) {
                 $where .= $severalStatus . "( $status_cond 1)";
             }  else if ($is_runner && $val == 'Bidding') {
                 /**
-                 * If current user is a runner and filtering for himself and 
-                 * (BIDDING or SwB) status then fetch all workitems where he 
+                 * If current user is a runner and filtering for himself and
+                 * (BIDDING or SwB) status then fetch all workitems where he
                  * is mechanic, runner, creator or has bids.
-                 */ 
+                 */
                 $where .= "
                     $severalStatus (
                         $status_cond (
@@ -2136,10 +2124,10 @@ function getWorklist() {
                 ";
             }  else if (!$is_runner && $val == 'Bidding') {
                 /**
-                 * If current user is a runner and filtering for certain user and 
+                 * If current user is a runner and filtering for certain user and
                  * (BIDDING or SwB) status then fetch all workitems where selected
                  * user is runner, creator or has bids.
-                 */ 
+                 */
                 $where .= "
                     $severalStatus (
                         $status_cond (
@@ -2155,7 +2143,7 @@ function getWorklist() {
                  * If current user is not a runner and is filtering for certain user
                  * and (BIDDING or SwB) status then fetch all workitems where selected
                  * user is mechanic, runner or creator.
-                 */ 
+                 */
                 $where .= "
                     $severalStatus (
                         $status_cond (
@@ -2167,10 +2155,10 @@ function getWorklist() {
                     ";
             } else if ($val == 'In Progress' || $val =='Review' || $val =='QA Ready' || $val =='Merged') {
                 /**
-                 * If current user is filtering for any user (himself or not) and 
+                 * If current user is filtering for any user (himself or not) and
                  * (WORKING or REVIEW or FUNCTIONAL or COMPLETED) status then fetch
                  * all workitems where selected user is mechanic, creator or runner.
-                 */ 
+                 */
                 $where .= "
                     $severalStatus (
                         $status_cond (
@@ -2182,9 +2170,9 @@ function getWorklist() {
                 ";
             } else  {
                 /**
-                 * If current user is filtering for any user (himself or not) and 
+                 * If current user is filtering for any user (himself or not) and
                  * didn't match above cases (filtering ALL or any other status
-                 * different than BIDDING, SwB, WORKING, REVIEW, FUNCTIONAL and 
+                 * different than BIDDING, SwB, WORKING, REVIEW, FUNCTIONAL and
                  * COMPLETED) then fetch all workitems where selected user is
                  * creator, runner, mechanic, has fees or has bids
                  */
@@ -2316,7 +2304,7 @@ function getWorklist() {
         if (empty($where)) {
             $where = "WHERE ";
         } else {
-            $where .= " AND "; 
+            $where .= " AND ";
         }
         $where .= " `".WORKLIST."`.`project_id` = '{$pfilter}' ";
     }
@@ -2330,14 +2318,14 @@ function getWorklist() {
 
     //mega-query with total fees and latest bid for the worklist item
     $qsel  = "
-        SELECT `".WORKLIST."`.`id`, `summary`, 
+        SELECT `".WORKLIST."`.`id`, `summary`,
         (CASE
             WHEN status = 'Review' AND code_review_started = 0 THEN 'Needs Review'
             WHEN status = 'Review' AND code_review_started = 1 AND code_review_completed = 0 THEN 'In Review'
             WHEN status = 'Review' AND code_review_completed = 1 THEN 'Reviewed'
             WHEN status != 'Review' THEN status
         END) `status`,";
-    
+
     if ($ofilter == 'status') {
         $ofilter = 'status_order';
         $qsel .= "(CASE
@@ -2389,7 +2377,7 @@ function getWorklist() {
               LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
               LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
               LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0
-              INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1 
+              INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1
                             AND `proj`.`active` = 1
               $commentsjoin
               $where
@@ -2473,7 +2461,7 @@ function payBonus() {
                 $error = true;
                 $message = 'error: args';
             }
-            
+
             $budget_source_combo = (int) $_REQUEST['budget-source-combo-bonus'];
             $budgetSource = new Budget();
             if (!$budgetSource->loadById($budget_source_combo) ) {
@@ -2584,10 +2572,10 @@ function pingTask() {
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
             }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
                 error_log('pingtask.php:id: send_email failed');
             }
-          
+
         } else if ($who == 'bidder') {
             $project = new Project();
             $project->loadById($item['project_id']);
@@ -2601,16 +2589,16 @@ function pingTask() {
             $mail_msg .= "<p>You can view the job here. <a href='./" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
             $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
             $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
-                X-tag' => 'ping, task', 
-                'From' => NOREPLY_SENDER, 
+                X-tag' => 'ping, task',
+                'From' => NOREPLY_SENDER,
                 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
             }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
                 error_log('pingtask.php:id: send_email failed');
             }
-           
+
         }
 
     } else {
@@ -2630,7 +2618,7 @@ function pingTask() {
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
         }
-        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) { 
+        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
             error_log("pingtask.php:!id: send_email failed");
         }
     }
@@ -2658,13 +2646,13 @@ function refreshFilter() {
     switch ($type) {
         case 'projects':
             $projects = Project::getProjects($active);
-            
+
            $json[] = array(
                 'value' => 0,
                 'text' => 'All projects',
                 'selected' => false
             );
-            
+
             foreach ($projects as $project) {
                 $json[] = array(
                     'value' => $project['project_id'],
@@ -2672,9 +2660,9 @@ function refreshFilter() {
                     'selected' => false
                 );
             }
-            
+
             break;
-            
+
         case 'users':
             $users = User::getUserList(getSessionUserId(), $active);
             $json[] = array(
@@ -2689,11 +2677,11 @@ function refreshFilter() {
                     'selected' => (($filter->getUser() == $user->getId()) ? true : false)
                 );
             }
-        
+
             break;
     }
 
-    echo(json_encode($json));    
+    echo(json_encode($json));
 }
 
 function userReview() {
@@ -2708,7 +2696,7 @@ function workitemSandbox() {
     $workitemSandbox = new WorkitemSandbox();
     $workitemSandbox->validateRequest(array('method'));
     $method = $_REQUEST['method'];
-    $workitemSandbox->$method();    
+    $workitemSandbox->$method();
 }
 
 function updateBudget() {
@@ -2720,7 +2708,7 @@ function updateBudget() {
         return;
     }
 
-    if (!isset($_REQUEST['budget_seed']) || !isset($_REQUEST['budget_source']) 
+    if (!isset($_REQUEST['budget_seed']) || !isset($_REQUEST['budget_source'])
         || !isset($_REQUEST['budget_source_combo']) || !isset($_REQUEST['budget_note'])
         || !isset($_REQUEST['add_funds_to'])) {
         echo json_encode(array('success' => false, 'message' => 'error: args'));
@@ -2801,39 +2789,39 @@ function updateBudget() {
     }
 
 
-    if ($budget_seed == 1 || 
+    if ($budget_seed == 1 ||
         ($amount <=  $budget->getRemainingFunds())) {
         $receiver->setBudget($receiver->getBudget() + $amount)->save();
         if ($add_funds_to == 0) {
-            $query = "INSERT INTO `" . BUDGETS . 
+            $query = "INSERT INTO `" . BUDGETS .
                     "` (`giver_id`, `receiver_id`, `amount`, `remaining`, `reason`, `transfer_date`, `seed`, `source_data`,  `notes`, `active`) VALUES ('" .
-                    $_SESSION['userid'] . 
+                    $_SESSION['userid'] .
                     "', '$receiver_id', '$amount', '$amount', '$reason', NOW(), '$budget_seed', '$source', '$budget_note', 1)";
-            if (!mysql_unbuffered_query($query)){ 
+            if (!mysql_unbuffered_query($query)){
                 $json = json_encode(array('success' => false, 'message' => 'Error in query.'));
                 echo $json;
                 return;
-            } 
+            }
             $add_funds_to =  mysql_insert_id();
         } else {
-            $query = "UPDATE `" . BUDGETS . 
-                    "` SET `amount`= `amount` + $amount, `remaining` = `remaining` + $amount 
+            $query = "UPDATE `" . BUDGETS .
+                    "` SET `amount`= `amount` + $amount, `remaining` = `remaining` + $amount
                     WHERE id = $add_funds_to";
-            if (!mysql_unbuffered_query($query)){ 
+            if (!mysql_unbuffered_query($query)){
                 $json = json_encode(array('success' => false, 'message' => 'Error in query.'));
                 echo $json;
                 return;
-            } 
+            }
         }
-        $query = "INSERT INTO `" . BUDGET_SOURCE . 
+        $query = "INSERT INTO `" . BUDGET_SOURCE .
                 "` (`giver_id`, `budget_id`, `source_budget_id`, `amount_granted`, `original_amount`, `transfer_date`,  `source_data`) VALUES ('" .
-                $_SESSION['userid'] . 
+                $_SESSION['userid'] .
                 "', '$add_funds_to', '$budget_source_combo', '$amount', '0', NOW(), '$source')";
-        if (!mysql_unbuffered_query($query)){ 
+        if (!mysql_unbuffered_query($query)){
             $json = json_encode(array('success' => false, 'message' => 'Error in query.'));
             echo $json;
             return;
-        } 
+        }
         if ($budget_seed != 1) {
             $giver->updateBudget(- $amount, $budget_source_combo);
             $budget = new Budget();
@@ -2844,7 +2832,7 @@ function updateBudget() {
         if (mysql_unbuffered_query($query2)) {
             $journal_message = '@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) .
             " for " . $reason . ".";
-            sendJournalNotification($journal_message);            
+            sendJournalNotification($journal_message);
             if ($add_funds_to_budget == false) {
                 Notification::notifyBudget($amount, $reason, $giver, $receiver);
             } else {
@@ -2877,12 +2865,12 @@ function userNotes() {
 }
 
 function visitQuery() {
-    /* 
-     * Google Analytics API Token 
+    /*
+     * Google Analytics API Token
      * New tokens can be created by calling auth.php in the subdir resources
      */
     $token = GOOGLE_ANALYTICS_TOKEN;
-    /* site ids can be obtained from analytics 
+    /* site ids can be obtained from analytics
      * by logging into the profile, it's currently
      * called Profile ID on screen
      */
@@ -2893,7 +2881,7 @@ function visitQuery() {
         $results = VisitQueryTools::getJobResults($jobid, $token, $ids);
     } elseif ($jobid === 0) {
         $results = VisitQueryTools::getAllJobResults($token, $ids);
-    } 
+    }
     if (!isset($results)) {
         echo "{error: 'invalid job id supplied'}";
     } else {
@@ -2925,11 +2913,11 @@ function wdFee() {
 
     $fee_update = mysql_query($fee_update_sql) or error_log("wd_fee mysql error: $fee_update_sql\n".json_encode($_SESSION) . mysql_error());
 
-    if ($fee_update) { 
-        echo 'Update Successful!'; 
-    } else { 
+    if ($fee_update) {
+        echo 'Update Successful!';
+    } else {
         echo 'Update Failed!';
-    }    
+    }
 }
 
 function budgetInfo() {
@@ -2971,10 +2959,10 @@ function budgetHistory() {
     // Query to get User's Budget entries
     $query =  ' SELECT DATE_FORMAT(b.transfer_date, "%Y-%m-%d") AS date, b.amount,'
             . ' IF( b.active=1, b.remaining, 0.00) AS remaining, b.reason, b.active, b.notes, b.seed, b.id AS budget_id, '
-            . '(SELECT COUNT(s.giver_id) FROM ' . BUDGET_SOURCE . 
+            . '(SELECT COUNT(s.giver_id) FROM ' . BUDGET_SOURCE .
                 ' AS s WHERE s.budget_id = b.id AND s.giver_id = ' . $userId . ') AS userid_count, '
             . '(SELECT COUNT(DISTINCT giver_id) FROM ' . BUDGET_SOURCE . ' AS s WHERE s.budget_id = b.id ) AS givers_count, '
-            . '(SELECT u.nickname FROM ' . USERS . ' AS u, ' . BUDGET_SOURCE 
+            . '(SELECT u.nickname FROM ' . USERS . ' AS u, ' . BUDGET_SOURCE
             . ' AS s WHERE u.id = s.giver_id AND s.budget_id = b.id LIMIT 0, 1) AS nickname '
             . ' FROM ' . BUDGETS . ' AS b '
             . ' WHERE b.receiver_id = ' . $id
@@ -3034,7 +3022,7 @@ function budgetHistory() {
             } else {
                 $classBudgetRow = "";
             }
-                
+
     ?>
 
         <tr class="<?php echo $classBudgetRow; ?>" data-budgetid="<?php echo $row['budget_id']; ?>"
@@ -3055,11 +3043,11 @@ function budgetHistory() {
     <?php
         $i++;
         }
-    } 
+    }
     ?>
 
     </table>
-    <div><ul class="pagination"><?php 
+    <div><ul class="pagination"><?php
     for ($i = 1; $i <= $totalPages; $i++) {
         if ($i == $page) {
             echo '<li><a href="#">' . $i . '</a></li>';
@@ -3134,14 +3122,14 @@ function sendNewUserNotification() {
     }
 
     $data .= '</ol>';
-    
+
     $mergeData = array(
         'userList' => $data,
         'hours' => $interval * 25
     );
 
     if (! sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
-        error_log('sendNewUserNotification cron: Failed to send email report'); 
+        error_log('sendNewUserNotification cron: Failed to send email report');
     }
 }
 
