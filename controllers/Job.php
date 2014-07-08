@@ -1006,7 +1006,6 @@ class JobController extends Controller {
     }
 
     public function add() {
-
         $this->view = null;
         if (isset($_POST['api_key'])) {
             validateAPIKey();

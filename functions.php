@@ -904,7 +904,7 @@ function checkLogin() {
 }
 
 function validateAPIKey() {
-    if( ! isset($_REQUEST["api_key"])) {
+    if(! isset($_REQUEST["api_key"])) {
         error_log("No api key defined.");
         header('HTTP/1.1 401 Unauthorized', true, 401);
         die("No api key defined.");
