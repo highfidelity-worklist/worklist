@@ -1910,8 +1910,7 @@ function getMentionsList() {
         WHERE (
             nickname {$likeString} OR
             first_name {$likeString} OR
-            last_name {$likeString} OR
-            username {$likeString}
+            last_name {$likeString}
             ) AND
             picture IS NOT NULL AND picture LIKE \"%http%\"
         ORDER BY nickname LIMIT 0, 10
@@ -1944,7 +1943,7 @@ function getMentionsList() {
         $data
     );
 
-    echo json_encode($data);    
+    echo json_encode($data);
 }
 
 function getWorkitem() {
