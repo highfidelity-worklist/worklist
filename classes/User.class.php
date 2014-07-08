@@ -2518,4 +2518,30 @@ class User {
         }
         return $ret;
     }
+
+    /**
+     * Find users by nickname or full name (first_name, last_name)
+     *
+     * @param string $contains
+     */
+    public function mentionsList($contains) {
+
+        $likeString =  'LIKE "%' . mysql_real_escape_string($contains) . '%"';
+
+        $query = "
+            SELECT id, nickname, username, picture, first_name, last_name
+            FROM " . USERS . "
+            WHERE (
+                nickname {$likeString} OR
+                first_name {$likeString} OR
+                last_name {$likeString}
+                ) AND
+                picture IS NOT NULL AND picture LIKE \"%http%\"
+            ORDER BY nickname LIMIT 0, 10
+        ";
+
+        $result = mysql_query($query);
+
+        return $result;
+    }
 }

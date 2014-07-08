@@ -1194,3 +1194,28 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     width: 100%;
     margin-top: 13px;
 }
+
+.typeahead img {
+    height: 25px;
+    margin-right: 5px;
+    width: 25px;
+}
+
+.typeahead b {
+    color: #007F7c;
+}
+
+.typeahead > .active b {
+    color: #ffffff;
+}
+
+.typeahead .mention_username {
+    color: #aaaaaa;
+}
+
+.typeahead.dropdown-menu > .active a,
+.typeahead.dropdown-menu > .active a:hover,
+.typeahead.dropdown-menu > .active a:focus {
+    background-color: #007F7c;
+    color: #ffffff;
+}
