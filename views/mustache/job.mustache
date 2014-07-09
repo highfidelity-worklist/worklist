@@ -144,7 +144,7 @@
                         <span class="sections">Notes</span>
                             <span id="info-notes">
                             {{#canEditNotes}}
-                                <textarea name="notes" id="edit-notes" class="autogrow" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
+                                <textarea name="notes" id="edit-notes" class="autogrow mentions" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
                             {{/canEditNotes}}
                             {{^canEditNotes}}
                                 {{& notesHtml}}
@@ -234,7 +234,7 @@
                         <input type="hidden" name="user_id" value="{{currentUser.id}}" />
                         <input type="hidden" name="comment_id" value="" />
                         <div class="form-group">
-                            <textarea name="comment" class="form-control autogrow"></textarea>
+                            <textarea name="comment" class="form-control autogrow mentions"></textarea>
                         </div>
                         <input type="submit" name="newcomment" value="Comment" /> 
                         <span class="tip">You can mention users with <strong>@username</strong></span>
