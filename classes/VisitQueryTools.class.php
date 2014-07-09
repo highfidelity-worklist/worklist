@@ -6,8 +6,8 @@ class VisitQueryTools {
      */
     function getJobResults($jobid, $token, $ids) {
         $ids        = "ga:$ids";
-        $metrics    = 'ga:visits,ga:pageViews';
-        $segment    = "dynamic%3A%3Aga%3ApagePath%3D~workitem.php.*%3Fjob_id%3D$jobid.*";
+        $metrics    = 'ga:visits,ga:pageviews';
+        $segment    = "dynamic%3A%3Aga%3ApagePath%3D~%2F$jobid.*";
         
         $query = "ids=$ids&metrics=$metrics&segment=$segment&start-date=2009-01-01&end-date=2100-01-01";
         return self::getResults($query, $token, $ids);
@@ -18,7 +18,7 @@ class VisitQueryTools {
      */
     function getAllJobResults($token, $ids) {
         $ids        = "ga:$ids";
-        $metrics    = 'ga:pageViews';
+        $metrics    = 'ga:pageviews';
         $filter     = 'ga%3ApagePath%3D~%5E%2Fworklist%2F.*job_id';
         $sort       = '-ga%3Apageviews';
         $dimensions = 'ga:pagePath';
