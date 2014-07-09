@@ -289,3 +289,16 @@ section#footer li:nth-child(-n+3) {
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
 }
+
+.visits-box {
+    float: left;
+    color: #999999;
+    min-width: 105px;
+    padding: 9px 10px 9px 0;
+    border-right: 2px solid #e1e8ea;
+}
+
+.visits-box .visits {
+    font-weight: bold;
+    color: #333333;
+}
