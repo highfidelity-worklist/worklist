@@ -64,8 +64,7 @@ class FeedsController extends Controller {
                 $name = 'comments';
                 if (isset($job_id) && $job_id) {
                     $where = "WHERE worklist_id IN
-                              (SELECT id FROM " . WORKLIST . " WHERE is_internal = 0)
-                              AND worklist_id = " . $job_id;
+                              (SELECT id FROM " . WORKLIST . " WHERE is_internal = 0 AND worklist_id = " . $job_id . ")";
                     $title = 'Worklist - Comments for Job #' . $job_id;
                     $description = 'Worklist, latest Comments for Job #' . $job_id;
                     $entryDescription = 'Worklist latest Comments for Job #' . $job_id;
