@@ -1219,3 +1219,8 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     background-color: #007F7c;
     color: #ffffff;
 }
+
+.disable-comment-button {
+    background-color: #608e96 !important;
+    opacity: 0.6;
+}
