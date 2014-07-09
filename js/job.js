@@ -426,17 +426,10 @@ var Job = {
 
     postComment: function() {
         var id = $('#commentform input[name=comment_id]').val();
-        var my_comment = $('#commentform textarea[name=comment]').val();
-
-        var color = 'imOdd';
-        $('#commentform textarea[name=comment]').val('');
-        $('#commentform input[name=comment_id]').val('');
-        $('#commentform input[name=newcomment]').val('Comment');
+        var my_comment = $('#commentform textarea[name=comment]').attr("disabled", true).val();
+        $('#commentform input[name=newcomment]').val('Posting...').attr("disabled", true).addClass('disable-comment-button');
         $('#commentform input[name=cancel]').addClass('hidden');
         $('#commentform').css({'margin-left':0});
-        var commentForm = $('#commentform');
-        var clone = commentForm.clone();
-        commentForm.remove();
 
         $.ajax({
             type: 'post',
@@ -454,7 +447,6 @@ var Job = {
                 var depth;
                 var elementClass;
                 if (data.success) {
-                    $('#no_comments').hide();
                     if (id != '') {
                         elementClass = $('#comment-' + id).attr('class').split(" ");
                         depth = Number(elementClass[0].substring(elementClass[0].indexOf('-') + 1)) + 1;
@@ -462,7 +454,7 @@ var Job = {
                         depth = 0;
                     }
                     var newcomment =
-                        '<li id="comment-' + data.id + '" class="depth-' + depth + ' ' + color + '">' +
+                        '<li id="comment-' + data.id + '" class="imOdd depth-' + depth + '">' +
                             '<div class="comment">' +
                                 '<a href="./user/' + data.userid + '" >' +
                                     '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -494,14 +486,9 @@ var Job = {
                         }
                         $(newcomment).insertAfter($('#comment-' + id).nextUntil(cond.join(',')).andSelf().filter(":last"));
                     }
+                    $('#commentform textarea[name=comment]').val('').attr("disabled", false).focus();
+                    $('#commentform input[name=newcomment]').val('Comment').attr("disabled", false).removeClass('disable-comment-button');
                 }
-
-                clone.insertAfter($('#commentZone ul'));
-                $('#commentform textarea').height(61).autosize();
-                $('#commentform input[name=newcomment]').click(function(event) {
-                    event.preventDefault();
-                    Job.postComment();
-                });
             }
         });
     },
