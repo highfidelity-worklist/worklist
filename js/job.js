@@ -117,7 +117,9 @@ var Job = {
 
        $('#commentform input[name=newcomment]').click(function(event) {
             event.preventDefault();
-            Job.postComment();
+            if ($.trim($('#commentform textarea[name=comment]').val()).length > 0) {
+                Job.postComment();
+            }
         });
 
         $('#commentform input[name=cancel]').addClass('hidden');
