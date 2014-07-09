@@ -37,7 +37,7 @@ class FeedsController extends Controller {
                 $projects = isset($_REQUEST['projects']) ? preg_split('/,/', $_REQUEST['projects']) : array();
                 $description = 'Worklist, highest priority jobs Bidding';
                 $entryDescription = 'Worklist priority item';
-                $cond = "w.status = 'Bidding'";
+                $cond = "w.status = 'Bidding' AND w.is_internal = 0";
                 $limit = isset($_REQUEST['limit']) ? (int) $_REQUEST['limit'] : 20;
                 if (! empty($projects)) {
                     $projectList = '';
@@ -63,7 +63,7 @@ class FeedsController extends Controller {
             case 'comments' :
                 $name = 'comments';
                 if (isset($job_id) && $job_id) {
-                    $where = "WHERE worklist_id = " . $job_id;
+                    $where = "WHERE worklist_id IN(select id FROM " . WORKLIST . " WHERE is_internal = 0) AND worklist_id = " . $job_id;
                     $title = 'Worklist - Comments for Job #' . $job_id;
                     $description = 'Worklist, latest Comments for Job #' . $job_id;
                     $entryDescription = 'Worklist latest Comments for Job #' . $job_id;
@@ -95,7 +95,7 @@ class FeedsController extends Controller {
                 $entryDescription = 'Worklist priority item';
                 $query = "SELECT w.id as worklist_id, u1.nickname as author, username as email, summary as title, notes as content
                             FROM ".WORKLIST." w
-                            JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Done'
+                            JOIN ".USERS." u1 ON u1.id = w.creator_id AND w.status = 'Done' AND w.is_internal = 0
                             ORDER BY created DESC LIMIT 20";
         }
 
