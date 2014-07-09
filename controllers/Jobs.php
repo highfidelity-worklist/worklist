@@ -58,10 +58,10 @@ class JobsController extends Controller {
 
         if (! empty($_REQUEST['user'])) {
             $filter->setUser($_REQUEST['user']);
+            $filter->setNickName(User::find($_REQUEST['user'])->getNickname());
         } else {
-            if (array_key_exists('user', $_REQUEST)) {
-                $filter->setUser(0);
-            }
+           $filter->setUser(0);
+           $filter->setNickName("");
         }
 
         // Prevent reposts on refresh

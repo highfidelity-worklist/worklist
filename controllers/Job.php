@@ -1006,7 +1006,20 @@ class JobController extends Controller {
     }
 
     public function add() {
-        checkLogin();
+        $this->view = null;
+        if (isset($_POST['api_key'])) {
+            validateAPIKey();
+            $user = User::find($_POST['creator']);
+            $userId = $user->getId();
+        } else {
+            checkLogin();
+            $userId = getSessionUserId();
+        }
+        if (!$userId) {
+            header('HTTP/1.1 401 Unauthorized', true, 401);
+            echo json_encode(array('error' => "Invalid parameters !"));
+            return;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $this->view = new AddJobView();
@@ -1020,12 +1033,6 @@ class JobController extends Controller {
         $nick = '';
 
         $workitem = new WorkItem();
-
-        $userId = getSessionUserId();
-        if (!$userId > 0 ) {
-            echo json_encode(array('error' => "Invalid parameters !"));
-            return;
-        }
 
         initUserById($userId);
         $user = new User();
