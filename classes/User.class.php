@@ -1949,13 +1949,10 @@ class User {
 
     public function completedJobsWithStats() {
         $sql = "
-            SELECT w.id, w.summary, f.cost, DATEDIFF(d2.change_date, b.date) days
+            SELECT w.id, w.summary, f.cost,
+            DATEDIFF ((SELECT MAX(change_date) FROM " .STATUS_LOG. " WHERE `status` = 'Merged'
+            AND `worklist_id` = w.id), b.date) days
             FROM " . WORKLIST . " w
-            # Code is commented out as there is not a reliable 'Working' status date due to issues
-            # in the acceptdBid method. This method has been updated.
-            # LEFT JOIN " . STATUS_LOG . " d1 ON d1.worklist_id = w.id AND d1.status = 'Working'
-            LEFT JOIN " . STATUS_LOG . " d2 ON d2.worklist_id = w.id AND d2.status = 'Completed'
-            # And temporarily using the creation date of the Accepted Bid
             LEFT JOIN " . FEES . " b ON b.worklist_id = w.id AND b.desc = 'Accepted Bid'
             LEFT JOIN (
                 SELECT SUM(amount) cost, worklist_id
@@ -1965,7 +1962,7 @@ class User {
             ) f ON f.worklist_id = w.id
             WHERE
                 (`mechanic_id` = " . $this->getId() . " OR `creator_id` = " . $this->getId() . ") AND
-                w.`status` IN ('Completed', 'Done')
+                w.`status` IN ('Merged', 'Done')
             GROUP BY w.`id`
             ORDER BY w.`id` DESC
             LIMIT 5";
