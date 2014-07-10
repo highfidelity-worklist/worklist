@@ -430,12 +430,10 @@ class UserController extends Controller {
         echo json_encode($user->getTotalLove($page));
     }
 
-    public function latestEarnings($id, $page = 1, $itemsPerPage = 10) {
+    public function latestEarnings($id) {
         $this->view = null;
         $user = User::find($id);
-        $page = (is_numeric($page) ? $page : 1);
-        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
-        echo json_encode($user->latestEarningsJobs(30, $page, $itemsPerPage));
+        echo json_encode($user->latestEarningsJobs(30));
     }
 
     public function projectHistory($id, $project, $page = 1, $itemsPerPage = 10) {
