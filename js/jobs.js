@@ -68,6 +68,7 @@ $(document).ready(function() {
     });
 
     $("#query-search-button").click(function() {
+        search_query = '';
         GetWorklist(1, false);
         return false;
     });
