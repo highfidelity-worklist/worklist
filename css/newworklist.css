@@ -1239,19 +1239,19 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     margin-top: 13px;
     float: left;
     color: #999999;
-}
-
-#search-query input:focus {
-    outline: 0;
-    border-color: #007F7c;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1em;
     line-height: 1.45em;
 }
 
+#search-query input:focus {
+    outline: 0;
+    border-color: #007F7c;
+}
+
 #query-search-button {
     background-color: #007F7c;
-    border: 0;
+    border: 0px;
     display: inline-block;
     border-radius: 0px 5px 5px 0px;
     cursor: pointer;
