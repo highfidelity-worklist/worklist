@@ -1263,6 +1263,5 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     background-image: url('../images/wl-icons/search-magnifier.svg');
     background-repeat: no-repeat;
     background-size: 27px 27px;
-    background-position-x: 10px;
-    background-position-y: 5px;
+    background-position: 10px 5px;
 }
