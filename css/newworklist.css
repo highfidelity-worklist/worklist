@@ -1175,3 +1175,15 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .modal[name='jobs'] ul.pagination {
     margin: 0 auto;
 }
+
+
+@media  only screen and (min-device-pixel-ratio: 2),
+only screen and (min-resolution: 192dpi) {
+    #statusCombo_chosen > a > div > b,
+    form#searchForm .chosen-drop .chosen-search input,
+	form#searchbar.row #search-filters #days_chosen.chosen-container.chosen-container-single a.chosen-single div b,
+	form#searchbar.row #search-filters #days_chosen.chosen-container.chosen-container-single div.chosen-drop div.chosen-search input
+    {
+        background-image: none !important;
+    }
+}
