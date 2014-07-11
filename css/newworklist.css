@@ -1287,3 +1287,17 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
         width: 75%;
     }
 }
+
+@media (max-width: 960px) {
+   .navbar-nav-md {
+        max-width: 298px;
+    }
+
+    #search-query input {
+        width: 70%;
+    }
+}
+
+.container-fluid {
+    min-width: 905px;
+}
