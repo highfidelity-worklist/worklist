@@ -805,11 +805,6 @@ input {
     font-size: 1em;
 }
 
-#search {
-    background-color: #dde4e6;
-}
-
-
 @media (max-width: 768px) {
     #search {
         position: relative;
@@ -818,8 +813,7 @@ input {
 }
 
 #search select + div,
-#search select,
-#query > fieldset > input {
+#search select {
     margin-bottom: 13px;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1em;
@@ -828,8 +822,7 @@ input {
 
 @media (max-width: 767px) {
     #search select + div,
-    #search select,
-    #query > fieldset > input {
+    #search select {
         width: 100%;
         margin-bottom: 5px;
     }
@@ -842,67 +835,6 @@ input {
     }
 }
 
-#query > fieldset > input[type="text"] {
-    padding-left: 23px;
-    width: 100%;
-}
-
-@media (max-width: 1024px) {
-    #query > fieldset > input[type="text"] {
-        padding: 7px 24px 6px;
-    }
-}
-
-#query > fieldset:before {
-    font-family: FontAwesome;
-    content: "\f002";
-    position: absolute;
-    color: #000;
-    margin: 7px;
-    color: #007F7c;
-}
-
-#query > fieldset > * {
-    vertical-align: top;
-}
-
-#query > fieldset {
-    position: relative;
-}
-
-#query > fieldset > input[type="text"] + button {
-    position: absolute;
-    font-size: 18px;
-    border: 0 none;
-    background: transparent none;
-    color: #666;
-    top: 8px;
-    right: 2px;
-}
-
-@media (max-width: 1024px) {
-    #query > fieldset > input[type="text"] + button {
-        font-size: 16px;
-        top: 8px;
-    }
-}
-
-@media (max-width: 768px) {
-    #query > fieldset > input[type="text"] + button {
-        display: none;
-    }
-}
-
-#query > fieldset > input[type="text"] + button:focus {
-    color: #007F7c;
-}
-
-#query > fieldset {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
 
 #query fieldset > input[type="checkbox"] {
     opacity: 0;
@@ -1010,72 +942,30 @@ input {
     }
 }
 
-#query > fieldset {
-    margin-top: 35px;
-}
-
-@media (max-width: 1024px) {
-    #query > fieldset {
-        margin-top: 15px;
-    }
-
-}
-@media (max-width: 767px) {
-    #query > fieldset {
-        margin-top: 5px;
-        width: 100%;
-    }
-
-    #query > fieldset {
-        margin-top: 15px;
-    }
-}
-
-#query > fieldset > input {
-    padding: 7px 10px;
-    background: none #fff;
-    border: 0 none;
-}
-
 #search select {
     height: 35px;
     font-size: 13px;
     display: none;
 }
 
-#search select,
-#query > fieldset > input {
+#search select {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
-#search select,
-#query > fieldset > input {
+#search select {
     border: 1px solid #ccc;
 }
 
-#query > fieldset > input:focus {
-    border-color: #007F7c;
-}
-
-#query > fieldset > input:focus,
-#query > fieldset > input.valid {
-    color: #007F7c;
-    outline: none;
-}
-
-#query > fieldset > input.error,
 #search select.error {
     outline: none;
 }
 
-#query > fieldset > input.error,
 #search select.error,
 #search select.error + div > .chosen-choices,
 #search select.error + div > .chosen-single {
     color: #007F7C;
 }
 
-#query > fieldset > input.error,
 #search select.error,
 #search select.error + div > .chosen-choices,
 #search select.error + div > .chosen-single {

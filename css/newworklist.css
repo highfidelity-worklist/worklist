@@ -501,11 +501,7 @@ button:focus, a:focus {
     padding: 0 15px 0 0;
 }
 
-.navbar-nav.navbar-right-log-in {
-    max-width: 295px;
-}
-
-.navbar-nav.navbar-right-log-out {
+.navbar-nav.navbar-right {
     max-width: 170px;
 }
 
@@ -1223,4 +1219,50 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .disable-comment-button {
     background-color: #608e96 !important;
     opacity: 0.6;
+}
+
+.navbar-nav-md {
+    max-width: 455px;
+}
+
+.navbar-nav-md > li {
+    padding: 0px;
+}
+
+#search-query input {
+    width: 80%;
+    border-radius: 5px 0px 0px 5px;
+    border: 1px solid #666666;
+    background-color: #666666;
+    height: 35px;
+    padding: 5px;
+    margin-top: 13px;
+    float: left;
+    color: #999999;
+}
+
+#search-query input:focus {
+    outline: 0;
+    border-color: #007F7c;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    line-height: 1.45em;
+}
+
+#query-search-button {
+    background-color: #007F7c;
+    border: 0;
+    display: inline-block;
+    border-radius: 0px 5px 5px 0px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 50px;
+    margin-top: 13px;
+    float: left;
+    height: 35px;
+    background-image: url('../images/wl-icons/search-magnifier.svg');
+    background-repeat: no-repeat;
+    background-size: 27px 27px;
+    background-position-x: 10px;
+    background-position-y: 5px;
 }

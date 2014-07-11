@@ -1,3 +1,4 @@
+var isJobsPage = false;
 var NewWorklist = {
     init: function() {
         $(document).ajaxSend(function(event, request, settings) {
@@ -19,6 +20,7 @@ var NewWorklist = {
         Budget.init();
         UserStats.init();
         NewWorklist.initMentions();
+        NewWorklist.initJobSearch();
     },
 
     loginClick: function(event) {
@@ -73,5 +75,20 @@ var NewWorklist = {
             ajaxUrl : 'user/mentionsList',
             users: [{ }]
         });    
+    },
+
+    initJobSearch: function() {
+        $('#search-query input[type="text"]').keypress(function(event) {
+            if ($.trim($(this).val()).length > 0 && event.keyCode == '13') {
+                if(!isJobsPage) {
+                    window.location = "./jobs?query=" + $(this).val();
+                }
+            }
+        });
+        $("#query-search-button").click(function() {
+            if($.trim($('#search-query input[type="text"]').val()).length > 0 && !isJobsPage) {
+                    window.location = "./jobs?query=" + $('#search-query input[type="text"]').val();
+            }
+        });
     }
 }
