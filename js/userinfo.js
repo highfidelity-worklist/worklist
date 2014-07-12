@@ -28,11 +28,41 @@ var UserInfo = {
             var field = $(this).attr('id');
             if (field == 'w9status') {
                 if (value == 'rejected') {
-                    $('#reject-w9').dialog('open');
-                    // we don't post this here, it's sent along with the reason
-                    // for rejection by the dialog handler
-                    return;
+                    Utils.emptyFormModal({
+                        title: 'Reject W9',
+                        content:
+                            '<div class="row">' +
+                            '  <div class="col-md-3">' +
+                            '    <label for="w9reject-reason">Reason:</label>' +
+                            '  </div>' +
+                            '  <div class="col-md-9">' +
+                            '    <input type="text" class="form-control" id="w9reject-reason" name="reason" />' +
+                            '  </div>' +
+                            '</div>',
+                        buttons: [
+                            {
+                                type: 'submit',
+                                name: 'confirm',
+                                content: 'Confirm',
+                                className: 'btn-primary',
+                                dismiss: false
+                            }
+                        ],
+                        open: function(modal) {
+                            $('form', modal).submit(function() {
+                                UserInfo.setW9Status('rejected', $('input[name="reason"]', modal).val(), function(data) {
+                                    if (data.success) {
+                                        $(modal).modal('hide');
+                                    }
+                                });
+                                return false;
+                            });
+                        }
+                    });
+                } else {
+                    UserInfo.setW9Status(value);
                 }
+                return;
             }
 
             $.ajax({
@@ -72,39 +102,6 @@ var UserInfo = {
         
         });
 
-        $('#reject-w9').dialog({
-            autoOpen: false,
-            show: 'fade',
-            hide: 'fade',
-            buttons: [{
-                text: 'Send notification',
-                click: function() {
-                    $.ajax({
-                        type: 'post',
-                        url: './user/' + userInfo.user_id,
-                        dataType: 'json',
-                        data: {
-                            value: 'rejected',
-                            field: 'w9status',
-                            user_id: userInfo.user_id,
-                            reason: $('#reject-reason').val()
-                        },
-                        success: function(json) {
-                            $('#reject-w9').dialog('close');
-                        }
-                    });
-                }
-            }],
-            open: function() {
-                $('#reject-reason').bind('keyup', 'keydown', function() {
-                    if ($(this).val().length > 100) {
-                        $(this).val($(this).val().substring(0, 100));
-                    } else {
-                        $('#charCount').text(100 - $(this).val().length);
-                    }
-                });
-            }
-        });
 
         // custom function for setting salary
         $('#save_salary').click(function() {
@@ -418,7 +415,23 @@ var UserInfo = {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
     },
-     
+
+    setW9Status: function(status, reason, fAfter) {
+        $.ajax({
+            type: 'POST',
+            url: './user/setW9Status/' + userInfo.user_id + '/' + status,
+            dataType: 'json',
+            data: {
+                reason: reason
+            },
+            success: function(json) {
+                if (fAfter) {
+                    fAfter(json);
+                }
+            }
+        });
+    },
+
     appendPagination: function(page, cPages, table) {
         var cspan = '4'
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" >' + 

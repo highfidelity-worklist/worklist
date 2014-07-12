@@ -28,6 +28,7 @@ class UserController extends Controller {
             case 'counts':
             case 'review':
             case 'payBonus':
+            case 'setW9Status':
                 $method = $action;
                 break;
             default:
@@ -122,9 +123,6 @@ class UserController extends Controller {
             if (!empty($_POST['save-salary'])) {
                 $field = 'salary';
                 $value = mysql_real_escape_string($_POST['value']);
-            } elseif ($_POST['field'] == 'w9status') {
-                $field = 'w9status';
-                $value = mysql_real_escape_string($_POST['value']);
             } else {
                 $field = $_POST['field'];
                 $value = (int) $_POST['value'];
@@ -149,32 +147,6 @@ class UserController extends Controller {
 
                     case 'isinternal':
                         $updateUser->setIs_internal($value);
-                        break;
-
-                    case 'w9status':
-                        if ($value) {
-                            switch ($value) {
-                                case 'approved':
-                                    if (! sendTemplateEmail($updateUser->getUsername(), 'w9-approved')) { 
-                                        error_log("UserController: send_email failed on w9 approved notification");
-                                    }
-
-                                    break;
-                                    
-                                case 'rejected':
-                                    $data = array();
-                                    $data['reason'] = strip_tags($_POST['reason']);
-                                    
-                                    if (! sendTemplateEmail($updateUser->getUsername(), 'w9-rejected', $data)) { 
-                                        error_log("UserController: send_email failed on w9 rejected notification");
-                                    }
-                                    break;
-                                
-                                default:
-                                    break;
-                            }
-                        }
-                        $updateUser->setW9_status($value);
                         break;
 
                     case 'ispaypalverified':
@@ -575,6 +547,41 @@ class UserController extends Controller {
             echo json_encode(array(
                 'success' => true,
                 'message' => 'Paid ' . $receiver->getNickname() . ' a bonus of $' . $stringAmount
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function setW9Status($id, $status = 'rejected') {
+        $this->view = null;
+        try {
+            $user = User::find($id);
+            $currentUser = User::find(getSessionUserId());
+            if (!$currentUser->getIs_runner() && !$getIs_runner->getIs_admin() && !$getIs_runner->getIs_payer()) {
+                throw new Exception('Not enough rights');
+            }
+
+            if (!$user->getId()) {
+                throw new Exception('Specified user does not exists');
+            }
+
+            $data = array();
+            if ($status == 'rejected') {
+                $data['reason'] = strip_tags($_POST['reason']);
+            }
+
+            if (! sendTemplateEmail($user->getUsername(), 'w9-' . $status, $data)) {
+                error_log("UserController::setW9Status: send_email failed on w9 notification");
+            }
+            $user->setW9_status($status);
+            $user->save();
+            echo json_encode(array(
+                'success' => true,
+                'message' => 'W9 status updated'
             ));
         } catch (Exception $e) {
             echo json_encode(array(

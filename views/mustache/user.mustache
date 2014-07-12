@@ -364,13 +364,3 @@
 {{> budget/give-modal}}
 {{> budget/update-modal}}
 {{> budget/addfunds-modal}}
-
-<div id="reject-w9" title="Reject W9">
-    
-    <form method="post" action = "">
-        <label for="reject-reason" class="info-label">Reason: </label><br/>
-        <textarea id="reject-reason" name="reason"></textarea><br/>
-        <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
-        <input type="hidden" name="receiver_id" value="{{profileUser.getId}}" />
-    </form>
-</div><!-- end of reject w9 div -->
