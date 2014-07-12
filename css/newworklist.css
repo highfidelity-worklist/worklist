@@ -41,7 +41,7 @@ a:active {
     color: #007F7C;
 }
 
-/* navigation bar@media (max-width: 1024px) { shadow */
+/* navigation bar shadow */
 nav.navbar {
     box-shadow: 0 0px 6px #333;
 }
