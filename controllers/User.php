@@ -26,6 +26,7 @@ class UserController extends Controller {
             case 'latestEarnings':
             case 'projectHistory':
             case 'counts':
+            case 'mentionsList':
             case 'review':
             case 'payBonus':
             case 'setW9Status':
@@ -404,12 +405,10 @@ class UserController extends Controller {
         echo json_encode($user->getTotalLove($page));
     }
 
-    public function latestEarnings($id, $page = 1, $itemsPerPage = 10) {
+    public function latestEarnings($id) {
         $this->view = null;
         $user = User::find($id);
-        $page = (is_numeric($page) ? $page : 1);
-        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
-        echo json_encode($user->latestEarningsJobs(30, $page, $itemsPerPage));
+        echo json_encode($user->latestEarningsJobs(30));
     }
 
     public function projectHistory($id, $project, $page = 1, $itemsPerPage = 10) {
@@ -436,6 +435,42 @@ class UserController extends Controller {
             'bonus_total' => preg_replace('/\.[0-9]{2,}$/','',money_format('%n',round($bonusPayments))),
             'bonus_percent' => round((($bonusPayments + 0.00000001) / ($totalEarnings + 0.000001)) * 100,2) . '%'
         ));
+    }
+
+    public function mentionsList() {
+        $this->view = null;
+
+        $data = array();
+
+        if (isset($_REQUEST['contains']) && !empty($_REQUEST['contains'])) {
+            $result = User::mentionsList($_REQUEST['contains']);
+
+            while ($result && $row = mysql_fetch_assoc($result)) {
+                $fullname = '';
+                if (! empty($row['first_name'])) {
+                    $fullname .= $row['first_name'];
+                }
+
+                if (! empty($row['last_name'])) {
+                    $fullname .= " " . $row['last_name'];
+                }
+
+                if (! empty($fullname)) {
+                    $row['name'] = $fullname;
+                }
+
+                $data[] = array_merge($row, array(
+                    'username' => $row['nickname'],
+                    'image' => $row['picture'] . "s=30"
+                ));
+            }
+        }
+
+        $users = array(
+            $data
+        );
+
+        echo json_encode($data);
     }
 
     public function review($id) {

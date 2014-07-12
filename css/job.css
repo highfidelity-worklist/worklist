@@ -23,6 +23,8 @@
     cursor: pointer;
     text-decoration: underline !important;
     color: #608e96 !important;
+    background-image: url('../images/wl-icons/tweet~hover.png');
+    background-image: url('../images/wl-icons/tweet~hover.svg');
 }
 
 @media (max-width: 480px) {
@@ -264,7 +266,7 @@ section#footer li:nth-child(-n+3) {
 	JUN-03-2014 <victorargote> */
 .top-bar {
     background-color: #e1e8ea;
-    padding: 14px 0;
+    padding-top: 14px;
     margin-top: 13px !important;
     font-size: 14px;
 }
@@ -286,4 +288,17 @@ section#footer li:nth-child(-n+3) {
  */
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
+}
+
+.visits-box {
+    float: left;
+    color: #999999;
+    min-width: 105px;
+    padding: 9px 10px 9px 0;
+    border-right: 2px solid #e1e8ea;
+}
+
+.visits-box .visits {
+    font-weight: bold;
+    color: #333333;
 }

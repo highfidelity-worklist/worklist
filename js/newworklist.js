@@ -18,6 +18,7 @@ var NewWorklist = {
          */
         Budget.init();
         UserStats.init();
+        NewWorklist.initMentions();
     },
 
     loginClick: function(event) {
@@ -61,5 +62,16 @@ var NewWorklist = {
                 },
             });
         }
+    },
+
+    initMentions: function() {
+        $('.mentions').mention({
+            delimiter: '@',
+            sensitive : true,
+            queryBy: ['name, nickname, username'],
+            ajax : true,
+            ajaxUrl : 'user/mentionsList',
+            users: [{ }]
+        });
     }
 }
