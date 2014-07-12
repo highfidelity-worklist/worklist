@@ -1175,8 +1175,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .modal[name='jobs'] ul.pagination {
     margin: 0 auto;
 }
-
-
 @media  only screen and (min-device-pixel-ratio: 2),
 only screen and (min-resolution: 192dpi) {
     #statusCombo_chosen > a > div > b,
