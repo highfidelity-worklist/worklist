@@ -60,17 +60,17 @@
 
                             //DON'T BOTHER TO QUERY A USERNAME WITH A SPACE
                             if( !hasSpace && qUser != ''){
-                                $.ajaxSetup({ async: false });  
+                                $.ajaxSetup({ async: false });
 
                                 var s;
                                 $.getJSON(settings.ajaxUrl + '&' + settings.ajaxParam + '=' + escape(qUser), {}, function(data) {
                                         s = data;
-                                }); 
-    
-                                this.source = s;
-                                items = this.source;    
+                                });
 
-                                $.ajaxSetup({ async: true });   
+                                this.source = s;
+                                items = this.source;
+
+                                $.ajaxSetup({ async: true });
 
                                 return s;
                             }
@@ -81,7 +81,7 @@
 
                 },
                 _matcher = function(itemProps) {
-                    var i;           
+                    var i;
                     if(settings.emptyQuery){
 	                    var q = (this.query.toLowerCase()),
 	                    	caratPos = this.$element[0].selectionStart,
@@ -114,7 +114,7 @@
                     var data = this.query,
                         caratPos = this.$element[0].selectionStart,
                         i;
-                    
+
                     for (i = caratPos; i >= 0; i--) {
                         if (data[i] == settings.delimiter) {
                             break;
@@ -124,7 +124,7 @@
                     	textBefore = data.substring(0, i),
                     	textAfter = data.substring(caratPos),
                     	data = textBefore + settings.delimiter + item + textAfter;
-                    	
+
                     this.tempQuery = data;
 
                     return data;
@@ -134,7 +134,7 @@
                     if(settings.ajax && settings.ajaxUrl.length){
                         items = _updateSource(this.query, this.$element[0].selectionStart, items);
                     }
-                    
+
                     if (items.length && settings.sensitive) {
                         var currentUser = _extractCurrentQuery(this.query, this.$element[0].selectionStart).substring(1),
                             i, len = items.length,
@@ -210,7 +210,7 @@
                         source: settings.users,
                         matcher: _matcher,
                         updater: _updater,
-                        sorter: _sorter 
+                        sorter: _sorter
                     }, settings.typeaheadOpts));
                 }
             });
