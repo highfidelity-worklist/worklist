@@ -972,20 +972,6 @@ input {
     border-color: #007F7C;
 }
 
-#buttons {
-    padding-left: 0;
-}
-
-@media (max-width: 767px) {
-    #buttons {
-        float: right;
-        padding-right: 15px;
-        padding-left: 15px;
-        text-align: center;
-        width: 100%;
-    }
-}
-
 @media (max-width: 480px) {
 
     td.status-col {

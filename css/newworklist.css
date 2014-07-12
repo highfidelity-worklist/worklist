@@ -1175,20 +1175,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .modal[name='jobs'] ul.pagination {
     margin: 0 auto;
 }
-#addJobButton {
-    background-color: #007F7c;
-    padding: 8px 10px 7px;
-    color: #fff;
-    font-size: 1em;
-    border: 0;
-    display: inline-block;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 13px;
-}
 
 .typeahead img {
     height: 25px;
@@ -1218,86 +1204,4 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .disable-comment-button {
     background-color: #608e96 !important;
     opacity: 0.6;
-}
-
-.navbar-nav-md {
-    max-width: 455px;
-}
-
-.navbar-nav-md > li {
-    padding: 0px;
-}
-
-#search-query input {
-    width: 80%;
-    border-radius: 5px 0px 0px 5px;
-    border: 1px solid #666666;
-    background-color: #666666;
-    height: 35px;
-    padding-left: 10px;
-    margin-top: 13px;
-    float: left;
-    color: #999999;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size: 1em;
-    line-height: 1.45em;
-}
-
-#search-query input:focus {
-    outline: 0;
-    border-color: #007F7c;
-    color: #cccccc;
-}
-
-#query-search-button {
-    background-color: #007F7c;
-    border: 0px;
-    display: inline-block;
-    border-radius: 0px 5px 5px 0px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 50px;
-    margin-top: 13px;
-    float: left;
-    height: 35px;
-    background-image: url('../images/wl-icons/search-magnifier.svg');
-    background-repeat: no-repeat;
-    background-size: 27px 27px;
-    background-position: 10px 5px;
-}
-
-@media (max-width: 1060px) {
-    .navbar-nav-md {
-        max-width: 390px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .navbar-nav-md {
-        max-width: 375px;
-    }
-}
-
-@media (max-width: 995px) {
-   .navbar-nav-md {
-        max-width: 335px;
-    }
-
-    #search-query input {
-        width: 75%;
-    }
-}
-
-@media (max-width: 960px) {
-   .navbar-nav-md {
-        max-width: 298px;
-    }
-
-    #search-query input {
-        width: 70%;
-    }
-}
-
-.container-fluid {
-    min-width: 905px;
 }
