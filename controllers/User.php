@@ -3,6 +3,7 @@
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
+require_once ("models/Budget.php");
 
 class UserController extends Controller {
     public function run($action, $param = '') {
@@ -26,6 +27,7 @@ class UserController extends Controller {
             case 'projectHistory':
             case 'counts':
             case 'review':
+            case 'payBonus':
                 $method = $action;
                 break;
             default:
@@ -526,6 +528,53 @@ class UserController extends Controller {
                 'success' => true,
                 'message' => $message,
                 'myReview' => $userReview
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function payBonus($id) {
+        $this->view = null;
+        try {
+            $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+            $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
+            // user must be logged in
+            if (!getSessionUserId() || (!$is_runner && !$is_payer)) {
+                throw new Exception('error: unauthorized');
+            }
+            $giver = User::find(getSessionUserId());
+            $budget = $giver->getBudget();
+            // validate required fields
+            if (empty($_POST['budget']) || empty($_POST['amount'])) {
+                throw new Exception('error: args');
+            }
+            $budget_source_combo = (int) $_POST['budget'];
+            $budgetSource = new Budget();
+            if (!$budgetSource->loadById($budget_source_combo) ) {
+                throw new Exception('Invalid budget!');
+            }
+            $amount = floatval($_POST['amount']);
+            $stringAmount = number_format($amount, 2);
+            $receiver = User::find($id);
+            $reason = $_POST['reason'];
+            $remainingFunds = $budgetSource->getRemainingFunds();
+            if (!($amount <= $budget && $amount <= $remainingFunds)) {
+                throw new Exception('You do not have enough budget available to pay this bonus.');
+            }
+            if (!payBonusToUser($receiver->getId(), $amount, $reason, $budget_source_combo)) {
+                throw new Exception('There was a problem while processing the payment.');
+            }
+            // deduct amount from balance
+            $giver->updateBudget(-$amount, $budget_source_combo);
+            sendTemplateEmail($receiver->getUsername(), 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
+            sendJournalNotification('@' . $receiver->getNickname() . ' received a bonus of $' . $stringAmount);
+            echo json_encode(array(
+                'success' => true,
+                'message' => 'Paid ' . $receiver->getNickname() . ' a bonus of $' . $stringAmount
             ));
         } catch (Exception $e) {
             echo json_encode(array(

@@ -1,0 +1,39 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="./{{job_id}}" method="post">
+        <input type="hidden" name="receiver" value="{{receiver}}" />
+        <input type="hidden" name="budget_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Pay bonus</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="bonus-amount">Amount</label>
+              <div class="input-group">
+                <input type="text" class="form-control" name="amount" id="bonus-amount" />
+                <span class="input-group-addon">USD</span>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <label for="bonus-reason">Reason</label>
+              <input type="text" class="form-control" name="reason" id="bonus-reason" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group dropup">
+              <button type="button" name="accept" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Accept <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation" class="dropdown-header">Select a budget</li>
+              </ul>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

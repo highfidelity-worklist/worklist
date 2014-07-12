@@ -226,62 +226,83 @@ var UserInfo = {
             return false;
         });
 
-        $('#pay-bonus').dialog({ 
-            autoOpen: false, 
-            width: 720, 
-            show: 'fade',
-            dialogClass: 'white-theme',
-            resizable: false,
-            hide: 'fade',
-        });
         $('#budget-source-combo-bonus').chosen({width: 'auto'});
         var bonus_amount;
        
         $('#pay_bonus').click(function(e) {
-            // clear form input fields
-            $('#pay-bonus form input[type="text"]').val('');
-            $('#pay-bonus').dialog('open');
-            
-            var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-           
-            bonus_amount = new LiveValidation('bonus-amount', {onlyOnSubmit: true });
-            bonus_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-            bonus_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
-            bonus_budget = new LiveValidation('budget-source-combo-bonus', {
-                onlyOnSubmit: true ,
-                insertAfterWhatNode: "validationMessage"
-            });
-            bonus_budget.add( Validate.Exclusion, { within: [ 0 ], failureMessage: "You must select a budget!" });
-
-            UserInfo.getBonusHistory(1);
-        });
-        
-        $('#pay-bonus form').submit(function() {
-        
-            if (bonus_amount.validate() && bonus_budget.validate()) {
-                if (confirm('Are you sure you want to pay $' + $('#bonus-amount').val() + ' to ' + userInfo.nickName + '?')) {
-                    $('#pay-bonus').dialog('close');
+            Utils.modal('paybonus', {
+                open: function(modal) {
                     $.ajax({
-                        url: 'api.php?action=payBonus',
-                        data: $('#pay-bonus form').serialize(),
+                        url: './user/budget/' + userId,
                         dataType: 'json',
-                        type: "POST",
-                        cache: false,
                         success: function(json) {
-                            if (json.success) {
-                                alert(json.message);
-                            } else {
-                                alert(json.message);
+                            if (!json.budget) {
+                                return;
                             }
-                        },
-                        error: function(json) {
-                            alert('error');
+                            var budgets = json.budget.active;
+                            for(var i = 0; i < budgets.length; i++) {
+                                var budget = budgets[i],
+                                    link = $('<a>').attr({
+                                        budget: budget.id,
+                                        reason: budget.reason,
+                                        remaining: budget.remaining
+                                    });
+                                link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                var item = $('<li>').append(link);
+                                $('.modal-footer .dropup ul', modal).append(item);
+                            }
+                            $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                var budget = $(this).attr('budget');
+                                $('input[name="budget_id"]', modal).val(budget);
+                                $('button[name="accept"]', modal).html(
+                                    '<span>' + $(this).attr('reason') + '</span> ' +
+                                    '($' + $(this).attr('remaining') + ') ' +
+                                    '<span class="caret"></span>'
+                                );
+                                if (!$('button[name="confirm_paybonus"]', modal).length) {
+                                    var confirm = $('<button>')
+                                        .attr({
+                                            type: 'submit',
+                                            name: 'confirm_paybonus'
+                                        })
+                                        .addClass('btn btn-primary')
+                                        .text('Confirm Pay');
+                                    $('.modal-footer', modal).append(confirm);
+                                }
+                            })
                         }
                     });
+
+                    var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    bonus_amount = new LiveValidation($('input[name="amount"]', modal)[0], {onlyOnSubmit: true});
+                    bonus_amount.add( Validate.Presence, {failureMessage: "Can't be empty!"});
+                    bonus_amount.add( Validate.Format, {pattern: regex_bid, failureMessage: "Invalid Input!"});
+
+                    $('form', modal).submit(function() {
+                        if (!bonus_amount.validate()) {
+                            return false;
+                        }
+                        $.ajax({
+                            url: './user/payBonus/' + userInfo.nickName,
+                            data: {
+                                budget: $('input[name="budget_id"]', modal).val(),
+                                amount: $('input[name="amount"]', modal).val(),
+                                reason: $('input[name="reason"]', modal).val()
+                            },
+                            dataType: 'json',
+                            type: "POST",
+                            cache: false,
+                            success: function(json) {
+                                if (json.success) {
+                                    $(modal).modal('hide');
+                                }
+                            }
+                        });
+                        return false;
+                    });
+
                 }
-            }
-            
-            return false;
+            });
         });
 
         var limitPerPage = 10;
