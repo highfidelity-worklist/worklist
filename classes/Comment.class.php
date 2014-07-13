@@ -156,7 +156,7 @@ class Comment
 	}
 
     public function getRelativeDate() {
-        return relativeTime(strtotime($this->date) - time());
+        return relativeTime(strtotime($this->date) - strtotime(Model::now()));
     }
 
 	/**
