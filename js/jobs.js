@@ -19,6 +19,7 @@ var dirImg;
 var addFromJournal = false;
 var resetOrder = false;
 var skills = null;
+isJobsPage = true;
 
 $(document).ready(function() {
 
@@ -53,27 +54,21 @@ $(document).ready(function() {
 
     reattachAutoUpdate();
 
-    $('#query input[type="text"]').keypress(function(event) {
+    $('#search-query input[type="text"]').keypress(function(event) {
         if (event.keyCode == '13') {
-            search_nickname = '';
+            search_query = '';
             event.preventDefault();
-            $("#search").submit();
+            GetWorklist(1, false);
         }
     });
 
-    $('#query input[type="text"] + button').click(function(e){
-        e.preventDefault();
-        $('#query input[type="text"]').val('');
-        search_nickname = '';
-        affectedHeader = false;
-        resetOrder = true;
-        sort = 'null';
-        dir = 'asc';
+    $("#search").submit(function(){
         GetWorklist(1, false);
         return false;
     });
 
-    $("#search").submit(function(){
+    $("#query-search-button").click(function() {
+        search_query = '';
         GetWorklist(1, false);
         return false;
     });
@@ -321,8 +316,8 @@ function GetWorklist(npage, update, reload) {
         search_status = 'ALL';
         mobile_filter = true;
     }
-    if (search_nickname != '') {
-        $('#query input[type="text"]').val(search_nickname);
+    if (search_query != '') {
+        $('#search-query input[type="text"]').val(search_query);
     }
     $.ajax({
         type: "POST",
@@ -335,7 +330,7 @@ function GetWorklist(npage, update, reload) {
             status: search_status,
             sort: sort,
             dir: dir,
-            query: $('#query input[type="text"]').val(),
+            query: $('#search-query input[type="text"]').val(),
             reload: ((reload == undefined) ? false : true),
             save: save_filter,
             mobile: mobile_filter
@@ -344,7 +339,7 @@ function GetWorklist(npage, update, reload) {
         success: function(json) {
             if (json[0] == "redirect") {
                 lockGetWorklist = 0;
-                $('#query input[type="text"]').val('');
+                $('#search-query input[type="text"]').val('');
                 window.location.href = buildHref( json[1] );
                 return false;
             }
