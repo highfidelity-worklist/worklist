@@ -2949,7 +2949,7 @@ function budgetHistory() {
     }
     $inDiv = $_REQUEST['inDiv'];
     $page = (int) $_REQUEST['page'];
-    $limit = 8;
+    $limit = 800;
     $init = ($page -1) * $limit;
     $fromUseridFilter = "";
     if ($fromUserid == "y") {
@@ -3041,21 +3041,12 @@ function budgetHistory() {
         </tr>
 
     <?php
-        $i++;
         }
     }
     ?>
 
     </table>
-    <div><ul class="pagination"><?php
-    for ($i = 1; $i <= $totalPages; $i++) {
-        if ($i == $page) {
-            echo '<li><a href="#">' . $i . '</a></li>';
-        } else {
-            echo '<li><a href="javascript:Budget.budgetHistory({inDiv: \'' . $inDiv . '\', id: ' . $id . ', page: ' . $i . ', fromUserid: \'' . $fromUserid . '\'});">' . $i . '</a></li>';
-        }
-    }
-    echo '</ul></div>';
+<?php
 }
 
 function timeline() {

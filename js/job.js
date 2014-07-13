@@ -340,7 +340,7 @@ var Job = {
                                 });
                                 $('.modal-body > .row > div:last-child td:nth-child(2)', modal).html(
                                     '$' + json.total_earnings + ' / ' +
-                                    '<a href="#">$' + json.latest_earnings + '</a>'
+                                    '<a href="#" id="latest-earnings">' + '$' + json.latest_earnings + '</a>'
                                 );
                                 $('.modal-body > .row > div:last-child td:nth-child(2) a:last-child', modal).click(function() {
                                     $(modal).modal('hide');

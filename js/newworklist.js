@@ -71,7 +71,7 @@ var NewWorklist = {
             delimiter: '@',
             sensitive : true,
             queryBy: ['name, nickname, username'],
-            ajax : true, 
+            ajax : true,
             ajaxUrl : 'user/mentionsList',
             users: [{ }]
         });    

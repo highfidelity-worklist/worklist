@@ -1143,7 +1143,7 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     max-width: 180px;
 }
 .modal[name='budget'] tbody > tr td:nth-child(2) {
-    max-width: 130px;
+    max-width: 110px;
 }
 .modal[name='jobs'] tbody > tr td:nth-child(2):before,
 .modal[name='budget'] tbody > tr td:nth-child(3):before {

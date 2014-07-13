@@ -382,7 +382,7 @@ class JobController extends Controller {
                         'avatar' =>  $comment->getUser()->getAvatar(),
                         'nickname' => $comment->getUser()->getNickname(),
                         'userid' => $comment->getUser()->getId(),
-                        'date' => relativeTime(strtotime($comment->getDate()) - time()));
+                        'date' => relativeTime(strtotime($comment->getDate()) - strtotime(Model::now())));
                 ob_start();
                 $json = json_encode($result);
             } else {

@@ -564,7 +564,7 @@ class User {
         
         $remainingFunds = 0;
         $sql = 'SELECT SUM(`' . BUDGETS . '`.`remaining`) AS `remaining` FROM `' . BUDGETS . '` WHERE `' . 
-                BUDGETS . '`.`receiver_id` = ' . $this->getId() . " AND " . BUDGETS . ".active = 1  ";
+                BUDGETS . '`.`receiver_id` = ' . $this->getId() . " ";
         $result = mysql_query($sql);
         if ($result && (mysql_num_rows($result) == 1)) {
             $row = mysql_fetch_assoc($result);

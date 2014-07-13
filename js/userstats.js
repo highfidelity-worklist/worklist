@@ -224,9 +224,9 @@ var UserStats = {
             dataType: 'json',
             success: function(json) {
                 if (typeof modal == 'undefined') {
-                    UserStats.modal('latest-earnings', page, json, user, UserStats.showLatestEarnings);
+                    UserStats.modal('latest-earnings', page, json, user, '', UserStats.showLatestEarnings);
                 } else {
-                    UserStats.modalRefresh(modal, page, json, user, UserStats.showLatestEarnings);
+                    UserStats.modalRefresh(modal, page, json, user, '', UserStats.showLatestEarnings);
                 }
             }
         });
