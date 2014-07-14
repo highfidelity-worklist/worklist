@@ -159,55 +159,6 @@ function openNotifyOverlay(html, autohide, button, displayRedBorder) {
         content: html
     });
     return;
-
-    $('#sent-notify').html(html);
-    $('#sent-notify').attr('autohide', autohide);
-    
-    /**
-     *  'Got it' button is shown by default, unless autohide is true
-     */
-    if (typeof(button) == 'undefined' || button == null) {
-        var button = true;
-
-        if (autohide) {
-            button = false;
-        }
-    }
-
-    $('#sent-notify').dialog({
-        dialogClass:'white-theme'
-    });
-    
-    if (button) {
-        $('#sent-notify').dialog('option', 'buttons', [{
-            text: 'Got it',
-            click: function() {
-                $(this).dialog('close');
-            }
-        }]);
-    }
-    
-    $('#sent-notify').dialog('open');
-    
-    /**
-     * we need to remove the height so that the element automatically readjusts to
-     * a proper height based on the mesages to display.
-     */
-    $('#sent-notify').css("height", "");
- 
-    var sentNotifyParent = $('#sent-notify').parent();
-    $(sentNotifyParent).attr('id', ''); // We remove the id to default back to blue border
-    if(displayRedBorder) {
-        /**
-         * We give the container an id. This is important so that
-         * we can have our css to set the red border trump the white theme css
-         */
-        $(sentNotifyParent).attr('id', 'openOverlayContainer');
-    }
-}
-
-function closeNotifyOverlay() {
-    $('#sent-notify').dialog('close');
 }
 
 function makeWorkitemTooltip(className){
@@ -276,30 +227,6 @@ function validateUploadImage(file, extension) {
         return false;
     }
 }
-
-// main common.js initialization
-$(function() {
-    if ($('#sent-notify').length == 0) {
-        $('<div>').attr({id: 'sent-notify'}).css({display: 'none'}).appendTo('body');
-    }
-    $('#sent-notify').dialog({
-        modal: false,
-        autoOpen: false,
-        width: 350,
-        height: 70,
-        position: ['middle'],
-        resizable: false,
-        open: function() {
-            $('#sent-notify').parent().children('.ui-dialog-titlebar').hide();
-            var autoHide = $('#sent-notify').attr('autohide') == 'true' ? true : false;
-            if (autoHide) {
-                setTimeout(function() {
-                    closeNotifyOverlay();
-                }, 3000);
-            }
-        }
-    });
-});
 
 /* We replaced the jquery.autocomplete.js because it was obsolete and unsupported. 
  * Please refer to #19214 for details. Teddy 1/Apr/2013
