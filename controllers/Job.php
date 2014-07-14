@@ -1606,9 +1606,7 @@ class JobController extends Controller {
             $crRole = $project_roles[0];
             if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
                 $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
-                if ((float) $crFee < $crRole['min_amount']) {
-                   return $crRole['min_amount'];
-                }
+                return ((float) $crFee < $crRole['min_amount']) ? $crRole['min_amount'] : $crFee;
             }
         }
         return 0;
