@@ -6,6 +6,7 @@ class JobView extends View {
     public $title = '%d: %s - Worklist';
 
     public $stylesheets = array(
+        'css/legacy/workitem.css',
         'css/favorites.css',
         'css/entries.css',
         'css/job.css'
