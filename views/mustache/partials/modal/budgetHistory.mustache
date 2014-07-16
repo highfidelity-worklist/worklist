@@ -1,0 +1,58 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+          {{#title}}{{& title}}{{/title}}
+          {{^title}}Budget History{{/title}}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>Created</th>
+              <th>ID #</th>
+              <th>Grantor</th>
+              <th>Amount</th>
+              <th>Remaining</th>
+              <th>For</th>
+              <th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#data.items}}
+              <tr budget-id="{{budget_id}}">
+                <td>
+                  {{date}}
+                </td>
+                <td>
+                  {{budget_id}}
+                </td>
+                <td>
+                  {{#givers}}
+                    <a href="./user/{{nickname}}">{{nickname}}</a>
+                  {{/givers}}
+                </td>
+                <td>{{amount}}</td>
+                <td>{{remaining}}</td>
+                <td>{{reason}}</td>
+                <td>{{#active}}open{{/active}}{{^active}}closed{{/active}}</td>
+              </tr>
+            {{/data.items}}
+          </tbody>
+        </table>
+        <ul class="pagination">
+          <li {{#first}}class="disabled"{{/first}}><a goto="prev" href="#">&laquo;</a></li>
+          {{#pages}}
+            <li {{#current}}class="active"{{/current}}><a goto="{{page}}" href="#">{{page}}</a></li>
+          {{/pages}}
+          <li {{#last}}class="disabled"{{/last}}><a goto="next" href="#">&raquo;</a></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

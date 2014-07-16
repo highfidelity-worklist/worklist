@@ -2541,4 +2541,79 @@ class User {
 
         return $result;
     }
+
+    public function budgetHistory($giver = null, $page = 1, $itemsPerPage = 10) {
+        $ret = array();
+        $count = $this->budgetHistoryCount($giver);
+        $sql = "
+            SELECT
+                DATE_FORMAT(`b`.`transfer_date`, '%Y-%m-%d') AS `date`,
+                `b`.`amount`,
+                CASE WHEN `b`.`active` = 1 THEN `b`.`remaining` ELSE 0.00 END AS `remaining`,
+                `b`.`reason`,
+                `b`.`active`,
+                `b`.`notes`,
+                `b`.`seed`,
+                `b`.`id` AS `budget_id`,
+                CASE WHEN
+                    (
+                        SELECT COUNT(DISTINCT giver_id)
+                        FROM " . BUDGET_SOURCE . " AS s
+                        JOIN `" . USERS . "` AS `u` ON `u`.`id` = `s`.`giver_id`            #
+                        WHERE s.budget_id = b.id                                            # multiple givers?
+                    ) > 1 THEN                                                              #
+                        (
+                            SELECT GROUP_CONCAT(DISTINCT `u`.`nickname` SEPARATOR ',')      #
+                            FROM `" . BUDGET_SOURCE . "` AS `s`                             # then bring list of users (CSV)
+                            JOIN `" . USERS . "` AS `u` ON `u`.`id` = `s`.`giver_id`        #
+                            WHERE `s`.`budget_id` = `b`.`id`
+                            GROUP BY `s`.`budget_id`
+                        )
+                        ELSE
+                        (                                                                   #
+                            SELECT `u`.`nickname`                                           # otherwise bring the one referenced
+                            FROM `" . USERS . "` AS `u`                                     # by budget.giver.id
+                            WHERE `u`.`id` = `b`.`giver_id`                                 #
+                        )
+                END AS `giver_nickname`
+            FROM `" . BUDGETS . "` AS `b`
+            WHERE `b`.`receiver_id` = " . $this->getId() . "
+                " . ($giver ? 'AND `b`.`giver_id` = ' . $giver : '') . "
+            ORDER BY `b`.`id` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)) {
+                $givers = array();
+                foreach(preg_split('/,/', $row['giver_nickname']) as $nickname) {
+                    $givers[] = array('nickname' => $nickname);
+                }
+                $ret[] = array_merge($row, array(
+                    'givers' => $givers
+                ));
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'items' => $ret
+            );
+        }
+        return false;
+
+    }
+
+    public function budgetHistoryCount($giver = null) {
+        $count = 0;
+        $sql = "
+            SELECT COUNT(*)
+            FROM " . BUDGETS . " AS b
+            WHERE `b`.`receiver_id` = " . $this->getId() . "
+                " . ($giver ? 'AND `b`.`giver_id` = ' . $giver : '');
+
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            $count = $row[0];
+        }
+        return $count;
+    }
 }

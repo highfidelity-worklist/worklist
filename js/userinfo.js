@@ -1,6 +1,6 @@
 var UserInfo = {
+
     init: function() {
-        userNotes.init();
         // admin settings
         // checkboxes and dropdowns are handled by master functions below
         // the dropdown value should always be an integer
@@ -180,9 +180,101 @@ var UserInfo = {
         $('.reviewAddLink').click(UserInfo.reviewDialog);
        
         $('#give').click(function(){
-            $('#budget-give-modal').modal('show');
-        });           
+            Utils.modal('budget-give', {
+                receiver_id: userInfo.user_id,
+                budgetAuthorized: budgetAuthorized,
+                open: function(modal) {
+                    $.ajax({
+                        url: './user/budget/' + userId,
+                        dataType: 'json',
+                        success: function(json) {
+                            if (!json.budget) {
+                                return;
+                            }
+                            var budgets = json.budget.active;
+                            for(var i = 0; i < budgets.length; i++) {
+                                var budget = budgets[i],
+                                    link = $('<a>').attr({
+                                        budget: budget.id,
+                                        reason: budget.reason,
+                                        remaining: budget.remaining
+                                    });
+                                link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                var item = $('<li>').append(link);
+                                $('.modal-footer .dropup ul', modal).append(item);
+                            }
+                            $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                var budget = $(this).attr('budget');
+                                $('input[name="source_id"]', modal).val(budget);
+                                $('button[name="give"]', modal).html(
+                                    '<span>' + $(this).attr('reason') + '</span> ' +
+                                    '($' + $(this).attr('remaining') + ') ' +
+                                    '<span class="caret"></span>'
+                                );
+                                if (!$('button[name="give_budget"]', modal).length) {
+                                    var confirm = $('<button>')
+                                        .attr({
+                                            type: 'submit',
+                                            name: 'give_budget'
+                                        })
+                                        .addClass('btn btn-primary')
+                                        .text('Confirm give');
+                                    $('.modal-footer > .row > div:eq(3)', modal).append(confirm);
+                                }
+                            });
+                        }
+                    });
+                    $('button[name="give_budget"]', modal).click(function(event) {
+                        if (!$('input[name="source_id"]', modal).val()) {
+                            $('button[name="give_budget"] + button', modal).click();
+                            return false;
+                        }
+                    });
+
+                    $('input[name="budget-seed"]', modal).on('change', function() {
+                        if (this.checked) {
+                            $('.modal-footer .row > div').show();
+                            $('.modal-footer .row > div:eq(3)').hide();
+                        } else {
+                            $('.modal-footer .row > div:eq(1), .modal-footer .row > div:eq(2)').hide();
+                            $('.modal-footer .row > div:eq(3)').show();
+                        }
+                    });
+                    $('input[name="budget-seed"]', modal).change();
+
+                    $('form', modal).submit(function() {
+                        $.ajax({
+                            url: './budget/update/0',
+                            data: {
+                                receiver_id: $('input[name="receiver_id"]', modal).val(),
+                                reason: $('input[name="budget-reason"]', modal).val(),
+                                amount: parseFloat($('input[name="amount"]', modal).val()),
+                                budget_seed: $('input[name="budget-seed"]', modal).is(':checked') ? 1 : 0,
+                                source_txt: $('input[name="budget-source"]', modal).val(),
+                                source_id: $('input[name="source_id"]', modal).val(),
+                                budget_note: $('#budget-note').val()
+                            },
+                            dataType: 'json',
+                            type: "POST",
+                            cache: false,
+                            success: function(json) {
+                                if (json.success) {
+                                    $(modal).modal('hide');
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                }
+            });
+            return false;
+        });
        
+        $('#budgetHistory').click(function(){
+            Budget.showBudgetHistory(1, userInfo.user_id);
+            return false;
+        });
+
         $('#create_sandbox').click(function(){
             var projects = '';
             
@@ -379,22 +471,7 @@ var UserInfo = {
         $('#profile-nav a').click(function (event) {
             event.preventDefault();
             $(this).tab('show');
-            if ($(this).attr('href') == '#budgetHistory') {
-                $.ajax({
-                    type: 'post',
-                    url: 'api.php',
-                    dataType: 'html',
-                    data: {
-                        action: 'budgetHistory',
-                        inDiv: 'tabs',
-                        id: userInfo.user_id,
-                        num: 100
-                    },
-                    success: function(data) {
-                        $('#budgetHistory').html(data);
-                    }
-                });
-            } else if ($(this).attr('href') == '#mynotes') {
+            if ($(this).attr('href') == '#mynotes') {
                 $.ajax({
                     type: 'post',
                     url: 'api.php',
@@ -414,6 +491,10 @@ var UserInfo = {
         if ($('#profile-nav a[href="#' + tab + '"]').length) {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
+
+        $(".userNotes").live('blur', function() {
+            userInfo.saveUserNotes();
+        });
     },
 
     setW9Status: function(status, reason, fAfter) {
@@ -548,5 +629,36 @@ var UserInfo = {
             }
         });
         return false;
+    },
+
+    saveUserNotes: function(fAfter) {
+        $.ajax({
+            type: 'POST',
+            url: 'api.php',
+            data: {
+                action: 'userNotes',
+                method: 'saveUserNotes',
+                userNotes: $(".userNotes").val(),
+                userId: userInfo.user_id
+            },
+            dataType: 'json',
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error in saveUserNotes. "+textStatus);
+            },
+            success: function(json) {
+                if ((json === null) || (json.succeeded !== true)  ) {
+                    var message="Error returned. ";
+                    if (json !== null) {
+                        message = message + json.message;
+                    }
+                    alert(message);
+                    return;
+                }
+                if (fAfter) {
+                    fAfter(true);
+                }
+            }
+        });
     }
+
  };

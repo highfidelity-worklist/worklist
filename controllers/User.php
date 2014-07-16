@@ -30,6 +30,7 @@ class UserController extends Controller {
             case 'review':
             case 'payBonus':
             case 'setW9Status':
+            case 'budgetHistory':
                 $method = $action;
                 break;
             default:
@@ -625,4 +626,19 @@ class UserController extends Controller {
             ));
         }
     }
+
+    public function budgetHistory($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        if (isset($_REQUEST['giver'])) {
+            $giver = User::find($_REQUEST['giver']);
+            $giver_id = $giver->getId();
+        } else {
+            $giver_id = 0;
+        }
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->budgetHistory($giver_id, $page, $itemsPerPage));
+    }
+
 }
