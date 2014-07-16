@@ -23,6 +23,7 @@ class JobView extends View {
         'js/dragdealer/dragdealer.js',
         'js/datepicker.js',
         'js/timepicker.js',
+        'js/entries.js',
         'js/favorites.js',
         'js/github.js',
         'js/job.js'
