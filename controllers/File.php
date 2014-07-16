@@ -6,6 +6,8 @@ class FileController extends JsonController {
         switch($action) {
             case 'add':
             case 'scan':
+            case 'remove':
+            case 'listForJob':
                 $method = $action;
                 break;
             default:
@@ -96,13 +98,14 @@ class FileController extends JsonController {
                 sendJournalNotification($journal_message);
             }
             return $this->setOutput(array(
-               'success' => true,
-               'fileid'  => $file->getId(),
-               'url'       => $file->getUrl(),
-               'icon'      => $icon,
-               'title'      => $file->getTitle(),
-               'description' => '',
-               'filetype'=> (isset($filetype) ? $filetype : '')
+               'success'        => true,
+               'fileid'         => $file->getId(),
+               'url'            => $file->getUrl(),
+               'icon'           => $icon,
+               'title'          => $file->getTitle(),
+               'description'    => '',
+               'filetype'       => (isset($filetype) ? $filetype : ''),
+               'can_delete'     => true
             ));
         } catch (Exception $e) {
             error_log($e->getMessage());
@@ -154,5 +157,76 @@ class FileController extends JsonController {
             'url'     => $file->getUrl(),
             'icon'    => $icon
         ));
+    }
+
+    public function remove($id) {
+        try {
+            $user = User::find(getSessionUserId());
+            if (!$user->getId()) {
+                throw new Exception('Not enough rights');
+            }
+            $file = new File();
+            $file->findFileById($id);
+            if ($file->getWorkitem()) {
+                $workitem = WorkItem::getById($file->getWorkitem());
+                $userInvolved =
+                    $user->getId() == $file->getUserid() || $user->getId() == $workitem->getCreatorId() ||
+                    $user->getId() == $workitem->getMechanicId() || $user->getId() == $workitem->getRunnerId();
+            } else {
+                $userInvolved = false;
+            }
+            if (!$user->isRunner() && !$user->isPayer() && !$userInvolved) {
+                throw new Exception('Permission denied');
+            }
+            $success = $file->remove();
+            return $this->setOutput(array(
+                'success' => true,
+                'message' => 'Attachment removed'
+            ));
+        } catch (Exception $e) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function listForJob($job_id) {
+        try {
+            $files = File::fetchAllFilesForWorkitem($job_id);
+            $user = User::find(getSessionUserId());
+            if (!$user->getId()) {
+                throw new Exception('Not enough rights');
+            }
+            $job = WorkItem::getById($job_id);
+            $data = array();
+            foreach ($files as $file) {
+                if (!File::isAllowed($file->getStatus(), $user) || !$file->getIs_scanned()) {
+                    continue;
+                }
+                $fileUrl = $file->getUrl();
+                $iconUrl = $file->getUrl();
+                $userInvolved =
+                    $user->getId() == $file->getUserid() || $user->getId() == $job->getCreatorId() ||
+                    $user->getId() == $job->getMechanicId() || $user->getId() == $job->getRunnerId();
+                $icon = File::getIconFromMime($file->getMime());
+                $data[] = array(
+                    'fileid'        => $file->getId(),
+                    'url'           => $fileUrl,
+                    'can_delete'    => $user->isRunner() || $user->isPayer() || $userInvolved,
+                    'title'         => $file->getTitle(),
+                    'description'   => $file->getDescription()
+                );
+            }
+            return $this->setOutput(array(
+                'success' => true,
+                'data' => $data
+            ));
+        } catch (Exception $e) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
     }
 }
