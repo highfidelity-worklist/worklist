@@ -1,0 +1,61 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="">
+        <input type="hidden" name="source_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Give budget</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="receiver_id" value="{{receiver_id}}" />
+          <div class="row">
+            <div class="col-md-4">
+              <label for="budget-amount">Amount to Give</label>
+              <div class="input-group">
+                <input type="text" id="budget-amount" name="amount" class="form-control" />
+                <span class="input-group-addon">USD</span>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <label for="budget-reason">For:</label>
+              <input type="text" id="budget-reason" name="budget-reason" class="form-control" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label for="budget-note">Note: </label>
+              <textarea id="budget-note" name="budget-note" class="form-control" ></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            {{#budgetAuthorized}}
+            <div class="col-md-2">
+                <input type="checkbox" id="budget-seed" name="budget-seed" class="wlcheckbox" checked="" />
+                <label for="budget-seed">Seed</label>
+            </div>
+            <div class="col-md-7">
+                <input type="text" class="form-control" id="budget-source" name="budget-source" />
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary" type="submit">Confirm give</button>
+            </div>
+            {{/budgetAuthorized}}
+            <div class="col-md-10">
+              <div class="btn-group dropup">
+                <button type="button" name="give" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  Give <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li role="presentation" class="dropdown-header">Select a budget</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

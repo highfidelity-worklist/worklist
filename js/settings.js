@@ -188,33 +188,6 @@ function refreshSystemFormsWithData(system_forms_data) {
 $(function () {
     $('#timezone, #country').chosen();
 
-    if (ppConfirmed || emConfirmed) {
-        $('<div id="popup-confirmed"><div class="content"></div></div>').appendTo('body');
-
-        if (ppconfirmed) {
-            var $title = 'Your Paypal address was confirmed';
-            var $content = 'Thank you for confirming your Paypal address.<br/><br/>You can now bid on items in the Worklist!<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
-        } else {
-            var $title = 'Your email change is confirmed.';
-            var $content = 'Thank you for confirming your changed email address.<br/><br/><input style="" class="closeButton" type="button" value="Close" />';
-        }
-
-        $('#popup-confirmed').dialog({
-            dialogClass: "white-theme",
-            modal: true,
-            title: $title,
-            autoOpen: true,
-            width: 300,
-            position: ['top'],
-            open: function() {
-                $('#popup-confirmed .content').html($content);
-                $('#popup-confirmed .closeButton').click(function() {
-                    $('#popup-confirmed').dialog('close');
-                });
-            }
-        });
-    }
-
     $('.system-add').click(addSystemForm);
     $('#systems-forms').on('click', '.system-remove', removeSystemForm);
 

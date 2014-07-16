@@ -1,6 +1,6 @@
 var UserInfo = {
+
     init: function() {
-        userNotes.init();
         // admin settings
         // checkboxes and dropdowns are handled by master functions below
         // the dropdown value should always be an integer
@@ -28,11 +28,41 @@ var UserInfo = {
             var field = $(this).attr('id');
             if (field == 'w9status') {
                 if (value == 'rejected') {
-                    $('#reject-w9').dialog('open');
-                    // we don't post this here, it's sent along with the reason
-                    // for rejection by the dialog handler
-                    return;
+                    Utils.emptyFormModal({
+                        title: 'Reject W9',
+                        content:
+                            '<div class="row">' +
+                            '  <div class="col-md-3">' +
+                            '    <label for="w9reject-reason">Reason:</label>' +
+                            '  </div>' +
+                            '  <div class="col-md-9">' +
+                            '    <input type="text" class="form-control" id="w9reject-reason" name="reason" />' +
+                            '  </div>' +
+                            '</div>',
+                        buttons: [
+                            {
+                                type: 'submit',
+                                name: 'confirm',
+                                content: 'Confirm',
+                                className: 'btn-primary',
+                                dismiss: false
+                            }
+                        ],
+                        open: function(modal) {
+                            $('form', modal).submit(function() {
+                                UserInfo.setW9Status('rejected', $('input[name="reason"]', modal).val(), function(data) {
+                                    if (data.success) {
+                                        $(modal).modal('hide');
+                                    }
+                                });
+                                return false;
+                            });
+                        }
+                    });
+                } else {
+                    UserInfo.setW9Status(value);
                 }
+                return;
             }
 
             $.ajax({
@@ -72,39 +102,6 @@ var UserInfo = {
         
         });
 
-        $('#reject-w9').dialog({
-            autoOpen: false,
-            show: 'fade',
-            hide: 'fade',
-            buttons: [{
-                text: 'Send notification',
-                click: function() {
-                    $.ajax({
-                        type: 'post',
-                        url: './user/' + userInfo.user_id,
-                        dataType: 'json',
-                        data: {
-                            value: 'rejected',
-                            field: 'w9status',
-                            user_id: userInfo.user_id,
-                            reason: $('#reject-reason').val()
-                        },
-                        success: function(json) {
-                            $('#reject-w9').dialog('close');
-                        }
-                    });
-                }
-            }],
-            open: function() {
-                $('#reject-reason').bind('keyup', 'keydown', function() {
-                    if ($(this).val().length > 100) {
-                        $(this).val($(this).val().substring(0, 100));
-                    } else {
-                        $('#charCount').text(100 - $(this).val().length);
-                    }
-                });
-            }
-        });
 
         // custom function for setting salary
         $('#save_salary').click(function() {
@@ -180,12 +177,104 @@ var UserInfo = {
             return false;
         });
         
-        WReview.initList();    
+        $('.reviewAddLink').click(UserInfo.reviewDialog);
        
         $('#give').click(function(){
-            $('#budget-give-modal').modal('show');
-        });           
+            Utils.modal('budget-give', {
+                receiver_id: userInfo.user_id,
+                budgetAuthorized: budgetAuthorized,
+                open: function(modal) {
+                    $.ajax({
+                        url: './user/budget/' + userId,
+                        dataType: 'json',
+                        success: function(json) {
+                            if (!json.budget) {
+                                return;
+                            }
+                            var budgets = json.budget.active;
+                            for(var i = 0; i < budgets.length; i++) {
+                                var budget = budgets[i],
+                                    link = $('<a>').attr({
+                                        budget: budget.id,
+                                        reason: budget.reason,
+                                        remaining: budget.remaining
+                                    });
+                                link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                var item = $('<li>').append(link);
+                                $('.modal-footer .dropup ul', modal).append(item);
+                            }
+                            $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                var budget = $(this).attr('budget');
+                                $('input[name="source_id"]', modal).val(budget);
+                                $('button[name="give"]', modal).html(
+                                    '<span>' + $(this).attr('reason') + '</span> ' +
+                                    '($' + $(this).attr('remaining') + ') ' +
+                                    '<span class="caret"></span>'
+                                );
+                                if (!$('button[name="give_budget"]', modal).length) {
+                                    var confirm = $('<button>')
+                                        .attr({
+                                            type: 'submit',
+                                            name: 'give_budget'
+                                        })
+                                        .addClass('btn btn-primary')
+                                        .text('Confirm give');
+                                    $('.modal-footer > .row > div:eq(3)', modal).append(confirm);
+                                }
+                            });
+                        }
+                    });
+                    $('button[name="give_budget"]', modal).click(function(event) {
+                        if (!$('input[name="source_id"]', modal).val()) {
+                            $('button[name="give_budget"] + button', modal).click();
+                            return false;
+                        }
+                    });
+
+                    $('input[name="budget-seed"]', modal).on('change', function() {
+                        if (this.checked) {
+                            $('.modal-footer .row > div').show();
+                            $('.modal-footer .row > div:eq(3)').hide();
+                        } else {
+                            $('.modal-footer .row > div:eq(1), .modal-footer .row > div:eq(2)').hide();
+                            $('.modal-footer .row > div:eq(3)').show();
+                        }
+                    });
+                    $('input[name="budget-seed"]', modal).change();
+
+                    $('form', modal).submit(function() {
+                        $.ajax({
+                            url: './budget/update/0',
+                            data: {
+                                receiver_id: $('input[name="receiver_id"]', modal).val(),
+                                reason: $('input[name="budget-reason"]', modal).val(),
+                                amount: parseFloat($('input[name="amount"]', modal).val()),
+                                budget_seed: $('input[name="budget-seed"]', modal).is(':checked') ? 1 : 0,
+                                source_txt: $('input[name="budget-source"]', modal).val(),
+                                source_id: $('input[name="source_id"]', modal).val(),
+                                budget_note: $('#budget-note').val()
+                            },
+                            dataType: 'json',
+                            type: "POST",
+                            cache: false,
+                            success: function(json) {
+                                if (json.success) {
+                                    $(modal).modal('hide');
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                }
+            });
+            return false;
+        });
        
+        $('#budgetHistory').click(function(){
+            Budget.showBudgetHistory(1, userInfo.user_id);
+            return false;
+        });
+
         $('#create_sandbox').click(function(){
             var projects = '';
             
@@ -226,62 +315,83 @@ var UserInfo = {
             return false;
         });
 
-        $('#pay-bonus').dialog({ 
-            autoOpen: false, 
-            width: 720, 
-            show: 'fade',
-            dialogClass: 'white-theme',
-            resizable: false,
-            hide: 'fade',
-        });
         $('#budget-source-combo-bonus').chosen({width: 'auto'});
         var bonus_amount;
        
         $('#pay_bonus').click(function(e) {
-            // clear form input fields
-            $('#pay-bonus form input[type="text"]').val('');
-            $('#pay-bonus').dialog('open');
-            
-            var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
-           
-            bonus_amount = new LiveValidation('bonus-amount', {onlyOnSubmit: true });
-            bonus_amount.add( Validate.Presence, { failureMessage: "Can't be empty!" });
-            bonus_amount.add( Validate.Format, { pattern: regex_bid, failureMessage: "Invalid Input!" });
-            bonus_budget = new LiveValidation('budget-source-combo-bonus', {
-                onlyOnSubmit: true ,
-                insertAfterWhatNode: "validationMessage"
-            });
-            bonus_budget.add( Validate.Exclusion, { within: [ 0 ], failureMessage: "You must select a budget!" });
-
-            UserInfo.getBonusHistory(1);
-        });
-        
-        $('#pay-bonus form').submit(function() {
-        
-            if (bonus_amount.validate() && bonus_budget.validate()) {
-                if (confirm('Are you sure you want to pay $' + $('#bonus-amount').val() + ' to ' + userInfo.nickName + '?')) {
-                    $('#pay-bonus').dialog('close');
+            Utils.modal('paybonus', {
+                open: function(modal) {
                     $.ajax({
-                        url: 'api.php?action=payBonus',
-                        data: $('#pay-bonus form').serialize(),
+                        url: './user/budget/' + userId,
                         dataType: 'json',
-                        type: "POST",
-                        cache: false,
                         success: function(json) {
-                            if (json.success) {
-                                alert(json.message);
-                            } else {
-                                alert(json.message);
+                            if (!json.budget) {
+                                return;
                             }
-                        },
-                        error: function(json) {
-                            alert('error');
+                            var budgets = json.budget.active;
+                            for(var i = 0; i < budgets.length; i++) {
+                                var budget = budgets[i],
+                                    link = $('<a>').attr({
+                                        budget: budget.id,
+                                        reason: budget.reason,
+                                        remaining: budget.remaining
+                                    });
+                                link.text(budget.reason + ' ($' + budget.remaining + ')');
+                                var item = $('<li>').append(link);
+                                $('.modal-footer .dropup ul', modal).append(item);
+                            }
+                            $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                var budget = $(this).attr('budget');
+                                $('input[name="budget_id"]', modal).val(budget);
+                                $('button[name="pay"]', modal).html(
+                                    '<span>' + $(this).attr('reason') + '</span> ' +
+                                    '($' + $(this).attr('remaining') + ') ' +
+                                    '<span class="caret"></span>'
+                                );
+                                if (!$('button[name="pay_bonus"]', modal).length) {
+                                    var confirm = $('<button>')
+                                        .attr({
+                                            type: 'submit',
+                                            name: 'pay_bonus'
+                                        })
+                                        .addClass('btn btn-primary')
+                                        .text('Confirm Pay');
+                                    $('.modal-footer', modal).append(confirm);
+                                }
+                            })
                         }
                     });
+
+                    var regex_bid = /^(\d{1,3},?(\d{3},?)*\d{3}(\.\d{0,2})?|\d{1,3}(\.\d{0,2})?|\.\d{1,2}?)$/;
+                    bonus_amount = new LiveValidation($('input[name="amount"]', modal)[0], {onlyOnSubmit: true});
+                    bonus_amount.add( Validate.Presence, {failureMessage: "Can't be empty!"});
+                    bonus_amount.add( Validate.Format, {pattern: regex_bid, failureMessage: "Invalid Input!"});
+
+                    $('form', modal).submit(function() {
+                        if (!bonus_amount.validate()) {
+                            return false;
+                        }
+                        $.ajax({
+                            url: './user/payBonus/' + userInfo.nickName,
+                            data: {
+                                budget: $('input[name="budget_id"]', modal).val(),
+                                amount: $('input[name="amount"]', modal).val(),
+                                reason: $('input[name="reason"]', modal).val()
+                            },
+                            dataType: 'json',
+                            type: "POST",
+                            cache: false,
+                            success: function(json) {
+                                if (json.success) {
+                                    $(modal).modal('hide');
+                                }
+                            }
+                        });
+                        return false;
+                    });
+
                 }
-            }
-            
-            return false;
+            });
         });
 
         var limitPerPage = 10;
@@ -361,22 +471,7 @@ var UserInfo = {
         $('#profile-nav a').click(function (event) {
             event.preventDefault();
             $(this).tab('show');
-            if ($(this).attr('href') == '#budgetHistory') {
-                $.ajax({
-                    type: 'post',
-                    url: 'api.php',
-                    dataType: 'html',
-                    data: {
-                        action: 'budgetHistory',
-                        inDiv: 'tabs',
-                        id: userInfo.user_id,
-                        num: 100
-                    },
-                    success: function(data) {
-                        $('#budgetHistory').html(data);
-                    }
-                });
-            } else if ($(this).attr('href') == '#mynotes') {
+            if ($(this).attr('href') == '#mynotes') {
                 $.ajax({
                     type: 'post',
                     url: 'api.php',
@@ -396,8 +491,28 @@ var UserInfo = {
         if ($('#profile-nav a[href="#' + tab + '"]').length) {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
+
+        $(".userNotes").live('blur', function() {
+            userInfo.saveUserNotes();
+        });
     },
-     
+
+    setW9Status: function(status, reason, fAfter) {
+        $.ajax({
+            type: 'POST',
+            url: './user/setW9Status/' + userInfo.user_id + '/' + status,
+            dataType: 'json',
+            data: {
+                reason: reason
+            },
+            success: function(json) {
+                if (fAfter) {
+                    fAfter(json);
+                }
+            }
+        });
+    },
+
     appendPagination: function(page, cPages, table) {
         var cspan = '4'
         var pagination = '<tr bgcolor="#FFFFFF" class="row-' + table + '-live ' + table + '-pagination-row" >' + 
@@ -466,5 +581,84 @@ var UserInfo = {
                 }
             }
         });
+    },
+
+    reviewDialog: function() {
+        $.ajax({
+            url: './user/review/' + userInfo.nickName,
+            dataType: 'json',
+            success: function(data) {
+                Utils.emptyFormModal({
+                    title: 'My review for <a href="./user/' + userInfo.nickName + '">' + userInfo.nickName + '</a>',
+                    content:
+                        '<div class="row">' +
+                        '  <div class="col-md-12">' +
+                        '    <label for="myreview">My Review:</label>' +
+                        '    <textarea class="form-control" id="myreview" name="myreview">' + data.myReview + '</textarea>' +
+                        '  </div>' +
+                        '</div>',
+                    buttons: [
+                        {
+                            type: 'submit',
+                            name: 'save',
+                            content: 'Save',
+                            className: 'btn-primary',
+                            dismiss: false
+                        }
+                    ],
+                    open: function(modal) {
+                        $('form', modal).submit(function() {
+                            $.ajax({
+                                type: 'POST',
+                                url: './user/review/' + userInfo.nickName,
+                                data: {
+                                    userReview: $('textarea[name="myreview"]', modal).val()
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    if (data.success) {
+                                        $(modal).modal('hide');
+                                        window.location = './user/' + userInfo.nickName;
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+                    }
+                });
+            }
+        });
+        return false;
+    },
+
+    saveUserNotes: function(fAfter) {
+        $.ajax({
+            type: 'POST',
+            url: 'api.php',
+            data: {
+                action: 'userNotes',
+                method: 'saveUserNotes',
+                userNotes: $(".userNotes").val(),
+                userId: userInfo.user_id
+            },
+            dataType: 'json',
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error in saveUserNotes. "+textStatus);
+            },
+            success: function(json) {
+                if ((json === null) || (json.succeeded !== true)  ) {
+                    var message="Error returned. ";
+                    if (json !== null) {
+                        message = message + json.message;
+                    }
+                    alert(message);
+                    return;
+                }
+                if (fAfter) {
+                    fAfter(true);
+                }
+            }
+        });
     }
+
  };

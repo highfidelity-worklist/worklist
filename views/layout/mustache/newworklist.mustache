@@ -11,6 +11,7 @@
         var is_runner = {{#currentUser.is_runner}}true{{/currentUser.is_runner}}{{^currentUser.is_runner}}false{{/currentUser.is_runner}};
         var is_admin = {{#currentUser.is_admin}}true{{/currentUser.is_admin}}{{^currentUser.is_admin}}false{{/currentUser.is_admin}};
         var is_payer = {{#currentUser.is_payer}}true{{/currentUser.is_payer}}{{^currentUser.is_payer}}false{{/currentUser.is_payer}};
+        var budgetAuthorized = {{#currentUser.budgetAuthorized}}true{{/currentUser.budgetAuthorized}}{{^currentUser.budgetAuthorized}}false{{/currentUser.budgetAuthorized}};
         var worklistUrl = '{{app.url}}';
         var selfLink = '{{app.self_url}}';
         var sessionusername = '{{currentUser.username}}';

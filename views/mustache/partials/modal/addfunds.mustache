@@ -1,0 +1,60 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="" class="form inline-form">
+        <input type="hidden" name="budget-seed" val="{{data.seed}}" />
+        <input type="hidden" name="source_id" value="" />
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add funds</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4">
+                <label for="amountToAdd">Amount to Add</label>
+                <div class="input-group">
+                  <input type="text" id="amountToAdd" name="amountToAdd" class="form-control" />
+                  <span class="input-group-addon">USD</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-2">
+              <label for="newBudgetTotal">New Budget Total</label>
+              <div class="input-group">
+                <input type="text" id="newBudgetTotal" name="newBudgetTotal" class="form-control"
+                  disabled="disabled" value="{{data.amount}}" />
+                <span class="input-group-addon">USD</span>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="receiver_id" value="{{data.receiver_id}}" />
+          <input type="hidden" id="add_funds_to" name="add_funds_to" value="{{budget_id}}" />
+        </div>
+        <div class="modal-footer">
+          {{^data.seed}}
+            <div class="btn-group dropup">
+              <button type="button" name="add" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Add <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation" class="dropdown-header">Select a budget</li>
+              </ul>
+            </div>
+          {{/data.seed}}
+          {{#data.seed}}
+            <div class="row">
+              <div class="col-md-3 col-md-offset-2">
+                <label for="budget-source">Source:</label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" class="form-control" id="budget-source" name="budget-source" />
+              </div>
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-primary" name="budget-source">Confirm add</button>
+              </div>
+            </div>
+          {{/data.seed}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

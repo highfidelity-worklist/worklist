@@ -3,6 +3,7 @@
 require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
+require_once ("models/Budget.php");
 
 class UserController extends Controller {
     public function run($action, $param = '') {
@@ -26,6 +27,10 @@ class UserController extends Controller {
             case 'projectHistory':
             case 'counts':
             case 'mentionsList':
+            case 'review':
+            case 'payBonus':
+            case 'setW9Status':
+            case 'budgetHistory':
                 $method = $action;
                 break;
             default:
@@ -120,9 +125,6 @@ class UserController extends Controller {
             if (!empty($_POST['save-salary'])) {
                 $field = 'salary';
                 $value = mysql_real_escape_string($_POST['value']);
-            } elseif ($_POST['field'] == 'w9status') {
-                $field = 'w9status';
-                $value = mysql_real_escape_string($_POST['value']);
             } else {
                 $field = $_POST['field'];
                 $value = (int) $_POST['value'];
@@ -147,32 +149,6 @@ class UserController extends Controller {
 
                     case 'isinternal':
                         $updateUser->setIs_internal($value);
-                        break;
-
-                    case 'w9status':
-                        if ($value) {
-                            switch ($value) {
-                                case 'approved':
-                                    if (! sendTemplateEmail($updateUser->getUsername(), 'w9-approved')) { 
-                                        error_log("UserController: send_email failed on w9 approved notification");
-                                    }
-
-                                    break;
-                                    
-                                case 'rejected':
-                                    $data = array();
-                                    $data['reason'] = strip_tags($_POST['reason']);
-                                    
-                                    if (! sendTemplateEmail($updateUser->getUsername(), 'w9-rejected', $data)) { 
-                                        error_log("UserController: send_email failed on w9 rejected notification");
-                                    }
-                                    break;
-                                
-                                default:
-                                    break;
-                            }
-                        }
-                        $updateUser->setW9_status($value);
                         break;
 
                     case 'ispaypalverified':
@@ -497,4 +473,172 @@ class UserController extends Controller {
 
         echo json_encode($data);
     }
+
+    public function review($id) {
+        $this->view = null;
+        try {
+            checkLogin();
+            $user = User::find($id);
+            $currentUser = User::find(getSessionUserId());
+            if (!$user->getId() || $user->getId() == $currentUser->getId()) {
+                throw new Exception('Invalid user id');
+            }
+            $review = new Review();
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $userReview = trim($_POST['userReview']);
+                if ($review->loadById($currentUser->getId(), $user->getId())) {
+                    if (!$userReview) {
+                        $oReview = $review->getReviews($user->getId(), $currentUser->getId(), ' AND r.reviewer_id=' . $reviewer_id);
+                        $cond = 'reviewer_id = ' . $currentUser->getId() . ' AND reviewee_id = ' . $user->getId();
+                        if (!$review->removeRow($cond)) {
+                            throw new Exception('Cannot delete review! Please retry later');
+                        }
+                        sendReviewNotification($user->getId(), "delete", $oReview);
+                        $message = 'Review deleted';
+                    } else {
+                        if (!strcmp($review->review, $userReview)) {
+                            throw new Exception('No changes made');
+                        }
+                        $review->review = $userReview;
+                        $review->journal_notified = 0;
+                        if (!$review->save('reviewer_id', 'reviewee_id')) {
+                            throw new Exception('Cannot update review! Please retry later');
+                        }
+                        $message = 'Review updated';
+                    }
+                } else {
+                    if (!$userReview) {
+                        throw new Exception('New empty review is not saved');
+                    }
+                    if (!$review->insertNew(array(
+                        'reviewer_id' => $currentUser->getId(),
+                        'reviewee_id' => $user->getId(),
+                        'review' => $userReview,
+                        'journal_notified' => -1
+                    ))) {
+                        throw new Exception('Cannot create new review! Please retry later');
+                    }
+                    $myReview = $review->getReviews($user->getId(), $currentUser->getId(), ' AND r.reviewer_id = ' . $currentUser->getId());
+                    if (count($myReview) == 0) {
+                        $cond = 'reviewer_id = ' . $currentUser->getId() . ' AND reviewee_id = ' . $user->getId();
+                        $review->removeRow($cond);
+                        throw new Exception('Review with no paid fee is not allowed');
+                    }
+                    $message = 'Review saved';
+                }
+            } else {
+                $userReview = $message = '';
+                if ($review->loadById($currentUser->getId(), $user->getId())) {
+                    $userReview = $review->review;
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'message' => $message,
+                'myReview' => $userReview
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function payBonus($id) {
+        $this->view = null;
+        try {
+            $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
+            $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
+            // user must be logged in
+            if (!getSessionUserId() || (!$is_runner && !$is_payer)) {
+                throw new Exception('error: unauthorized');
+            }
+            $giver = User::find(getSessionUserId());
+            $budget = $giver->getBudget();
+            // validate required fields
+            if (empty($_POST['budget']) || empty($_POST['amount'])) {
+                throw new Exception('error: args');
+            }
+            $budget_source_combo = (int) $_POST['budget'];
+            $budgetSource = new Budget();
+            if (!$budgetSource->loadById($budget_source_combo) ) {
+                throw new Exception('Invalid budget!');
+            }
+            $amount = floatval($_POST['amount']);
+            $stringAmount = number_format($amount, 2);
+            $receiver = User::find($id);
+            $reason = $_POST['reason'];
+            $remainingFunds = $budgetSource->getRemainingFunds();
+            if (!($amount <= $budget && $amount <= $remainingFunds)) {
+                throw new Exception('You do not have enough budget available to pay this bonus.');
+            }
+            if (!payBonusToUser($receiver->getId(), $amount, $reason, $budget_source_combo)) {
+                throw new Exception('There was a problem while processing the payment.');
+            }
+            // deduct amount from balance
+            $giver->updateBudget(-$amount, $budget_source_combo);
+            sendTemplateEmail($receiver->getUsername(), 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
+            sendJournalNotification('@' . $receiver->getNickname() . ' received a bonus of $' . $stringAmount);
+            echo json_encode(array(
+                'success' => true,
+                'message' => 'Paid ' . $receiver->getNickname() . ' a bonus of $' . $stringAmount
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function setW9Status($id, $status = 'rejected') {
+        $this->view = null;
+        try {
+            $user = User::find($id);
+            $currentUser = User::find(getSessionUserId());
+            if (!$currentUser->getIs_runner() && !$getIs_runner->getIs_admin() && !$getIs_runner->getIs_payer()) {
+                throw new Exception('Not enough rights');
+            }
+
+            if (!$user->getId()) {
+                throw new Exception('Specified user does not exists');
+            }
+
+            $data = array();
+            if ($status == 'rejected') {
+                $data['reason'] = strip_tags($_POST['reason']);
+            }
+
+            if (! sendTemplateEmail($user->getUsername(), 'w9-' . $status, $data)) {
+                error_log("UserController::setW9Status: send_email failed on w9 notification");
+            }
+            $user->setW9_status($status);
+            $user->save();
+            echo json_encode(array(
+                'success' => true,
+                'message' => 'W9 status updated'
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function budgetHistory($id, $page = 1, $itemsPerPage = 10) {
+        $this->view = null;
+        $user = User::find($id);
+        if (isset($_REQUEST['giver'])) {
+            $giver = User::find($_REQUEST['giver']);
+            $giver_id = $giver->getId();
+        } else {
+            $giver_id = 0;
+        }
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
+        echo json_encode($user->budgetHistory($giver_id, $page, $itemsPerPage));
+    }
+
 }

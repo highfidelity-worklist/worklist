@@ -27,17 +27,13 @@ class ConfirmationController extends Controller {
                 // send welcome email
                 sendTemplateEmail($user->getUsername(), 'welcome', array('nickname' => $user->getNickname()), 'Worklist <contact@worklist.net>');
                 User::login($user, false); //Optionally can login with confirm URL
-                $jobs = new JobsController();
-                $jobs->view->jumbotron = 
-                    "<h2>Welcome to Worklist!</h2>
+                $jumbotron = "
+                    <h2>Welcome to Worklist!</h2>
                     <p>
                       Click on a job and add your bid, or come join us in our 
-                      <a href='https://gitter.im/highfidelity/worklist' target='_blank'>public chat room</a>. 
+                      <a href='https://gitter.im/highfidelity/worklist' target='_blank'>public chat room</a>.
                       Questions? Check out the <a href='./help'>help tab</a>.
-                    </p>
-                    ";
-                $jobs->run();
-                return;
+                    </p>";
             } else {
                 Utils::redirect('./');
             }
@@ -54,7 +50,9 @@ class ConfirmationController extends Controller {
                 $user->setPaypal_verified(true);
                 $user->setPaypal_hash('');
                 $user->save();
-                Utils::redirect('./settings?ppconfirmed');
+                $jumbotron = "
+                    <h2>Thank you for confirming your Paypal address.</h2>
+                    <p>You can now bid on items in the Worklist!</p>";
             }
         } elseif (isset($_REQUEST['emstr'])) {
             // new email address confirmation
@@ -67,9 +65,11 @@ class ConfirmationController extends Controller {
             $user->setUsername($new_email); 
             $user->save();
             $_SESSION['username'] = $new_email; 
-            Utils::redirect('./settings?emconfirmed');
+            $jumbotron = "<h2>Thank you for confirming your changed email address.</h2>";
         }
 
-        Utils::redirect('./settings');
+        $jobs = new JobsController();
+        $jobs->view->jumbotron = $jumbotron;
+        $jobs->run();
     }
 }

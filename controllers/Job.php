@@ -230,9 +230,6 @@ class JobController extends Controller {
                         }
                         $status_change = '-' . ucfirst(strtolower($status));
                         $new_update_message .= "Status set to *$status*. ";
-                        if ($status == 'Done') {
-                            $displayDialogAfterDone = true;
-                        }
                     }
                 }
             }
@@ -406,10 +403,6 @@ class JobController extends Controller {
                     } else {
                         if ($status == 'Merged') {
                             $workitem->addFeesToCompletedJob();
-                        }
-
-                        if ($status == 'Done') {
-                            $displayDialogAfterDone = true;
                         }
 
                         if ($status != 'Draft'){
@@ -978,14 +971,6 @@ class JobController extends Controller {
         $this->write('userHasRights', $this->hasRights($user_id, $workitem));
 
         $this->write('mechanic', $workitem->getUserDetails($worklist['mechanic_id']));
-
-        global $displayDialogAfterDone;
-        if ($displayDialogAfterDone == true && $worklist['mechanic_id'] > 0) {
-            $_SESSION['displayDialogAfterDone'] = false;
-            $this->write('displayDialogAfterDone', 1);
-        } else {
-            $this->write('displayDialogAfterDone', 0);
-        }
 
         $reviewer = new User();
         $reviewer->findUserById($workitem->getCReviewerId());

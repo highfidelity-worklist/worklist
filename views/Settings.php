@@ -17,7 +17,6 @@ class SettingsView extends View {
         $this->user = $this->read('user');
         $this->userInfo = $this->read('userInfo');
         $this->userSystems = $this->read('userSystems');
-
         return parent::render();
     }
 
@@ -75,14 +74,6 @@ class SettingsView extends View {
         $userInfo = $this->read('userInfo');
         $self_notif = $userInfo['self_notif'];
         return $userInfo['self_notif'];
-    }
-
-    public function ppConfirmed() {
-        return (int) isset($_REQUEST['ppconfirmed']);
-    }
-
-    public function emConfirmed() {
-        return (int) isset($_REQUEST['emconfirmed']);
     }
 
     public function uploadApiKey() {

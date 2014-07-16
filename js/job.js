@@ -54,15 +54,6 @@ var Job = {
             return false;
         });
 
-        if (displayDialogAfterDone && mechanic_id > 0) {
-            WReview.displayInPopup({
-                'user_id': mechanic_id,
-                'nickname': mechanic_nickname,
-                'withTrust': true,
-                'notify_now': 0
-            });
-        }
-
         if (user_id) {
             $.get('api.php?action=getSkills', function(data) {
                 var skillsData = eval(data);
