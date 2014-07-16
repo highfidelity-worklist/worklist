@@ -455,7 +455,7 @@ class BudgetController extends JsonController {
 
     public function close($id) {
         try {
-            $user = User::find($id);
+            $user = User::find(getSessionUserId());
             if (!$user->getId()) {
                 throw new Exception('You have to be logged in to access user info!');
             }
