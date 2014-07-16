@@ -40,9 +40,9 @@
                   <tbody>
                     {{#data.sources}}
                       <tr>
-                        <td>source.transfer_date</td>
-                        <td>source.nickname</td>
-                        <td>source.amount_granted</td>
+                        <td>{{transfer_date}}</td>
+                        <td><a href="./user/{{nickname}}">{{nickname}}</a></td>
+                        <td>{{amount_granted}}</td>
                         <td>
                           {{#data.seed}}
                             Seed Budget: {{source_data}}
@@ -60,7 +60,7 @@
             <input type="hidden" name="receiver_id" value="{{data.receiver_id}}" />
             <label for="budget-note">Notes: </label>
             <textarea id="budget-note" name="budget-note" class="form-control"
-              {{#data.closed}}disabled="disabled"{{/data.closed}}></textarea>
+              {{#data.closed}}disabled="disabled"{{/data.closed}}>{{data.notes}}</textarea>
             {{#is_runner}}
             <table class="table table-striped">
               <tr id="budgetRemainingFunds">
@@ -87,11 +87,11 @@
             {{/is_runner}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" name="closeOut">Close out</button>
-          <button type="button" class="btn btn-default" name="addFunds">Add Funds</button>
-          {{^data.closed}}
+          {{^data.closed}}{{#is_runner}}
+            <button type="button" class="btn btn-default" name="closeOut">Close out</button>
+            <button type="button" class="btn btn-default" name="addFunds">Add Funds</button>
             <button type="submit" class="btn btn-primary" name="updateBudget">Save</button>
-          {{/data.closed}}
+          {{/is_runner}}{{/data.closed}}
         </div>
       </form>
     </div>

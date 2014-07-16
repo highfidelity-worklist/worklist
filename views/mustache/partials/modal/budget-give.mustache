@@ -31,11 +31,13 @@
         </div>
         <div class="modal-footer">
           <div class="row">
-            {{#budgetAuthorized}}
             <div class="col-md-2">
+                {{#budgetAuthorized}}
                 <input type="checkbox" id="budget-seed" name="budget-seed" class="wlcheckbox" checked="" />
                 <label for="budget-seed">Seed</label>
+                {{/budgetAuthorized}}
             </div>
+            {{#budgetAuthorized}}
             <div class="col-md-7">
                 <input type="text" class="form-control" id="budget-source" name="budget-source" />
             </div>
