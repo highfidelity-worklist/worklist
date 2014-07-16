@@ -7,7 +7,8 @@ class SettingsView extends View {
     );
 
     public $scripts = array(
-        'js/ajaxupload/ajaxupload.js',
+        'js/filedrop/filedrop-min.js',
+        'js/spin.js/spin.min.js',
         'js/sendlove.js',
         'js/utils.js',
         'js/settings.js'

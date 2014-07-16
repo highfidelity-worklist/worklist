@@ -19,22 +19,24 @@ class FileController extends JsonController {
                 }
                 break;
         }
-        $this->$method($param);
+        $params = preg_split('/\//', $param);
+        call_user_func_array(array($this, $method), $params);
     }
 
     public function view($id) {
 
     }
 
-    public function add($reference = '') {
-        if(!isset($_SESSION['userid']) || !($_SESSION['userid'] > 0)) {
-            return $this->setOutput(array(
-                'success' => false,
-                'message' => 'Not enough rights!'
-            ));
-        }
-
+    public function add($reference = '', $isW9 = false) {
         try {
+            $user = User::find(getSessionUserId());
+            if (!$user->getId()) {
+                return $this->setOutput(array(
+                    'success' => false,
+                    'message' => 'Not enough rights!'
+                ));
+            }
+
             // Upload data can be POST'ed as raw form data or uploaded via <iframe> and <form>
             // using regular multipart/form-data enctype (which is handled by PHP $_FILES).
             if (!empty($_FILES['fd-file']) and is_uploaded_file($_FILES['fd-file']['tmp_name'])) {
@@ -90,13 +92,19 @@ class FileController extends JsonController {
             if ($workitem) {
                 $workitem_attached = new WorkItem();
                 $workitem_attached->loadById($workitem);
-                $current_user = new User();
-                $current_user->findUserById($_SESSION['userid']);
                 $journal_message =
-                    '@' . $current_user->getNickname() . ' uploaded an [attachment](' .
+                    '@' . $user->getNickname() . ' uploaded an [attachment](' .
                     $file->getUrl() . ') to #' . $workitem;
                 sendJournalNotification($journal_message);
             }
+
+            $isW9 = (bool) $isW9;
+            if ($isW9) {
+                Notification::sendW9Request($user, $file->getUrl());
+                $user->setW9_status('pending-approval');
+                $user->save();
+            }
+
             return $this->setOutput(array(
                'success'        => true,
                'fileid'         => $file->getId(),
@@ -105,7 +113,7 @@ class FileController extends JsonController {
                'title'          => $file->getTitle(),
                'description'    => '',
                'filetype'       => (isset($filetype) ? $filetype : ''),
-               'can_delete'     => true
+               'can_delete'     => $isW9 ? false : true
             ));
         } catch (Exception $e) {
             error_log($e->getMessage());
