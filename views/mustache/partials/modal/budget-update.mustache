@@ -62,7 +62,7 @@
             <textarea id="budget-note" name="budget-note" class="form-control"
               {{#data.closed}}disabled="disabled"{{/data.closed}}></textarea>
             {{#is_runner}}
-            <table id="be-table" class="table table-striped">
+            <table class="table table-striped">
               <tr id="budgetRemainingFunds">
                 <td><strong>Remaining Funds:</strong></td>
                 <td>${{data.remaining}}</td>
@@ -90,7 +90,7 @@
           <button type="button" class="btn btn-default" name="closeOut">Close out</button>
           <button type="button" class="btn btn-default" name="addFunds">Add Funds</button>
           {{^data.closed}}
-            <button type="button" class="btn btn-primary" name="updateBudget">Save</button>
+            <button type="submit" class="btn btn-primary" name="updateBudget">Save</button>
           {{/data.closed}}
         </div>
       </form>

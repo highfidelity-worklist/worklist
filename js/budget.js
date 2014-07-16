@@ -4,8 +4,6 @@ var Budget = {
     },
 
     init : function() {
-        Budget.initBudgetList();
-
         $("nav.navbar a.budget").click(function(event) {
             event.preventDefault();
             $.ajax({
@@ -138,12 +136,23 @@ var Budget = {
                     data: res,
                     showSources: (res.req_user_authorized && res.seed == 1) || res.seed == 0,
                     open: function(modal) {
-                        $('button[name="addFunds"]', modal).click(function(){
+                        $('#budgetAllocated > td', modal).click(function() {
                             $(modal).modal('hide');
-                            Budget.showAddFundsModal(budget_id, res); //$('#add-funds-modal').modal('show');
-                            return false;
+                            Budget.budgetExpand(0, budget_id);
                         });
-                        $('button[name="updateBudget"]', modal).click(function() {
+                        $('#budgetSubmitted > td', modal).click(function() {
+                            $(modal).modal('hide');
+                            Budget.budgetExpand(1, budget_id);
+                        });
+                        $('#budgetPaid > td', modal).click(function() {
+                            $(modal).modal('hide');
+                            Budget.budgetExpand(2, budget_id);
+                        });
+                        $('#budgetTransferred > td', modal).click(function() {
+                            $(modal).modal('hide');
+                            Budget.budgetExpand(3, budget_id);
+                        });
+                        $('form', modal).submit(function() {
                             $.ajax({
                                 type: "POST",
                                 url: './budget/update/' + budget_id,
@@ -175,6 +184,10 @@ var Budget = {
                                     alert('error in updateBudget');
                                 }
                             });
+                        });
+                        $('button[name="addFunds"]', modal).click(function(){
+                            $(modal).modal('hide');
+                            Budget.showAddFundsModal(budget_id, res); //$('#add-funds-modal').modal('show');
                         });
                     }
                 });
@@ -287,27 +300,6 @@ var Budget = {
         return pages;
     },
 
-    initBudgetList: function() {
-        $('#budgetAllocated > td').click(function() {
-            var budgetId = $('#budget-update-modal').data("budgetId");
-            Budget.budgetExpand(0, budgetId);
-        });
-        $('#budgetSubmitted > td').click(function() {
-            var budgetId = $('#budget-update-modal').data("budgetId");
-            Budget.budgetExpand(1, budgetId);
-        });
-        $('#budgetPaid > td').click(function() {
-            var budgetId = $('#budget-update-modal').data("budgetId");
-            Budget.budgetExpand(2, budgetId);
-        });
-        $('#budgetTransferred > td').click(function() {
-            var budgetId = $('#budget-update-modal').data("budgetId");
-            Budget.budgetExpand(3, budgetId);
-        });
-        $("tr.budgetRow").live("click",function() {
-        });
-    },
-    
     /**
     * Show a dialog with expanded info on the selected @section
     * Sections:
