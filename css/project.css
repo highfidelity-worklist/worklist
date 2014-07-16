@@ -76,18 +76,6 @@ td.noroles {
     display: block;
 }
 
-#projectLogo input,
-#projectLogo label {
-    font-size: .7em;
-    position: absolute;
-}
-
-#projectLogo label {
-    right: 0;
-    bottom: -42px;
-    width: 92px;
-}
-
 /**
  * Logo upload styling
  */
