@@ -343,16 +343,16 @@ var UserInfo = {
                             $('.modal-footer .dropup ul a', modal).click(function(event) {
                                 var budget = $(this).attr('budget');
                                 $('input[name="budget_id"]', modal).val(budget);
-                                $('button[name="accept"]', modal).html(
+                                $('button[name="pay"]', modal).html(
                                     '<span>' + $(this).attr('reason') + '</span> ' +
                                     '($' + $(this).attr('remaining') + ') ' +
                                     '<span class="caret"></span>'
                                 );
-                                if (!$('button[name="confirm_paybonus"]', modal).length) {
+                                if (!$('button[name="pay_bonus"]', modal).length) {
                                     var confirm = $('<button>')
                                         .attr({
                                             type: 'submit',
-                                            name: 'confirm_paybonus'
+                                            name: 'pay_bonus'
                                         })
                                         .addClass('btn btn-primary')
                                         .text('Confirm Pay');
