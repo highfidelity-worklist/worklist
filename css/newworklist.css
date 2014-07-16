@@ -1122,7 +1122,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     right: 0;
     top: 0;
     bottom: 0;
-    width: 30px;
 }
 
 /**
@@ -1278,18 +1277,18 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     margin: 6px 3px;
     display: inline-block;
     z-index: 2;
-}
-
-#attachments > ul > li > i {
-    margin-right: -5px;
-}
-
-#attachments > ul > li {
     padding: 2px 5px;
     background-color: #e9eeef;
     font-size: 12px;
-    color: #608E96;
     border-width: 1px;
+}
+
+#attachments > ul > li > a {
+    color: #608E96;
+    display: inline-block;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow-x: hidden;
 }
 
 #attachments > ul > li,
