@@ -379,7 +379,7 @@ class JobController extends Controller {
                         'avatar' =>  $comment->getUser()->getAvatar(),
                         'nickname' => $comment->getUser()->getNickname(),
                         'userid' => $comment->getUser()->getId(),
-                        'date' => relativeTime(strtotime($comment->getDate()) - time()));
+                        'date' => relativeTime(strtotime($comment->getDate()) - strtotime(Model::now())));
                 ob_start();
                 $json = json_encode($result);
             } else {
@@ -1591,9 +1591,7 @@ class JobController extends Controller {
             $crRole = $project_roles[0];
             if ($crRole['percentage'] !== null && $crRole['min_amount'] !== null) {
                 $crFee = ($crRole['percentage'] / 100) * $accepted_bid_amount;
-                if ((float) $crFee < $crRole['min_amount']) {
-                   return $crRole['min_amount'];
-                }
+                return ((float) $crFee < $crRole['min_amount']) ? $crRole['min_amount'] : $crFee;
             }
         }
         return 0;
