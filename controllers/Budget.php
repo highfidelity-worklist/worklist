@@ -26,6 +26,8 @@ class BudgetController extends JsonController {
                 $method = $action;
                 break;
             case 'info':
+            case 'addFunds':
+            case 'give':
             case 'update':
             case 'close':
                 $method = $action;
@@ -50,7 +52,7 @@ class BudgetController extends JsonController {
             if (!$budget->id) {
                 throw new Exception('Invalid budget id');
             }
-            $ssources = $budget->loadSources();
+            $sources = $budget->loadSources();
             $budgetClosed = !$budget->active;
             $allocated = $budget->getAllocatedFunds();
             $submitted = $budget->getSubmittedFunds();
@@ -61,7 +63,7 @@ class BudgetController extends JsonController {
                 'amount' => (float) $budget->amount,
                 'closed' => $budgetClosed,
                 'reason' => $budget->reason,
-                'req_user_authorized' => strpos(BUDGET_AUTHORIZED_USERS, "," . $reqUserId . ",") !== false,
+                'req_user_authorized' => strpos(BUDGET_AUTHORIZED_USERS, "," . $user->getId() . ",") !== false,
                 'seed' => (int) $budget->seed,
                 'sources' => $sources,
                 'notes' => $budget->notes,
@@ -277,20 +279,19 @@ class BudgetController extends JsonController {
         }
     }
 
-    public function update($id) {
+    public function addFunds($id) {
         try {
             if (!getSessionUserId()) {
                 throw new Exception('Not enough rights');
             }
 
-            if (!isset($_POST['budget_seed']) || (!isset($_POST['source_txt']) && !isset($_POST['source_id'])) || !isset($_POST['budget_note'])) {
+            if (!$id || !isset($_POST['budget_seed']) || (!isset($_POST['source_txt']) && !isset($_POST['source_id'])) || !isset($_POST['budget_note'])) {
                 throw new Exception('Invalid parameters');
             }
 
             $budget_seed = (int) $_POST['budget_seed'];
             $source_txt = mysql_real_escape_string($_POST['source_txt']);
             $source_id = (int) $_POST['source_id'];
-            $add_funds_to = (int) $id;
             $budget_note = mysql_real_escape_string($_POST['budget_note']);
             if ($budget_seed == 1) {
                 $source_id = 0;
@@ -314,9 +315,6 @@ class BudgetController extends JsonController {
             if (empty($amount)) {
                 throw new Exception('Amount field is mandatory');
             }
-            if ($add_funds_to == 0 && empty($reason)) {
-                throw new Exception('For field is mandatory');
-            }
 
             $giver = new User();
             $receiver = new User();
@@ -339,16 +337,13 @@ class BudgetController extends JsonController {
                 $remainingFunds = $budget->getRemainingFunds();
             }
 
-            $add_funds_to_budget = false;
-            if ($add_funds_to != 0) {
-                $add_funds_to_budget = new Budget();
-                if (!$add_funds_to_budget->loadById($add_funds_to) ) {
-                    throw new Exception('Invalid budget');
-                }
-                $grantor = new User();
-                if (!$grantor->findUserById($add_funds_to_budget->giver_id)) {
-                    throw new Exception('Invalid grantor');
-                }
+            $receiver_budget = new Budget();
+            if (!$receiver_budget->loadById($id) ) {
+                throw new Exception('Invalid budget');
+            }
+            $grantor = new User();
+            if (!$grantor->findUserById($receiver_budget->giver_id)) {
+                throw new Exception('Invalid grantor');
             }
 
             if ($budget_seed != 1 && ($amount > $budget->getRemainingFunds())) {
@@ -356,44 +351,14 @@ class BudgetController extends JsonController {
             }
 
             $receiver->setBudget($receiver->getBudget() + $amount)->save();
-            if ($add_funds_to == 0) {
-                $query = "
-                    INSERT INTO `" . BUDGETS . "` (
-                        `giver_id`,
-                        `receiver_id`,
-                        `amount`,
-                        `remaining`,
-                        `reason`,
-                        `transfer_date`,
-                        `seed`,
-                        `source_data`,
-                        `notes`,
-                        `active`
-                    ) VALUES (
-                        '" .  $_SESSION['userid'] . "',
-                        '$receiver_id',
-                        '$amount',
-                        '$amount',
-                        '$reason',
-                        NOW(),
-                        '$budget_seed',
-                        '$source',
-                        '$budget_note',
-                        1
-                    )";
-                if (!mysql_unbuffered_query($query)){
-                    throw new Exception('Error in query.');
-                }
-                $add_funds_to =  mysql_insert_id();
-            } else {
-                $query = "
-                    UPDATE `" . BUDGETS . "`
-                    SET `amount`= `amount` + $amount, `remaining` = `remaining` + $amount
-                    WHERE id = $add_funds_to";
-                if (!mysql_unbuffered_query($query)) {
-                    throw new Exception('Error in query.');
-                }
+            $query = "
+                UPDATE `" . BUDGETS . "`
+                SET `amount`= `amount` + $amount, `remaining` = `remaining` + $amount
+                WHERE id = $id";
+            if (!mysql_unbuffered_query($query)) {
+                throw new Exception('Error in query.');
             }
+
             $query = "
                 INSERT INTO `" . BUDGET_SOURCE . "` (
                     `giver_id`,
@@ -405,7 +370,7 @@ class BudgetController extends JsonController {
                      `source_data`
                 ) VALUES (
                     '" .  $_SESSION['userid'] . "',
-                    '$add_funds_to',
+                    '$id',
                     '$source_id',
                     '$amount',
                     '0',
@@ -418,7 +383,7 @@ class BudgetController extends JsonController {
             if ($budget_seed != 1) {
                 $giver->updateBudget(-$amount, $source_id);
                 $budget = new Budget();
-                $budget->loadById($add_funds_to);
+                $budget->loadById($id);
                 $reason = $budget->reason;
             }
             $query2 = "
@@ -431,11 +396,7 @@ class BudgetController extends JsonController {
             }
 
             sendJournalNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
-            if ($add_funds_to_budget == false) {
-                Notification::notifyBudget($amount, $reason, $giver, $receiver);
-            } else {
-                Notification::notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $add_funds_to_budget);
-            }
+            Notification::notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $receiver_budget);
             if ($budget_seed == 1) {
                 Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
             }
@@ -450,7 +411,183 @@ class BudgetController extends JsonController {
                 'message' => $e->getMessage()
             ));
         }
+    }
 
+    public function give() {
+        try {
+            if (!getSessionUserId()) {
+                throw new Exception('Not enough rights');
+            }
+
+            if (!isset($_POST['budget_seed']) || (!isset($_POST['source_txt']) && !isset($_POST['source_id'])) || !isset($_POST['budget_note'])) {
+                throw new Exception('Invalid parameters');
+            }
+
+            $budget_seed = (int) $_POST['budget_seed'];
+            $source_txt = mysql_real_escape_string($_POST['source_txt']);
+            $source_id = (int) $_POST['source_id'];
+            $budget_note = mysql_real_escape_string($_POST['budget_note']);
+            if ($budget_seed == 1) {
+                $source_id = 0;
+                $source = $source_txt;
+                if (empty($source)) {
+                    throw new Exception('Source field is mandatory');
+                }
+            } else {
+                $source = "Amount from budget id: " . $source_id;
+                if ($source_id == 0) {
+                    throw new Exception('Source field is mandatory');
+                }
+            }
+
+            $receiver_id = intval($_POST['receiver_id']);
+            $amount = isset($_POST['amount']) ? floatval($_POST['amount']) : 0;
+            $reason = mysql_real_escape_string($_POST['reason']);
+            if (empty($receiver_id)) {
+                throw new Exception('Receiver field is mandatory');
+            }
+            if (empty($amount)) {
+                throw new Exception('Amount field is mandatory');
+            }
+            if (empty($reason)) {
+                throw new Exception('For field is mandatory');
+            }
+
+            $giver = new User();
+            $receiver = new User();
+            if (!$giver->findUserById(getSessionUserId()) || !$receiver->findUserById($receiver_id)) {
+                throw new Exception('Invalid user');
+            }
+
+            $stringAmount = number_format($amount, 2);
+
+            $budget = new Budget();
+            if (!$budget_seed) {
+                if (!$budget->loadById($source_id) ) {
+                    throw new Exception('Invalid budget!');
+                }
+                // Check if user is owner of source budget
+                if ($budget->receiver_id != getSessionUserId()) {
+                    error_log('Possible Hacking attempt: User ' . getSessionUserId() . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
+                    throw new Exception('You\'re not the owner of this budget!');
+                }
+                $remainingFunds = $budget->getRemainingFunds();
+            }
+
+            if ($budget_seed != 1 && ($amount > $budget->getRemainingFunds())) {
+                throw new Exception('Not enough budget available (total: $' . $giver->getBudget() . " from budget #" . $budget->id . ")");
+            }
+
+            $receiver->setBudget($receiver->getBudget() + $amount)->save();
+            $query = "
+                INSERT INTO `" . BUDGETS . "` (
+                    `giver_id`,
+                    `receiver_id`,
+                    `amount`,
+                    `remaining`,
+                    `reason`,
+                    `transfer_date`,
+                    `seed`,
+                    `source_data`,
+                    `notes`,
+                    `active`
+                ) VALUES (
+                    '" .  $_SESSION['userid'] . "',
+                    '$receiver_id',
+                    '$amount',
+                    '$amount',
+                    '$reason',
+                    NOW(),
+                    '$budget_seed',
+                    '$source',
+                    '$budget_note',
+                    1
+                )";
+            if (!mysql_unbuffered_query($query)){
+                throw new Exception('Error in query.');
+            }
+            $id =  mysql_insert_id();
+
+            $query = "
+                INSERT INTO `" . BUDGET_SOURCE . "` (
+                    `giver_id`,
+                    `budget_id`,
+                    `source_budget_id`,
+                    `amount_granted`,
+                    `original_amount`,
+                    `transfer_date`,
+                     `source_data`
+                ) VALUES (
+                    '" .  $_SESSION['userid'] . "',
+                    '$id',
+                    '$source_id',
+                    '$amount',
+                    '0',
+                    NOW(),
+                    '$source'
+                )";
+            if (!mysql_unbuffered_query($query)){
+                throw new Exception('Error in query.');
+            }
+            if (!$budget_seed) {
+                $giver->updateBudget(-$amount, $source_id);
+                $reason = $budget->reason;
+            }
+            $query2 = "
+                UPDATE `" . USERS . "`
+                SET `is_runner` = 1
+                WHERE `id` = $receiver_id
+                  AND `is_runner` = 0 ";
+            if (!mysql_unbuffered_query($query2)) {
+                throw new Exception('Error in query.');
+            }
+
+            sendJournalNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
+            Notification::notifyBudget($amount, $reason, $giver, $receiver);
+            if ($budget_seed == 1) {
+                Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
+            }
+            $receiver = getUserById($receiver_id);
+            return $this->setOutput(array(
+                'success' => true,
+                'message' => 'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname
+            ));
+        } catch (Exception $e) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    public function update($id) {
+        try {
+            if (!getSessionUserId()) {
+                throw new Exception('Not enough rights');
+            }
+
+            if (!$id || !isset($_POST['reason']) || !isset($_POST['notes'])) {
+                throw new Exception('Invalid parameters');
+            }
+
+            $budget = new Budget();
+            if (!$budget->loadById($id) ) {
+                throw new Exception('Invalid budget');
+            }
+            $budget->reason = $_POST['reason'];
+            $budget->notes = $_POST['notes'];
+            $budget->save('id');
+
+            return $this->setOutput(array(
+                'success' => true,
+                'message' => 'Budget updated'
+            ));
+        } catch (Exception $e) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
     }
 
     public function close($id) {

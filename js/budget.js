@@ -95,7 +95,7 @@ var Budget = {
 
                 $('form', modal).submit(function() {
                     $.ajax({
-                        url: './budget/update/' + $('#add_funds_to').val(),
+                        url: './budget/addFunds/' + $('#add_funds_to').val(),
                         data: {
                             receiver_id: userInfo.user_id,
                             reason: "",
@@ -157,16 +157,17 @@ var Budget = {
                                 type: "POST",
                                 url: './budget/update/' + budget_id,
                                 data: {
-                                    budgetReason: $('input[name="budget-reason"]', modal).val(),
-                                    budgetNote: $('textarea[name="budget-note"]', modal).val()
+                                    reason: $('input[name="budget-reason"]', modal).val(),
+                                    notes: $('textarea[name="budget-note"]', modal).val()
                                 },
                                 dataType: 'json',
                                 success: function(json) {
-                                    if (json && json.succeeded) {
+                                    if (json && json.success) {
                                         $(modal).modal("hide");
                                     }
                                 }
                             });
+                            return false;
                         });
                         $('button[name="closeOut"]', modal).click(function() {
                             $.ajax({
@@ -174,7 +175,7 @@ var Budget = {
                                 url: './budget/close/' + budget_id,
                                 dataType: 'json',
                                 success: function(json) {
-                                    if (json && json.succeeded) {
+                                    if (json && json.success) {
                                         $('#budget-update-modal').modal("hide");
                                      } else {
                                         alert(json.message);

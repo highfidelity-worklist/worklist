@@ -1,4 +1,6 @@
 var Project = {
+    logoUploading: false,
+
     init: function() {
         $('.accordion').accordion({
             clearStyle: true,
@@ -31,29 +33,6 @@ var Project = {
 
         makeWorkitemTooltip(".payment-joblink, .joblink");
 
-        if ($("#projectLogoEdit").length > 0) {
-            new AjaxUpload('projectLogoEdit', {
-                action: 'jsonserver.php',
-                name: 'logoFile',
-                data: {
-                    action: 'logoUpload',
-                    projectid: projectid,
-                },
-                autoSubmit: true,
-                responseType: 'json',
-                onSubmit: validateUploadImage,
-                onComplete: function(file, data) {
-                    $('span.LV_validation_message.upload').css('display', 'none').empty();
-                    if (!data.success) {
-                        $('span.LV_validation_message.upload').css('display', 'inline').append(data.message);
-                    } else if (data.success == true ) {
-                        $("#projectLogoEdit img").attr("src",data.url);
-                        $('input[name=logoProject]').val(data.fileName);
-                    }
-                }
-            });
-        }
-
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
         $('tr.role').click(Project.showRoleInfoModal);
 
@@ -74,6 +53,81 @@ var Project = {
         }
 
         $('#roles-panel button').click(Project.showAddRoleForm);
+
+        if (edit_mode) {
+            Project.initLogoUpload();
+        }
+    },
+
+    initLogoUpload: function() {
+        var options = {iframe: {url: './file/add/' + projectName}};
+        var zone = new FileDrop('projectLogo', options);
+
+        zone.event('send', function (files) {
+            files.each(function (file) {
+                file.event('done', Project.logoUploadDone);
+                file.event('error', Project.logoUploadError);
+                file.sendTo('./file/add/' + projectName);
+                Project.logoUploading = true;
+                Project.animateUploadSpin();
+            });
+        });
+        zone.multiple(false);
+
+        $('#projectLogo img').click(function() {
+            $('#projectLogo input.fd-file').click();
+        });
+    },
+
+    logoUploadDone: function(xhr) {
+        var fileData = $.parseJSON(xhr.responseText);
+        $.ajax({
+            url: './file/scan/' + fileData.fileid,
+            type: 'POST',
+            dataType: "json",
+            success: function(json) {
+                if (!json.success) {
+                    return;
+                }
+                $("#projectLogo img").attr("src", json.url);
+                $('input[name=logoProject]').val(json.url);
+                Project.logoUploadFinished();
+            }
+        });
+
+    },
+
+    logoUploadError: function(e, xhr) {
+        Project.logoUploadFinished();
+    },
+
+    logoUploadFinished: function() {
+        Project.logoUploading = false;
+        Project.stopUploadSpin();
+    },
+
+    animateUploadSpin: function() {
+        if ($('#projectLogo > .loading').length) {
+            return;
+        }
+        $('<div>').addClass('loading').prependTo('#projectLogo');
+        var target = $('#projectLogo > .loading')[0];
+        var spinner = new Spinner({
+            lines: 9,
+            length: 3,
+            width: 4,
+            radius: 6,
+            corners: 1,
+            rotate: 12,
+            direction: 1,
+            color: '#000',
+            speed: 1.1,
+            trail: 68
+          }).spin(target);
+    },
+
+    stopUploadSpin: function() {
+        $('#projectLogo > .loading').remove();
     },
 
     validateCodeReviews: function() {

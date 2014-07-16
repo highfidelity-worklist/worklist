@@ -219,15 +219,9 @@ var UserInfo = {
                                         })
                                         .addClass('btn btn-primary')
                                         .text('Confirm give');
-                                    $('.modal-footer > .row > div:eq(3)', modal).append(confirm);
+                                    $('.modal-footer > .row > div:last-child', modal).append(confirm);
                                 }
                             });
-                        }
-                    });
-                    $('button[name="give_budget"]', modal).click(function(event) {
-                        if (!$('input[name="source_id"]', modal).val()) {
-                            $('button[name="give_budget"] + button', modal).click();
-                            return false;
                         }
                     });
 
@@ -244,7 +238,7 @@ var UserInfo = {
 
                     $('form', modal).submit(function() {
                         $.ajax({
-                            url: './budget/update/0',
+                            url: './budget/give',
                             data: {
                                 receiver_id: $('input[name="receiver_id"]', modal).val(),
                                 reason: $('input[name="budget-reason"]', modal).val(),
