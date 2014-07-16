@@ -84,7 +84,7 @@ class ProjectController extends Controller {
             }
             
             if ($_REQUEST['logoProject'] != "") {
-                $project->setLogo($_REQUEST['logoProject']);
+                $project->setLogo(basename($_REQUEST['logoProject']));
             }
             if (isset($_REQUEST['noLogo']) && $_REQUEST['noLogo'] == "1") {
                 $project->setLogo("");

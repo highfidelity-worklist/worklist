@@ -1,7 +1,7 @@
 <form name="project-form" id="project-form" action="./{{project.getName}}" method="post">
 <div id="projectHeader">
     <div class="leftCol">
-        <div id="projectLogo{{#edit_mode}}Edit{{/edit_mode}}">
+        <div id="projectLogo">
             <img src="{{project_logo}}" />
             {{#edit_mode}}
                 <input class="wlcheckbox" type="checkbox" name="noLogo" id="removeLogo" value="1" />
