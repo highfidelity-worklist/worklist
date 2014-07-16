@@ -132,34 +132,6 @@ var Settings = {
         $('#attachments > .loading').remove();
     },
 
-    completeUpload: function(file, data) {
-        $(Settings.nclass).empty();
-        if (data.success) {
-            // Restore the styling of upload button
-            $('#formupload').attr('value', 'Success!');
-            $('#formupload').removeClass('w9_upload_disabled');
-            $('.w9_loader').css('visibility', 'hidden');
-
-            var html = '<div class="ui-state-highlight ui-corner-all">' +
-                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-info"></span>' +
-                            '<strong>Info:</strong> ' + data.message + '</p>' +
-                        '</div>';
-            Settings.save();
-        } else {
-            // Restore the styling of upload button
-            $('#formupload').attr('value', 'Fail');
-            $('#formupload').removeClass('w9_upload_disabled');
-            $('.w9_loader').css('visibility', 'hidden');
-
-            var html = '<div style="padding: 0.7em; margin: 0.7em 0; width:285px;" class="ui-state-error ui-corner-all">' +
-                            '<p style="margin: 0;"><span style="float: left; margin-right: 0.3em;" class="ui-icon ui-icon-alert"></span>' +
-                            '<strong>Error:</strong> ' + data.message + '</p>' +
-                        '</div>';
-            this.enable();
-        }
-        $(Settings.nclass).append(html);
-    },
-
     validateW9Agree: function(value) {
         if (! $('#w9_accepted').is(':checked') && $('#country').val() == 'US') {
             return false;
