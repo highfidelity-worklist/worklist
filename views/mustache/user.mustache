@@ -7,7 +7,6 @@
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
         {{/profileUser.getIs_runner}}
         <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
-        <li><a href="#budgetHistory" data-toggle="tab">Budget History</a></li>
     {{/currentUser.is_runner}}
     {{^currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">User Info</a></li>
@@ -17,9 +16,6 @@
         {{#reqUserId}}
             <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
         {{/reqUserId}}
-        <li>
-            <a href="#budgetHistory" data-toggle="tab">Budget History</a>
-        </li>
 
     {{/currentUser.is_runner}}
     </ul>
@@ -80,10 +76,7 @@
                     Reviews
                     {{^ownProfile}}
                         <div class='reviewAddLink'>
-                            <a href='javascript:;'>Add your review</a>
-                        </div>
-                        <div class='reviewEditLink'>
-                            <a href='javascript:;'>Edit your review</a>
+                            <a href='#'>Add your review</a>
                         </div>
                         {{/ownProfile}}
                 </div>
@@ -108,16 +101,21 @@
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">
-                    {{#reqUserId}} 
+                    {{^disableGiveBudget}}
                     <span id="info-budget">
-                        <input type="submit" {{#disableGiveBudget}}disabled="disabled" class="button-disabled disableable"{{/disableGiveBudget}}
-                          title="Remaining budget you can give: ${{reqUser.getBudget}}" id="give" value="Give Budget" />
+                        <input type="submit" title="Remaining budget you can give: ${{reqUser.getBudget}}"
+                          id="give" value="Give Budget" />
                     </span>
+                    {{/disableGiveBudget}}
+                    {{^disablePayBonus}}
                     <span id="btn-bonus">
-                        <input type="submit" {{#disablePayBonus}}disabled="disabled" class="button-disabled disableable"{{/disablePayBonus}}
-                          title="Remaining budget you can give: ${{reqUser.getBudget}}" id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
+                        <input type="submit" title="Remaining budget you can give: ${{reqUser.getBudget}}"
+                          id="pay_bonus" value="Pay Bonus" name="pay_bonus" />
                     </span>
-                    {{/reqUserId}} 
+                    {{/disablePayBonus}}
+                    <span id="info-budget">
+                        <input type="submit" id="budgetHistory" value="Budget History" />
+                    </span>
                 </div>
 
                 <p class = "profileContactFavorite">Contact info:
@@ -338,8 +336,6 @@
         </div>
         <div class="tab-pane" id="mynotes">
         </div>
-        <div class="tab-pane" id="budgetHistory">
-        </div>
     </div>
 </section>
 <script type="text/javascript">
@@ -357,60 +353,3 @@
         UserInfo.init();
     });
 </script>
-
-<!-- popup div's -->
-<div id="budget-dialog" title="Budget details" data-userid = "{{profileUser.getId}}">
-</div>
-
-{{> budget/give-modal}}
-{{> budget/update-modal}}
-{{> budget/addfunds-modal}}
-
-<div id="reject-w9" title="Reject W9">
-    
-    <form method="post" action = "">
-        <label for="reject-reason" class="info-label">Reason: </label><br/>
-        <textarea id="reject-reason" name="reason"></textarea><br/>
-        <span style="float: right;"><span id="charCount">100</span> characters remaining</span>
-        <input type="hidden" name="receiver_id" value="{{profileUser.getId}}" />
-    </form>
-</div><!-- end of reject w9 div -->
-<div id="pay-bonus" title="Pay Bonus">
-    <form method="post" action = "">
-        <div class="leftBonusArea">
-            <label for="bonus-amount" class="info-label">Amount: </label><br/>
-            <input type="text" id="bonus-amount" name="amount" /><br/>
-        </div>
-        <div class="rightBonusArea">
-            <label for="budget-source" class="info-label">Source: </label><br/>
-            <select id="budget-source-combo-bonus" name="budget-source-combo-bonus" class="project-dropdown">
-            <option value="0" selected="selected">Select a budget</option>
-            {{& reqUser.getBudgetCombo}}
-            </select>
-            <span id="validationMessage"></span>
-        </div>
-        <div class="clearBonusArea">
-        <label for="bonus-reason" class="info-label">Reason: </label><br/>
-            <input type="text" id="bonus-reason" name="reason" style="width:95%" /><br/>
-            <input type="hidden" id="bonus-receiver" name="receiver_id" value="{{profileUser.getId}}" />
-        <input type="submit" value="Pay Bonus" />
-    </form>
-
-    <!-- Add the bonus history table -->
-    {{#currentUser.is_runner}}
-    <hr/>
-    <table class="bonus-history table-bonus-history">
-    <thead>
-        <tr style="cursor:arrow;" class="table-hdng">
-            <th width="95px">Date</th>
-            <th width="50px">Amount</th>
-            <th width="80px">Receiver</th>
-            <th width="300px">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-    </table>
-    {{/currentUser.is_runner}}
-
-</div><!-- end of pay bonus div -->

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This class is responsible for working with notification
+ * This class is responsible for Working with notification
  * subscriptions
  */
 class Notification {
@@ -798,4 +798,37 @@ class Notification {
         }
     }
 
+    public static function sendW9Request($user, $documentUrl) {
+        $subject = "W-9 Form from " . $user->getNickname();
+        $body = "
+            <p>Hi there,</p>
+            <p>" . $user->getNickname() . " just uploaded his/her W-9 Form.</p>
+            <p>
+                When it's tax time, you'll need to know that " . $user->getNickname() . "
+                is " . $user->getFirst_name() . " " . $user->getLast_name() . "
+            </p>
+            <p>You can download and approve it from this URL:</p>
+            <p><a href='" . $documentUrl . "'>Click here</a></p>";
+        if(! send_email(FINANCE_EMAIL, $subject, $body)) {
+            error_log("Notification:sendW9Request: send_email to admin failed");
+        }
+        // send approval email to user
+        $subject = 'Worklist.net: W9 Received';
+        $body = "
+            <p>Hello you!</p>
+            <p>
+                Thanks for uploading your W9 to our system. One of our staff will verify the receipt
+                and then activate  your account for bidding within the next 24 hours.
+            </p>
+            <p>
+                Until then, you are welcome to browse the jobs list, take a look at the open source
+                code via the links at the bottom of any worklist page and ask questions in our Chat.
+            </p>
+            <p>See you in the Worklist!</p>
+            <br /><br />
+            - the Worklist.net team";
+        if(! send_email($user->getUsername(), $subject, $body)) {
+            error_log("Notification:sendW9Request: send_email to user failed");
+        }
+    }
 }

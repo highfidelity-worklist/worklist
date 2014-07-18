@@ -1,4 +1,7 @@
 var Job = {
+    uploadedFiles: [],
+    filesUploading: 0,
+
     init: function() {
         $("#view-sandbox").click(function() {
             window.open(sandbox_url, '_blank');
@@ -53,15 +56,6 @@ var Job = {
 
             return false;
         });
-
-        if (displayDialogAfterDone && mechanic_id > 0) {
-            WReview.displayInPopup({
-                'user_id': mechanic_id,
-                'nickname': mechanic_nickname,
-                'withTrust': true,
-                'notify_now': 0
-            });
-        }
 
         if (user_id) {
             $.get('api.php?action=getSkills', function(data) {
@@ -155,58 +149,18 @@ var Job = {
             });
         });
 
-        (function($) {
-            // journal info accordian
-            // flag to say we've not loaded anything in there yet
-            $.journalChat = false;
-            $('.accordion').accordion({
-                clearStyle: true,
-                collapsible: true,
-                active: true
-                }
-            );
-            $('.accordion').accordion( "activate" , 0 );
-            $.ajax({
-                type: 'post',
-                url: 'jsonserver.php',
-                data: {
-                    workitem: workitem_id,
-                    userid: user_id,
-                    action: 'getFilesForWorkitem'
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (data.success) {
-                        var images = data.data.images;
-                        var documents = data.data.documents;
-                        for (var i=0; i < images.length; i++) {
-                            imageArray.push(images[i].fileid);
-                        }
-                        for (var i=0; i < documents.length; i++) {
-                            documentsArray.push(documents[i].fileid);
-                        }
-                        var files = $('#uploadedFiles').parseTemplate(data.data);
-                        $('#uploadPanel').append(files);
-                        if (user_id) {
-                            $('#accordion').fileUpload({images: imageArray, documents: documentsArray});
-                        }
-                        $('#uploadPanel').data('files', data.data);
-                        $('#accordion').bind( "accordionchangestart", function(event, ui) {
-                            $('#uploadButtonDiv').appendTo(ui.newContent);
-                            $('#uploadButtonDiv').css('display', 'block');
-                        });
-                    }
-                }
-            });
-            setTimeout(function(){
-                $(".view_bid_id").click();
-            }, 500);
-            if (user_id) {
-                Job.setFollowingText(isFollowing);
-            } else {
-                $('#followingLogin').html('<a href="./github/login">Login to follow this task.</a>');
-            }
-        })(jQuery);
+        // journal info accordian
+        // flag to say we've not loaded anything in there yet
+        $.journalChat = false;
+
+        setTimeout(function(){
+            $(".view_bid_id").click();
+        }, 500);
+        if (user_id) {
+            Job.setFollowingText(isFollowing);
+        } else {
+            $('#followingLogin').html('<a href="./github/login">Login to follow this task.</a>');
+        }
 
         if (user_id) {
             $('.paid-link').click(Job.paidModal);
@@ -426,6 +380,121 @@ var Job = {
         }
 
         Job.setCodeReviewEvents();
+        Job.initFileUpload();
+    },
+
+    initFileUpload: function() {
+        var options = {iframe: {url: './file/add/' + workitem_id}};
+        var zone = new FileDrop('attachments', options);
+
+        zone.event('send', function (files) {
+            files.each(function (file) {
+                file.event('done', Job.fileUploadDone);
+                file.event('error', Job.fileUploadError);
+                file.sendTo('./file/add/' + workitem_id);
+                Job.filesUploading++;
+                Job.animateUploadSpin();
+            });
+        });
+        zone.multiple(true);
+
+        $('#attachments > label > em').click(function() {
+            $('#attachments input.fd-file').click();
+        });
+
+        $.ajax({
+            type: 'get',
+            url: './file/listForJob/' + workitem_id,
+            dataType: 'json',
+            success: function(data) {
+                if (!data.success) {
+                    return;
+                }
+                for (i = 0; i < data.data.length; i++) {
+                    var fileData = data.data[i];
+                    Job.renderAttachment(fileData);
+                }
+            }
+        });
+    },
+
+    fileUploadDone: function(xhr) {
+        var fileData = $.parseJSON(xhr.responseText);
+        $.ajax({
+            url: './file/scan/' + fileData.fileid,
+            type: 'POST',
+            dataType: "json",
+            success: function(json) {
+                if (json.success == true) {
+                    fileData.url = json.url;
+                }
+                Job.renderAttachment(fileData);
+                Job.fileUploadFinished();
+            }
+        });
+
+    },
+
+    renderAttachment: function(file) {
+        Utils.parseMustache('partials/upload-document', file, function(parsed) {
+            $('#attachments > ul').append(parsed);
+            $('#attachments li[attachment=' + file.fileid + '] > i').click(Job.removeFile);
+            Job.uploadedFiles.push(file.fileid);
+        });
+    },
+
+    fileUploadError: function(e, xhr) {
+        Job.fileUploadFinished();
+    },
+
+    fileUploadFinished: function() {
+        Job.filesUploading--;
+        if (Job.filesUploading == 0) {
+            Job.stopUploadSpin();
+        }
+    },
+
+    removeFile: function(event) {
+        var id = parseInt($(this).parent().attr('attachment'));
+        $.ajax({
+            url: './file/remove/' + id,
+            type: 'POST',
+            dataType: "json",
+            success: function(json) {
+                if (json.success == true) {
+                    $('#attachments li[attachment=' + id + ']').remove();
+                    for (var i = 0; i < Job.uploadedFiles.length; i++) {
+                        if (Job.uploadedFiles[i] == id) {
+                            Job.uploadedFiles.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    animateUploadSpin: function() {
+        if ($('#attachments > .loading').length) {
+            return;
+        }
+        $('<div>').addClass('loading').prependTo('#attachments');
+        var target = $('#attachments > .loading')[0];
+        var spinner = new Spinner({
+            lines: 9,
+            length: 3,
+            width: 4,
+            radius: 6,
+            corners: 1,
+            rotate: 12,
+            direction: 1,
+            color: '#000',
+            speed: 1.1,
+            trail: 68
+          }).spin(target);
+    },
+
+    stopUploadSpin: function() {
+        $('#attachments > .loading').remove();
     },
 
     postComment: function() {

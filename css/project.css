@@ -63,37 +63,52 @@ td.noroles {
     content: "";
 }
 
-#projectLogo,
-#projectLogoEdit {
+#projectLogo {
     float: left;
     margin-top: 35px;
+    position: relative;
 }
 
-#projectLogo img,
-#projectLogoEdit img {
+#projectLogo img {
     width: 70px;
     height: 70px;
     border: 3px solid #696969;
     display: block;
 }
 
-#projectLogoEdit {
-    position: relative;
+/**
+ * Logo upload styling
+ */
+/* Hides <input type="file"> while simulating "Browse" button: */
+#projectLogo .fd-file {
+  opacity: 0;
+  font-size: 118px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  filter: alpha(opacity=0);
+  font-family: sans-serif;
 }
-#projectLogoEdit input, #projectLogoEdit label {
-    font-size: .7em;
+
+/* Provides visible feedback when use drags a file over the drop zone: */
+#projectLogo.fd-zone.over img {
+    border-color: #007F7c;
+    border-style: dashed;
+}
+
+#projectLogo > .loading {
     position: absolute;
+    width: 12px;
+    height: 12px;
+    opacity: .7;
+    top: 29px;
+    left: 29px;
 }
 
-#projectLogoEdit input {
-    left: 0;
-    bottom: -20px;
-}
-
-#projectLogoEdit label {
-    right: 0;
-    bottom: -18px;
-}
 
 #projectHeader h2 {
     margin: 24px 0 0 76px;

@@ -77,11 +77,10 @@
         <section class="col-md-6">
             <h3>W-9</h3>
             <p>All US Citizens must submit a signed W-9 before we'll pay you.</p>
-
-            <div>
-                <input id="formupload" type="button" value="Upload W9" class="uploadbutton" />
-                <div class="w9_loader"></div>
-            </div>
+            <fieldset id="attachments">
+              <label>Drag &amp; drop or <em>select file</em> to attach a W-9 document.</label>
+              <ul></ul>
+            </fieldset>
             <div class="uploadnotice-w9"></div>
         </section>
     </div>
@@ -91,7 +90,8 @@
 </form>
 
 <script type="text/javascript">
-     var ppConfirmed = {{ppConfirmed}};
-     var emConfirmed = {{emConfirmed}};
-     var uploadApiKey = '{{uploadApiKey}}';
+  var uploadApiKey = '{{uploadApiKey}}';
+  $(function () {
+    Settings.init();
+  });
 </script>

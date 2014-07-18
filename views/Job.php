@@ -7,9 +7,7 @@ class JobView extends View {
 
     public $stylesheets = array(
         'css/legacy/workitem.css',
-        'css/review.css',
         'css/favorites.css',
-        'css/budget.css',
         'css/entries.css',
         'css/job.css'
    );
@@ -20,14 +18,14 @@ class JobView extends View {
         'js/jquery/jquery.tallest.js',
         'js/jquery/jquery.metadata.js',
         'js/jquery/jquery.blockUI.js',
-        'js/ajaxupload/ajaxupload.js',
         'js/dragdealer/dragdealer.js',
+        'js/filedrop/filedrop-min.js',
+        'js/spin.js/spin.min.js',
         'js/datepicker.js',
         'js/timepicker.js',
-        'js/review.js',
+        'js/entries.js',
         'js/favorites.js',
         'js/github.js',
-        'js/entries.js',
         'js/job.js'
     );
 
@@ -55,7 +53,6 @@ class JobView extends View {
         $this->is_project_founder = (int) $this->read('is_project_founder');
         $this->promptForReviewUrl =  (int) $this->read('promptForReviewUrl');
         $this->status_error =  (int) $this->read('status_error');
-        $this->displayDialogAfterDone =  (int) $this->read('displayDialogAfterDone');
         $this->userinfotoshow =  (int) $this->read('userinfotoshow');
 
         $this->erroneous = $this->read('erroneous');
@@ -707,7 +704,7 @@ class JobView extends View {
 
         return (int) (
             ($worklist['status'] == 'Bidding' && ($is_project_runner || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']))
-          ||(isset($worklist['runner_id']) && $this->currentUser['user_id'] == $worklist['runner_id']))
+          ||(isset($worklist['runner_id']) && $this->currentUser['id'] == $worklist['runner_id']))
         );
     }
 
@@ -806,7 +803,7 @@ class JobView extends View {
             if (!$now) {
                 $now = strtotime(Model::now());
             }
-            if (get_class($entry) == 'EntryModel') {
+            if (is_object($entry) && get_class($entry) == 'EntryModel') {
                 $id = $entry->id;
                 $type = 'worklist';
                 $date = strtotime($entry->date);
@@ -846,12 +843,12 @@ class JobView extends View {
     }
 
     static function sortEntries($a, $b) {
-        if (get_class($a) == 'EntryModel') {
+        if (is_object($a) && get_class($a) == 'EntryModel') {
             $date_a = strtotime($a->date);
         } else { // comment group
             $date_a = strtotime($a['date']);
         }
-        if (get_class($b) == 'EntryModel') {
+        if (is_object($b) && get_class($b) == 'EntryModel') {
             $date_b = strtotime($b->date);
         } else { // comment group
             $date_b = strtotime($b['date']);

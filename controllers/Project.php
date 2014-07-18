@@ -84,10 +84,7 @@ class ProjectController extends Controller {
             }
             
             if ($_REQUEST['logoProject'] != "") {
-                $project->setLogo($_REQUEST['logoProject']);
-            }
-            if (isset($_REQUEST['noLogo']) && $_REQUEST['noLogo'] == "1") {
-                $project->setLogo("");
+                $project->setLogo(basename($_REQUEST['logoProject']));
             }
             $project->save();
             // we clear post to prevent the page from redirecting

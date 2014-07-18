@@ -599,8 +599,8 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-align: left;
 }
 
-.popup-body input[type="text"], 
-.popup-body textarea, 
+.popup-body input[type="text"],
+.popup-body textarea,
 .popup-body select {
     font-size: 14px;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -760,7 +760,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration:none;
 }
 
-#summary, 
+#summary,
 #edit-notes {
     width: 425px;
 }

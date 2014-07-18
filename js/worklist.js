@@ -238,73 +238,18 @@ function applyPopupBehavior() {
         e.preventDefault();
         if (dialogUrl == 'javascript:;') {
             alert($(this).data('error_message'));
-        } else if ($('#dialogImage').length == 0) {
-            $('<img id="dialogImage" src="'+dialogUrl+'" title="Preview">').dialog({
-                    modal: true,
-                    hide: 'drop', 
-                    resizable: false,
-                    width: 'auto',
-                    height: 'auto',
-                    dialogClass: 'white-theme',
-                    open:function(evt){
-                        $(this).parent().css('opacity','0');
-                        storeCursorStatus = new Array();
-                        
-                        $(evt.target).load(function() {
-                                var image = $(this);
-                                // get image size
-                                var origWidt = parseInt(image.naturalWidth);  
-                                var origHeig = parseInt(image.naturalHeight);
-                                if (!origWidt || !origHeig) {
-                                    var origWidt = parseInt(image.width());
-                                    var origHeig = parseInt(image.height()); 
-                                }
-                                var padding = 20;
-                                var imageMargin = 12;
-                                ratio = Math.min(($(window).width()-(imageMargin+padding)*2) / origWidt,
-                                                ($(window).height()-(imageMargin+padding)*2) / origHeig);
-                                var zoom = '';
-                                if (ratio < 1) {
-                                    image.css({'width':origWidt*ratio,'height':origHeig*ratio});
-                                }
-                                var dialog = image.parent();
-                                var top = ($(window).height() - image.height())/2 - imageMargin + $(window).scrollTop();
-                                var left = ($(window).width() - image.width())/2 - imageMargin;
-                                dialog.css({
-                                    'top': top,
-                                    'left': left 
-                                });
-                                if (ratio < 1) {
-                                    zoom='('+Math.round(ratio*100)+'%)';
-                                    image.prev('div').append(
-                                    '<span class="dialogZoom" style="margin-left:10px;">'+zoom+'</span>');
-                                    }
-                                if (ratio!='Infinity') {
-                                    image.css({'margin':imageMargin+'px','padding':'0','border':'1px solid #ccc'});
-                                    if ($.browser.msie) {
-                                        image.css({'border':'2px solid #000'});
-                                    } else if ($.browser.mozilla) {
-                                        image.css({'-moz-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
-                                    } else {
-                                        image.css({'-webkit-box-shadow':'rgba(169, 169, 169, 0.5) 3px 3px 3px'});
-                                    }
-                                    image.parent().hide();
-                                    image.parent().css('opacity', '1').fadeIn();
-                                }
-                        });
-                    },
-                    resizeStart : function(){
-                        $(this).parent().find('.dialogZoom').html(''); 
-                    },               // hide srink percentage on resize
-                    dragStop : function(evt){
-                        var dialog = $(evt.target);                                     // check if not out of screen
-                    },
-                    close: function(event, ui) {
-                        $(this).dialog('destroy').remove();
-                    } 
-                }); 
-            }
-            return false;
+        } else {
+            Utils.emptyModal({
+                title: 'Attachment',
+                content:
+                    '<div class="row">' +
+                    '  <div class="col-md-12 text-center">' +
+                    '    <img src="' + dialogUrl + '" title="attachment" />' +
+                    '  </div>' +
+                    '</div>'
+            });
+        }
+        return false;
     });
     
     $('a.docs').live('click', function(e) {

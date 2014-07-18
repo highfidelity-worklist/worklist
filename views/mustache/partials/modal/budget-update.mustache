@@ -1,0 +1,99 @@
+<div class="modal fade" id="{{modal_id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">
+          {{#title}}{{& title}}{{/title}}
+          {{^title}}Budget update{{/title}}
+          </h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+              <div class="col-md-2"><label for="budget-amount">Budget: </label></div>
+              <div class="col-md-3">
+                  <div class="input-group">
+                    <input type="text" id="budget-amount" name="amount" disabled="disabled"
+                      class="form-control" value="{{data.amount}}" />
+                    <span class="input-group-addon">USD</span>
+                  </div>
+              </div>
+              <div class="col-md-1"><label for="budget-reason">For: </label></div>
+              <div class="col-md-6">
+                  <input type="text" id="budget-reason" name="budget-reason" class="form-control"
+                    {{#data.closed}}disabled="disabled"{{/data.closed}} value="{{data.reason}}" />
+              </div>
+            </div>
+            {{#showSources}}
+              <fieldset id="budget-sources-table">
+                <h4>Sources:</h4>
+                <table class="table table-striped" cellspacing="0" >
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Grantor</th>
+                      <th>Amount</th>
+                      <th>From</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#data.sources}}
+                      <tr>
+                        <td>{{transfer_date}}</td>
+                        <td><a href="./user/{{nickname}}">{{nickname}}</a></td>
+                        <td>{{amount_granted}}</td>
+                        <td>
+                          {{#data.seed}}
+                            Seed Budget: {{source_data}}
+                          {{/data.seed}}
+                          {{^data.seed}}
+                            Budget ID: {{budget_id}} - {{reason}}
+                          {{/data.seed}}
+                        </td>
+                      </tr>
+                    {{/data.sources}}
+                  </tbody>
+                </table>
+              </fieldset>
+            {{/showSources}}
+            <input type="hidden" name="receiver_id" value="{{data.receiver_id}}" />
+            <label for="budget-note">Notes: </label>
+            <textarea id="budget-note" name="budget-note" class="form-control"
+              {{#data.closed}}disabled="disabled"{{/data.closed}}>{{data.notes}}</textarea>
+            {{#is_runner}}
+            <table class="table table-striped">
+              <tr id="budgetRemainingFunds">
+                <td><strong>Remaining Funds:</strong></td>
+                <td>${{data.remaining}}</td>
+              </tr>
+              <tr id="budgetAllocated">
+                <td>Allocated:</td>
+                <td>${{data.allocated}}</td>
+              </tr>
+              <tr id="budgetSubmitted">
+                <td>Submitted:</td>
+                <td>${{data.submitted}}</td>
+              </tr>
+              <tr id="budgetPaid">
+                <td>Paid:</td>
+                <td>${{data.paid}}</td>
+              </tr>
+              <tr id="budgetTransferred">
+                <td>Transfered:</td>
+                <td>${{data.transferred}}</td>
+              </tr>
+            </table>
+            {{/is_runner}}
+        </div>
+        <div class="modal-footer">
+          {{^data.closed}}{{#is_runner}}
+            <button type="button" class="btn btn-default" name="closeOut">Close out</button>
+            <button type="button" class="btn btn-default" name="addFunds">Add Funds</button>
+            <button type="submit" class="btn btn-primary" name="updateBudget">Save</button>
+          {{/is_runner}}{{/data.closed}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

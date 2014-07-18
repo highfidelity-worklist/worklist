@@ -1,6 +1,6 @@
 var Projects = {
     uploadedFile: null,
-    filesUploading: 0,
+    filesUploading: false,
 
     init: function() {
         Projects.populateListing();
@@ -160,7 +160,7 @@ var Projects = {
                 file.event('done', Projects.fileUploadDone);
                 file.event('error', Projects.fileUploadError);
                 file.sendTo('./file/add');
-                Projects.filesUploading++;
+                Projects.filesUploading = true;
                 Projects.animateUploadSpin();
             });
         });
@@ -196,10 +196,8 @@ var Projects = {
     },
 
     fileUploadFinished: function() {
-        Projects.filesUploading--;
-        if (Projects.filesUploading == 0) {
-            Projects.stopUploadSpin();
-        }
+        Projects.filesUploading = false;
+        Projects.stopUploadSpin();
     },
 
     removeFile: function(event) {

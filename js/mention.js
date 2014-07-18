@@ -9,7 +9,7 @@
                 sensitive: true,
                 emptyQuery: false,
                 queryBy: ['name', 'username'],
-                ajax: false, 
+                ajax: false,
                 ajaxUrl: '',
                 ajaxParam: 'contains',
                 typeaheadOpts: {}
@@ -84,8 +84,8 @@
                     var i;
                     if(settings.emptyQuery){
 	                    var q = (this.query.toLowerCase()),
-	                    	caratPos = this.$element[0].selectionStart,
-	                    	lastChar = q.slice(caratPos-1,caratPos);
+                            caratPos = this.$element[0].selectionStart,
+                            lastChar = q.slice(caratPos-1,caratPos);
 	                    if(lastChar==settings.delimiter){
                             return true;
 	                    }
@@ -121,9 +121,9 @@
                         }
                     }
                     var replace = data.substring(i, caratPos),
-                    	textBefore = data.substring(0, i),
-                    	textAfter = data.substring(caratPos),
-                    	data = textBefore + settings.delimiter + item + textAfter;
+                        textBefore = data.substring(0, i),
+                        textAfter = data.substring(caratPos),
+                        data = textBefore + settings.delimiter + item + textAfter;
 
                     this.tempQuery = data;
 

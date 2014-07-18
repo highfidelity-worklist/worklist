@@ -12,8 +12,6 @@ class UserView extends View {
     public $scripts = array(
         'js/jquery/jquery.blockUI.js',
         'js/paginator.js',
-        'js/userNotes.js',
-        'js/review.js',
         'js/favorites.js',
         'js/userinfo.js'
     );
@@ -269,10 +267,6 @@ class UserView extends View {
             }
         }
         return $ret;
-    }
-
-    public function budgetAuthorized() {
-        return (strpos(BUDGET_AUTHORIZED_USERS, "," . $this->reqUserId . ",") !== false);
     }
 
     public function completedJobs() {
