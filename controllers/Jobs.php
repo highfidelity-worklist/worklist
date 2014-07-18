@@ -1,8 +1,23 @@
 <?php
 
 class JobsController extends Controller {
-    public function run() {
-        // Get the page number to show, set default to 1
+    public function run($action, $param = '') {
+        $method = '';
+        switch($action) {
+            case 'getProjectJobs':
+                $method = $action;
+                break;
+            default:
+                $method = 'index';
+                $param = $action;
+                break;
+        }
+        $params = preg_split('/\//', $param);
+        call_user_func_array(array($this, $method), $params);
+    }
+
+    public function index($project_id = null) {
+      // Get the page number to show, set default to 1
         $this->write('page', isset($_REQUEST["page"]) ? (int) $_REQUEST['page'] : 1);
 
         $journal_message = '';
@@ -81,5 +96,13 @@ class JobsController extends Controller {
         $this->write('filter', $filter);
         $this->write('req_status', isset($_GET['status']) ? $_GET['status'] : '');
         $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
+        parent::run();
+    }
+    public function getProjectJobs() {
+      $this->view = null;
+      $filter = new Agency_Worklist_Filter();
+      $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
+      $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
+      Project::getProjectJobs($filter);
     }
 }
