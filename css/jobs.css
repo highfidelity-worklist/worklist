@@ -140,6 +140,12 @@ input {
 }
 
 #search-filter div:first-child,
+div.project-header,
+div.project-jobs-passed {
+    padding-left: 0px;
+}
+
+#search-filter div:first-child,
 #search-filter #only-jobs-i-participated {
    padding-right: 0px;
 }
@@ -251,10 +257,41 @@ input {
     background-color: #ff5582;
 }
 
+.project-jobs-status-merged span {
+    color: #999999;
+}
+
+.project-jobs-status-merged i {
+    background-color: #999999;
+}
+
+.project-jobs-status-pass span {
+    color: #999999;
+}
+
+.project-jobs-status-pass i {
+    background-color: #999999;
+}
+
+.project-jobs-status-done span {
+    color: #000000;
+}
+
+.project-jobs-status-done i {
+    background-color: #000000;
+}
+
+.project-jobs-status {
+    margin-bottom: 10px;
+    padding-left: 0px;
+}
+
 ul.project-jobs {
     list-style: none;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-left: 0px;
+    transition: 0s background-color;
+    padding-left: 0;
 }
 ul.project-jobs li:first-child {
     max-width: 80px;
@@ -262,11 +299,12 @@ ul.project-jobs li:first-child {
 
 ul.project-jobs > li {
     float: left;
+    padding-left: 0;
 }
 
 ul.project-jobs li:first-child a {
     padding: 2px 7px 2px;
-    background: #a9b4c2;
+    background: #dde4e6;
     border-radius: 5px;
 }
 
@@ -281,16 +319,50 @@ ul.project-jobs li.project-jobs-skill a {
 }
 
 ul.project-jobs .project-jobs-comment-count a {
-    padding: 4px 15px 4px;
-    background: #ccc;
+    padding: 2px 15px 3px;
+    background: #e5e5e5;
     border-radius: 10px;
+    color: #666666;
 }
 
-ul.project-jobs li.project-jobs-participants a:not(:last-child):after {
-    content: ", ";
+ul.project-jobs  a:hover,
+ul.project-jobs a {
+    text-decoration: none;
+    color: #666666;
 }
 
 ul.project-jobs:hover {
-    background: #000;
+    background: #dde4e6;
     border-radius: 5px;
+    transition-delay:0.1s;
+    cursor: pointer;
+}
+
+ul.project-jobs li.project-jobs-comment-count {
+    margin-top: 4px;
+}
+
+ul.project-jobs:hover li.project-jobs-comment-count a {
+    background: #ffffff;
+}
+
+div.project-jobs-passed i {
+    content: ' ';
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 10px;
+    margin: -1px 2px 0 0;
+    vertical-align: middle;
+    background-color: #cccccc;
+}
+
+div.project-jobs-passed a {
+    color: #ccc;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+div.project-jobs-passed {
+    margin-bottom: 30px;
 }

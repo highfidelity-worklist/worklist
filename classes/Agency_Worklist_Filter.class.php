@@ -9,7 +9,7 @@ class Agency_Worklist_Filter {
     // Filter for worklist
     protected $user = 0;
     protected $runner = 0;
-    protected $status = 'Bidding';
+    protected $status = 'Bidding,In Progress,QA Ready,Review,Merged,Suggestion';
     protected $query = '';
     protected $sort = 'delta';
     protected $dir = 'ASC';
@@ -37,6 +37,7 @@ class Agency_Worklist_Filter {
     protected $subsort = "delta";
     protected $nickname = "";
     protected $filterMobile = false;
+    protected $following = false;
 
     public function getPaidstatus()
     {
@@ -624,6 +625,23 @@ class Agency_Worklist_Filter {
     public function setfilterMobile($filterMobile)
     {
         $this->filterMobile = (boolean)$filterMobile;
+        return $this;
+    }
+
+    /**
+     * @return the $following
+     */
+    public function getFollowing()
+    {
+        return $this->following;
+    }
+
+    /**
+     * @param $following the $following to set
+     */
+    public function setFollowing($following)
+    {
+        $this->following = (boolean)$following;
         return $this;
     }
 

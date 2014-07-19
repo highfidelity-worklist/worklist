@@ -1665,8 +1665,13 @@ class Project {
                     {$where}
                     ";
             $skillSql = ", (SELECT GROUP_CONCAT(CONCAT(s.skill,'~~', s.id)) from `workitem_skills` ws inner join `skills` s on s.id = ws.skill_id where workitem_id = `worklist`.`id`) as skills ";
-            $orderBy = "GROUP BY `".WORKLIST."`.`id` ORDER BY status_order, project_name, delta asc  LIMIT ".$offset .",{$limit}";
-            $resultTotalHitCount = mysql_query("$totalHitCountSql $innerSql");
+            $followingSql = "";
+            if ($filter->getFollowing() && getSessionUserId()) {
+                $followingSql = " LEFT JOIN `task_followers` on `task_followers`.`workitem_id` = `".WORKLIST."`.`id`
+                               AND `task_followers`.`user_id` = ".getSessionUserId();
+            }
+            $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY project_name,status_order, delta asc  LIMIT ".$offset .",{$limit}";
+            $resultTotalHitCount = mysql_query("$totalHitCountSql $innerSql $followingSql");
             if ($resultTotalHitCount) {
                 $row = mysql_fetch_row($resultTotalHitCount);
                 $items = intval($row[0]);
@@ -1674,20 +1679,12 @@ class Project {
                 $items = 0;
             }
             $results = array();
-            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$followingSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
                 $result = array("id" => $row['id'],
                     "summary" => $row['summary'],
                     "status" => $row['status'],
-                    "creator" => array("nickname" => $row['creator_nickname'],
-                                        "id" => $row['creator_id']
-                                        ),
-                    "runner" => array("nickname" => $row['runner_nickname'],
-                                        "id" => $row['runner_id']
-                                        ),
-                    "mechanic" => array("nickname" => $row['mechanic_nickname'],
-                                        "id" => $row['runner_id']
-                                        ),
+                    "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
                     "comments" => $row['comments'],
                     "project_id" => $row['project_id'],
                     "project_name" => $row['project_name'],
@@ -1697,9 +1694,7 @@ class Project {
                 array_push($results, $result);
             }
             $searchResult = array("search_result" => $results, "total_Hit_count" => $items);
-            $json = json_encode($searchResult);
-
-            echo $json;
+            return $searchResult;
     }
 
     function isJobId($id) {

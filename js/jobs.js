@@ -4,20 +4,19 @@ var jobs = {
     offset: 0,
     limit: 30,
     query: null,
-    projectId: 0,
-    status: '',
+    following: false,
     init: function() {
         if (search_query != '') {
             $('#search-query input[type="text"]').val(search_query);
         }
-        jobs.projectId = $('select[name="project"]').val();
         jobs.query =  $('#search-query input[type="text"]').val();
-        jobs.fetchJobs(jobs.offset, jobs.limit, jobs.projectId, jobs.status, jobs.query);
+        jobs.following = $('#jobs-im-following').is(":checked");
+        jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
         jobs.renderDataOnScroll();
         jobs.filterChangeEventTrigger();
     },
 
-    fetchJobs: function(offset, limit, project_id, status, query) {
+    fetchJobs: function(offset, limit, project_id, status, query, following) {
         $.ajax({
             url: './jobs/getProjectJobs',
             cache: false,
@@ -26,12 +25,16 @@ var jobs = {
                 limit: limit,
                 project_id: project_id,
                 status: status,
-                query: query
+                query: query,
+                following: following
             },
             dataType: 'json',
             success: function(data) {
+                if(offset == 0) {
+                    $('#jobs-sections').empty();
+                    $('body').data("jobs-total-hit-count", data.total_Hit_count);
+                }
                 jobs.renderJobs(data.search_result);
-                $('body').data("jobs-total-hit-count", data.total_Hit_count);
             },
             error: function(xhdr, status, err) {
 
@@ -42,12 +45,22 @@ var jobs = {
     renderJobs: function(data) {
         for(index in data) {
             if (!$('.project-header').hasClass('project-header-' + data[index].project_id)) {
+                if ($('.project-header').length > 0) {
+                    $('#jobs-sections').append(jobs.renderPassedJobsLink($('.project-header').last().find("h2").text()));
+                }
                 $('#jobs-sections').append(jobs.renderProjectHeader(data[index].project_id, data[index].project_name, data[index].short_description));
             }
             if (!$('.project-jobs-status').hasClass("project-"+ data[index].project_id + "-jobs-status-" + data[index].status.toLowerCase().replace(/ /g, '-'))) {
                 $('#jobs-sections').append(jobs.renderJobStatus(data[index].project_id, data[index].status));
             }
-            $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].skills));
+            $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].skills, data[index].comments, data[index].participants));
+            var totalJobsRender = $('ul.project-jobs').length;
+            var totalHitCount = $('body').data("jobs-total-hit-count");
+            console.log(totalHitCount + " : " + totalJobsRender)
+            if (totalHitCount == totalJobsRender) {
+                $('#jobs-sections').append(jobs.renderPassedJobsLink(data[index].project_name));
+            }
+            jobs.jobsEvent();
         }
     },
     renderProjectHeader: function(id, project_name, project_short_description) {
@@ -60,8 +73,8 @@ var jobs = {
         return html;
     },
 
-    renderJob: function(id, project_id, summary, skills) {
-        var html ="<ul class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><p>"+summary+"</p></li><li class=\"col-sm-2 col-md-2 project-jobs-skill\">";
+    renderJob: function(id, project_id, summary, skills, comments, participants) {
+        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><p>"+summary+"</p></li><li class=\"col-sm-2 col-md-2 project-jobs-skill\">";
         if($.trim(skills).length > 0) {
             var skills = skills.split(",");
             for(skillIndex in skills) {
@@ -69,16 +82,31 @@ var jobs = {
                 html += "<a>" + skill[0] + "</a>";
             }
         }
-        html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\"><a>uuuu</a><a>uuuu</a><a>uuuu</a></li><li class=\"col-sm-2 col-md-2 project-jobs-comment-count\"><a>comments</a></li></ul>";
-      return html
+        html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
+        for (var participantIndex in participants) {
+            if (participants[participantIndex].nickname != null) {
+                html += participantIndex > 0 ? ",  " : "" + "<a href=\"./user/" + participants[participantIndex].id + "\">" + participants[participantIndex].nickname + "</a>";
+            }
+        }
+        html += "</li>";
+        if (comments != "0") {
+            html += "<li class=\"col-sm-2 col-md-2 project-jobs-comment-count\"><a>" + comments +" comments</a></li></ul>";
+        }
+        return html;
     },
+
+    renderPassedJobsLink: function(project_name) {
+        var html = "<div class=\"project-jobs-passed col-sm-12 col-md-12 dd-max-width\"><div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass\">View Passed Jobs</a></div><div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done\">View Done Jobs</a></div></div>";
+        return html;
+    },
+
     renderDataOnScroll: function() {
         $(window).scroll(function() {
             var scrollTop = $(window).scrollTop();
-            var windowHeight = $(document).height() - $(window).height();
+            var windowHeight = ($(document).height() - $(window).height());
             var totalJobsRender = $('ul.project-jobs').length;
             if  (scrollTop == windowHeight && totalJobsRender < $('body').data("jobs-total-hit-count")) {
-                jobs.fetchJobs((totalJobsRender + jobs.limit), jobs.limit, jobs.projectId, jobs.status, jobs.query);
+                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query);
             }
         });
     },
@@ -86,25 +114,37 @@ var jobs = {
     filterChangeEventTrigger: function() {
         var query = $('#search-query input[type="text"]').val();
         $("select[name=project]").change(function() {
-            jobs.projectId = $(this).val();
-            jobs.fetchJobs(jobs.offset, jobs.limit, $(this).val(), jobs.status, jobs.query);
+            search_project_id = $(this).val();
+            jobs.fetchJobs(jobs.offset, jobs.limit, $(this).val(), search_status, jobs.query, jobs.following);
         });
         $('#search-query input[type="text"]').keypress(function(event) {
             if (event.keyCode == '13' && $.trim($(this).val()).length > 0) {
                 event.preventDefault();
                 search_query = '';
-                $('#jobs-sections').empty();
                 jobs.query = $(this).val();
-                jobs.fetchJobs(jobs.offset, jobs.limit, jobs.projectId, jobs.status, jobs.query);
+                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
             }
         });
         $("#query-search-button").click(function() {
             if ($.trim($('#search-query input[type="text"]').val()).length > 0) {
                 search_query = '';
-                $('#jobs-sections').empty();
                 jobs.query = $('#search-query input[type="text"]').val();
-                jobs.fetchJobs(jobs.offset, jobs.limit, jobs.projectId, jobs.status, jobs.query);
+                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
             }
+        });
+        $('#jobs-im-following').click(function() {
+            if ($(this).is(":checked")) {
+               window.location.href = "./jobs/hifi/following";
+            } else {
+               window.location.href = "./jobs/hifi";
+            }
+        });
+    },
+
+    jobsEvent: function() {
+        $("ul.project-jobs").click(function() {
+            var jobId = $(this).data('job-id');
+            window.location.href = "./"+ jobId;
         });
     }
 };

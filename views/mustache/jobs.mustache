@@ -1,10 +1,7 @@
 <script type="text/javascript">
-    var page = {{page}};
-    var dir = '{{filter.getDir}}';
-    var sort = '{{filter.getSort}}';
-    var only_needs_review_jobs = {{review_only}};
     var search_query = '{{filter.getQuery}}';
     var search_project_id = '{{filter.getProjectId}}';
+    var search_status = '{{filter.getStatus}}';
 </script>
 <form class="row" id="search-filter">
     <div class="col-sm-12 col-md-12 dd-max-width">
@@ -18,7 +15,7 @@
             <label><input type="checkbox" name="only-jobs-i-participated"/>Only jobs i 've participated in</label>
         </div>
         <div class="col-sm-3 col-md-3 dd-max-width">
-            <label><input type="checkbox" name="jobs-im-following"/>Jobs i'm following</label>
+            <label><input type="checkbox" id="jobs-im-following" name="jobs-im-following" {{#filter.getFollowing}} checked {{/filter.getFollowing}}  />Jobs i'm following</label>
         </div>
     </div>
 </form>
