@@ -2,14 +2,20 @@ body {
     font-size: 14px;
 }
 
-@media (max-width: 960px){
+@media (min-width: 960px) {
     body > .container-fluid {
-        margin: 0 8.33%;
-        max-width: 850px;
+        max-width: 940px;
     }
 }
 
-@media (max-width: 480px){
+@media (max-width: 960px) {
+    body > .container-fluid {
+        margin: 0 5%;
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 480px) {
     body > .container-fluid {
         margin: 0;
     }
@@ -124,6 +130,7 @@ input {
     position: relative;
     top: -3px;
     overflow: hidden;
+    outline: none;
 }
 
 #search-filter-status > div {
@@ -131,7 +138,7 @@ input {
 }
 
 #search-filter-status {
-    max-width: 300px;
+    max-width: 286px;
     padding-left: 0px;
 }
 
@@ -141,7 +148,9 @@ input {
 
 #search-filter div:first-child,
 div.project-header,
-div.project-jobs-passed {
+div.project-jobs-passed,
+div.project-jobs-pass,
+div.project-jobs-done {
     padding-left: 0px;
 }
 
@@ -291,15 +300,16 @@ ul.project-jobs {
     padding-top: 0px;
     padding-left: 0px;
     transition: 0s background-color;
-    padding-left: 0;
+    padding-left: 0px;
 }
 ul.project-jobs li:first-child {
-    max-width: 80px;
+    max-width: 70px;
 }
 
 ul.project-jobs > li {
     float: left;
-    padding-left: 0;
+    padding-left: 0px;
+    padding-right: 5px;
 }
 
 ul.project-jobs li:first-child a {
@@ -319,7 +329,7 @@ ul.project-jobs li.project-jobs-skill a {
 }
 
 ul.project-jobs .project-jobs-comment-count a {
-    padding: 2px 15px 3px;
+    padding: 2px 10px 3px;
     background: #e5e5e5;
     border-radius: 10px;
     color: #666666;
@@ -340,6 +350,7 @@ ul.project-jobs:hover {
 
 ul.project-jobs li.project-jobs-comment-count {
     margin-top: 4px;
+    max-width: 114px;
 }
 
 ul.project-jobs:hover li.project-jobs-comment-count a {
@@ -361,8 +372,41 @@ div.project-jobs-passed a {
     color: #ccc;
     font-weight: bold;
     text-decoration: underline;
+    padding-left: 5px;
+}
+
+div.project-jobs-done a {
+    color: #000;
+    font-weight: bold;
+}
+
+div.project-jobs-pass {
+    max-width: 165px;
+}
+
+div.project-jobs-done i {
+    background-color: #000000;
 }
 
 div.project-jobs-passed {
     margin-bottom: 30px;
+}
+
+@media  (max-width: 767px) and (max-width : 768px) {
+    ul.project-jobs {
+        padding: 5px;
+    }
+
+    ul.project-jobs > li {
+        float: none;
+    }
+
+    ul.project-jobs li:nth-child(2) {
+        padding-left: 5px;
+    }
+
+    ul.project-jobs li:nth-child(4) {
+        clear: both;
+        padding-left: 5px;
+    }
 }

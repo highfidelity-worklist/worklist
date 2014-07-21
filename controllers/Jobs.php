@@ -1,6 +1,10 @@
 <?php
 
 class JobsController extends Controller {
+
+    public $is_runner = 0;
+    public $is_internal = 0;
+
     public function run($action, $param = '') {
         $method = '';
         switch($action) {
@@ -21,7 +25,6 @@ class JobsController extends Controller {
         // $nick is setup above.. and then overwritten here -- lithium
         $nick = '';
         $userId = getSessionUserId();
-        $is_internal = 0;
         if ($userId > 0) {
             initUserById($userId);
             $user = new User();
@@ -30,10 +33,10 @@ class JobsController extends Controller {
             $nick = $user->getNickname();
             $userbudget =$user->getBudget();
             $budget = number_format($userbudget);
-            $is_internal = $user->isInternal();
+            $this->is_internal = $user->isInternal();
         }
 
-        $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+        $this->is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
         $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
         $is_admin = !empty($_SESSION['is_admin']) ? 1 : 0;
 
@@ -51,7 +54,7 @@ class JobsController extends Controller {
             $filter->setStatus('ALL');
         }
 
-        if ($projectName != null) {
+        if ($projectName != null && $projectName != "all") {
             $project = Project::find($projectName);
             if ($project) {
                 $filter->setProjectId($project->getProjectId());
@@ -73,7 +76,7 @@ class JobsController extends Controller {
         }
 
         $filter->setFollowing(($filterName != null && $filterName == "following") ? true : false);
-        $filter->setStatus(($filterName != null && $filterName == "passed") ? "Done,Pass" : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
+        $filter->setStatus(($filterName != null && $filterName != "following") ? $filterName : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
 
         // Prevent reposts on refresh
         if (! empty($_POST)) {
@@ -95,6 +98,8 @@ class JobsController extends Controller {
         $filter = new Agency_Worklist_Filter();
         $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
         $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
-        echo json_encode(Project::getProjectJobs($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'], $is_runner, $is_internal));
+        $filter->setParticipated($_REQUEST['participated']);
+        $filter->setFollowing($_REQUEST["following"]);
+        echo json_encode(Project::getProjectJobs($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
     }
 }

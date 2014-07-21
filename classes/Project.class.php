@@ -1414,11 +1414,18 @@ class Project {
     static public function getProjectJobs($filter, $query = null,  $offset = 0, $limit = 30, $isRunner = 0, $publicOnly = true) {
         $filterByUser = 'ALL';
         if ($query != null) {
-            $id = getIdFromQuery($query);
-            if (isJobId($id)) {
-                return array('redirect', $id);
+            $id = Project::getIdFromQuery($query);
+            if (Project::isJobId($id)) {
+                return array('redirect' => $id);
             }
             $finder = User::find($query);
+            if ($finder) {
+                $filterByUser = $finder->getId();
+            }
+        }
+        $userId = getSessionUserId();
+        if($filter->getParticipated()) {
+            $finder = User::find($userId);
             if ($finder) {
                 $filterByUser = $finder->getId();
             }
@@ -1656,22 +1663,26 @@ class Project {
                 $sql .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND `".WORKLIST."`.`status`='Bidding' AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
             }
 
+            $followingSql = "";
+            if ($filter->getFollowing()) {
+                $followingSql = " INNER JOIN `task_followers` on `task_followers`.`workitem_id` = `".WORKLIST."`.`id`
+                               AND `task_followers`.`user_id` = ".getSessionUserId();
+            }
+
             $innerSql = "FROM `".WORKLIST."`
                     LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
                     LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
                     LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
                     LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0 INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1 AND `proj`.`active` = 1
                     {$commentsjoin}
+                    {$followingSql}
                     {$where}
                     ";
             $skillSql = ", (SELECT GROUP_CONCAT(CONCAT(s.skill,'~~', s.id)) from `workitem_skills` ws inner join `skills` s on s.id = ws.skill_id where workitem_id = `worklist`.`id`) as skills ";
-            $followingSql = "";
-            if ($filter->getFollowing() && getSessionUserId()) {
-                $followingSql = " LEFT JOIN `task_followers` on `task_followers`.`workitem_id` = `".WORKLIST."`.`id`
-                               AND `task_followers`.`user_id` = ".getSessionUserId();
-            }
-            $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY project_name,status_order, delta asc  LIMIT ".$offset .",{$limit}";
-            $resultTotalHitCount = mysql_query("$totalHitCountSql $innerSql $followingSql");
+            $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
+            $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
+
+            $resultTotalHitCount = mysql_query("$totalHitCountSql $innerSql");
             if ($resultTotalHitCount) {
                 $row = mysql_fetch_row($resultTotalHitCount);
                 $items = intval($row[0]);
@@ -1679,7 +1690,7 @@ class Project {
                 $items = 0;
             }
             $results = array();
-            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$followingSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
                 $result = array("id" => $row['id'],
                     "summary" => $row['summary'],
@@ -1697,14 +1708,14 @@ class Project {
             return $searchResult;
     }
 
-    function isJobId($id) {
+    static public  function isJobId($id) {
       if (WorkItem::idExists($id)) {
          return true;
       }
       return false;
     }
 
-    function getIdFromQuery($query) {
+    static public function getIdFromQuery($query) {
       if (preg_match("/^\#?\d+$/", $query)) {
          return ltrim($query, '#');
       }

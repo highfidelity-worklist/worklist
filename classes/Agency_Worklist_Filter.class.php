@@ -38,6 +38,7 @@ class Agency_Worklist_Filter {
     protected $nickname = "";
     protected $filterMobile = false;
     protected $following = false;
+    protected $participated = false;
 
     public function getPaidstatus()
     {
@@ -642,6 +643,23 @@ class Agency_Worklist_Filter {
     public function setFollowing($following)
     {
         $this->following = (boolean)$following;
+        return $this;
+    }
+
+    /**
+     * @return the $participated
+     */
+    public function getParticipated()
+    {
+        return $this->participated;
+    }
+
+    /**
+     * @param $participated the $participated to set
+     */
+    public function setParticipated($participated)
+    {
+        $this->participated = (boolean)$participated;
         return $this;
     }
 
