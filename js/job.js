@@ -254,7 +254,6 @@ var Job = {
                             url: './user/projectHistory/' + bidData.bidder_id + '/' + project_id,
                             dataType: 'json',
                             success: function(json) {
-                                console.log(json);
                                 if (!json.jobs) {
                                     return;
                                 }
