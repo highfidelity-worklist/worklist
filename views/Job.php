@@ -537,8 +537,10 @@ class JobView extends View {
             } else {
                 $expired_class = '';
             }
-            $canSeeBid = $user->getIs_admin() == 1 || $is_project_runner || $user->isRunnerOfWorkitem($workitem) ||
-                         $user->getId() == $bid['bidder_id'];
+            $canSeeBid = ($workitem->getRunnerId($workitem) == 0 && $is_project_runner)
+                         || $user->getIs_admin() == 1
+                         || $user->isRunnerOfWorkitem($workitem)
+                         || $user->getId() == $bid['bidder_id'];
             $row_class = "";
             $row_class .= ($this->currentUser['id']) ? 'row-bidlist-live ' : '' ;
             $row_class .= ($this->read('view_bid_id') == $bid['id']) ? ' view_bid_id ' : '' ;

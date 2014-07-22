@@ -261,7 +261,7 @@ var Job = {
                                 var project_link = '<a href="./' + project_name + '">' + project_name + '</a>';
                                 if (!json.jobs.length) {
                                     html = '<tr><td>No prior jobs for '  + project_link + '</td></tr>';
-                                    $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
+                                    $('.modal-body > .row > div:first-child tbody', modal).html(html);
                                 } else {
                                     for (var i = 0; i < (json.jobs.length > 3 ? 3 : json.jobs.length); i++) {
                                         job = json.jobs[i];
@@ -269,7 +269,7 @@ var Job = {
                                             '<tr>' +
                                             '  <td><a href="./' + job.id + '">#' + job.id + '</a> ' + job.summary + '</td>' +
                                             '</tr>';
-                                        $('.modal-body > table + .row > div:first-child tbody', modal).html(html);
+                                        $('.modal-body > .row > div:first-child tbody', modal).html(html);
                                     }
                                 }
                             }
