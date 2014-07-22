@@ -145,8 +145,8 @@ class ProjectController extends Controller {
             if (!$user->getId() || !$user->getIs_admin()) {
                 throw new Exception('Action not allowed.');
             }
-            if (!ctype_alnum($name) || !ctype_alpha($name[0])) {
-                throw new Exception('The name of the project can only contain letters (A-Z) and numbers (0-9) and must start with a letter.');
+            if (!preg_match('/^\d*[-a-zA-Z][-a-zA-Z0-9]*$/', $name)) {
+                throw new Exception('The name of the project can only contain alphanumeric characters plus dashes and must have 1 alpha character at least');
             }
             try {
                 $project = Project::find($name);
