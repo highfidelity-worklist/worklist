@@ -17,6 +17,12 @@ body > .container-fluid {
     padding-top: 30px;
 }
 
+#addJob > .row:first-child > p {
+    padding-top: 17px;
+    font-size: 0.85em;
+    color: #666;
+}
+
 #addJob > .row {
     padding: 2px 0 0;
 }

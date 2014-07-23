@@ -4,12 +4,25 @@ var AddJob = {
     filesUploading: 0,
 
     init: function() {
-        $('select[name="itemProject"]').chosen({width: '100%'});
-        $('select[name="itemStatus"]').chosen({width: '100%'});
+        $('select[name="itemProject"], select[name="itemStatus"]').chosen({width: '100%'});
+        $('select[name="itemProject"]').change(AddJob.showProjectDescription);
 
         $('form#addJob').submit(AddJob.formSubmit);
 
         AddJob.initFileUpload();
+    },
+
+    showProjectDescription: function() {
+        $.ajax({
+            url: 'project/info/' + $("select[name='itemProject']").val(),
+            dataType: "json",
+            success: function(json) {
+                if (!json.success) {
+                    return;
+                }
+                $("select[name='itemProject']").parent().next().text(json.data.description);
+            }
+        });
     },
 
     initFileUpload: function() {
