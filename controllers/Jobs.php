@@ -2,23 +2,8 @@
 
 class JobsController extends Controller {
 
-    public $is_runner = 0;
-    public $is_internal = 0;
-
     public function run($action, $param = '') {
-        $method = '';
-        switch($action) {
-            case 'getProjectJobs':
-                $method = $action;
-                break;
-            default:
-                $method = 'index';
-                $param = empty($param) ? $action : $action."/".$param;
-                break;
-        }
-
-        $params = preg_split('/\//', $param);
-        call_user_func_array(array($this, $method), $params);
+        call_user_func_array(array($this, 'index'), preg_split('/\//', empty($param) ? $action : $action."/".$param));
     }
 
     public function index($projectName = null, $filterName = null) {
@@ -94,14 +79,5 @@ class JobsController extends Controller {
         $this->write('req_status', isset($_GET['status']) ? $_GET['status'] : '');
         $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
         parent::run();
-    }
-    public function getProjectJobs() {
-        $this->view = null;
-        $filter = new Agency_Worklist_Filter();
-        $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
-        $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
-        $filter->setParticipated($_REQUEST['participated']);
-        $filter->setFollowing($_REQUEST["following"]);
-        echo json_encode(Project::getProjectJobs($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
     }
 }

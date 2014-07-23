@@ -18,7 +18,7 @@ var jobs = {
 
     fetchJobs: function(offset, limit, project_id, status, query, following) {
         $.ajax({
-            url: './jobs/getProjectJobs',
+            url: './job/search',
             cache: false,
             data: {
                 offset: offset,
