@@ -109,7 +109,8 @@ var Projects = {
                         githubClientSecret =  new LiveValidation($('input[name="githubsecret"]', modal)[0], { onlyOnSubmit: true });
 
                     name.add(Validate.Presence, { failureMessage: "Can't be empty!" });
-                    name.add(Validate.Format, { failureMessage: 'Alphanumeric only', pattern: new RegExp(/^[A-Za-z0-9]*$/) });
+                    name.add(Validate.Format, { failureMessage: 'Alphanumeric and dashes characters only', pattern: new RegExp(/^[-A-Za-z0-9]*$/) });
+                    name.add(Validate.Format, { failureMessage: 'Must contain 1 alpha character at least', pattern: new RegExp(/^\d*[-a-zA-Z][-a-zA-Z0-9]*$/) });
                     name.add(Validate.Length, { minimum: 3, tooShortMessage: "Field must contain 3 characters at least!" } );
                     name.add(Validate.Length, { maximum: 32, tooLongMessage: "Field must contain 32 characters at most!" } );
 

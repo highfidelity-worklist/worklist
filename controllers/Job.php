@@ -872,7 +872,7 @@ class JobController extends Controller {
                     //break;
                 }
 
-                if (!($user->getId() == $bid['bidder_id'] || $user->isRunnerOfWorkitem($workitem) || $workitem->getIsRelRunner()))  {
+                if (!($user->getId() == $bid['bidder_id'] || $user->isRunnerOfWorkitem($workitem) || $workitem->getIsRelRunner() && is_null($worklist['runner_id'])))  {
                     if ($user->getIs_admin() == 0) {
                         $bid['nickname'] = '*name hidden*';
                         $bid['bid_amount'] = '***';
