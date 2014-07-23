@@ -2,7 +2,7 @@
 
 class JobsController extends Controller {
 
-    public function run($action, $param = '') {
+    public function run($action = null, $param = '') {
         call_user_func_array(array($this, 'index'), preg_split('/\//', empty($param) ? $action : $action."/".$param));
     }
 
