@@ -31,7 +31,7 @@ class Dispatcher {
 
         $dispatcher->any('/jobs/:method(/:param)', array('Jobs'), array(
             'require' => array(
-                'method' => '[a-zA-Z0-9]+',
+                'method' => '.*',
                 'param' => '.*'
             ),
             'default' => array('method' => 'index')

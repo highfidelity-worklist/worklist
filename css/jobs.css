@@ -87,7 +87,7 @@ input {
 .bootstrap-select .dropdown-menu {
     border-color: #AAAAAA;
     border-radius: 0;
-    color: #000000;
+    color: #333333;
     margin: 0;
     padding: 5px;
 }
@@ -184,7 +184,7 @@ div.project-jobs-done {
 }
 
 .project-header h2 {
-    color: #000000;
+    color: #333333;
     float: left;
     padding-right: 5px;
     font-weight: bold;
@@ -283,11 +283,11 @@ div.project-jobs-done {
 }
 
 .project-jobs-status-done span {
-    color: #000000;
+    color: #333333;
 }
 
 .project-jobs-status-done i {
-    background-color: #000000;
+    background-color: #333333;
 }
 
 .project-jobs-status {
@@ -326,6 +326,7 @@ ul.project-jobs li.project-jobs-skill a {
     float: left;
     margin-bottom: 3px;
     color: #fff;
+    font-size: 13px;
 }
 
 ul.project-jobs .project-jobs-comment-count a {
@@ -333,6 +334,7 @@ ul.project-jobs .project-jobs-comment-count a {
     background: #e5e5e5;
     border-radius: 10px;
     color: #666666;
+    font-size: 13px;
 }
 
 ul.project-jobs  a:hover,
@@ -342,9 +344,6 @@ ul.project-jobs a {
 }
 
 ul.project-jobs:hover {
-    background: #dde4e6;
-    border-radius: 5px;
-    transition-delay:0.1s;
     cursor: pointer;
 }
 
@@ -355,6 +354,10 @@ ul.project-jobs li.project-jobs-comment-count {
 
 ul.project-jobs:hover li.project-jobs-comment-count a {
     background: #ffffff;
+}
+
+ul.project-jobs:hover p  {
+    color: #007F7c;
 }
 
 div.project-jobs-passed i {
@@ -376,16 +379,16 @@ div.project-jobs-passed a {
 }
 
 div.project-jobs-done a {
-    color: #000;
+    color: #333333;
     font-weight: bold;
 }
 
-div.project-jobs-pass {
-    max-width: 165px;
+div.project-jobs-done {
+    max-width: 150px;
 }
 
 div.project-jobs-done i {
-    background-color: #000000;
+    background-color: #333333;
 }
 
 div.project-jobs-passed {
