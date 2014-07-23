@@ -1421,7 +1421,7 @@ class Project {
         }
     }
 
-    static public function getProjectJobs($filter, $query = null,  $offset = 0, $limit = 30, $isRunner = 0, $publicOnly = true) {
+    static public function getSearch($filter, $query = null,  $offset = 0, $limit = 30, $isRunner = 0, $publicOnly = true) {
         $filterByUser = 'ALL';
         if ($query != null) {
             $id = Project::getIdFromQuery($query);

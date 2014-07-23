@@ -22,8 +22,6 @@ class JobController extends Controller {
             case 'cancelCodeReview':
             case 'endCodeReview':
             case 'updateSandboxUrl':
-                $method = $action;
-                break;
             case 'search':
                 $method = $action;
                 break;
@@ -1610,6 +1608,6 @@ class JobController extends Controller {
         $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
         $filter->setParticipated($_REQUEST['participated']);
         $filter->setFollowing($_REQUEST["following"]);
-        echo json_encode(Project::getProjectJobs($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
+        echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
     }
 }
