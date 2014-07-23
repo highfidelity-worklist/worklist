@@ -100,11 +100,11 @@ var jobs = {
 
     renderPassedJobsLink: function(project_name) {
         var html = "";
-        if (search_status != "pass") {
-            html += "<div class=\"project-jobs-passed col-sm-12 col-md-12 dd-max-width\"><div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Passed Jobs</a></div>";
-        }
         if (search_status != "done") {
-            html += "<div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Done Jobs</a></div></div>";
+            html += "<div class=\"project-jobs-passed col-sm-12 col-md-12 dd-max-width\"><div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Done Jobs</a></div>";
+        }
+        if (search_status != "pass") {
+            html += "<div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Passed Jobs</a></div></div>";
         }
         return html;
     },
