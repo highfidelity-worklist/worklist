@@ -1298,7 +1298,7 @@ class Project {
         $postString = '';
         $headers = array('Accept: application/json', 'User-Agent: Worklist.net');
 
-        // Define variabaddFeesToCompletedJobles required for API
+        // Define variables required for API
         if ($path == 'login/oauth/access_token') {
             $apiURL = 'https://github.com/' . $path;
         } else {
