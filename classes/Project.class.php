@@ -1459,7 +1459,7 @@ class Project {
                         if ($val == 'Bidding') {
                             if ($isRunner || $mobileFilter) {
                                 $where .= "(status = '$val') OR ";
-                            } else if ($filterByUser != 'ALL') {
+                            } else if ($filterByUser != 'ALL' && !empty($filterByUser)) {
                                 $where .= "(status = 'Bidding' AND ((`" . WORKLIST . "`.`id` IN (
                                             SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$userId' AND status = 'Bidding')) OR runner_id = $userId)) OR ";
                             } else {
@@ -1590,7 +1590,7 @@ class Project {
                     if ($commentFilter == 1) {
                         $commentPart = " OR MATCH (`com`.`comment`) AGAINST ('$item')";
                     }
-                    if ($filterByUser !== 'ALL') {
+                    if ($filterByUser !== 'ALL' && !empty($filterByUser)) {
                         $textMatchAndOr = ' OR ';
                         $partialMatch = '';
                     } else {
@@ -1613,7 +1613,7 @@ class Project {
                     $commentsjoin = "LEFT OUTER JOIN `" . COMMENTS . "` AS `com` ON `" . WORKLIST . "`.`id` =                                      `com`.`worklist_id`";
                 }
             }
-            if ($filterByUser != 'ALL') {
+            if (!empty($filterByUser) && $filterByUser != 'ALL') {
                 $where .= ")";
             }
             if (!empty($projectFilter) && $projectFilter != 'All') {
@@ -1689,6 +1689,7 @@ class Project {
             } else {
                 $items = 0;
             }
+            //echo $sql.$skillSql.$innerSql.$orderBy;
             $results = array();
             $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {

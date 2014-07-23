@@ -17,7 +17,7 @@ body {
 
 @media (max-width: 480px) {
     body > .container-fluid {
-        margin: 0;
+        margin: 0 4%;
     }
 }
 .clear {
@@ -390,6 +390,19 @@ div.project-jobs-done i {
 
 div.project-jobs-passed {
     margin-bottom: 30px;
+}
+
+ul.project-jobs p {
+    font-size: 15px;
+}
+
+li.project-jobs-participants a {
+    font-size: 13px;
+}
+
+li.project-jobs-skill,
+li.project-jobs-participants {
+  margin-top: 4px;
 }
 
 @media  (max-width: 767px) and (max-width : 768px) {

@@ -88,7 +88,7 @@ var jobs = {
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
         for (var participantIndex in participants) {
             if (participants[participantIndex].nickname != null) {
-                html += participantIndex > 0 ? ",  " : "" + "<a href=\"./user/" + participants[participantIndex].id + "\">" + participants[participantIndex].nickname + "</a>";
+                html += (participantIndex > 0 ? ",  " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + participants[participantIndex].nickname + "</a>";
             }
         }
         html += "</li>";
@@ -101,17 +101,17 @@ var jobs = {
     renderPassedJobsLink: function(project_name) {
         var html = "";
         if (search_status != "pass") {
-            html += "<div class=\"project-jobs-passed col-sm-12 col-md-12 dd-max-width\"><div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass\">View Passed Jobs</a></div>";
+            html += "<div class=\"project-jobs-passed col-sm-12 col-md-12 dd-max-width\"><div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Passed Jobs</a></div>";
         }
         if (search_status != "done") {
-            html += "<div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done\">View Done Jobs</a></div></div>";
+            html += "<div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '') + "\">View Done Jobs</a></div></div>";
         }
         return html;
     },
 
     renderDataOnScroll: function() {
         $(window).scroll(function() {
-            var scrollTop = $(window).scrollTop() + 500;
+            var scrollTop = $(window).scrollTop() + 300;
             var windowHeight = ($(document).height() - $(window).height());
             var totalJobsRender = $('ul.project-jobs').length;
             if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
@@ -123,12 +123,11 @@ var jobs = {
     filterChangeEventTrigger: function() {
         var query = $('#search-query input[type="text"]').val();
         $("select[name=project]").change(function() {
-            search_project_id = $(this).val();
-            jobs.offset = 0;
-            jobs.fetchJobs(jobs.offset, jobs.limit, $(this).val(), search_status, jobs.query, jobs.following);
+            var project_name = $(this).find("option:selected").val() != 0 ? $(this).find("option:selected").text() : "";
+            window.location.href = "./jobs/" + project_name + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '');
         });
         $('#search-query input[type="text"]').keypress(function(event) {
-            if (event.keyCode == '13' && $.trim($(this).val()).length > 0) {
+            if (event.keyCode == '13') {
                 event.preventDefault();
                 search_query = '';
                 jobs.offset = 0;
@@ -137,19 +136,17 @@ var jobs = {
             }
         });
         $("#query-search-button").click(function() {
-            if ($.trim($('#search-query input[type="text"]').val()).length > 0) {
                 search_query = '';
                 jobs.offset = 0;
                 jobs.query = $('#search-query input[type="text"]').val();
                 jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
-            }
         });
         $('#jobs-im-following').click(function() {
             var project_name = $("select[name=project] option:selected").val() != 0 ? $("select[name=project] option:selected").text() : "all";
             if ($(this).is(":checked")) {
-               window.location.href = "./jobs/" + project_name + "/following";
+               window.location.href = "./jobs/" + project_name + "/following" + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '');
             } else {
-               window.location.href = "./jobs/" + project_name;
+               window.location.href = "./jobs/" + project_name +  ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '');
             }
         });
         $('#only-jobs-i-participated').click(function() {

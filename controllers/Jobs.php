@@ -61,6 +61,8 @@ class JobsController extends Controller {
             } else {
                 $filter->setProjectId(0);
             }
+        } else {
+            $filter->setProjectId(0);
         }
 
         if (! empty($_REQUEST['user'])) {
