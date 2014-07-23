@@ -118,7 +118,7 @@ class WorkItem {
         return true;
     }
 
-    public function idExists($id)
+    static public function idExists($id)
     {
         $query = '
             SELECT COUNT(*)

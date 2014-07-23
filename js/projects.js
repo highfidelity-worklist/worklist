@@ -87,8 +87,8 @@ var Projects = {
         project += '<h3><a href="' + link + '">' + json.name + '</a></h3>';
         project += '<section class="description">' + description + '</section>';
         project += '<ul class="stats">';
-        project += '<li><a href="./jobs?status=bidding&project=' + json.name + '"><strong>' + json.bCount + ' jobs in bidding</strong></a></li>';
-        project += '<li><a href="./jobs?status=completed&project=' + json.name + '">' + json.cCount+ ' jobs completed</a></li>';
+        project += '<li><a href="./jobs/' + json.name + '"><strong>' + json.bCount + ' jobs in bidding</strong></a></li>';
+        project += '<li><a href="./jobs/' + json.name + '/done">' + json.cCount+ ' jobs completed</a></li>';
         project += '<li>$' + json.feesCount + ' spent</li>';
         project += '</ul>';
         project += '</article>';
