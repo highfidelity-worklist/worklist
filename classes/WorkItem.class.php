@@ -1019,7 +1019,7 @@ class WorkItem {
             $creator_fee_added = false;
 
             $runner_fee = 0;
-            $runner_fee_desc = 'Runner';
+            $runner_fee_desc = 'Designer';
             $runner_fee_added = false;
 
             $accepted_bid_amount = $bid_info['bid_amount'];
