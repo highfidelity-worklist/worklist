@@ -148,7 +148,6 @@ input {
 
 #search-filter div:first-child,
 div.project-header,
-div.project-jobs-passed,
 div.project-jobs-pass,
 div.project-jobs-done {
     padding-left: 0px;
@@ -360,7 +359,8 @@ ul.project-jobs:hover p  {
     color: #007F7c;
 }
 
-div.project-jobs-passed i {
+div.project-jobs-pass i,
+div.project-jobs-done i {
     content: ' ';
     display: inline-block;
     width: 13px;
@@ -371,7 +371,8 @@ div.project-jobs-passed i {
     background-color: #cccccc;
 }
 
-div.project-jobs-passed a {
+div.project-jobs-pass a,
+div.project-jobs-done a {
     color: #ccc;
     font-weight: bold;
     text-decoration: underline;
@@ -391,7 +392,8 @@ div.project-jobs-done i {
     background-color: #333333;
 }
 
-div.project-jobs-passed {
+div.project-jobs-pass,
+div.project-jobs-done {
     margin-bottom: 30px;
 }
 
