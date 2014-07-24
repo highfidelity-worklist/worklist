@@ -1694,10 +1694,18 @@ class Project {
             $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
             $results = array();
             $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $jobsCount = array();
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
                 $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
                 $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
-                $result = array("id" => $row['id'],
+                $id = $row['id'];
+                if (empty($jobsCount['done'][$id])) {
+                    $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
+                }
+                if (empty($jobsCount['pass'][$id])) {
+                    $jobsCount['pass'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
+                }
+                $result = array("id" => $id,
                     "summary" => $row['summary'],
                     "status" => $row['status'],
                     "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
@@ -1706,8 +1714,8 @@ class Project {
                     "project_name" => $row['project_name'],
                     "skills" => $row['skills'] != null ? $row['skills']: "",
                     "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
-                    "done_job_count" => Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql")),
-                    "pass_job_count" => Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"))
+                    "done_job_count" => $jobsCount['done'][$id],
+                    "pass_job_count" => $jobsCount['pass'][$id]
                  );
                 array_push($results, $result);
             }
