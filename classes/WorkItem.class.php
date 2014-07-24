@@ -26,6 +26,7 @@ class WorkItem {
     protected $code_review_completed;
     protected $budget_id;
     protected $is_internal;
+    protected $assigned_id;
 
     var $status_changed;
 
@@ -84,7 +85,8 @@ class WorkItem {
                         w.code_review_completed,
                         w.status_changed,
                         w.budget_id,
-                        p.name AS project_name
+                        p.name AS project_name,
+                        w.assigned_id
                     FROM  ".WORKLIST. " as w
                     LEFT JOIN ".PROJECTS." AS p ON w.project_id = p.project_id
                     WHERE w.id = '" . (int)$id . "'";
@@ -112,6 +114,7 @@ class WorkItem {
              ->setCReviewerId($row['code_reviewer_id'] == "" ? 0 : $row['code_reviewer_id'])
              ->setCRStarted($row['code_review_started'])
              ->setCRCompleted($row['code_review_completed'])
+             ->setAssigned_id($row['assigned_id'])
              ->setWorkitemSkills();
         $this->status_changed = $row['status_changed'];
         $this->project_name = $row['project_name'];
@@ -479,6 +482,21 @@ class WorkItem {
         return true;
     }
 
+    /**
+     * @return int $assigned_id
+     */
+    public function getAssigned_id() {
+        return (int) $this->assigned_id;
+    }
+
+    /**
+     * @param int $assigned_id the $assigned_id to set
+     */
+    public function setAssigned_id($assigned_id) {
+        $this->assigned_id = (int) $assigned_id;
+        return $this;
+    }
+
     public static function getStates()
     {
         $states = array();
@@ -507,7 +525,7 @@ class WorkItem {
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal, assigned_id) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -519,7 +537,8 @@ class WorkItem {
             "NOW(), ".
             "'".$this->getIs_bug()."', ".
             "NOW(), ".
-            mysql_real_escape_string($this->getIs_internal()) . ")";
+            mysql_real_escape_string($this->getIs_internal()) . ", " .
+            mysql_real_escape_string($this->getAssigned_id()) . ")";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -650,7 +669,8 @@ class WorkItem {
                  " u.nickname AS runner_nickname, u.id AS runner_id,".
                  " uc.nickname AS creator_nickname, um.nickname AS mechanic_nickname, w.status, w.notes, ".
                  " w.project_id, p.name AS project_name, p.repository AS repository, p.website AS p_website,
-                  w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id
+                  w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id,
+                  assigned_id
                   FROM  " . WORKLIST . " as w
                   LEFT JOIN " . USERS . " as uc ON w.creator_id = uc.id
                   LEFT JOIN " . USERS . " as um ON w.mechanic_id = um.id
@@ -914,8 +934,8 @@ class WorkItem {
         $is_runner = isset($_SESSION['is_runner']) ? (int)$_SESSION['is_runner'] : 0;
         
         // If a bid is being accepted, and the runner for the workitem does not exist (incase a bid went from suggested straight
-        // to working), then we should set the person accepting the bid as the runner;
-        if (!$this->getRunnerId()) {
+        // to working) or is different than current user, then we should set the person accepting the bid as the runner;
+        if ($this->getRunnerId() != $user_id) {
             $this->setRunnerId($user_id);
         }
         

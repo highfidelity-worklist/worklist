@@ -689,9 +689,10 @@ class JobView extends View {
         $is_project_runner = $this->read('is_project_runner');
         $user = $this->user;
         return (int) (
-            $is_project_runner 
-          || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']) 
+            $is_project_runner
+          || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])
           || (isset($worklist['runner_id']) && $this->currentUser['id'] == $worklist['runner_id'])
+          || (isset($worklist['assigned_id']) && $this->currentUser['id'] == $worklist['assigned_id'])
         );
     }
 

@@ -1652,14 +1652,14 @@ class User {
         return $this;
     }
 
-    public function isRunnerOfWorkitem($workitem) {
-        if (!is_object($workitem->getRunner())) {
+    public function isRunnerOfWorkitem($workitem, $exclude_assigned = false) {
+        if ($this->getId() == 0) {
             return false;
         }
-        if ($this->id == 0 || $this->id != $workitem->getRunner()->getId()) {
-            return false;
-        }
-        return true;
+        $runner_id = $workitem->getRunner() ? $workitem->getRunner()->getId() : 0;
+        $is_runner = ($this->getId() == $runner_id);
+        $is_assigned = ($this->getId() == $workitem->getAssigned_id());;
+        return $is_runner || ($is_assigned && !$exclude_assigned);
     }
 
 /* Updates the current calling user status, saves it to the database and sends a message to the journal

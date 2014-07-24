@@ -165,7 +165,8 @@ var AddJob = {
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='itemStatus']").val(),
                 skills: skills,
-                fileUpload: {uploads: AddJob.uploadedFiles}
+                fileUpload: {uploads: AddJob.uploadedFiles},
+                assigned: $('select[name="assigned"]').val()
             },
             type: 'POST',
             success: function(json) {
