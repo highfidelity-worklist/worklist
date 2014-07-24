@@ -30,7 +30,11 @@ var AddJob = {
     },
 
     checkAsisgnedUser: function() {
-        $("input[name='is_internal']").prop('checked', parseInt($(this).val()) > 0);
+        if (parseInt($(this).val()) > 0) {
+            $("input[name='is_internal']").prop('checked', true);
+            $("select[name='itemStatus']").val('Bidding');
+            $("select[name='itemStatus']").trigger("chosen:updated");
+        }
     },
 
     initFileUpload: function() {
