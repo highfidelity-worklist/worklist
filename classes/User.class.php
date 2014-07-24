@@ -1455,6 +1455,19 @@ class User {
         return false;
     }
 
+    protected function loadUsers($where)
+    {
+        $sql = 'SELECT `id` FROM `' . USERS . '` WHERE ' . $where;
+        if ($result = mysql_query($sql)) {
+            $ret = array();
+            while (($row = mysql_fetch_assoc($result)) !== false) {
+                $ret[] = User::find($row['id']);
+            }
+            return $ret;
+        }
+        return false;
+    }
+
     private function getUserColumns()
     {
         $columns = array();
@@ -2615,5 +2628,10 @@ class User {
             $count = $row[0];
         }
         return $count;
+    }
+
+    public static function getInternals() {
+        $user = new User();
+        return $user->loadUsers('`is_internal` = 1');
     }
 }

@@ -4,8 +4,12 @@ var AddJob = {
     filesUploading: 0,
 
     init: function() {
-        $('select[name="itemProject"], select[name="itemStatus"]').chosen({width: '100%'});
+        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"]').chosen({
+            width: '100%',
+            disable_search_threshold: 10
+        });
         $('select[name="itemProject"]').change(AddJob.showProjectDescription);
+        $('select[name="assigned"]').change(AddJob.checkAsisgnedUser);
 
         $('form#addJob').submit(AddJob.formSubmit);
 
@@ -23,6 +27,10 @@ var AddJob = {
                 $("select[name='itemProject']").parent().next().text(json.data.description);
             }
         });
+    },
+
+    checkAsisgnedUser: function() {
+        $("input[name='is_internal']").prop('checked', parseInt($(this).val()) > 0);
     },
 
     initFileUpload: function() {
