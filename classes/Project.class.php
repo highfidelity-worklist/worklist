@@ -1700,7 +1700,7 @@ class Project {
                 $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
                 $id = $row['id'];
                 if (empty($jobsCount['done'][$id])) {
-                    $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
+                    $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql"));
                 }
                 if (empty($jobsCount['pass'][$id])) {
                     $jobsCount['pass'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
