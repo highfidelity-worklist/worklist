@@ -1686,23 +1686,26 @@ class Project {
                     LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0 INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1 AND `proj`.`active` = 1
                     {$commentsjoin}
                     {$followingSql}
-                    {$where}
                     ";
             $skillSql = ", (SELECT GROUP_CONCAT(CONCAT(s.skill,'~~', s.id)) from `workitem_skills` ws inner join `skills` s on s.id = ws.skill_id where workitem_id = `worklist`.`id`) as skills ";
             $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
             $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
 
-            $resultTotalHitCount = mysql_query("$totalHitCountSql $innerSql");
-            if ($resultTotalHitCount) {
-                $row = mysql_fetch_row($resultTotalHitCount);
-                $items = intval($row[0]);
-            } else {
-                $items = 0;
-            }
+            $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
             $results = array();
-            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $jobsCount = array();
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
-                $result = array("id" => $row['id'],
+                $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
+                $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
+                $id = $row['id'];
+                if (empty($jobsCount['done'][$id])) {
+                    $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql"));
+                }
+                if (empty($jobsCount['pass'][$id])) {
+                    $jobsCount['pass'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
+                }
+                $result = array("id" => $id,
                     "summary" => $row['summary'],
                     "status" => $row['status'],
                     "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
@@ -1710,11 +1713,13 @@ class Project {
                     "project_id" => $row['project_id'],
                     "project_name" => $row['project_name'],
                     "skills" => $row['skills'] != null ? $row['skills']: "",
-                    "short_description" => $row['short_description'] != null ? $row['short_description'] : ""
+                    "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
+                    "done_job_count" => $jobsCount['done'][$id],
+                    "pass_job_count" => $jobsCount['pass'][$id]
                  );
                 array_push($results, $result);
             }
-            $searchResult = array("search_result" => $results, "total_Hit_count" => $items);
+            $searchResult = array("search_result" => $results, "total_Hit_count" => $searchResultTotalHitCount);
             return $searchResult;
     }
 
@@ -1730,5 +1735,14 @@ class Project {
          return ltrim($query, '#');
       }
       return null;
+    }
+
+    static public function getTotalHitCount($resultTotalHitCount) {
+        $items = 0;
+        if ($resultTotalHitCount) {
+            $row = mysql_fetch_row($resultTotalHitCount);
+            $items = intval($row[0]);
+        }
+        return $items;
     }
 }

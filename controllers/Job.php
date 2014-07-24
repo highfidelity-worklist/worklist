@@ -1607,7 +1607,7 @@ class JobController extends Controller {
         $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
         $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
         $filter->setParticipated($_REQUEST['participated']);
-        $filter->setFollowing($_REQUEST["following"]);
+        $filter->setFollowing(empty($_REQUEST["following"]) ? 0 : $_REQUEST["following"]);
         echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
     }
 }
