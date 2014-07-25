@@ -264,16 +264,22 @@ class JobController extends Controller {
             // Assignee
             $assigneeChanged = false;
             if ($workitem->getAssigned_id() != $assigned) {
-                $assignedUser = User::find($assigned);
-                if ($assignedUser->isInternal()) {
-                    $assigneeChanged = true;
-                    $workitem->setAssigned_id($assignedUser->getId());
-                    $currentStatus = $workitem->getStatus();
-                    if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
-                        $workitem->setStatus('Bidding');
+                if ((int) $assigned == 0) {
+                    $workitem->setAssigned_id($assignedUser->getId(0));
+                        $new_update_message .= "Assignee removed. ";
+                        $job_changes[] = '-assignee';
+                } else {
+                    $assignedUser = User::find($assigned);
+                    if ($assignedUser->isInternal()) {
+                        $assigneeChanged = true;
+                        $workitem->setAssigned_id($assignedUser->getId());
+                        $currentStatus = $workitem->getStatus();
+                        if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
+                            $workitem->setStatus('Bidding');
+                        }
+                        $new_update_message .= "Assignee changed. ";
+                        $job_changes[] = '-assignee';
                     }
-                    $new_update_message .= "Assignee changed. ";
-                    $job_changes[] = '-assignee';
                 }
             }
 
