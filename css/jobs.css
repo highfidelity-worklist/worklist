@@ -403,6 +403,11 @@ div.project-jobs-done a {
     font-size: 13px;
 }
 
+div.project-jobs-pass a:hover,
+div.project-jobs-done a:hover {
+    text-decoration: underline;
+}
+
 div.project-jobs-done a {
     color: #333333;
     font-weight: bold;
@@ -430,7 +435,7 @@ ul.project-jobs li:nth-child(2),
 ul.project-jobs li:nth-child(4) {
     overflow: hidden;
     position: relative;
-    height: 25px;
+    height: 24px;
 }
 
 ul.project-jobs li:nth-child(2) {
