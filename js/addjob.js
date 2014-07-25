@@ -24,7 +24,7 @@ var AddJob = {
                 if (!json.success) {
                     return;
                 }
-                $("select[name='itemProject']").parent().next().text(json.data.description);
+                $("select[name='itemProject']").parent().next().text(json.data.short_description);
             }
         });
     },

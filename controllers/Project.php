@@ -152,7 +152,8 @@ class ProjectController extends Controller {
             $ret = array(
                 'id' => $project->getProjectId(),
                 'name' => $project->getName(),
-                'description' => $project->getDescription()
+                'description' => $project->getDescription(),
+                'short_description' => $project->getShortDescription(),
             );
             echo json_encode(array(
                 'success' => true,
