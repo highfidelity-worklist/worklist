@@ -1040,11 +1040,11 @@ var Job = {
 
     reviewUrlModal: function(fAfter) {
         Utils.emptyFormModal({
-            title: 'Sandbox URL',
+            title: 'Branch URL',
             content:
                 '<div class="row">' +
                 '  <div class="col-md-4">' +
-                '    <label for="sburl">QA Reviews URL</label>' +
+                '    <label for="sburl">Branch URL</label>' +
                 '  </div>' +
                 '  <div class="col-md-8">' +
                 '    <input type="text" class="form-control" name="url" ' +

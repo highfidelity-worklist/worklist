@@ -257,8 +257,8 @@ class JobController extends Controller {
             // Sandbox
             if ($workitem->getSandbox() != $sandbox) {
                 $workitem->setSandbox($sandbox);
-                $new_update_message .= "Sandbox changed. ";
-                $job_changes[] = '-sandbox';
+                $new_update_message .= "Branch changed. ";
+                $job_changes[] = '-branch';
             }
 
             // Assignee
@@ -1402,7 +1402,7 @@ class JobController extends Controller {
                 $fee_category = '';
                 AddFee($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense);
             }
-            $journal_message = '\\#' . $workitem->getId() . ' updated by @' . $user->getNickname() . " Sandbox URL: $url";
+            $journal_message = '\\#' . $workitem->getId() . ' updated by @' . $user->getNickname() . " Branch URL: $url";
             sendJournalNotification($journal_message);
             echo json_encode(array(
                 'success' => false,
