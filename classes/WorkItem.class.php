@@ -1009,11 +1009,12 @@ class WorkItem {
 
         // Adding transaction wrapper around steps
         if (mysql_query('BEGIN')) {
+            $is_runner_or_assignee = $is_runner || $this->getAssigned_id() == $user_id;
 
             // changing mechanic of the job
             $sql = "UPDATE `" . WORKLIST  ."` SET " .
                 ($is_mechanic ? "`mechanic_id` =  '" . $bid_info['bidder_id'] . "', " : '') .
-                ($is_runner && $user_id > 0 && $workitem_info['runner_id'] == 0 ? "`runner_id` =  '".$user_id."', " : '') .
+                ($is_runner_or_assignee && $user_id > 0 && $workitem_info['runner_id'] != $user_id ? "`runner_id` =  '".$user_id."', " : '') .
                 " `status` = 'In Progress',`status_changed`=NOW(),`sandbox` = '" . $bid_info['sandbox'] . "',`budget_id` = " . $budget_id .
                 " WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'];
             if (! $myresult = mysql_query($sql)) {
