@@ -1011,7 +1011,7 @@ class JobController extends Controller {
 
         $this->write('bids', $bids);
 
-        $this->write('userHasRights', $this->hasRights($user_id, $workitem));
+        $this->write('userHasCodeReviewRights', $this->hasCodeReviewRights($user_id, $workitem));
 
         $this->write('mechanic', $workitem->getUserDetails($worklist['mechanic_id']));
 
@@ -1312,7 +1312,7 @@ class JobController extends Controller {
             $user = User::find(getSessionUserId());
             if (
                 !$user->isEligible() || $workitem->getCRStarted() != 1 ||
-                $workitem->getCRCompleted() == 1 || !$this->hasRights($user->getId(), $workitem)
+                $workitem->getCRCompleted() == 1 || !$this->hasCodeReviewRights($user->getId(), $workitem)
             ) {
                 throw new Exception('Action not allowed');
             }
@@ -1345,7 +1345,7 @@ class JobController extends Controller {
             $user = User::find(getSessionUserId());
             if (
                 !$user->isEligible() || $workitem->getCRStarted() != 1 ||
-                $workitem->getCRCompleted() == 1 || !$this->hasRights($user->getId(), $workitem)
+                $workitem->getCRCompleted() == 1 || !$this->hasCodeReviewRights($user->getId(), $workitem)
             ) {
                 throw new Exception('Action not allowed');
             }
@@ -1416,7 +1416,7 @@ class JobController extends Controller {
         }
     }
 
-    protected function hasRights($userId, $workitem) {
+    protected function hasCodeReviewRights($userId, $workitem) {
         $project = new Project();
         $project->loadById($workitem->getProjectId());
         $users_favorite = new Users_Favorite();

@@ -44,7 +44,7 @@ class JobView extends View {
         $this->action_error = $this->read('action_error');
         $this->classEditable = $this->read('classEditable');
         $this->allowEdit = (int) $this->read('allowEdit');
-        $this->userHasRights = (int) $this->read('userHasRights');
+        $this->userHasCodeReviewRights = (int) $this->read('userHasCodeReviewRights');
         $this->isGitHubConnected = (int) $this->read('isGitHubConnected');
         $this->message = $this->read('message');
         $this->currentUserHasBid = (int) $this->read('currentUserHasBid');
@@ -454,7 +454,7 @@ class JobView extends View {
                    $this->currentUser['id'] > 0
                 && $user->isEligible()
                 && $worklist['mechanic_id'] != $this->currentUser['id']
-                && $this->read('userHasRights')
+                && $this->read('userHasCodeReviewRights')
               )
           && (
                  $worklist['status'] == 'Review' 
