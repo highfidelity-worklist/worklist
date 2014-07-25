@@ -5,6 +5,7 @@ class ProjectController extends Controller {
         $method = '';
         switch($action) {
             case 'view':
+            case 'info':
             case 'add':
             case 'addDesigner':
             case 'designers':
@@ -139,6 +140,31 @@ class ProjectController extends Controller {
         $this->write('is_owner', $is_owner);
 
         parent::run();
+    }
+
+    public function info($id) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            if (!$project->getProjectId()) {
+                throw new Exception('Specified project is invalid or does not exist');
+            }
+            $ret = array(
+                'id' => $project->getProjectId(),
+                'name' => $project->getName(),
+                'description' => $project->getDescription()
+            );
+            echo json_encode(array(
+                'success' => true,
+                'data' => $ret
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+
     }
 
     public function add($name) {

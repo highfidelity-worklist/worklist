@@ -689,9 +689,10 @@ class JobView extends View {
         $is_project_runner = $this->read('is_project_runner');
         $user = $this->user;
         return (int) (
-            $is_project_runner 
-          || ($user->getIs_admin() == 1 && $this->currentUser['is_runner']) 
+            $is_project_runner
+          || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])
           || (isset($worklist['runner_id']) && $this->currentUser['id'] == $worklist['runner_id'])
+          || (isset($worklist['assigned_id']) && $this->currentUser['id'] == $worklist['assigned_id'])
         );
     }
 
@@ -917,5 +918,25 @@ class JobView extends View {
 
     function currentStatus() {
         return $this->worklist['status'] == 'Review' ? 'Code Review' : $this->worklist['status'];
+    }
+
+    function internalUsers() {
+        $worklist = $this->worklist;
+        $users = User::getInternals();
+        $ret = array();
+        foreach($users as $index => $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'current' => $worklist['assigned_id'] == $user->getId()
+            );
+        }
+        return $ret;
+    }
+
+    function assigneeNickname() {
+        $worklist = $this->worklist;
+        $assignedUser = User::find($worklist['assigned_id']);
+        return $assignedUser->getNickname();
     }
 }

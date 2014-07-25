@@ -168,7 +168,8 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'budget-source-combo'
+                'budget-source-combo',
+                'assigned'
             );
 
             foreach ($args as $arg) {
@@ -259,6 +260,30 @@ class JobController extends Controller {
                 $new_update_message .= "Sandbox changed. ";
                 $job_changes[] = '-sandbox';
             }
+
+            // Assignee
+            $assigneeChanged = false;
+            if ($workitem->getAssigned_id() != $assigned) {
+                if ((int) $assigned == 0) {
+                    $workitem->setAssigned_id(0);
+                    $new_update_message .= "Assignee removed. ";
+                    $job_changes[] = '-assignee';
+                } else {
+                    $assignedUser = User::find($assigned);
+                    if ($assignedUser->isInternal()) {
+                        $assigneeChanged = true;
+                        $workitem->setAssigned_id($assignedUser->getId());
+                        $currentStatus = $workitem->getStatus();
+                        $new_update_message .= "Assignee changed. ";
+                        if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
+                            $workitem->setStatus('Bidding');
+                            $new_update_message .= "Status set to *Bidding*. ";
+                        }
+                        $job_changes[] = '-assignee';
+                    }
+                }
+            }
+
             if (empty($new_update_message)) {
                 $new_update_message = " No changes.";
             } else {
@@ -295,6 +320,18 @@ class JobController extends Controller {
                     'related' => $related
                 );
                 Notification::workitemNotifyHipchat($options, $data);
+            }
+
+            if ($assigneeChanged) {
+                $emailTemplate = 'job-assigned';
+                $data = array(
+                    'job_id' => $workitem->getId(),
+                    'summary' => $workitem->getSummary(),
+                    'assigner' => $user->getNickname(),
+                    'assigned' => $assignedUser->getNickname()
+                );
+                $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
+                sendTemplateEmail($assignedUser->getUsername(), $emailTemplate, $data, $senderEmail);
             }
         }
 
@@ -652,8 +689,10 @@ class JobController extends Controller {
                 if (!$budget->loadById($budget_id) ) {
                     $_SESSION['workitem_error'] = "Invalid budget!";
                 }
+                $is_job_runner = $workitem->getRunnerId() == getSessionUserId();
+                $is_assigned = $workitem->getAssigned_id() == getSessionUserId();
                 // only runners can accept bids
-                if (($is_project_runner || $workitem->getRunnerId() == $_SESSION['userid'] || ($user->getIs_admin() == 1
+                if (($is_project_runner || $is_job_runner || $is_assigned || ($user->getIs_admin() == 1
                      && $is_runner) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding")) {
                     // query to get a list of bids (to use the current class rather than breaking uniformity)
                     // I could have done this quite easier with just 1 query and an if statement..
@@ -876,7 +915,7 @@ class JobController extends Controller {
                     //break;
                 }
 
-                if (!($user->getId() == $bid['bidder_id'] || $user->isRunnerOfWorkitem($workitem) || $workitem->getIsRelRunner() && is_null($worklist['runner_id'])))  {
+                if (!($user->getId() == $bid['bidder_id'] || $user->isRunnerOfWorkitem($workitem) || $workitem->getIsRelRunner() && !$worklist['runner_id']))  {
                     if ($user->getIs_admin() == 0) {
                         $bid['nickname'] = '*name hidden*';
                         $bid['bid_amount'] = '***';
@@ -1039,6 +1078,14 @@ class JobController extends Controller {
         $is_internal = $_REQUEST['is_internal'];
         $fileUpload = $_REQUEST['fileUpload'];
 
+        $assigned_id = 0;
+        if ((int) $_REQUEST['assigned']) {
+            $assignedUser = User::find($_REQUEST['assigned']);
+            if ($assignedUser->isInternal()) {
+                $assigned_id = $assignedUser->getId();
+            }
+        }
+
         if (! empty($_POST['itemid'])) {
             $workitem->loadById($_POST['itemid']);
         } else {
@@ -1053,9 +1100,22 @@ class JobController extends Controller {
         $workitem->setNotes($notes);
         $workitem->setWorkitemSkills($skillsArr);
         $workitem->setIs_internal($is_internal);
+        $workitem->setAssigned_id($assigned_id);
         $workitem->save();
         $related = getRelated($notes);
         Notification::massStatusNotify($workitem);
+
+        if ($assigned_id) {
+            $emailTemplate = 'job-assigned';
+            $data = array(
+                'job_id' => $workitem->getId(),
+                'summary' => $workitem->getSummary(),
+                'assigner' => $user->getNickname(),
+                'assigned' => $assignedUser->getNickname()
+            );
+            $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
+            sendTemplateEmail($assignedUser->getUsername(), $emailTemplate, $data, $senderEmail);
+        }
 
         // if files were uploaded, update their workitem id
         $file = new File();

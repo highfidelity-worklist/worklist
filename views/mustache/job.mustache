@@ -112,11 +112,32 @@
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
+            {{#userIsInternal}}
+            <div id="assigneeBox">
+                <span class="assigneeName">
+                    Assignee:
+                </span>
+                <a id="ping-btn" href="./user/{{assigneeNickname}}" >{{assigneeNickname}}</a>
+            </div>
+            {{/userIsInternal}}
         </div>
         {{/editing}}
         <div id="for_view">
             {{#editing}}
                 <ul style="margin:0; padding:0; border:none;">
+                    <li>
+                        {{#userIsInternal}}
+                        <span class="inline-label">Assignee</span>
+                        <select name="assigned" data-placeholder="Select assignee">
+                            <option value="0">No one assigned</option>
+                            {{#internalUsers}}
+                                <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                                    {{nickname}}
+                                </option>
+                            {{/internalUsers}}
+                        </select>
+                        {{/userIsInternal}}
+                    </li>
                     <li>
                         {{#canReassignRunner}}
                         <div id="runnerBox">

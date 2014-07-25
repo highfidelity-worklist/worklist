@@ -12,11 +12,9 @@ var Job = {
         });
 
         if (action == 'edit') {
-            $('select[name="runner"]').chosen({
-                width: '140px'
-            });
-            $('select[name="status"]').chosen({
-                width: '140px'
+            $('select[name="runner"], select[name="status"], select[name="assigned"]').chosen({
+                width: '140px',
+                disable_search_threshold: 10
             });
         }
 
