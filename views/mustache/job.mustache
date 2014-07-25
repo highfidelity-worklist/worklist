@@ -127,17 +127,15 @@
                 <ul style="margin:0; padding:0; border:none;">
                     <li>
                         {{#userIsInternal}}
-                        <div id="assigneeBox">
-                            <span class="inline-label">Asignee</span>
-                            <select name="assigned" data-placeholder="Select assignee">
-                                <option value="0">No one assigned</option>
-                                {{#internalUsers}}
-                                    <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
-                                        {{nickname}}
-                                    </option>
-                                {{/internalUsers}}
-                            </select>
-                        </div>
+                        <span class="inline-label">Asignee</span>
+                        <select name="assigned" data-placeholder="Select assignee">
+                            <option value="0">No one assigned</option>
+                            {{#internalUsers}}
+                                <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                                    {{nickname}}
+                                </option>
+                            {{/internalUsers}}
+                        </select>
                         {{/userIsInternal}}
                     </li>
                     <li>
