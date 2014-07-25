@@ -88,7 +88,7 @@ var jobs = {
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
         for (var participantIndex in participants) {
             if (participants[participantIndex].nickname != null) {
-                html += (participantIndex > 0 ? ",  " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + participants[participantIndex].nickname + "</a>";
+                html += (participantIndex > 0 ? ", " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + $.trim(participants[participantIndex].nickname) + "</a>";
             }
         }
         html += "</li>";
