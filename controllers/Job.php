@@ -268,6 +268,10 @@ class JobController extends Controller {
                 if ($assignedUser->isInternal()) {
                     $assigneeChanged = true;
                     $workitem->setAssigned_id($assignedUser->getId());
+                    $currentStatus = $workitem->getStatus();
+                    if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
+                        $workitem->setStatus('Bidding');
+                    }
                     $new_update_message .= "Assignee changed. ";
                     $job_changes[] = '-assignee';
                 }
