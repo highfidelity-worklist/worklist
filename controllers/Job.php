@@ -265,9 +265,9 @@ class JobController extends Controller {
             $assigneeChanged = false;
             if ($workitem->getAssigned_id() != $assigned) {
                 if ((int) $assigned == 0) {
-                    $workitem->setAssigned_id($assignedUser->getId(0));
-                        $new_update_message .= "Assignee removed. ";
-                        $job_changes[] = '-assignee';
+                    $workitem->setAssigned_id(0);
+                    $new_update_message .= "Assignee removed. ";
+                    $job_changes[] = '-assignee';
                 } else {
                     $assignedUser = User::find($assigned);
                     if ($assignedUser->isInternal()) {
