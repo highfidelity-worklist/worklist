@@ -350,6 +350,7 @@ ul.project-jobs li.project-jobs-skill a {
     float: left;
     border: 1px solid #B3E0DC;
     font-size: 13px;
+    margin-bottom: 2px;
 }
 
 ul.project-jobs .project-jobs-comment-count a {
@@ -435,7 +436,7 @@ ul.project-jobs li:nth-child(2),
 ul.project-jobs li:nth-child(4) {
     overflow: hidden;
     position: relative;
-    height: 24px;
+    height: 25px;
 }
 
 ul.project-jobs li:nth-child(2) {
