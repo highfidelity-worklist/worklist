@@ -1634,8 +1634,9 @@ class Project {
                 }
                 $where .= " `".WORKLIST."`.`project_id` = '{$projectFilter}' ";
             }
+            $publicOnlySql = " AND `".WORKLIST."`.is_internal = 0";
             if ($publicOnly) {
-                $where .= " AND `".WORKLIST."`.is_internal = 0";
+                $where .= $publicOnlySql;
             }
             $totalHitCountSql  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
             $sql  = "
@@ -1698,6 +1699,10 @@ class Project {
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
                 $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
                 $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
+                if ($publicOnly) {
+                    $passJobSql .= $publicOnlySql;
+                    $doneJobSql .= $publicOnlySql;
+                }
                 $id = $row['id'];
                 if (empty($jobsCount['done'][$id])) {
                     $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql"));

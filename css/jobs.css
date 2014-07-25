@@ -155,7 +155,7 @@ div.project-jobs-done {
 
 #search-filter div:first-child,
 #search-filter #only-jobs-i-participated {
-   padding-right: 0px;
+    padding-right: 0px;
 }
 
 #search-filter #only-jobs-i-participated {
@@ -190,19 +190,41 @@ div.project-jobs-done {
     margin-top: 0px;
 }
 
+.project-header {
+    margin-bottom: 5px;
+}
+
 .project-header p {
     line-height: 1.4em;
-    padding-top: 13px;
+    padding-top: 14px;
     height: 33px;
-    font-size: 0.9em;
+    font-size: 13px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    position: relative;
+}
+
+.project-header p:after,
+ul.project-jobs li:nth-child(2):after,
+ul.project-jobs li:nth-child(3):after,
+ul.project-jobs li:nth-child(4):after {
+    content: "";
+    width: 80px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 56%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(56%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
 }
 
 .project-header hr {
     margin: 0px;
-    top: -8px;
+    top: -5px;
     position: relative;
 }
 
@@ -292,6 +314,8 @@ div.project-jobs-done {
 .project-jobs-status {
     margin-bottom: 10px;
     padding-left: 0px;
+    margin-left: 11px;
+    padding-top: 6px;
 }
 
 ul.project-jobs {
@@ -300,63 +324,63 @@ ul.project-jobs {
     padding-left: 0px;
     transition: 0s background-color;
     padding-left: 0px;
+    margin-left: 25px;
 }
 ul.project-jobs li:first-child {
-    max-width: 70px;
+    max-width: 60px;
 }
 
 ul.project-jobs > li {
     float: left;
     padding-left: 0px;
-    padding-right: 5px;
+    padding-right: 0px;
 }
 
 ul.project-jobs li:first-child a {
     padding: 2px 7px 2px;
     background: #dde4e6;
     border-radius: 5px;
+    font-size: 13px;
 }
 
 ul.project-jobs li.project-jobs-skill a {
-    padding: 1px 7px 1px;
-    background: #9bccc8;
+    color: #669999;
     border-radius: 5px;
     margin-left: 3px;
     float: left;
-    margin-bottom: 3px;
-    color: #fff;
+    border: 1px solid #B3E0DC;
     font-size: 13px;
 }
 
 ul.project-jobs .project-jobs-comment-count a {
-    padding: 2px 10px 3px;
-    background: #e5e5e5;
+    padding: 2px 7px 2px;
+    background: #ffffff;
     border-radius: 10px;
-    color: #666666;
+    color: #999999;
     font-size: 13px;
+    border: 1px solid #EAEAEA;
 }
 
-ul.project-jobs  a:hover,
+ul.project-jobs:hover  li.project-jobs-comment-count a,
+ul.project-jobs:hover li:nth-child(2) a,
+ul.project-jobs:hover li:nth-child(3) a,
+ul.project-jobs:hover li:nth-child(4) a {
+    color: #007F7C;
+}
+
 ul.project-jobs a {
     text-decoration: none;
     color: #666666;
-}
-
-ul.project-jobs:hover {
-    cursor: pointer;
+    padding: 2px 7px 2px;
 }
 
 ul.project-jobs li.project-jobs-comment-count {
-    margin-top: 4px;
     max-width: 114px;
 }
 
-ul.project-jobs:hover li.project-jobs-comment-count a {
-    background: #ffffff;
-}
-
-ul.project-jobs:hover p  {
-    color: #007F7c;
+ul.project-jobs:hover li:nth-child(1) a {
+    color: #ffffff;
+    background: #007F7c;
 }
 
 div.project-jobs-pass i,
@@ -374,9 +398,9 @@ div.project-jobs-done i {
 div.project-jobs-pass a,
 div.project-jobs-done a {
     color: #ccc;
-    font-weight: bold;
-    text-decoration: underline;
+    text-decoration: none;
     padding-left: 5px;
+    font-size: 13px;
 }
 
 div.project-jobs-done a {
@@ -385,7 +409,7 @@ div.project-jobs-done a {
 }
 
 div.project-jobs-done {
-    max-width: 150px;
+    max-width: 137px;
 }
 
 div.project-jobs-done i {
@@ -394,20 +418,32 @@ div.project-jobs-done i {
 
 div.project-jobs-pass,
 div.project-jobs-done {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
-ul.project-jobs p {
+div.project-jobs-done-pass {
+    margin-left: 11px;
+}
+
+ul.project-jobs li:nth-child(3),
+ul.project-jobs li:nth-child(2),
+ul.project-jobs li:nth-child(4) {
+    overflow: hidden;
+    position: relative;
+    height: 25px;
+}
+
+ul.project-jobs li:nth-child(2) {
     font-size: 15px;
 }
 
 li.project-jobs-participants a {
     font-size: 13px;
+    padding: 1px 0px 1px;
 }
 
-li.project-jobs-skill,
-li.project-jobs-participants {
-  margin-top: 4px;
+ul.project-jobs {
+    cursor: pointer;
 }
 
 @media  (max-width: 767px) and (max-width : 768px) {
@@ -423,8 +459,14 @@ li.project-jobs-participants {
         padding-left: 5px;
     }
 
-    ul.project-jobs li:nth-child(4) {
+   ul.project-jobs li:nth-child(4) {
         clear: both;
-        padding-left: 5px;
+        padding-left: 10px;
+    }
+
+    ul.project-jobs li:nth-child(3),
+    ul.project-jobs li:nth-child(2),
+    ul.project-jobs li:nth-child(4) {
+        height: auto;
     }
 }

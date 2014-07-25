@@ -14,6 +14,7 @@ var jobs = {
         jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
         jobs.renderDataOnScroll();
         jobs.filterChangeEventTrigger();
+        jobs.jobsEvent();
     },
 
     fetchJobs: function(offset, limit, project_id, status, query, following) {
@@ -63,7 +64,6 @@ var jobs = {
             if (totalHitCount == totalJobsRender) {
                 $('#jobs-sections').append(jobs.renderPassedJobsLink(data[index].project_name, data[index].done_job_count, data[index].pass_job_count));
             }
-            jobs.jobsEvent();
         }
     },
     renderProjectHeader: function(id, project_name, project_short_description, done_job_count, pass_job_count) {
@@ -77,7 +77,7 @@ var jobs = {
     },
 
     renderJob: function(id, project_id, summary, skills, comments, participants) {
-        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><p>"+summary+"</p></li><li class=\"col-sm-2 col-md-2 project-jobs-skill\">";
+        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><a href=\"./"+ id +"\">"+summary+"</a></li><li class=\"col-sm-2 col-md-2 project-jobs-skill\">";
         if($.trim(skills).length > 0) {
             var skills = skills.split(",");
             for(skillIndex in skills) {
@@ -88,7 +88,7 @@ var jobs = {
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
         for (var participantIndex in participants) {
             if (participants[participantIndex].nickname != null) {
-                html += (participantIndex > 0 ? ",  " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + participants[participantIndex].nickname + "</a>";
+                html += (participantIndex > 0 ? ", " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + $.trim(participants[participantIndex].nickname) + "</a>";
             }
         }
         html += "</li>";
@@ -99,13 +99,14 @@ var jobs = {
     },
 
     renderPassedJobsLink: function(project_name, done_job_count, pass_job_count) {
-        var html = "";
+        var html = "<div class=\"project-jobs-done-pass\">";
         if (search_status != "done" && done_job_count > 0) {
             html += "<div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done\">View Done Jobs</a></div>";
         }
         if (search_status != "pass" && pass_job_count > 0) {
             html += "<div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass\">View Passed Jobs</a></div>";
         }
+        html += "</div>";
         return html;
     },
 
@@ -156,11 +157,11 @@ var jobs = {
     },
 
     jobsEvent: function() {
-        $("ul.project-jobs").click(function() {
-            var jobId = $(this).data('job-id');
-            window.location.href = "./"+ jobId;
+        $("ul.project-jobs").live("click", function() {
+            window.location.href = "./" + $(this).data('job-id');
         });
     }
+
 };
 
 $(document).ready(function() {

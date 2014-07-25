@@ -1664,10 +1664,11 @@ class JobController extends Controller {
     public function search() {
         $this->view = null;
         $filter = new Agency_Worklist_Filter();
+        $user = User::find(getSessionUserId());
         $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
         $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
         $filter->setParticipated($_REQUEST['participated']);
         $filter->setFollowing(empty($_REQUEST["following"]) ? 0 : $_REQUEST["following"]);
-        echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$this->is_runner, $this->is_internal));
+        echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$user->is_runner, !$user->isInternal()));
     }
 }
