@@ -1057,9 +1057,7 @@ class JobController extends Controller {
         }
         $workitem->setSummary($summary);
         $skillsArr = explode(',', $skills);
-        if (!$assigned_id) {
-            $workitem->setRunnerId($runner_id);
-        }
+        $workitem->setRunnerId($runner_id);
         $workitem->setProjectId($project_id);
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
