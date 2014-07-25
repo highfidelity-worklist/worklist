@@ -377,7 +377,7 @@ replacement data:
     'body' => '
       <p>Hi {assigned}</p>
       <p>
-        Just wanted to let you know that {designer} has assigned you to job:
+        Just wanted to let you know that {assigner} has assigned you to job:
         <a href="' . WORKLIST_URL . '{job_id}">{job_id} - {summary}</a>.
       </p>
       <p>- Worklist.net</p>'

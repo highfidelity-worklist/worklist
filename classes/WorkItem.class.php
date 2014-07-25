@@ -591,7 +591,8 @@ class WorkItem {
             code_reviewer_id=' . $this->getCReviewerId() . ',
             code_review_started='.$this->getCRStarted().',
             code_review_completed='.$this->getCRCompleted().',
-            sandbox ="' .mysql_real_escape_string($this->getSandbox()).'"';
+            sandbox="' .mysql_real_escape_string($this->getSandbox()).'",
+            assigned_id=' . (int) $this->getAssigned_id();
         $query .= ' WHERE id='.$this->getId();
         $result_query = mysql_query($query);
         if($result_query) {

@@ -919,4 +919,18 @@ class JobView extends View {
     function currentStatus() {
         return $this->worklist['status'] == 'Review' ? 'Code Review' : $this->worklist['status'];
     }
+
+    function internalUsers() {
+        $worklist = $this->worklist;
+        $users = User::getInternals();
+        $ret = array();
+        foreach($users as $index => $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'current' => $worklist['assigned_id'] == $user->getId()
+            );
+        }
+        return $ret;
+    }
 }

@@ -168,7 +168,8 @@ class JobController extends Controller {
                 'status',
                 'project_id',
                 'sandbox',
-                'budget-source-combo'
+                'budget-source-combo',
+                'assigned'
             );
 
             foreach ($args as $arg) {
@@ -259,6 +260,19 @@ class JobController extends Controller {
                 $new_update_message .= "Sandbox changed. ";
                 $job_changes[] = '-sandbox';
             }
+
+            // Assignee
+            $assigneeChanged = false;
+            if ($workitem->getAssigned_id() != $assigned) {
+                $assignedUser = User::find($assigned);
+                if ($assignedUser->isInternal()) {
+                    $assigneeChanged = true;
+                    $workitem->setAssigned_id($assignedUser->getId());
+                    $new_update_message .= "Assignee changed. ";
+                    $job_changes[] = '-assignee';
+                }
+            }
+
             if (empty($new_update_message)) {
                 $new_update_message = " No changes.";
             } else {
@@ -295,6 +309,18 @@ class JobController extends Controller {
                     'related' => $related
                 );
                 Notification::workitemNotifyHipchat($options, $data);
+            }
+
+            if ($assigneeChanged) {
+                $emailTemplate = 'job-assigned';
+                $data = array(
+                    'job_id' => $workitem->getId(),
+                    'summary' => $workitem->getSummary(),
+                    'assigner' => $user->getNickname(),
+                    'assigned' => $assignedUser->getNickname()
+                );
+                $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
+                sendTemplateEmail($assignedUser->getUsername(), $emailTemplate, $data, $senderEmail);
             }
         }
 
@@ -1073,7 +1099,7 @@ class JobController extends Controller {
             $data = array(
                 'job_id' => $workitem->getId(),
                 'summary' => $workitem->getSummary(),
-                'designer' => $user->getNickname(),
+                'assigner' => $user->getNickname(),
                 'assigned' => $assignedUser->getNickname()
             );
             $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
