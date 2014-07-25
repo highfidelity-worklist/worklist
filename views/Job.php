@@ -933,4 +933,10 @@ class JobView extends View {
         }
         return $ret;
     }
+
+    function assigneeNickname() {
+        $worklist = $this->worklist;
+        $assignedUser = User::find($worklist['assigned_id']);
+        return $assignedUser->getNickname();
+    }
 }

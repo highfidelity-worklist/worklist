@@ -112,6 +112,14 @@
             <div id="mechanicBox">
                 {{& mechanicBox}}
             </div>
+            {{#userIsInternal}}
+            <div id="assigneeBox">
+                <span class="assigneeName">
+                    Assignee:
+                </span>
+                <a id="ping-btn" href="./user/{{assigneeNickname}}" >{{assigneeNickname}}</a>
+            </div>
+            {{/userIsInternal}}
         </div>
         {{/editing}}
         <div id="for_view">
