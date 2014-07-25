@@ -277,7 +277,7 @@ class JobController extends Controller {
                         $new_update_message .= "Assignee changed. ";
                         if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
                             $workitem->setStatus('Bidding');
-                            $new_update_message .= "Status set to Bidding. ";
+                            $new_update_message .= "Status set to *Bidding*. ";
                         }
                         $job_changes[] = '-assignee';
                     }
