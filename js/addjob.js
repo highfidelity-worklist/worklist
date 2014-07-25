@@ -9,7 +9,7 @@ var AddJob = {
             disable_search_threshold: 10
         });
         $('select[name="itemProject"]').change(AddJob.showProjectDescription);
-        $('select[name="assigned"]').change(AddJob.checkAsisgnedUser);
+        $('select[name="assigned"]').change(AddJob.checkAssignedUser);
 
         $('form#addJob').submit(AddJob.formSubmit);
 
@@ -29,7 +29,7 @@ var AddJob = {
         });
     },
 
-    checkAsisgnedUser: function() {
+    checkAssignedUser: function() {
         if (parseInt($(this).val()) > 0) {
             $("input[name='is_internal']").prop('checked', true);
             $("select[name='itemStatus']").val('Bidding');

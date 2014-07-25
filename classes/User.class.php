@@ -1658,7 +1658,7 @@ class User {
         }
         $runner_id = $workitem->getRunner() ? $workitem->getRunner()->getId() : 0;
         $is_runner = ($this->getId() == $runner_id);
-        $is_assigned = ($this->getId() == $workitem->getAssigned_id());;
+        $is_assigned = ($this->getId() == $workitem->getAssigned_id());
         return $is_runner || ($is_assigned && !$exclude_assigned);
     }
 

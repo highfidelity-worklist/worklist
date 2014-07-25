@@ -45,7 +45,7 @@ body > .container-fluid {
 }
 
 /**
- * Assigned user dropdown cutomization
+ * Assigned user dropdown customization
  */
 select[name="assigned"] + .chosen-container-single .chosen-single > span:first-child {
     color: #666;
