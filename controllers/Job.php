@@ -1421,29 +1421,8 @@ class JobController extends Controller {
         $project->loadById($workitem->getProjectId());
         $users_favorite = new Users_Favorite();
 
-        if($project->getCrUsersSpecified()) { // if only specified users are allowed
-            if($project->isProjectCodeReviewer($userId)){
-                return true;
-            }
-            return false;
-        } else {
-            if ($project->getCrAnyone()) {
-                return true;
-            } else if ($project->getCrAdmin()) {
-                $admin_fav = $users_favorite->getMyFavoriteForUser($project->getOwnerId(), $userId);
-                if ($admin_fav['favorite']) {
-                    return true;
-                }
-            } else if ($project->getCrFav() && $users_favorite->getUserFavoriteCount($userId) >= 3) {
-                return true;
-            } else if ($project->getCrRunner()) {
-                $runner_fav = $users_favorite->getMyFavoriteForUser($workitem->getRunnerId(),$userId);
-                if ($runner_fav['favorite']) {
-                    return true;
-                }
-            } else if($project->isProjectCodeReviewer($userId)){
-                return true;
-            }
+        if($project->isCodeReviewer($userId)){
+            return true;
         }
         return false;
     }

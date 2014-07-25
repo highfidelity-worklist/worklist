@@ -795,18 +795,15 @@ class Project {
     }
 
     /**
-      Determine if the given user_id owns the project
-    */
+     * Determine if the given user_id owns the project
+     */
     public function isOwner($user_id = false) {
         return $user_id == $this->getOwnerId();
     }
-    public function isProjectCodeReviewer($user_id = false) {
-        return array_key_exists($user_id, $this->getCodeReviewers());
-    }
 
     /**
-      Determine if the given user_id is a project runner
-    */
+     * Determine if the given user_id is a project runner
+     */
     public function isProjectRunner($user_id = false) {
         return array_key_exists($user_id, $this->getRunners());
     }
@@ -866,29 +863,6 @@ class Project {
      */
     public function deleteRole($role_id){
         $query = "DELETE FROM `".ROLES."`  WHERE `id`={$role_id}";
-        return mysql_query($query) ? 1 : 0;
-    }
-    /**
-     * Allows you to add a reviewer to the project
-     * @param $codeReviewer_id
-     * @return number
-     */
-    public function addCodeReviewer($codeReviewer_id) {
-        $project_id = $this->getProjectId();
-        $codeReviewer_id = (int) $codeReviewer_id;
-        $query = "INSERT INTO `" . REL_PROJECT_CODE_REVIEWERS . "` (project_id, code_reviewer_id) " .
-            "VALUES (" . $project_id . ", " . $codeReviewer_id . ")";
-        return mysql_query($query) ? 1 : 0;
-    }
-
-    public function deleteCodeReviewer($codeReviewer_id) {
-        $codeReviewer_id = (int) $codeReviewer_id;
-        if ($codeReviewer_id == $this->getOwnerId()) {
-            return false;
-        }
-        $project_id = $this->getProjectId();
-        $query = "DELETE FROM `" . REL_PROJECT_CODE_REVIEWERS . "` " .
-            "WHERE `project_id`={$project_id} AND `code_reviewer_id`={$codeReviewer_id}";
         return mysql_query($query) ? 1 : 0;
     }
     /**
@@ -956,35 +930,111 @@ class Project {
      * @return unknown|boolean
      */
     public function getCodeReviewers() {
-       $query =
-        "SELECT DISTINCT u.id, u.nickname, (
-        SELECT COUNT(DISTINCT(w.id))
-        FROM " . WORKLIST . " w
-        LEFT JOIN " . REL_PROJECT_CODE_REVIEWERS . " p on w.project_id = p.project_id
-        WHERE (w.runner_id = u.id OR w.creator_id = u.id OR w.mechanic_id = u.id)
-        AND w.status IN('Bidding', 'In Progress', 'QA Ready', 'Review', 'Merged', 'Done')
-        AND p.project_id = " . $this->getProjectId() . "
-        ) totalJobCount
-        FROM " . USERS . " u
-        WHERE u.id IN (
-        SELECT code_reviewer_id
-        FROM " . REL_PROJECT_CODE_REVIEWERS . "
-        WHERE project_id = " . $this->getProjectId() . "
-        )
-        ORDER BY totalJobCount DESC";
-
-        $result = mysql_query($query);
-
-        if (is_resource($result) && mysql_num_rows($result) > 0) {
-            while($row = mysql_fetch_assoc($result)) {
-                $row['owner'] = ($row['id'] == $this->getOwnerId());
-                $code_reviewers[$row['id']] = $row;
-            }
-            return $code_reviewers;
-        } else {
+        $team_id = $this->codeReviewersGitHubTeamId();
+        if (!$team_id) {
             return array();
         }
+
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+        $members = $client->api('organizations')->teams()->members($team_id);
+        return $members;
     }
+
+    public function codeReviewersGitHubTeamId() {
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+        $repo_info = $this->extractOwnerAndNameFromRepoURL();
+        $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
+        foreach ($teams as $team) {
+            if ($team['name'] == $repo_info['name'] . 'CodeReviewers') {
+                return $team['id'];
+            }
+        }
+        return false;
+    }
+
+    public function createCodeReviewersGitHubteam() {
+        $team_id = $this->codeReviewersGitHubTeamId();
+        if ($team_id) {
+            return null;
+        }
+
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+        $repo_info = $this->extractOwnerAndNameFromRepoURL();
+        $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
+            'name' => $repo_info['name'] . 'CodeReviewers',
+            'repo_names' => $repo_info['name'],
+            'permission' => 'push'
+        ));
+        return $ret['id'] ? $ret['id'] : false;
+    }
+
+    public function isCodeReviewer($user_id = false) {
+        $user = User::find($user_id);
+        $reviewers = $this->getCodeReviewers();
+        foreach ($reviewers as $reviewer) {
+            if ($reviewer['login'] == $user->getNickname()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a new merger on its corresponding Github team
+     * @param $codeReviewer_id
+     * @return number
+     */
+    public function addCodeReviewer($codeReviewer_id) {
+        $team_id = $this->codeReviewersGitHubTeamId();
+        if (!$team_id) {
+            if (!$team_id = $this->createCodeReviewersGitHubteam()) {
+                return false;
+            }
+        }
+        $user = User::find($codeReviewer_id);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+        $repo_info = $this->extractOwnerAndNameFromRepoURL();
+        $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
+        return true;
+    }
+
+    public function deleteCodeReviewer($codeReviewer_id) {
+        $team_id = $this->codeReviewersGitHubTeamId();
+        if (!$team_id) {
+            return false;
+        }
+        $user = User::find($codeReviewer_id);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+        $repo_info = $this->extractOwnerAndNameFromRepoURL();
+        $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
+        return true;
+    }
+
     /*
      Get the list of allowed runners for Project
      */
