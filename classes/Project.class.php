@@ -977,7 +977,7 @@ class Project {
         $repo_info = $this->extractOwnerAndNameFromRepoURL();
         $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
             'name' => $repo_info['name'] . 'CodeReviewers',
-            'repo_names' => $repo_info['owner'] . '/' . $repo_info['name'],
+            'repo_names' => array($repo_info['owner'] . '/' . $repo_info['name']),
             'permission' => 'push'
         ));
         return $ret['id'] ? $ret['id'] : false;
