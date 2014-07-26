@@ -238,13 +238,14 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+            $crAdmins = preg_split('/,/', CODE_REVIEW_ADMINS);
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId()) && !in_array($request_user->getNickname(), $crAdmins)) {
                 throw new Exception('Not enough rights');
             }
             if (!$user->getId()) {
                 throw new Exception('Not a user in our system');
             }
-            if ($project->isProjectCodeReviewer($user->getId())) {
+            if ($project->isCodeReviewer($user->getId())) {
                 throw new Exception('Entered user is already a Code Reviewer for this project');
             }
             if (! $project->addCodeReviewer($user->getId())) {
@@ -409,11 +410,7 @@ class ProjectController extends Controller {
             if ($codeReviewers = $project->getCodeReviewers()) {
                 foreach ($codeReviewers as $codeReviewer) {
                     $data[] = array(
-                        'id'=> $codeReviewer['id'],
-                        'nickname' => $codeReviewer['nickname'],
-                        'totalJobCount' => $codeReviewer['totalJobCount'],
-                        'lastActivity' => $project->getCodeReviewersLastActivity($codeReviewer['id']),
-                        'owner' => $codeReviewer['owner']
+                        'nickname' => $codeReviewer['login'],
                     );
                 }
             }
@@ -439,7 +436,8 @@ class ProjectController extends Controller {
                 throw new Exception('Not a project in our system');
             }
             $request_user = User::find(getSessionUserId());
-            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+            $crAdmins = preg_split('/,/', CODE_REVIEW_ADMINS);
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId()) && !in_array($request_user->getNickname(), $crAdmins)) {
                 throw new Exception('Not enough rights');
             }
             $codeReviewers = array_slice(func_get_args(), 1);
