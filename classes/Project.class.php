@@ -977,7 +977,7 @@ class Project {
         $repo_info = $this->extractOwnerAndNameFromRepoURL();
         $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
             'name' => $repo_info['name'] . 'CodeReviewers',
-            'repo_names' => $repo_info['name'],
+            'repo_names' => $repo_info['owner'] . '/' . $repo_info['name'],
             'permission' => 'push'
         ));
         return $ret['id'] ? $ret['id'] : false;
@@ -1013,7 +1013,6 @@ class Project {
             ))
         );
         $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $repo_info = $this->extractOwnerAndNameFromRepoURL();
         $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
         return true;
     }
@@ -1030,7 +1029,6 @@ class Project {
             ))
         );
         $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $repo_info = $this->extractOwnerAndNameFromRepoURL();
         $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
         return true;
     }
