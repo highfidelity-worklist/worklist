@@ -577,9 +577,3 @@ ul.project-jobs {
        font-size: 13px;
     }
 }
-
-@media  (max-width: 412px) and (max-width : 413px) {
-    ul.project-jobs li:nth-child(5) {
-        width: 30%;
-    }
-}
