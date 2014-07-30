@@ -923,7 +923,40 @@ class WorkItem {
         return ($row[0] == 1);
     }
 
-    // Accept a bid given it's Bid id
+    /** Accept a bid given it's Bid id
+    * Generate a random password of given length to be used for new unix accounts
+    *
+    */
+    private function generatePassword ($length = 8)
+    {
+
+      // start with a blank password
+      $password = "";
+
+      // define possible characters
+      $possible = "0123456789bcdfghjkmnpqrstvwxyz";
+
+      // set up a counter
+      $i = 0;
+
+      // add random characters to $password until $length is reached
+      while ($i < $length) {
+
+	  // pick a random character from the possible ones
+	  $char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+
+	  // we don't want this character if it's already in the password
+	  if (!strstr($password, $char)) {
+	      $password .= $char;
+	      $i++;
+	  }
+
+      }
+
+      // done!
+      return $password;
+
+    }
     public function acceptBid($bid_id, $budget_id = 0, $is_mechanic = true) {
         $this->conditionalLoadByBidId($bid_id);
         /*if ($this->hasAcceptedBids()) {
@@ -962,6 +995,7 @@ class WorkItem {
         // Get the repo for this project
         $repository = $this->getRepository();
         $job_id = $this->getId();
+        $repo_name = $project->extractOwnerAndNameFromRepoURL($repo_info['name']);
         /* Verify whether the user already has this repo forked on his account
         *If not create the fork
         *Check for existing unix account in dev.  If new, make call to create account
@@ -969,10 +1003,25 @@ class WorkItem {
         $GitHubUser = new User($bid_info['bidder_id']);
         $url = TOWER_API_URL;
         $fields = array(
-            'action' => 'create_unixaccount',
-            'nickname' => $bidder->getNickname()
+            'action' => 'setup-sandbox',
+            'nickname' => $bidder->getNickname(),
+            'job_id' => $job_id,
+            'repo_name' => $repo_name,
+            'password' => $password
         );
         $result = CURLHandler::Post($url, $fields);
+        //if pw comes back blank, let's add the unixusername to the db and send user email with ssh creds
+        if ($result && $password != '') {
+            $bidderEmail = $bidder->getUsername();
+            $emailTemplate = 'unixusername-created';
+            $data = array(
+                'nickname' => $bidder->getNickname(),
+                'password' => $password
+            );
+            $senderEmail = 'Worklist <contact@worklist.net>';
+            sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
+            sleep(10);
+        }
         if (!$GitHubUser->verifyForkExists($project)) {
             $forkStatus = $GitHubUser->createForkForUser($project);
             $bidderEmail = $bidder->getUsername();
