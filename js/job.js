@@ -187,13 +187,13 @@ var Job = {
                 var isMobile = window.matchMedia("only screen and (max-width: 760px)");
                 if(referrer != '' && referrer.indexOf("worklist") < 0 && current.indexOf("view_bid") >= 0){
                     var fromMail = true;
-                }else{
+                } else {
                     var fromMail = false;
                 }
                 /* coming from bid email link AND on mobile*/
                 if(fromMail && isMobile) {
                     var displayNotes = false;
-                }else{
+                } else {
                     var displayNotes = true;
                 }
 
