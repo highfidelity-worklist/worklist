@@ -331,7 +331,7 @@ ul.project-jobs li:first-child {
 }
 
 ul.project-jobs > li {
-    float: left;
+    display: inline-block;
     padding-left: 0px;
     padding-right: 0px;
 }
@@ -425,7 +425,7 @@ div.project-jobs-done i {
 div.project-jobs-pass,
 div.project-jobs-done {
     margin-bottom: 25px;
-    float: left;
+    display: inline-block;
 }
 
 div.project-jobs-done-pass {
@@ -457,10 +457,17 @@ ul.project-jobs {
 @media  (max-width: 767px) and (max-width : 768px) {
     ul.project-jobs {
         padding: 5px;
-        display: block;
-        float: left;
+        display: inline-block;
         width: 100%;
         margin-bottom: 0px;
+        margin-left: 6px;
+        overflow: hidden;
+        height: 59px;
+    }
+
+    div.project-header {
+        clear: left;
+        font-size: 32px;
     }
 
     ul.project-jobs:nth-child(even) {
@@ -489,19 +496,20 @@ ul.project-jobs {
     }
 
     ul.project-jobs li:nth-child(3) {
+        clear: left;
         padding-left: 65px;
         height:24px;
-        max-width: 48%;
     }
 
     ul.project-jobs li:nth-child(4) {
-        float: left;
-        width: 22%;
+        display: inline-block;
+        margin-left: 5px;
     }
 
     ul.project-jobs li:nth-child(5) {
-        float: left;
+        display: inline-block;
         width: 25%;
+        margin-left: 5px;
     }
 
     .project-jobs-status {
@@ -516,7 +524,7 @@ ul.project-jobs {
     ul.project-jobs li:nth-child(3):after,
     ul.project-jobs li:nth-child(4):after,
     ul.project-jobs li:nth-child(5):after {
-        width: 60px;
+        width: 0px;
     }
 
     ul.project-jobs:nth-child(even) li:nth-child(2):after,
@@ -524,7 +532,7 @@ ul.project-jobs {
     ul.project-jobs:nth-child(even) li:nth-child(4):after,
     ul.project-jobs:nth-child(even) li:nth-child(5):after {
         content: "";
-        width: 60px;
+        width: 0px;
         height: 25px;
         position: absolute;
         top: 0;
@@ -538,6 +546,11 @@ ul.project-jobs {
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00f4f4f4', endColorstr='#f4f4f4',GradientType=1 );
     }
 
+    ul.project-jobs li:nth-child(2):after,
+    ul.project-jobs:nth-child(even) li:nth-child(2):after {
+        width: 60px;
+    }
+
     div.project-header hr,
     div.project-header p {
         display: none;
@@ -549,6 +562,19 @@ ul.project-jobs {
 
     ul.project-jobs:nth-child(even) .project-jobs-comment-count a {
         background: #f4f4f4;
+    }
+
+    ul.project-jobs li.project-jobs-skill a {
+        margin-left: 5px;
+    }
+
+    div.project-jobs-status i {
+        width: 13px;
+        height: 13px;
+    }
+
+    div.project-jobs-status {
+       font-size: 13px;
     }
 }
 
