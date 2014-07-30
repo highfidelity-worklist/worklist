@@ -206,8 +206,6 @@ var Job = {
                     canEdit: showEditButton,
                     canWithdraw: showWithdrawButton,
                     canDecline: showDeclineButton,
-                    fromMail: fromMail,
-                    isMobile: isMobile.matches,
                     displayNotes: displayNotes,
                     open: function(modal) {
                         if (showAcceptBidButton) {
