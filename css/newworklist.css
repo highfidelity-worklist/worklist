@@ -459,7 +459,7 @@ button:focus, a:focus {
 @media only screen and (max-width: 450px) {
 
     #select-budget.dropdown-menu {
-        left: inherit !important;
+        left: inherit;
         right: 0;
         min-width: inherit;
         width: 255%;
