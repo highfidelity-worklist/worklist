@@ -9,18 +9,18 @@
           <h4 class="modal-title">Bid information</h4>
         </div>
         <div class="modal-body">
-          <table class="table table-condensed table-striped">
+          <table id="bid-information" class="table table-condensed table-striped">
             <thead>
               <tr>
                 <th>Bidder</th>
                 <th>Amount</th>
-                <th>Entered</th>
+                <th class="hidden-xs">Entered</th>
                 <th>Completed</th>
                 {{#bid.bid_accepted}}
-                  <th>Accepted</th>
+                  <th class="hidden-xs">Accepted</th>
                 {{/bid.bid_accepted}}
                 {{^bid.bid_accepted}}
-                  <th>Expires</th>
+                  <th class="hidden-xs">Expires</th>
                 {{/bid.bid_accepted}}
               </tr>
             </thead>
@@ -33,7 +33,7 @@
                 <td>{{bid.bid_created}}</td>
                 <td>in {{bid.done_in}}</td>
                 {{#bid.bid_accepted}}
-                  <td>{{bid.bid_accepted}}</td>
+                  <td class="hidden-xs">{{bid.bid_accepted}}</td>
                 {{/bid.bid_accepted}}
                 {{^bid.bid_accepted}}
                   <td>{{bid.bid_expires}}</td>
@@ -41,8 +41,10 @@
               </tr>
             </tbody>
           </table>
-          <h5><strong>Notes:</strong></h5>
-          <p>{{& bid.notes}}</p>
+          {{#displayNotes}}
+              <h5><strong>Notes:</strong></h5>
+              <p>{{& bid.notes}}</p>
+          {{/displayNotes}}
           {{#showStatistics}}
             <div class="row">
               <div class="col-md-5">
@@ -94,7 +96,7 @@
               <button type="button" name="accept" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 Accept <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" role="menu">
+              <ul id="select-budget" class="dropdown-menu" role="menu">
                 <li role="presentation" class="dropdown-header">Select a budget</li>
               </ul>
             </div>
