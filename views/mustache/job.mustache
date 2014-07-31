@@ -12,7 +12,7 @@
             {{/statusDone}}
             {{^statusDone}}
                 <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                    <a title="Switch to Edit Mode" href="./{{worklist.id}}?action=edit">
+                    <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
                         Edit
                     </a>
                 </span>
@@ -20,7 +20,7 @@
         {{/canEditAndNotEditing}}
         {{#editing}}
             <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                <a title="Switch to View Mode" href="./{{worklist.id}}?action=view">
+                <a title="Switch to View Mode" href="./{{worklist.id}}">
                     View
                 </a>
             </span>

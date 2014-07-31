@@ -111,6 +111,7 @@ class Dispatcher {
             ),
             'default' => array('method' => 'index')
         ));
+        $dispatcher->get('/:id/:mode', array('Job', 'view'), array('require' => array('id' => '\d+', 'mode' => 'edit')));
 
         $dispatcher->any('/:id', array('Project', 'view'));
         $dispatcher->any('/project/:method(/:param)', array('Project'), array(
