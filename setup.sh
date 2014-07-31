@@ -6,7 +6,7 @@
 #
 
 CURRENT_PATH=`pwd`
-CURRENT_USER={WORKLIST_UNIX_USERNAME:=`whoami`}
+CURRENT_USER=${WORKLIST_UNIX_USERNAME:=`whoami`}
 SANDBOX_NAME=`pwd | sed -r "s:^.+/public_html/::"`
 SERVER_NAME=${WORKLIST_SERVER_NAME:="dev.worklist.net"}
 SERVER_CONFIG=$CURRENT_PATH/server.local.php
