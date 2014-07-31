@@ -1003,7 +1003,7 @@ class WorkItem {
         $GitHubUser = new User($bid_info['bidder_id']);
         $url = TOWER_API_URL;
         $fields = array(
-            'action' => 'setup-sandbox',
+            'action' => 'setup_sandbox',
             'nickname' => $bidder->getNickname(),
             'job_id' => $job_id,
             'repo_name' => $repo_name,
