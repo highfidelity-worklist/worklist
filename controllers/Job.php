@@ -38,7 +38,7 @@ class JobController extends Controller {
         call_user_func_array(array($this, $method), $params);
     }
 
-    public function view($job_id) {
+    public function view($job_idd, $mode = null) {
         $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
         $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
@@ -112,6 +112,7 @@ class JobController extends Controller {
         $runner_budget = $user->getBudget();
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
+        $action = $mode != null ? $mode : $action;
         if ($workitem->getStatus() == 'Done' && $action == 'edit') {
             $action = 'view';
         }

@@ -104,6 +104,7 @@ class Dispatcher {
 
         $dispatcher->get('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
         $dispatcher->post('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
+        $dispatcher->get('/:id/:mode', array('Job', 'view'), array('require' => array('id' => '\d+', 'mode' => 'edit')));
         $dispatcher->any('/job/:method(/:param)', array('Job'), array(
             'require' => array(
                 'method' => '[a-zA-Z0-9]+',
