@@ -103,12 +103,13 @@ td.noroles {
 
 
 #projectHeader h2 {
-    margin: 24px 0 0 76px;
+    margin: 24px 0 0 72px;
     height: 50px;
-    font-size: 3.5em;
+    font-size: 40px;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     padding-bottom: 0px;
+    line-height: 52px;
 }
 
 #projectHeader h2,
