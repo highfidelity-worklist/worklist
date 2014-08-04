@@ -23,6 +23,7 @@ class JobController extends Controller {
             case 'endCodeReview':
             case 'updateSandboxUrl':
             case 'search':
+            case 'edit':
                 $method = $action;
                 break;
             default:
@@ -38,7 +39,7 @@ class JobController extends Controller {
         call_user_func_array(array($this, $method), $params);
     }
 
-    public function view($job_idd, $mode = null) {
+    public function view($job_id, $mode = null) {
         $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
         $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
@@ -163,177 +164,7 @@ class JobController extends Controller {
         $job_changes = array();
         $status_change = '';
         if ($action =='save_workitem') {
-            $args = array(
-                'summary',
-                'notes',
-                'status',
-                'project_id',
-                'sandbox',
-                'budget-source-combo',
-                'assigned'
-            );
-
-            foreach ($args as $arg) {
-                if (!empty($_REQUEST[$arg])) {
-                    $$arg = $_REQUEST[$arg];
-                } else {
-                    $$arg = '';
-                }
-            }
-
-            // code to add specifics to journal update messages
-            $new_update_message='';
-            $budget_id = !empty($_REQUEST['budget-source-combo'])? (int) $_REQUEST['budget-source-combo'] : 0;
-            $old_budget_id = -1;
-            if ($workitem->getBudget_id() != $budget_id) {
-                $new_update_message .= 'Budget changed. ';
-                $old_budget_id = (int) $workitem->getBudget_id();
-                $workitem->setBudget_id($budget_id);
-            }
-            // summary
-            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
-                $summary = $_REQUEST['summary'];
-                $workitem->setSummary($summary);
-                $new_update_message .= "Summary changed. ";
-                if ($workitem->getStatus() != 'Draft') {
-                    $job_changes[] = '-summary';
-                }
-            }
-
-            if (isset($_REQUEST['skills'])) {
-                $skillsArr = explode(',', $_REQUEST['skills']);
-                // remove empty values
-                foreach ($skillsArr as $key => $value) {
-                    $skillsArr[$key] = trim($value);
-                    if (empty($value)) {
-                        unset($skillsArr[$key]);
-                    }
-                }
-                // get current skills
-                $skillsCur = $workitem->getSkills();
-                // have skills been updated?
-                $skillsDiff = array_diff($skillsArr, $skillsCur);
-                if (is_array($skillsDiff) && ! empty($skillsDiff)) {
-                    if ($workitem->getStatus() != 'Draft') {
-                        $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
-                    }
-                    // remove nasty end comma
-                    $new_update_message = rtrim($new_update_message, ', ') . '. ';
-                    $job_changes[] = '-skills';
-                }
-                $workitem->setWorkitemSkills($skillsArr);
-            }
-
-            // status
-            if ($is_project_runner
-                || $userId == $workitem->getRunnerId()
-                || (in_array($status, $statusListMechanic))) {
-
-                if ($workitem->getStatus() != $status && !empty($status) && $status != 'Draft') {
-                    if ($this->changeStatus($workitem, $status, $user)) {
-                        if (!empty($new_update_message)) {  // add commas where appropriate
-                            $new_update_message .= ", ";
-                        }
-                        $status_change = '-' . ucfirst(strtolower($status));
-                        $new_update_message .= "Status set to *$status*. ";
-                    }
-                }
-            }
-            $related = "";
-            if ($workitem->getNotes() != $notes && isset($_REQUEST['notes'])) {
-                $workitem->setNotes($notes);
-                $new_update_message .= "Notes changed. ";
-                $job_changes[] = '-notes';
-                $related = getRelated($notes);
-            }
-            // project
-
-            if ($project_id && $workitem->getProjectId() != $project_id) {
-                $workitem->setProjectId($project_id);
-                if ($workitem->getStatus() != 'Draft') {
-                    $new_update_message .= "Project changed. ";
-                    $job_changes[] = '-project';
-                }
-            }
-            // Sandbox
-            if ($workitem->getSandbox() != $sandbox) {
-                $workitem->setSandbox($sandbox);
-                $new_update_message .= "Branch changed. ";
-                $job_changes[] = '-branch';
-            }
-
-            // Assignee
-            $assigneeChanged = false;
-            if ($workitem->getAssigned_id() != $assigned) {
-                if ((int) $assigned == 0) {
-                    $workitem->setAssigned_id(0);
-                    $new_update_message .= "Assignee removed. ";
-                    $job_changes[] = '-assignee';
-                } else {
-                    $assignedUser = User::find($assigned);
-                    if ($assignedUser->isInternal()) {
-                        $assigneeChanged = true;
-                        $workitem->setAssigned_id($assignedUser->getId());
-                        $currentStatus = $workitem->getStatus();
-                        $new_update_message .= "Assignee changed. ";
-                        if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
-                            $workitem->setStatus('Bidding');
-                            $new_update_message .= "Status set to *Bidding*. ";
-                        }
-                        $job_changes[] = '-assignee';
-                    }
-                }
-            }
-
-            if (empty($new_update_message)) {
-                $new_update_message = " No changes.";
-            } else {
-                $workitem->save();
-                if ($old_budget_id > 0) {
-                    $budget = new Budget();
-                    if ($budget->loadById($old_budget_id)) {
-                        $budget->recalculateBudgetRemaining();
-                    } else {
-                        error_log("Old budget id not found: " . $old_budget_id);
-                    }
-                    if ($budget->loadById($workitem->getBudget_id())) {
-                        $budget->recalculateBudgetRemaining();
-                    } else {
-                        error_log("New budget id not found: " . $workitem->getBudget_id());
-                    }
-                }
-                $new_update_message = " Changes: $new_update_message";
-                $notifyEmpty = false;
-            }
-
-            $redirectToDefaultView = true;
-            if ($workitem->getStatus() != 'Draft') {
-                $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
-                                    $new_update_message . $related;
-
-                $options = array(
-                    'type' => 'workitem-update',
-                    'workitem' => $workitem
-                );
-                $data = array(
-                    'nick' => $_SESSION['nickname'],
-                    'new_update_message' => $new_update_message,
-                    'related' => $related
-                );
-                Notification::workitemNotifyHipchat($options, $data);
-            }
-
-            if ($assigneeChanged) {
-                $emailTemplate = 'job-assigned';
-                $data = array(
-                    'job_id' => $workitem->getId(),
-                    'summary' => $workitem->getSummary(),
-                    'assigner' => $user->getNickname(),
-                    'assigned' => $assignedUser->getNickname()
-                );
-                $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
-                sendTemplateEmail($assignedUser->getUsername(), $emailTemplate, $data, $senderEmail);
-            }
+            $this->edit($worklist_id);
         }
 
         if ($action == 'new-comment') {
@@ -693,7 +524,7 @@ class JobController extends Controller {
                 $is_job_runner = $workitem->getRunnerId() == getSessionUserId();
                 $is_assigned = $workitem->getAssigned_id() == getSessionUserId();
                 // only runners can accept bids
-                if (($is_project_runner || $is_job_runner || $is_assigned || ($user->getIs_admin() == 1
+                if (($workitem->getIsRelRunner() || $is_job_runner || $is_assigned || ($user->getIs_admin() == 1
                      && $is_runner) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding")) {
                     // query to get a list of bids (to use the current class rather than breaking uniformity)
                     // I could have done this quite easier with just 1 query and an if statement..
@@ -774,7 +605,7 @@ class JobController extends Controller {
                     $_SESSION['workitem_error'] = "Invalid budget!";
                 }
                 if (count($bid_id) > 0) {
-                //only runners can accept bids
+                //only runners$is_project_runner can accept bids
                     if (($is_project_runner || $workitem->getRunnerId() == getSessionUserId() ||
                          ($user->getIs_admin() == 1 && $is_runner)) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding") {
                         $total = 0;
@@ -1012,7 +843,7 @@ class JobController extends Controller {
 
         $this->write('bids', $bids);
 
-        $this->write('userHasCodeReviewRights', $this->hasCodeReviewRights($user_id, $workitem));
+        //$this->write('userHasCodeReviewRights', $this->hasCodeReviewRights($user_id, $workitem));
 
         $this->write('mechanic', $workitem->getUserDetails($worklist['mechanic_id']));
 
@@ -1034,7 +865,7 @@ class JobController extends Controller {
         parent::run();
     }
 
-    public function add() {
+    public function add($id = 0) {
         $this->view = null;
         if (isset($_POST['api_key'])) {
             validateAPIKey();
@@ -1051,6 +882,7 @@ class JobController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->write('jobId', $id);
             $this->view = new AddJobView();
             parent::run();
             return;
@@ -1650,5 +1482,249 @@ class JobController extends Controller {
         $filter->setParticipated($_REQUEST['participated']);
         $filter->setFollowing(empty($_REQUEST["following"]) ? 0 : $_REQUEST["following"]);
         echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$user->is_runner, !$user->isInternal()));
+    }
+
+    public function edit($worklist_id = 0) {
+        if (isset($_POST['api_key'])) {
+            validateAPIKey();
+            $user = User::find($_POST['creator']);
+            $userId = $user->getId();
+        } else {
+            checkLogin();
+            $userId = getSessionUserId();
+            $user = User::find($userId);
+        }
+        if (!$userId) {
+            header('HTTP/1.1 401 Unauthorized', true, 401);
+            echo json_encode(array('error' => "Invalid parameters !"));
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->view = null;
+            $this->write('jobId', $worklist_id);
+            $this->view = new AddJobView();
+            parent::run();
+            return;
+        }
+
+        $worklist_id = isset($_REQUEST['worklist_id']) ? $_REQUEST['worklist_id'] : $worklist_id;
+        $notifyEmpty  =true;
+        $workitem = new WorkItem();
+        try {
+            $workitem->loadById($worklist_id);
+        } catch(Exception $e) {
+            $error  = $e->getMessage();
+            $this->view = null;
+            die($error);
+        }
+        $journal_message = null;
+        $status_change = '';
+        $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
+        $fileUpload = $_REQUEST['fileUpload'];
+        $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
+        $args = array(
+                'summary',
+                'notes',
+                'status',
+                'project_id',
+                'sandbox',
+                'budget_id',
+                'assigned'
+            );
+
+            foreach ($args as $arg) {
+                if (!empty($_REQUEST[$arg])) {
+                    $$arg = $_REQUEST[$arg];
+                } else {
+                    $$arg = '';
+                }
+            }
+
+            // code to add specifics to journal update messages
+            $new_update_message='';
+            $budget_id = !empty($_REQUEST['budget_id'])? (int) $_REQUEST['budget_id'] : 0;
+            $project_id = !empty($_REQUEST['project_id'])? (int) $_REQUEST['project_id'] : 0;
+            $old_budget_id = -1;
+            if ($workitem->getBudget_id() != $budget_id) {
+                $new_update_message .= 'Budget changed. ';
+                $old_budget_id = (int) $workitem->getBudget_id();
+                $workitem->setBudget_id($budget_id);
+            }
+            $is_internal = !empty($_REQUEST['is_internal'])? (int) $_REQUEST['is_internal'] : 0;
+            $workitem->setIs_internal($is_internal);
+            // summary
+            if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
+                $summary = $_REQUEST['summary'];
+                $workitem->setSummary($summary);
+                $new_update_message .= "Summary changed. ";
+                if ($workitem->getStatus() != 'Draft') {
+                    $job_changes[] = '-summary';
+                }
+            }
+
+            if (isset($_REQUEST['skills'])) {
+                $skillsArr = explode(',', $_REQUEST['skills']);
+                // remove empty values
+                foreach ($skillsArr as $key => $value) {
+                    $skillsArr[$key] = trim($value);
+                    if (empty($value)) {
+                        unset($skillsArr[$key]);
+                    }
+                }
+                // get current skills
+                $skillsCur = $workitem->getSkills();
+                // have skills been updated?
+                $skillsDiff = array_diff($skillsArr, $skillsCur);
+                if (is_array($skillsDiff) && ! empty($skillsDiff)) {
+                    if ($workitem->getStatus() != 'Draft') {
+                        $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+                    }
+                    // remove nasty end comma
+                    $new_update_message = rtrim($new_update_message, ', ') . '. ';
+                    $job_changes[] = '-skills';
+                }
+                $workitem->setWorkitemSkills($skillsArr);
+            }
+
+            // status
+            if ($workitem->getIsRelRunner()
+                || $userId == $workitem->getRunnerId()
+                || (in_array($status, $statusListMechanic))) {
+
+                if ($workitem->getStatus() != $status && !empty($status) && $status != 'Draft') {
+                    if ($this->changeStatus($workitem, $status, $user)) {
+                        if (!empty($new_update_message)) {  // add commas where appropriate
+                            $new_update_message .= ", ";
+                        }
+                        $status_change = '-' . ucfirst(strtolower($status));
+
+                      $new_update_message .= "Status set to *$status*. ";
+                    }
+                }
+            }
+            $related = "";
+            if (isset($_REQUEST['notes']) && ($workitem->getNotes() != $_REQUEST['notes'])) {
+                $workitem->setNotes($_REQUEST['notes']);
+                $new_update_message .= "Notes changed. ";
+                $job_changes[] = '-notes';
+                $related = getRelated($_REQUEST['notes']);
+            }
+            // project
+
+            if ($project_id && $workitem->getProjectId() != $project_id) {
+                $workitem->setProjectId($project_id);
+                if ($workitem->getStatus() != 'Draft') {
+                    $new_update_message .= "Project changed. ";
+                    $job_changes[] = '-project';
+                }
+            }
+            // Sandbox
+            if ($workitem->getSandbox() != $sandbox) {
+                $workitem->setSandbox($sandbox);
+                $new_update_message .= "Branch changed. ";
+                $job_changes[] = '-branch';
+            }
+
+            // Assignee
+            $assigneeChanged = false;
+            if ($workitem->getAssigned_id() != $assigned) {
+                if ((int) $assigned == 0) {
+                    $workitem->setAssigned_id(0);
+                    $new_update_message .= "Assignee removed. ";
+                    $job_changes[] = '-assignee';
+                } else {
+                    $assignedUser = User::find($assigned);
+                    if ($assignedUser->isInternal()) {
+                        $assigneeChanged = true;
+                        $workitem->setAssigned_id($assignedUser->getId());
+                        $currentStatus = $workitem->getStatus();
+                        $new_update_message .= "Assignee changed. ";
+                        if ($currentStatus == 'Draft' || $currentStatus == 'Suggestion') {
+                            $workitem->setStatus('Bidding');
+                            $new_update_message .= "Status set to *Bidding*. ";
+                        }
+                        $job_changes[] = '-assignee';
+                    }
+                }
+            }
+
+            if (empty($new_update_message)) {
+                $new_update_message = " No changes.";
+            } else {
+                $workitem->save();
+                if ($old_budget_id > 0) {
+                    $budget = new Budget();
+                    if ($budget->loadById($old_budget_id)) {
+                        $budget->recalculateBudgetRemaining();
+                    } else {
+                        error_log("Old budget id not found: " . $old_budget_id);
+                    }
+                    if ($budget->loadById($workitem->getBudget_id())) {
+                        $budget->recalculateBudgetRemaining();
+                    } else {
+                        error_log("New budget id not found: " . $workitem->getBudget_id());
+                    }
+                }
+                $new_update_message = " Changes: $new_update_message";
+                $notifyEmpty = false;
+            }
+
+            if ($workitem->getStatus() != 'Draft') {
+                $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
+                                    $new_update_message . $related;
+
+                $options = array(
+                    'type' => 'workitem-update',
+                    'workitem' => $workitem
+                );
+                $data = array(
+                    'nick' => $_SESSION['nickname'],
+                    'new_update_message' => $new_update_message,
+                    'related' => $related
+                );
+                Notification::workitemNotify($options, $data, false);
+                Notification::workitemNotifyHipchat($options, $data);
+                sendJournalNotification($journal_message);
+            }
+
+            if ($assigneeChanged) {
+                $emailTemplate = 'job-assigned';
+                $data = array(
+                    'job_id' => $workitem->getId(),
+                    'summary' => $workitem->getSummary(),
+                    'assigner' => $user->getNickname(),
+                    'assigned' => $assignedUser->getNickname()
+                );
+                $senderEmail = 'Worklist - ' . $user->getNickname() . ' <contact@worklist.net> ';
+                sendTemplateEmail($assignedUser->getUsername(), $emailTemplate, $data, $senderEmail);
+            }
+            // if files were uploaded, update their workitem id
+            $file = new File();
+            // update images first
+            if (isset($fileUpload['uploads'])) {
+                foreach ($fileUpload['uploads'] as $image) {
+                    $file->findFileById($image);
+                    $file->setWorkitem($workitem->getId());
+                    $file->save();
+                }
+            }
+           if (!$notifyEmpty) {
+                $options = array(
+                    'type' => 'modified',
+                    'workitem' => $workitem,
+                    'status_change' => $status_change,
+                    'job_changes' => $job_changes,
+                    'recipients' => array('runner', 'creator', 'mechanic', 'followers')
+                );
+                $data = array(
+                    'changes' => $new_update_message
+                );
+                Notification::workitemNotify($options, $data);
+            }
+            echo json_encode(array(
+                'return' => "Done!",
+                'workitem' => $workitem->getId()
+            ));
     }
 }
