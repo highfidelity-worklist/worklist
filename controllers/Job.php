@@ -39,7 +39,7 @@ class JobController extends Controller {
         call_user_func_array(array($this, $method), $params);
     }
 
-    public function view($job_id, $mode = null) {
+    public function view($job_id) {
         $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
         $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
         $this->write('statusListMechanic', $statusListMechanic);
