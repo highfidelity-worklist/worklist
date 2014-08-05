@@ -85,12 +85,12 @@
         </div>
 
         {{#userIsInternal}}
-        <div class="col-sm-offset-0 col-sm-5">
+        <div class="col-sm-offset-0 col-sm-5" id="save-button">
             <input type="checkbox" name="is_internal" {{#editing}} {{#getJob.isInternal}}checked{{/getJob.isInternal}}{{/editing}} id="is_internal" />
             <label for="is_internal">Internal</label>
         {{/userIsInternal}}
         {{^userIsInternal}}
-        <div class="col-sm-offset-3 col-sm-2">
+        <div class="col-sm-offset-2 col-sm-3">
         {{/userIsInternal}}
             <button class="btn btn-primary" type="submit" name="save_item">{{#editing}}Save changes{{/editing}} {{^editing}}Add Job{{/editing}}</button>
         </div>

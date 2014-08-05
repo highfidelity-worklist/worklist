@@ -113,7 +113,6 @@ class JobController extends Controller {
         $runner_budget = $user->getBudget();
 
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'view';
-        $action = $mode != null ? $mode : $action;
         if ($workitem->getStatus() == 'Done' && $action == 'edit') {
             $action = 'view';
         }
@@ -1500,14 +1499,6 @@ class JobController extends Controller {
             return;
         }
 
-        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $this->view = null;
-            $this->write('jobId', $worklist_id);
-            $this->view = new AddJobView();
-            parent::run();
-            return;
-        }
-
         $worklist_id = isset($_REQUEST['worklist_id']) ? $_REQUEST['worklist_id'] : $worklist_id;
         $notifyEmpty  =true;
         $workitem = new WorkItem();
@@ -1518,6 +1509,22 @@ class JobController extends Controller {
             $this->view = null;
             die($error);
         }
+
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            if (($workitem->isInternal() && ! $user->isInternal()) || !$this->canEdit($workitem, $user)) {
+                $this->write('msg', 'You don\'t have permissions to edit this job.');
+                $this->write('link', WORKLIST_URL);
+                $this->view = new ErrorView();
+                parent::run();
+                exit;
+            }
+            $this->view = null;
+            $this->write('jobId', $worklist_id);
+            $this->view = new AddJobView();
+            parent::run();
+            return;
+        }
+
         $journal_message = null;
         $status_change = '';
         $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
@@ -1726,5 +1733,9 @@ class JobController extends Controller {
                 'return' => "Done!",
                 'workitem' => $workitem->getId()
             ));
+    }
+
+    private function canEdit($workitem, $user) {
+       return ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner())) && $workitem->getStatus() != 'Done') || ($workitem->getCreatorId() == $user->getId() && ($workitem->getStatus() == 'Suggestion') ));
     }
 }

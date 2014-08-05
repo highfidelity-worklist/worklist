@@ -128,6 +128,9 @@ select[name="assigned"] + .chosen-container-single {
     #labels li input[type="checkbox"] + label {
         font-size: 1.2em;
     }
+    #save-button {
+        margin-top: 5px;
+    }
 }
 
 #labels li input[type="checkbox"]:checked + label {
@@ -183,4 +186,8 @@ select[name="assigned"] + .chosen-container-single {
 /* won't display the footer on addjob */
 section#footer {
     display: none !important;
+}
+
+#save-button {
+    padding-left: 0px;
 }
