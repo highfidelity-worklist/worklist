@@ -38,22 +38,6 @@ span.info-whisper {
     height:25px;
 }
 
-.info-summ-big {
-    clear:both;
-    height: 37px;
-    margin-top: 12px;
-    font-size: 13px;
-    border-bottom: 2px solid #e1e8ea;
-    float: left;
-    color: #666;
-}
-
-@media (max-width: 480px) {
-    .info-summ-big {
-        font-size: 12px;
-    }
-}
-
 .info-summ-big-text {
     font-size: 30px;
     margin-top: 12px !important;
@@ -922,21 +906,12 @@ a.profile-link {
     color: #608e96 !important;
 }
 
-#following {
-    padding: 10px 14px 7px 40px;
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-}
-
-#following {
-    border-right: 2px solid #e1e8ea;
-}
-
 .switchmode,
 .switchmode-done {
-    padding: 10px 15px 7px 31px;
+    padding: 10px 17px 7px 28px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
+    border-bottom: 2px solid #e1e8ea;
 }
 
 .switchmode a,

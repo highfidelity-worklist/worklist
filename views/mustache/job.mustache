@@ -1,34 +1,37 @@
-<div id="info-top">
-    <div class="info-summ-big">
-        <div class="visits-box">Viewed <span class="visits"> </span> times</div>
-        <div class="info-ID">
-            <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
+<div class="col-sm-12 col-md-12 job-social">
+        <div class="col-sm-6 col-md-6">
+            <div class="visits-box">Viewed <span class="visits"> </span> times</div>
+            <div class="info-ID">
+                <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
+            </div>
+            <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript">Tweet</span>
         </div>
-        <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript">Tweet</span>
-        
-        {{#canEditAndNotEditing}}
-            {{#statusDone}}
-                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
-            {{/statusDone}}
-            {{^statusDone}}
-                <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                    <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
-                        Edit
-                    </a>
-                </span>
-            {{/statusDone}}
-        {{/canEditAndNotEditing}}
-        {{#editing}}
-            <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                <a title="Switch to View Mode" href="./{{worklist.id}}">
-                    View
-                </a>
-            </span>
-        {{/editing}}
-    </div>
+        <div class="col-sm-6 col-md-6">
+          <div id="internal-edit">
+                {{#userIsInternal}}
+                    <span class="job-internal">
+                        <input type="checkbox" name="is_internal" {{#worklist.is_internal}}checked{{/worklist.is_internal}} id="is_internal" />
+                        <label for="is_internal">Internal</label>
+                    </span>
+                {{/userIsInternal}}
+                {{#canEditAndNotEditing}}
+                    {{#statusDone}}
+                        <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
+                    {{/statusDone}}
+                    {{^statusDone}}
+                        <span class="switchmode wl-icon-edit" id="switchmode_edit">
+                            <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
+                                Edit
+                            </a>
+                        </span>
+                    {{/statusDone}}
+                {{/canEditAndNotEditing}}
+            </div>
+        </div>
 </div>
 <div id="info-top" class="info-summ-big-text">
-    #{{worklist.id}}
+    <span>#{{worklist.id}}</span>
+    <span>#{{worklist.id}}</span>
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
 {{#editing}}

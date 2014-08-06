@@ -1,22 +1,9 @@
-#info-top {
-    margin-top: 10px;
-    width: 200%;
-    float: left;
-    margin-left: -100%;
-    padding-left: 100%;
-}
-
-#info-top .title:before {
-    content: '- ';
-    color: #333;
-}
-
 #tweet-link {
     float: left;
-    padding: 10px 17px 7px 28px;
+    padding: 10px 17px 8px 28px;
     background-position: 4px 10px;
     background-repeat: no-repeat;
-    border-right: 2px solid #e1e8ea;
+    border-bottom: 2px solid #e1e8ea;
 }
 
 #tweet-link:hover {
@@ -296,6 +283,7 @@ section#footer li:nth-child(-n+3) {
     min-width: 105px;
     padding: 9px 10px 9px 0;
     border-right: 2px solid #e1e8ea;
+    border-bottom: 2px solid #e1e8ea;
 }
 
 .visits-box .visits {
@@ -309,4 +297,51 @@ section#footer li:nth-child(-n+3) {
     .visits-box {
         min-width: 95px;
     }
+}
+
+div.job-social,
+div.job-social:nth-child(1) {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+span.job-internal {
+    float: left;
+    padding: 7px 17px 3px 5px;
+    background-position: 4px 10px;
+    background-repeat: no-repeat;
+    border-right: 2px solid #e1e8ea;
+    border-bottom: 2px solid #e1e8ea;
+}
+
+div.job-social {
+    padding-top: 20px;
+}
+#following {
+    padding: 10px 14px 8px 40px;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    border-bottom: 2px solid #e1e8ea;
+    border-right: 2px solid #e1e8ea;
+}
+
+span.job-internal label {
+    color: #333333;
+}
+
+span.job-internal input {
+    position: relative;
+    top: 2px;
+}
+
+div#internal-edit {
+    float: right;
+}
+
+#info-top {
+margin-top: 10px;
+width: 200%;
+float: left;
+margin-left: -100%;
+padding-left: 100%;
 }
