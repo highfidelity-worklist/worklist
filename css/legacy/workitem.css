@@ -908,7 +908,7 @@ a.profile-link {
 
 .switchmode,
 .switchmode-done {
-    padding: 10px 17px 7px 28px;
+    padding: 10px 17px 7px 10px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;
@@ -1132,9 +1132,24 @@ h1.newProject {
         content: ' ';
     }
 
-    #following {
-        background-position: 4px 10px;
-        background-repeat: no-repeat;
-        padding: 10px 5px 7px 30px;
+    #following span,
+    #switchmode_edit span#edit-text,
+    #tweet-link span {
+        display: none;
+    }
+
+    #tweet-link {
+        height: 35px;
+        padding: 10px 17px 15px 28px;
+        background-position: 10px 10px;
+    }
+
+    #info-top .glyphicon {
+         font-size: 16px;
+         color: #000;
+     }
+
+    #info-top .glyphicon:hover {
+        color: #007f7c;
     }
 }

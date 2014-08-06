@@ -739,26 +739,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     height: 18px;
 }
 
-.wl-icon-edit,
-.wl-icon-edit\:regular {
-    background-image: url('../images/wl-icons/edit.png');
-    background-image: url('../images/wl-icons/edit.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-edit:hover,
-.wl-icon-edit\:hover {
-    background-image: url('../images/wl-icons/edit~hover.png');
-    background-image: url('../images/wl-icons/edit~hover.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-edit:after {
-    background-image: url('../images/wl-icons/edit~hover.png');
-    background-image: url('../images/wl-icons/edit~hover.svg');
-    display: none;
-}
-
 .wl-icon-edit-dims {
     width: 14px;
     height: 14px;
@@ -816,25 +796,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .wl-icon-exit-dims {
     width: 16px;
     height: 26px;
-}
-
-.wl-icon-follow,
-.wl-icon-follow\:regular {
-    background-image: url('../images/wl-icons/follow.png');
-    background-image: url('../images/wl-icons/follow.svg');
-    background-repeat: no-repeat;
-}
-
-.wl-icon-follow:hover,
-.wl-icon-follow\:hover {
-    background-image: url('../images/wl-icons/follow~hover.png');
-    background-image: url('../images/wl-icons/follow~hover.svg');
-    background-repeat: no-repeat;
-}
-.wl-icon-follow:after {
-    background-image: url('../images/wl-icons/follow~hover.png');
-    background-image: url('../images/wl-icons/follow~hover.svg');
-    display: none;
 }
 
 .wl-icon-follow-dims {

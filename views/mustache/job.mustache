@@ -4,7 +4,7 @@
             <div class="info-ID">
                 <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
             </div>
-            <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript">Tweet</span>
+            <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript"><span>Tweet</span></span>
         </div>
         <div class="col-sm-6 col-md-6">
           <div id="internal-edit">
@@ -21,7 +21,7 @@
                     {{^statusDone}}
                         <span class="switchmode wl-icon-edit" id="switchmode_edit">
                             <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
-                                Edit
+                                <span class="glyphicon glyphicon-pencil"></span> <span id="edit-text">Edit</span>
                             </a>
                         </span>
                     {{/statusDone}}
