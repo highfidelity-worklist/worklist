@@ -2568,7 +2568,7 @@ class User {
                 `b`.`amount`,
                 CASE WHEN `b`.`active` = 1 THEN `b`.`remaining` ELSE 0.00 END AS `remaining`,
                 `b`.`reason`,
-                `b`.`active`,
+                CASE WHEN `b`.`active` = 1 THEN TRUE ELSE FALSE END AS `active`,
                 `b`.`notes`,
                 `b`.`seed`,
                 `b`.`id` AS `budget_id`,
@@ -2605,7 +2605,8 @@ class User {
                     $givers[] = array('nickname' => $nickname);
                 }
                 $ret[] = array_merge($row, array(
-                    'givers' => $givers
+                    'givers' => $givers,
+                    'active' => ($row['active'] ? true : false)
                 ));
             }
             return array(
