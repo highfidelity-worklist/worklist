@@ -121,7 +121,7 @@ class JobView extends View {
         $statusListMechanic = $this->read('statusListMechanic');
         $statusListRunner = $this->read('statusListRunner');
         $statusListCreator = $this->read('statusListCreator');
-
+        $selectedCurrentStatus = false;
         $ret = '';
         if (!
             ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) 
@@ -132,7 +132,10 @@ class JobView extends View {
             foreach ($statusListMechanic as $status) {
                 if ($status != $worklist['status']) {
                     $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' . $status . '">' . $printStatus  . '</option>';
+                    $ret .= '<li data-status="'. $status .'"><a>' . $printStatus  . '</a></li>';
+                } else if ($status == $worklist['status']) {
+                    $selectedCurrentStatus = true;
+                    $ret .= '<li class="job-status-selected" data-status="'. $status .'"><a>' . $worklist['status']  . '</a></li>';
                 }
             }
         } else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { 
@@ -140,7 +143,10 @@ class JobView extends View {
             foreach ($statusListRunner as $status) {
                 if ( $status != $worklist['status'] ) {
                     $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' .  $status . '">' . $printStatus . '</option>';
+                    $ret .= '<li data-status="'. $status .'"><a>' . $printStatus  . '</a></li>';
+                } else if ($status == $worklist['status']) {
+                    $selectedCurrentStatus = true;
+                    $ret .= '<li class="job-status-selected" data-status="'. $status .'"><a>' . $worklist['status']  . '</a></li>';
                 }
             }
         } else if (
@@ -153,9 +159,15 @@ class JobView extends View {
             foreach ($statusListCreator as $status) {
                 if (!($status == 'Suggestion' && $status != $worklist['status'])) {
                     $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' . $status . '">' . $printStatus . '</option>';
+                    $ret .= '<li data-status="'. $status .'"><a>' . $printStatus  . '</a></li>';
+                } else if ($status == $worklist['status']) {
+                    $selectedCurrentStatus = true;
+                    $ret .= '<li class="job-status-selected" data-status="'. $status .'"><a>' . $worklist['status']  . '</a></li>';
                 }
             }
+        }
+        if (!$selectedCurrentStatus) {
+            $ret .= '<li class="job-status-selected" data-status="'. $worklist['status'] .'"><a>' . $worklist['status']  . '</a></li>';
         }
 
         return $ret;
@@ -230,13 +242,13 @@ class JobView extends View {
         $ret = '';
         if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != '') {
             $ret .= 
-                '<span class="runnerName">' .
+                '<span class="job-info-heading">' .
                 'Designer:</span>' .
                 '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
-            $ret .= '<span class="runnerName">Designer:</span> Not funded';
+            $ret .= '<span class="job-info-heading">Designer:</span> Not funded';
         }
         return $ret;
     }
@@ -254,11 +266,11 @@ class JobView extends View {
             }
         }
         if ($mech == '') {
-            $mech = '<span class="mechanicName">Developer:</span>Not assigned';
+            $mech = '<span class="job-info-heading">Developer:</span>Not assigned';
         } else {
             $tooltip = isset($_SESSION['userid']) ? "Ping Developer" : "Log in to Ping Developer";
             $mech = 
-                '<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" >' . 
+                '<span  class="job-info-heading" title="' . $tooltip . '" >' .
                   '<a href="#">Developer:</a>' . 
                 '</span>' . 
                 '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" >' . $mech . '</a>';
@@ -938,5 +950,19 @@ class JobView extends View {
         $worklist = $this->worklist;
         $assignedUser = User::find($worklist['assigned_id']);
         return $assignedUser->getNickname();
+    }
+
+    public function skills() {
+        $skillModel = new SkillModel();
+        $skillList = $skillModel->loadAll();
+        $skills = array();
+        foreach($skillList as $skill) {
+            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
+            if ($this->editing() && in_array($skill->skill, $this->getJob()->getSkills())) {
+                $skillObj['checked'] = true;
+            }
+            array_push($skills, $skillObj);
+        }
+        return $skills;
     }
 }

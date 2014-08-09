@@ -10,13 +10,10 @@ var Job = {
         $('#statusCombo, #project_id').chosen({
             width: '200px'
         });
-
-        if (action == 'edit') {
-            $('select[name="runner"], select[name="status"], select[name="assigned"]').chosen({
-                width: '140px',
-                disable_search_threshold: 10
-            });
-        }
+        $('select[name="runner"], select[name="assigned"]').chosen({
+            width: '100%',
+            disable_search_threshold: 10
+        });
 
         if (status_error) {
             openNotifyOverlay(status_error, false);

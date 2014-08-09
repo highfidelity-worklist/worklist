@@ -325,27 +325,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-left: 15px !important;
 }
 
-.runnerName,
-.mechanicName,
-.assigneeName,
-.creatorName,
-.skills-label {
-    float: left;
-    width: 100%;
-    color: #007F7C;
-    margin-bottom: 2px;
-    font-weight: normal;
-}
-
-.runnerName a,
-.mechanicName a,
-.assigneeName a,
-.creatorName a,
-.skills-label a {
-    text-decoration: none;
-    color: #007F7C !important;
-}
-
 .changeRunner select {
     float: left;
 }
@@ -432,16 +411,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     display: block;
     color: #930;
-}
-
-#edit_review_url {
-    cursor: pointer;
-    color: #007F7C;
-}
-
-#edit_review_url:hover {
-    cursor: pointer;
-    text-decoration: underline;
 }
 
 .inline-label,
@@ -733,11 +702,12 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .notestext {
-    margin: 15px 0 25px;
     padding-right: 5px;
     word-wrap: break-word;
-    font-size: 1.1em;
+    font-size: 15px;
     line-height: 19px;
+    display: inline-block;
+    padding-top: 15px;
 }
 
 #for_view .notestext a, .comment a {
@@ -1063,12 +1033,6 @@ h1.newProject {
 .ui-menu .ui-menu-item a.ui-state-active {
     text-decoration:none !important;
     color: #000 !important;
-}
-
-
-.sandboxlink {
-    max-width: 340px;
-    overflow: hidden;
 }
 
 .relative {
