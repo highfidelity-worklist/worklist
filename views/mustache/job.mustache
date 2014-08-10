@@ -9,8 +9,9 @@
         <div class="col-sm-4 col-md-4">
           <div id="internal-edit">
                 {{#userIsInternal}}
+                    <span id="job-internal-edit">Saved!</span>
                     <span class="job-internal">
-                        <input type="checkbox" name="is_internal" {{#worklist.is_internal}}checked{{/worklist.is_internal}} id="is_internal" />
+                        <input type="checkbox" name="is_internal" {{#workitem.isInternal}}checked{{/workitem.isInternal}} id="is_internal" />
                         <label for="is_internal">Internal</label>
                     </span>
                 {{/userIsInternal}}
@@ -35,35 +36,36 @@
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
 <div class="top-bar">
-    <ul class="job-status">
+    <ul class="job-status {{#canChangeStatus}}job-status-editable{{/canChangeStatus}}">
         {{& editableStatusSelect}}
+        <li><span id="job-status-edit">Status Changed!</span></li>
     </ul>
 </div>
 <div class="col-sm-12 col-md-12 job-summary">
     <div class="col-sm-7 col-md-7 job-info">
         <ul class="col-sm-12 col-md-12">
-            <li class="col-sm-5 col-md-5 job-assignee">
-                {{#userIsInternal}}
-                <select name="assigned" data-placeholder="Select assignee">
-                    <option value="0">No one assigned</option>
-                    {{#internalUsers}}
-                        <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
-                            {{nickname}}
-                        </option>
-                    {{/internalUsers}}
-                </select>
-                {{/userIsInternal}}
-            </li>
-            <li class="col-sm-2 col-md-2 job-creator">
+           {{#userIsInternal}}
+                <li class="col-sm-5 col-md-5 job-assignee">
+                    <select name="assigned" data-placeholder="Select assignee">
+                        <option value="0">No one assigned</option>
+                        {{#internalUsers}}
+                            <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                                {{nickname}}
+                            </option>
+                        {{/internalUsers}}
+                    </select>
+                </li>
+            {{/userIsInternal}}
+            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-creator">
                 <span class="job-info-heading">
                     Creator:
                 </span>
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
             </li>
-            <li class="col-sm-2 col-md-2 job-runner">
+            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-runner">
                 {{& nonEditableRunnerBox}}
             </li>
-            <li class="col-sm-3 col-md-3 job-mechanic">
+            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-mechanic">
                 {{& mechanicBox}}
             </li>
         </ul>
@@ -91,19 +93,29 @@
             <span class="job-info-heading">
                 QA Testing:
             </span>
-            <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
+            {{#worklist.mechanic_id}}
+                <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
+            {{/worklist.mechanic_id}}
+            {{^worklist.mechanic_id}}
+                <span>Not assigned</span>
+            {{/worklist.mechanic_id}}
         </div>
-        <div class="col-sm-12 col-md-12 job-qa-sandbox">
-            <span id="edit_review_url" title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
-                Git branch:
-            </span>
-            <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}https://dev.worklist.net/~chinna007/worklist/18091</a>
-        </div>
+        {{#worklist.mechanic_id}}
+            <div class="col-sm-12 col-md-12 job-qa-sandbox">
+                    <span {{#canEditSandboxUrl}}id="edit_review_url"{{/canEditSandboxUrl}} title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
+                        Git branch:
+                    </span>
+                    {{#worklist.sandbox}}
+                        <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                    {{/worklist.sandbox}}
+                {{^worklist.sandbox}}
+                    <span>Not assigned</span>
+                {{/worklist.sandbox}}
+            </div>
+        {{/worklist.mechanic_id}}
         <div class="col-sm-12 col-md-12 job-qa-labels">
-            <span class="job-info-heading">
-                Labels
-            </span>
-            <ul id="labels">
+            <span class="job-info-heading" id="job-labels">Labels <i id="job-skills-edit">Saved!</i> </span>
+            <ul id="labels" class="{{#canEdit}}job-skills-editable{{/canEdit}}">
                 {{#skills}}
                     <li>
                         <input id="label{{id}}" type="checkbox" {{#checked}} checked {{/checked}}name="label[{{id}}]" value="{{skill}}" />
@@ -111,6 +123,34 @@
                     </li>
                 {{/skills}}
             </ul>
+        </div>
+        <div class="col-sm-12 col-md-12 job-code-review">
+            {{#canReview}}
+                <div class="code-review">
+                    <h4>Time for a code review!</h4>
+                    The code written for this job is ready to be reviewed.
+                    <strong>View the diff</strong> to see the code, then start the review ...
+                    {{^workitem.getCRStarted}}
+                        {{#userHasRights}}
+                            <input type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"
+                              title="Start a code review on this job." data-toggle="tooltip" />
+                        {{/userHasRights}}
+                        {{^userHasRights}}
+                            <input type="submit" value="Start Code Review" onClick="return false;"
+                              title="You are not authorized to Code Review this job." data-toggle="tooltip" />
+                        {{/userHasRights}}
+                    {{/workitem.getCRStarted}}
+                    {{#workitem.getCRStarted}}
+                        {{^workitem.getCRCompleted}}
+                            {{#canEndReview}}
+                                <input type="submit" value="End Code Review" onClick="return showEndReviewForm();"
+                                  title="End a code review on this job." data-toggle="tooltip" />
+                            {{/canEndReview}}
+                        {{/workitem.getCRCompleted}}
+                    {{/workitem.getCRStarted}}
+                    <div id="review-pointer"></div>
+                </div>
+            {{/canReview}}
         </div>
         <div class="col-sm-12 col-md-12 job-bid">
             <div class="moneyZone">

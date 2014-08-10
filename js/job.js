@@ -52,14 +52,6 @@ var Job = {
             return false;
         });
 
-        if (user_id) {
-            $.get('api.php?action=getSkills', function(data) {
-                var skillsData = eval(data);
-                var autoArgsSkills = autocompleteMultiple('getskills', skillsData);
-                $("#skills-edit").bind("keydown", autoArgsSkills.bind);
-                $("#skills-edit").autocomplete(autoArgsSkills);
-            });
-        }
         makeWorkitemTooltip(".worklist-item");
 
         $('#workitem-form').submit(function() {
@@ -74,10 +66,6 @@ var Job = {
         Entries.formatWorklistStatus();
 
         $.loggedin = (user_id > 0);
-
-        $(".editable").attr("title","Switch to Edit Mode").click(function() {
-            window.location.href = "./" + workitem_id + "?action=edit";
-        });
 
         $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
             event.stopPropagation();
@@ -115,21 +103,6 @@ var Job = {
 
         $('#commentform input[name=cancel]').addClass('hidden');
 
-        if ($('#is_internal').length) {
-            $('#is_internal').on('click', function() {
-                $.ajax({
-                    type: 'post',
-                    url: './job/toggleInternal/' + workitem_id,
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data.success) {
-                            // nothing to do here at this stage
-                        }
-                    }
-                });
-            });
-        }
-
         $('#following').click(function() {
             $.ajax({
                 type: 'post',
@@ -142,6 +115,20 @@ var Job = {
                     }
                 }
             });
+        });
+
+        $('ul.job-status-editable li').click(function() {
+            $('ul.job-status-editable li').removeClass('job-status-selected');
+            $(this).addClass('job-status-selected');
+            Job.update('status');
+        });
+
+        $('span.job-internal #is_internal').click(function() {
+            Job.update('internal');
+        });
+
+        $('ul.job-skills-editable li input').click(function() {
+            Job.update('skills');
         });
 
         // journal info accordian
@@ -1101,6 +1088,34 @@ var Job = {
                     });
                   return false;
                 });
+            }
+        });
+    },
+
+    update: function(mode) {
+        var skills = '';
+        $('#labels li input[name^="label"]').each(function() {
+            if ($(this).is(':checked')) {
+                skills += (skills.length ? ', ' : '') + $(this).val();
+            }
+        });
+        var status = $('.job-status-selected').data('status');
+        var is_internal = $("input[name='is_internal']").is(':checked') ? 1 : 0
+
+        $.ajax({
+            type: 'post',
+            url: './job/edit',
+            dataType: 'json',
+            data: {
+                status: status,
+                skills: skills,
+                worklist_id: workitem_id,
+                is_internal: is_internal
+            },
+            success: function(data) {
+                if (data.success) {
+                    $('#job-'+ mode + '-edit').show().fadeOut(8000);
+                }
             }
         });
     }

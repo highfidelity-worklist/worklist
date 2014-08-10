@@ -706,7 +706,7 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     word-wrap: break-word;
     font-size: 15px;
     line-height: 19px;
-    display: inline-block;
+    clear: left;
     padding-top: 15px;
 }
 
@@ -865,7 +865,8 @@ a.profile-link {
 
 #following,
 .switchmode,
-.switchmode-done {
+.switchmode-done,
+span#job-internal-edit {
     float: left;
 }
 
@@ -878,7 +879,7 @@ a.profile-link {
 
 .switchmode,
 .switchmode-done {
-    padding: 10px 17px 7px 10px;
+    padding: 8px 17px 5px 10px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;
@@ -887,7 +888,7 @@ a.profile-link {
 .switchmode a,
 .switchmode-done span {
     text-decoration: none;
-    color: #333;
+    color: #666;
 }
 
 .switchmode:hover a{
@@ -1103,7 +1104,7 @@ h1.newProject {
     }
 
     #tweet-link {
-        height: 35px;
+        height: 34px;
         padding: 10px 17px 15px 28px;
         background-position: 10px 10px;
     }

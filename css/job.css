@@ -1,6 +1,6 @@
 #tweet-link {
     float: left;
-    padding: 10px 17px 8px 28px;
+    padding: 10px 17px 4px 28px;
     background-position: 4px 10px;
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;
@@ -107,7 +107,8 @@ table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total)
 }
 
 @media (max-width: 960px) {
-    table.table-fees tr.row-feelist-live + tr:not(.row-feelist-live):not(#job-total):after {
+    body > .container-fluid {
+        margin: 0px;
     }
 }
 
@@ -260,7 +261,7 @@ section#footer li:nth-child(-n+3) {
     float: left;
     color: #999999;
     min-width: 105px;
-    padding: 9px 10px 9px 0;
+    padding: 9px 10px 5px 0;
     border-right: 2px solid #e1e8ea;
     border-bottom: 2px solid #e1e8ea;
 }
@@ -305,18 +306,18 @@ div.job-social:nth-child(1) {
 
 span.job-internal {
     float: left;
-    padding: 7px 13px 3px 5px;
-    background-position: 4px 10px;
-    background-repeat: no-repeat;
+    padding: 4px 12px 0px 8px;
     border-right: 2px solid #e1e8ea;
     border-bottom: 2px solid #e1e8ea;
 }
 
 div.job-social {
     padding-top: 20px;
+    font-size: 13px;
+    color: #666;
 }
 #following {
-    padding: 10px 14px 8px 10px;
+    padding: 10px 14px 4px 10px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;
@@ -324,7 +325,7 @@ div.job-social {
 }
 
 span.job-internal label {
-    color: #333333;
+    color: #666;
 }
 
 span.job-internal input {
@@ -383,6 +384,10 @@ ul.job-status {
     list-style: none;
     padding-left: 0px;
     margin-bottom: 7px;
+}
+
+ul.job-status-editable li a {
+    cursor: pointer;
 }
 
 ul.job-status li {
@@ -460,10 +465,11 @@ div.job-summary div.job-info ul:nth-child(1) {
     padding-bottom: 15px;
     border-bottom: 2px solid #e1e8ea;
     margin-bottom: 0px;
+    float: left;
 }
 
 div.job-summary div.job-info ul:nth-child(1) > li {
-    display: inline-block;
+    float: left;
     padding-left: 0px;
 }
 
@@ -506,6 +512,7 @@ div.job-qa-testing {
 
 span#edit_review_url {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 div.job-meta-info > div {
@@ -541,16 +548,76 @@ div.job-bid {
     font-size: 13px;
     padding: 1px 7px 1px;
     white-space: nowrap;
-    cursor: pointer;
     color: #333;
     font-weight: normal;
+    cursor: default;
 }
 
-#labels li input[type="checkbox"]:checked + label {
-    background-color: #007F7c;
-    color: #fff;
+.job-skills-editable li input[type="checkbox"] + label {
+    cursor: pointer !important;
+}
+
+.job-skills-editable li input[type="checkbox"]:checked + label {
+    background-color: #007F7c !important;
+    color: #fff !important;
 }
 
 #labels li {
     display: inline-block;
+}
+
+span#job-internal-edit,
+span#job-status-edit {
+    padding: 6px;
+    font-style: italic;
+    color: #007f7c;
+    font-size: 13px;
+    display: none;
+}
+
+#job-skills-edit {
+    display: none;
+}
+
+span#job-labels i {
+    font-style: italic;
+    color: #007f7c;
+    font-size: 13px;
+}
+
+li.job-mechanic,
+li.job-runner,
+li.job-creator {
+    overflow: hidden;
+    position: relative;
+    height: 35px;
+}
+
+li.job-mechanic:after,
+li.job-runner:after,
+li.job-creator:after {
+    content: "";
+    width: 25px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 56%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(56%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
+}
+
+@media  (max-width: 767px) and (max-width : 768px) {
+    div.job-qa-testing {
+        border: none;
+        padding-bottom: 0px;
+    }
+
+    div#internal-edit {
+        float: none;
+    }
 }

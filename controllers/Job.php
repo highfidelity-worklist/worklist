@@ -1500,7 +1500,7 @@ class JobController extends Controller {
         }
 
         $worklist_id = isset($_REQUEST['worklist_id']) ? $_REQUEST['worklist_id'] : $worklist_id;
-        $notifyEmpty  =true;
+        $notifyEmpty = true;
         $workitem = new WorkItem();
         try {
             $workitem->loadById($worklist_id);
@@ -1529,7 +1529,7 @@ class JobController extends Controller {
         $status_change = '';
         $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
         $fileUpload = $_REQUEST['fileUpload'];
-        $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
+        $statusList = $this->getStatusList($workitem, $user);
         $args = array(
                 'summary',
                 'notes',
@@ -1537,7 +1537,8 @@ class JobController extends Controller {
                 'project_id',
                 'sandbox',
                 'budget_id',
-                'assigned'
+                'assigned',
+                'is_internal'
             );
 
             foreach ($args as $arg) {
@@ -1558,8 +1559,13 @@ class JobController extends Controller {
                 $old_budget_id = (int) $workitem->getBudget_id();
                 $workitem->setBudget_id($budget_id);
             }
-            $is_internal = !empty($_REQUEST['is_internal'])? (int) $_REQUEST['is_internal'] : 0;
-            $workitem->setIs_internal($is_internal);
+
+            if (isset($_REQUEST['is_internal']) && $user->isInternal()
+                && $workitem->isInternal() != (int) $_REQUEST['is_internal']) {
+                $is_internal = !empty($_REQUEST['is_internal'])? (int) $_REQUEST['is_internal'] : 0;
+                $workitem->setIs_internal($is_internal);
+                $workitem->save();
+            }
             // summary
             if (isset($_REQUEST['summary']) && $workitem->getSummary() != $_REQUEST['summary']) {
                 $summary = $_REQUEST['summary'];
@@ -1570,7 +1576,7 @@ class JobController extends Controller {
                 }
             }
 
-            if (isset($_REQUEST['skills'])) {
+            if (isset($_REQUEST['skills']) && !empty($_REQUEST['skills'])) {
                 $skillsArr = explode(',', $_REQUEST['skills']);
                 // remove empty values
                 foreach ($skillsArr as $key => $value) {
@@ -1583,7 +1589,7 @@ class JobController extends Controller {
                 $skillsCur = $workitem->getSkills();
                 // have skills been updated?
                 $skillsDiff = array_diff($skillsArr, $skillsCur);
-                if (is_array($skillsDiff) && ! empty($skillsDiff)) {
+                if (is_array($skillsDiff) && !empty($skillsDiff)) {
                     if ($workitem->getStatus() != 'Draft') {
                         $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
                     }
@@ -1591,13 +1597,13 @@ class JobController extends Controller {
                     $new_update_message = rtrim($new_update_message, ', ') . '. ';
                     $job_changes[] = '-skills';
                 }
+
                 $workitem->setWorkitemSkills($skillsArr);
+                $workitem->save();
             }
 
-            // status
-            if ($workitem->getIsRelRunner()
-                || $userId == $workitem->getRunnerId()
-                || (in_array($status, $statusListMechanic))) {
+            if ($workitem->getIsRelRunner() || $userId == $workitem->getRunnerId()
+                || (in_array($status, $statusList))) {
 
                 if ($workitem->getStatus() != $status && !empty($status) && $status != 'Draft') {
                     if ($this->changeStatus($workitem, $status, $user)) {
@@ -1677,7 +1683,7 @@ class JobController extends Controller {
                 $notifyEmpty = false;
             }
 
-            if ($workitem->getStatus() != 'Draft') {
+            if ($workitem->getStatus() != 'Draft' && !$notifyEmpty) {
                 $journal_message .= '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] .
                                     $new_update_message . $related;
 
@@ -1716,6 +1722,7 @@ class JobController extends Controller {
                     $file->save();
                 }
             }
+
            if (!$notifyEmpty) {
                 $options = array(
                     'type' => 'modified',
@@ -1731,11 +1738,29 @@ class JobController extends Controller {
             }
             echo json_encode(array(
                 'return' => "Done!",
-                'workitem' => $workitem->getId()
+                'workitem' => $workitem->getId(),
+                'success' =>  true
             ));
     }
 
     private function canEdit($workitem, $user) {
        return ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner())) && $workitem->getStatus() != 'Done') || ($workitem->getCreatorId() == $user->getId() && ($workitem->getStatus() == 'Suggestion') ));
+    }
+
+    private function getStatusList($workitem, $user) {
+        $statusList = array();
+        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner()))
+            &&($workitem->getMechanicId() == $user->getId())
+            && $workitem->getStatus() != 'Done') {
+            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
+        } else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner())) {
+            $statusList = array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass");
+        } else if ($workitem->getCreatorId() == $user->getId()
+            && $workitem->getStatus() != 'In Progress'
+            && $workitem->getStatus() != 'QA Ready' && $workitem->getStatus() != 'Review'
+            && $workitem->getStatus() != 'Merged' && $workitem->getStatus() != 'Done') {
+            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");;
+        }
+        return $statusList;
     }
 }
