@@ -246,7 +246,7 @@ var AddJob = {
                 summary: $("input[name='summary']").val(),
                 is_internal: $("input[name='is_internal']").is(':checked') ? 1 : 0,
                 files: $("input[name='files']").val(),
-                notes: $("textarea[name='notes']").val(),
+                notes: $.trim($("textarea[name='notes']").val()),
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='itemStatus']").val(),
                 skills: skills,

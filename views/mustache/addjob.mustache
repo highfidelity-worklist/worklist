@@ -72,7 +72,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
           {{#currentUser.is_runner}}
               <select id="itemStatusCombo" name="itemStatus">
                 {{#status}}
@@ -85,12 +85,12 @@
         </div>
 
         {{#userIsInternal}}
-        <div class="col-sm-offset-0 col-sm-5" id="save-button">
+        <div class="col-sm-offset-0 col-sm-6" id="save-button">
             <input type="checkbox" name="is_internal" {{#editing}} {{#getJob.isInternal}}checked{{/getJob.isInternal}}{{/editing}} id="is_internal" />
             <label for="is_internal">Internal</label>
         {{/userIsInternal}}
         {{^userIsInternal}}
-        <div class="col-sm-offset-2 col-sm-3">
+        <div class="col-sm-offset-2 col-sm-4">
         {{/userIsInternal}}
             <button class="btn btn-primary" type="submit" name="save_item">{{#editing}}Save changes{{/editing}} {{^editing}}Add Job{{/editing}}</button>
         </div>

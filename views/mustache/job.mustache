@@ -11,8 +11,10 @@
                 {{#userIsInternal}}
                     <span id="job-internal-edit">Saved!</span>
                     <span class="job-internal">
+                      <a>
                         <input type="checkbox" name="is_internal" {{#workitem.isInternal}}checked{{/workitem.isInternal}} id="is_internal" />
                         <label for="is_internal">Internal</label>
+                      </a>
                     </span>
                 {{/userIsInternal}}
                 {{#canEditAndNotEditing}}
@@ -62,28 +64,35 @@
             <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-runner">
                 {{& nonEditableRunnerBox}}
             </li>
-            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-mechanic">
+            <li class="{{#userIsInternal}}col-sm-3 col-md-3{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-mechanic">
                 {{& mechanicBox}}
             </li>
         </ul>
         <p class="notestext">{{& notesHtmlWithLinks}}</p>
-        <ul id="entries">
-            {{& taskEntries}}
-        </ul>
-        {{#canComment}}
-        <a name="commentform"></a>
-        <form action="" method="post" id="commentform">
-            <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
-            <input type="hidden" name="user_id" value="{{currentUser.id}}" />
-            <input type="hidden" name="comment_id" value="" />
-            <div class="form-group">
-                <textarea name="comment" class="form-control autogrow mentions"></textarea>
+        <div id="commentZone">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="info-comments">Comments &amp; Activity</h3>
+                </div>
             </div>
-            <input type="submit" name="newcomment" value="Comment" />
-            <span class="tip">You can mention users with <strong>@username</strong></span>
-            <input type="button" name="cancel" value="Cancel" />
-        </form>
-        {{/canComment}}
+            <ul id="entries">
+                {{& taskEntries}}
+            </ul>
+            {{#canComment}}
+            <a name="commentform"></a>
+            <form action="" method="post" id="commentform">
+                <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
+                <input type="hidden" name="user_id" value="{{currentUser.id}}" />
+                <input type="hidden" name="comment_id" value="" />
+                <div class="form-group">
+                    <textarea name="comment" class="form-control autogrow"></textarea>
+                </div>
+                <input type="submit" name="newcomment" value="Comment" />
+                <span class="tip">You can mention users with <strong>@username</strong></span>
+                <input type="button" name="cancel" value="Cancel" />
+            </form>
+            {{/canComment}}
+        </div>
     </div>
     <div class="col-sm-5 col-md-5 job-meta-info">
         <div class="col-sm-12 col-md-12 job-qa-testing">
@@ -131,8 +140,8 @@
                 {{/skills}}
             </ul>
         </div>
+        {{#canReview}}
         <div class="col-sm-12 col-md-12 job-code-review">
-            {{#canReview}}
                 <div class="code-review">
                     <h4>Time for a code review!</h4>
                     The code written for this job is ready to be reviewed.
@@ -140,25 +149,25 @@
                     {{^workitem.getCRStarted}}
                         {{#userHasRights}}
                             <input type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"
-                              title="Start a code review on this job." data-toggle="tooltip" />
+                            title="Start a code review on this job." data-toggle="tooltip" />
                         {{/userHasRights}}
                         {{^userHasRights}}
                             <input type="submit" value="Start Code Review" onClick="return false;"
-                              title="You are not authorized to Code Review this job." data-toggle="tooltip" />
+                            title="You are not authorized to Code Review this job." data-toggle="tooltip" />
                         {{/userHasRights}}
                     {{/workitem.getCRStarted}}
                     {{#workitem.getCRStarted}}
                         {{^workitem.getCRCompleted}}
                             {{#canEndReview}}
                                 <input type="submit" value="End Code Review" onClick="return showEndReviewForm();"
-                                  title="End a code review on this job." data-toggle="tooltip" />
+                                title="End a code review on this job." data-toggle="tooltip" />
                             {{/canEndReview}}
                         {{/workitem.getCRCompleted}}
                     {{/workitem.getCRStarted}}
                     <div id="review-pointer"></div>
                 </div>
-            {{/canReview}}
-        </div>
+            </div>
+        {{/canReview}}
         <div class="col-sm-12 col-md-12 job-bid">
             <div class="moneyZone">
                     <div id="bid-panel">

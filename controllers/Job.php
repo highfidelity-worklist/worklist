@@ -1555,7 +1555,7 @@ class JobController extends Controller {
             $project_id = !empty($_REQUEST['project_id']) ? (int) $_REQUEST['project_id'] : 0;
             $sandbox = isset($_REQUEST['sandbox']) ?  $_REQUEST['sandbox'] : '';
             $old_budget_id = -1;
-            if ($workitem->getBudget_id() != $budget_id) {
+            if (isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
                 $new_update_message .= 'Budget changed. ';
                 $old_budget_id = (int) $workitem->getBudget_id();
                 $workitem->setBudget_id($budget_id);
@@ -1618,11 +1618,12 @@ class JobController extends Controller {
                 }
             }
             $related = "";
-            if (isset($_REQUEST['notes']) && ($workitem->getNotes() != $_REQUEST['notes'])) {
-                $workitem->setNotes($_REQUEST['notes']);
+            $notes = trim($_REQUEST['notes']);
+            if (!empty($notes) && ($workitem->getNotes() != $notes)) {
+                $workitem->setNotes($notes);
                 $new_update_message .= "Notes changed. ";
                 $job_changes[] = '-notes';
-                $related = getRelated($_REQUEST['notes']);
+                $related = getRelated($notes);
             }
             // project
 
@@ -1634,7 +1635,7 @@ class JobController extends Controller {
                 }
             }
             // Sandbox
-            if ($workitem->getSandbox() != $sandbox) {
+            if (isset($_REQUEST['sandbox']) && $workitem->getSandbox() != $sandbox) {
                 $workitem->setSandbox($sandbox);
                 $new_update_message .= "Branch changed. ";
                 $job_changes[] = '-branch';

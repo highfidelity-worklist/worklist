@@ -219,11 +219,11 @@ section#footer li:nth-child(-n+3) {
     padding:0px 8px 19px 8px;
 }
 
-#page-content {
+.job-bid {
     margin-top: 15px;
 }
 
-#page-content table {
+.job-bid table {
     font-size: 13px;
     border: none !important;
     table-layout: fixed;
@@ -305,10 +305,10 @@ div.job-social:nth-child(1) {
 }
 
 span.job-internal {
+    border-bottom: 2px solid #E1E8EA;
+    border-right: 2px solid #E1E8EA;
     float: left;
-    padding: 4px 12px 0px 8px;
-    border-right: 2px solid #e1e8ea;
-    border-bottom: 2px solid #e1e8ea;
+    padding: 3px 14px 2px 10px;
 }
 
 div.job-social {
@@ -330,7 +330,10 @@ span.job-internal label {
 
 span.job-internal input {
     position: relative;
-    top: 2px;
+    top: 3px;
+    margin: 0px;
+    width: 16px;
+    height: 16px;
 }
 
 div#internal-edit {
@@ -620,13 +623,7 @@ li.job-creator:after {
 span.edit-mode-only {
     border-right: 2px solid #e1e8ea;
 }
-@media  (max-width: 599px) and (max-width : 600px) {
-    li.job-mechanic,
-    li.job-runner,
-    li.job-creator {
-        max-width: 80px;
-    }
-}
+
 
 @media  (max-width: 767px) and (max-width : 768px) {
     div.job-qa-testing {
@@ -640,5 +637,21 @@ span.edit-mode-only {
 
     div.job-info ul {
         width: 100%;
+    }
+
+    ul.job-status {
+        font-size: 13px;
+    }
+
+    div.job-summary div.job-info ul:nth-child(1) li:nth-child(1) {
+        max-width: none;
+        width: 100%;
+        padding-right: 0px;
+    }
+
+    li.job-mechanic,
+    li.job-runner,
+    li.job-creator {
+        width: 33%;
     }
 }
