@@ -82,13 +82,19 @@ class AddJobView extends View {
                         array("name" => "In Progress", "selected" => false),
                         array("name" => "Draft", "selected" => false)
                       );
+        $statusMatch = false;
         if ($this->editing) {
             $statusList[0]['selected'] = false;
+
             foreach($statusList as $key => $status) {
                 if ($status['name'] == $this->getJob()->getStatus()) {
                     $statusList[$key]['selected'] = true;
+                    $statusMatch = true;
                     breaK;
                 }
+            }
+            if (!$statusMatch) {
+                array_push($statusList, array("name" => $this->getJob()->getStatus(), "selected" => true));
             }
         }
         return $statusList;

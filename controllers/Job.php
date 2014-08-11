@@ -1555,7 +1555,7 @@ class JobController extends Controller {
             $project_id = !empty($_REQUEST['project_id']) ? (int) $_REQUEST['project_id'] : 0;
             $sandbox = isset($_REQUEST['sandbox']) ?  $_REQUEST['sandbox'] : '';
             $old_budget_id = -1;
-            if (isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
+            if ($budget_id && isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
                 $new_update_message .= 'Budget changed. ';
                 $old_budget_id = (int) $workitem->getBudget_id();
                 $workitem->setBudget_id($budget_id);
