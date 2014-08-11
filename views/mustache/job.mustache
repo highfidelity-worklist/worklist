@@ -11,10 +11,8 @@
                 {{#userIsInternal}}
                     <span id="job-internal-edit">Saved!</span>
                     <span class="job-internal">
-                      <a>
                         <input type="checkbox" name="is_internal" {{#workitem.isInternal}}checked{{/workitem.isInternal}} id="is_internal" />
                         <label for="is_internal">Internal</label>
-                      </a>
                     </span>
                 {{/userIsInternal}}
                 {{#canEditAndNotEditing}}
