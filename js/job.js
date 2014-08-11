@@ -131,6 +131,8 @@ var Job = {
             Job.update('skills');
         });
 
+        $('select[name="assigned"]').change(Job.checkAssignedUserAndUpdate);
+
         // journal info accordian
         // flag to say we've not loaded anything in there yet
         $.journalChat = false;
@@ -1093,30 +1095,39 @@ var Job = {
     },
 
     update: function(mode) {
+        var data = {};
         var skills = '';
         $('#labels li input[name^="label"]').each(function() {
             if ($(this).is(':checked')) {
                 skills += (skills.length ? ', ' : '') + $(this).val();
             }
         });
-        var status = $('.job-status-selected').data('status');
-        var is_internal = $("input[name='is_internal']").is(':checked') ? 1 : 0
-
+        data.skills = skills;
+        if (mode == 'assignee') {
+            data.assigned = $('select[name="assigned"]').val();
+        }
+        data.status = $('.job-status-selected').data('status');
+        data.is_internal = $("input[name='is_internal']").is(':checked') ? 1 : 0;
+        data.worklist_id = workitem_id;
         $.ajax({
             type: 'post',
             url: './job/edit',
             dataType: 'json',
-            data: {
-                status: status,
-                skills: skills,
-                worklist_id: workitem_id,
-                is_internal: is_internal
-            },
+            data: data,
             success: function(data) {
                 if (data.success) {
                     $('#job-'+ mode + '-edit').show().fadeOut(8000);
                 }
             }
         });
+    },
+
+    checkAssignedUserAndUpdate: function() {
+        if (parseInt($(this).val()) > 0) {
+            $("input[name='is_internal']").prop('checked', true);
+            $('ul.job-status-editable li').removeClass('job-status-selected');
+            $('ul.job-status-editable').find("[data-status='Bidding']").addClass('job-status-selected');
+            Job.update('assignee');
+        }
     }
 };

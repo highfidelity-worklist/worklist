@@ -462,7 +462,7 @@ div.job-summary div.job-info ul:nth-child(1) {
     list-style: none;
     padding-left: 0px;
     padding-right: 0px;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
     border-bottom: 2px solid #e1e8ea;
     margin-bottom: 0px;
     float: left;
@@ -471,6 +471,7 @@ div.job-summary div.job-info ul:nth-child(1) {
 div.job-summary div.job-info ul:nth-child(1) > li {
     float: left;
     padding-left: 0px;
+    margin-bottom: 5px;
 }
 
 div.job-summary div.job-info ul:nth-child(1) li:nth-child(1) {
@@ -562,6 +563,11 @@ div.job-bid {
     color: #fff !important;
 }
 
+li.job-skills-noneditable input[type="checkbox"] + label {
+    background-color: #007F7c !important;
+    color: #fff !important;
+}
+
 #labels li {
     display: inline-block;
 }
@@ -611,6 +617,17 @@ li.job-creator:after {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
 }
 
+span.edit-mode-only {
+    border-right: 2px solid #e1e8ea;
+}
+@media  (max-width: 599px) and (max-width : 600px) {
+    li.job-mechanic,
+    li.job-runner,
+    li.job-creator {
+        max-width: 80px;
+    }
+}
+
 @media  (max-width: 767px) and (max-width : 768px) {
     div.job-qa-testing {
         border: none;
@@ -619,5 +636,9 @@ li.job-creator:after {
 
     div#internal-edit {
         float: none;
+    }
+
+    div.job-info ul {
+        width: 100%;
     }
 }

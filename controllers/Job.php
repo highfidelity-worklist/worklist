@@ -1551,8 +1551,9 @@ class JobController extends Controller {
 
             // code to add specifics to journal update messages
             $new_update_message='';
-            $budget_id = !empty($_REQUEST['budget_id'])? (int) $_REQUEST['budget_id'] : 0;
-            $project_id = !empty($_REQUEST['project_id'])? (int) $_REQUEST['project_id'] : 0;
+            $budget_id = !empty($_REQUEST['budget_id']) ? (int) $_REQUEST['budget_id'] : 0;
+            $project_id = !empty($_REQUEST['project_id']) ? (int) $_REQUEST['project_id'] : 0;
+            $sandbox = isset($_REQUEST['sandbox']) ?  $_REQUEST['sandbox'] : '';
             $old_budget_id = -1;
             if ($workitem->getBudget_id() != $budget_id) {
                 $new_update_message .= 'Budget changed. ';
@@ -1640,8 +1641,9 @@ class JobController extends Controller {
             }
 
             // Assignee
+            $assigned = !empty($_REQUEST['assigned'])? (int) $_REQUEST['assigned'] : 0;
             $assigneeChanged = false;
-            if ($workitem->getAssigned_id() != $assigned) {
+            if ($user->isInternal() && isset($_REQUEST['assigned']) && $workitem->getAssigned_id() != $assigned) {
                 if ((int) $assigned == 0) {
                     $workitem->setAssigned_id(0);
                     $new_update_message .= "Assignee removed. ";

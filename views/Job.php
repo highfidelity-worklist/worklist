@@ -90,7 +90,7 @@ class JobView extends View {
     }
 
     public function canEditAndNotEditing() {
-        return $this->allowEdit && $this->action != 'edit';
+        return $this->allowEdit;
     }
 
     public function canEditAndEditing() {
@@ -124,27 +124,25 @@ class JobView extends View {
         $selectedCurrentStatus = false;
         $statusList = array();
         $ret = '';
-        if (!
-            ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) 
-          &&($worklist['mechanic_id'] == $this->currentUser['id'])
-          && $worklist['status'] != 'Done') 
-        { 
+        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner))
+          && $worklist['mechanic_id'] > 0 &&  ($worklist['mechanic_id'] == $this->currentUser['id'])
+          && $worklist['status'] != 'Done') {
             //mechanics
             $statusList = $statusListMechanic;
-
         } else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { 
             //runners and admins
             $statusList = $statusListRunner;
 
-        } else if (
-             $worklist['creator_id']== $this->currentUser['id'] 
+        } else if ($worklist['creator_id'] == $this->currentUser['id']
           && $worklist['status'] != 'In Progress'
           && $worklist['status'] != 'QA Ready' && $worklist['status'] != 'Review'
           && $worklist['status'] != 'Merged' && $worklist['status'] != 'Done'
+          && $worklist['creator_id'] > 0
         ) {
             //creator
             $statusList = $statusListCreator;
         }
+
         foreach ($statusList as $status) {
             $printStatus = $status == 'Review' ? 'Code Review' : $status;
             $actualStatus = $status == 'Code Review' ? 'Review' : $status;

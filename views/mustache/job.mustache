@@ -16,11 +16,8 @@
                     </span>
                 {{/userIsInternal}}
                 {{#canEditAndNotEditing}}
-                    {{#statusDone}}
-                        <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
-                    {{/statusDone}}
                     {{^statusDone}}
-                        <span class="switchmode wl-icon-edit" id="switchmode_edit">
+                        <span class="switchmode wl-icon-edit {{^userIsInternal}}edit-mode-only{{/userIsInternal}}" id="switchmode_edit">
                             <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
                                 <span class="glyphicon glyphicon-pencil"></span> <span id="edit-text">Edit</span>
                             </a>
@@ -102,12 +99,12 @@
         </div>
         {{#worklist.mechanic_id}}
             <div class="col-sm-12 col-md-12 job-qa-sandbox">
-                    <span {{#canEditSandboxUrl}}id="edit_review_url"{{/canEditSandboxUrl}} title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
-                        Git branch:
-                    </span>
-                    {{#worklist.sandbox}}
-                        <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
-                    {{/worklist.sandbox}}
+                <span {{#canEditSandboxUrl}}id="edit_review_url"{{/canEditSandboxUrl}} title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
+                    Git branch:
+                </span>
+                {{#worklist.sandbox}}
+                    <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                {{/worklist.sandbox}}
                 {{^worklist.sandbox}}
                     <span>Not assigned</span>
                 {{/worklist.sandbox}}
@@ -117,10 +114,20 @@
             <span class="job-info-heading" id="job-labels">Labels <i id="job-skills-edit">Saved!</i> </span>
             <ul id="labels" class="{{#canEdit}}job-skills-editable{{/canEdit}}">
                 {{#skills}}
-                    <li>
-                        <input id="label{{id}}" type="checkbox" {{#checked}} checked {{/checked}}name="label[{{id}}]" value="{{skill}}" />
-                        <label for="label{{id}}">{{skill}}</label>
-                    </li>
+                    {{^canEdit}}
+                      {{#checked}}
+                            <li class="job-skills-noneditable">
+                                <input id="label{{id}}" type="checkbox"  checked name="label[{{id}}]" value="{{skill}}" />
+                                <label for="label{{id}}">{{skill}}</label>
+                            </li>
+                        {{/checked}}
+                    {{/canEdit}}
+                    {{#canEdit}}
+                        <li>
+                            <input id="label{{id}}" type="checkbox" {{#checked}}checked{{/checked}}  name="label[{{id}}]" value="{{skill}}" />
+                            <label for="label{{id}}">{{skill}}</label>
+                        </li>
+                    {{/canEdit}}
                 {{/skills}}
             </ul>
         </div>
