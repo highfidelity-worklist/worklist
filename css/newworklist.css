@@ -1316,18 +1316,6 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
         top: 48px;
     }
 
-    /*#nav-scroller {
-        visibility: visible;
-    }
-    .navbar-inverse .navbar-collapse{
-        overflow-y: scroll;
-        visibility: hidden;
-    }
-
-    #contentScroller {
-        visibility:visible;
-    }*/
-
     #footer {
         display: none;
     }
