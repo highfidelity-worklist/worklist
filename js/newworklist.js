@@ -1,6 +1,16 @@
 var isJobsPage = false;
 var NewWorklist = {
     init: function() {
+
+        if($( window ).width() <= '450'){
+            $(".dropdown-navmenu").on('hover, touchstart', function(){
+                $('body').css('overflow', 'hidden');
+            });
+            $("body > section").hover(function(){
+                $('body').css('overflow', 'auto');
+            });
+        }
+
         $(document).ajaxSend(function(event, request, settings) {
             if (settings.url == './status' && settings.type.toUpperCase() == 'POST') {
                 return;
