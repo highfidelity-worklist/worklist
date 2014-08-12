@@ -36,3 +36,9 @@ table {
 #budgethistory .pagination {
     margin: 0 auto;
 }
+
+@media (max-width: 480px) {
+    #profile.tab-pane {
+        padding: 20px 0px;
+    }
+}
