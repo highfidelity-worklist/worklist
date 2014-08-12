@@ -308,13 +308,9 @@ span.job-internal {
     border-bottom: 2px solid #E1E8EA;
     border-right: 2px solid #E1E8EA;
     float: left;
-    padding: 3px 12px 6px 9px;
+    padding: 2px 12px 6px 9px;
 }
 
-span.job-internal a {
-    text-decoration: none;
-    cursor: default;
-}
 div.job-social {
     padding-top: 20px;
     font-size: 13px;
@@ -331,15 +327,22 @@ div.job-social {
 
 span.job-internal label {
     color: #666;
-    margin: 0px;
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    position: relative;
+    top: 4px;
 }
 
 span.job-internal input {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin:0;
+    vertical-align: bottom;
     position: relative;
-    top: 3px;
-    margin: 0px;
-    width: 15px;
-    height: 17px;
+    top: -2px;
+    *overflow: hidden;
 }
 
 div#internal-edit {
