@@ -668,3 +668,16 @@ span.edit-mode-only {
         border-left: 2px solid #E1E8EA;
     }
 }
+
+@media  (max-width: 529px) and (max-width : 530px) {
+    span.job-internal {
+        border-left: 0px;
+    }
+
+    div.job-social > div:nth-child(1),
+    div.job-social > div:nth-child(2) {
+        width: 100%;
+        clear: both;
+        height: 33px;
+    }
+}
