@@ -7,7 +7,7 @@ var AddJob = {
     init: function(job_id, editing) {
         AddJob.jobId = job_id;
         AddJob.editing = editing;
-        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"], #budget-source-combo').chosen({
+        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
             width: '100%',
             disable_search_threshold: 10
         });
@@ -252,7 +252,8 @@ var AddJob = {
                 skills: skills,
                 fileUpload: {uploads: AddJob.uploadedFiles},
                 budget_id: $('#budget-source-combo').val() != null ? $('#budget-source-combo').val() : 0,
-                worklist_id: AddJob.jobId
+                worklist_id: AddJob.jobId,
+                runner_id: $("select[name='runner']").val()
             },
             type: 'POST',
             success: function(json) {

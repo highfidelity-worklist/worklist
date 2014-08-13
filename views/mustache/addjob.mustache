@@ -1,7 +1,17 @@
 <form method="post" id="addJob">
     <div class="row">
+       {{#editing}}
+        {{#canReassignRunner}}
+                <div class="col-sm-12">
+                    <p>Designer:</p>
+                    <div id="job-designer">
+                        {{& editableRunnerBox}}
+                    </div>
+                </div>
+            {{/canReassignRunner}}
+        {{/editing}}
         <div class="col-sm-4">
-            <p>{{^editing}}Job is for this project...{{/editing}}{{#editing}}Job <b>#{{getJob.getId}}</b>, for project:{{/editing}}</p>
+            <p>{{^editing}}Job is for this project...{{/editing}}{{#editing}}Job <b>#{{workitem.getId}}</b>, for project:{{/editing}}</p>
             <select id="itemProjectCombo" name="itemProject" data-placeholder="Select project">
                 {{#projects}}
                     <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
@@ -28,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-sm-9">
-            <input type="text" id="summary" {{#editing}} value="{{getJob.getSummary}}" {{/editing}} name="summary" class="form-control" placeholder="Title" />
+            <input type="text" id="summary" {{#editing}} value="{{workitem.getSummary}}" {{/editing}} name="summary" class="form-control" placeholder="Title" />
         </div>
     </div>
     {{^editing}}
@@ -40,7 +50,11 @@
                     {{#internalUsers}}
                         <option value="{{getId}}">{{getNickname}}</option>
                     {{/internalUsers}}
-                </select>
+               3
+Consider using 'dppx' units, as in CSS 'dpi' means dots-per-CSS-inch, not dots-per-physical-inch, so does not correspond to the actual 'dpi' of a screen. In media query expression: only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 144dpi)
+Consider using 'dppx' units, as in CSS 'dpi' means dots-per-CSS-inch, not dots-per-physical-inch, so does not correspond to the actual 'dpi' of a screen. In media query expression: not all, only screen and (min-resolution: 192dpi)
+Uncaught SyntaxError: Unexpected token , edit:220
+ </select>
             </div>
         </section>
         {{/userIsInternal}}
@@ -49,7 +63,7 @@
         <div class="col-md-9 col-sm-9">
             <label for="notes">Description</label>
             <textarea class="form-control autogrow mentions" name="notes" id="notes"
-              placeholder="describe the work necessary to successfully complete this job">{{#editing}}{{getJob.getNotes}} {{/editing}}</textarea>
+              placeholder="describe the work necessary to successfully complete this job">{{#editing}}{{workitem.getNotes}} {{/editing}}</textarea>
         </div>
         <div class="col-sm-3">
             <label>Labels</label>
@@ -86,7 +100,7 @@
 
         {{#userIsInternal}}
         <div class="col-sm-offset-0 col-sm-6" id="save-button">
-            <input type="checkbox" name="is_internal" {{#editing}} {{#getJob.isInternal}}checked{{/getJob.isInternal}}{{/editing}} id="is_internal" />
+            <input type="checkbox" name="is_internal" {{#editing}} {{#workitem.isInternal}}checked{{/workitem.isInternal}}{{/editing}} id="is_internal" />
             <label for="is_internal">Internal</label>
         {{/userIsInternal}}
         {{^userIsInternal}}
@@ -98,6 +112,6 @@
 </form>
 <script type="text/javascript">
     $(function() {
-        AddJob.init({{#editing}}{{getJob.getId}}{{/editing}}{{^editing}}0{{/editing}}, {{#editing}}true{{/editing}}{{^editing}}false{{/editing}});
+        AddJob.init({{#editing}}{{workitem.getId}}{{/editing}}{{^editing}}0{{/editing}}, {{#editing}}true{{/editing}}{{^editing}}false{{/editing}});
     })
 </script>

@@ -197,34 +197,6 @@ class JobView extends View {
         return $this->workitem_project->getRepo_type() == 'git';
     }
 
-    public function editableRunnerBox() {
-        $workitem = $this->workitem;
-        $worklist = $this->worklist;
-        $user = $this->user;
-        $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
-        $ret = ' ';
-        if ($worklist['runner_nickname'] != 'Not funded') {
-            $ret .= 
-                '<span class="inline-label"><a href="./user/' . $worklist['runner_id'] . '"' .
-                ' data-user-id="' . $worklist['runner_id'] . '">Designer</a></span>
-                ';
-        } else {
-            $ret .= $worklist['runner_nickname'];
-        }
-        $ret .= '<span class="changeRunner"><select name="runner">';
-        foreach ($runnerslist as $r) {
-            $ret .= 
-                '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . 
-                    $r->getNickname() . 
-                '</option>';
-        }
-        $ret .= 
-            '</select>' .
-            '<input type="button" class="smbutton" name="changerunner" value="Change Designer" />' .
-            '</span>';
-        return $ret;
-    }
-
     public function nonEditableRunnerBox() {
         $worklist = $this->worklist;
         $ret = '';

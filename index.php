@@ -126,7 +126,7 @@ class Dispatcher {
         $dispatcher->any('/signup', array('Github', 'federated'));
 
         try {
-            $route = $dispatcher->dispatch('/' . preg_replace('{/$}', '', self::$url));
+            $route = $dispatcher->dispatch('/' . self::$url);
             $controller = isset($route[2][0]) ? $route[2][0] : DEFAULT_CONTROLLER_NAME;
 
             if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {

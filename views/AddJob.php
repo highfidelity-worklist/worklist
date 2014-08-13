@@ -35,7 +35,7 @@ class AddJobView extends View {
 
     public function projects() {
         $user = $this->currentUser;
-        $current = empty($this->workItem) ? 'hifi' : $this->workItem->getProjectName();
+        $current = empty($this->workItem) ? 'hifi' : $this->workItem()->getProjectName();
         $activeOnly = !($user['is_runner'] || $user['is_admin'] || $user['is_payer']);
         $projects = Project::getProjects($activeOnly);
         $ret = array();
@@ -55,7 +55,7 @@ class AddJobView extends View {
         $skills = array();
         foreach($skillList as $skill) {
             $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
-            if ($this->editing() && in_array($skill->skill, $this->getJob()->getSkills())) {
+            if ($this->editing() && in_array($skill->skill, $this->workItem()->getSkills())) {
                 $skillObj['checked'] = true;
             }
             array_push($skills, $skillObj);
@@ -67,12 +67,12 @@ class AddJobView extends View {
         return User::getInternals();
     }
 
-    public function getJob() {
-        return $this->workItem;
-    }
-
     public function editing() {
         return $this->editing;
+    }
+
+    public function workItem() {
+        return $this->workItem;
     }
 
     public function status() {
@@ -87,14 +87,14 @@ class AddJobView extends View {
             $statusList[0]['selected'] = false;
 
             foreach($statusList as $key => $status) {
-                if ($status['name'] == $this->getJob()->getStatus()) {
+                if ($status['name'] == $this->workItem()->getStatus()) {
                     $statusList[$key]['selected'] = true;
                     $statusMatch = true;
                     breaK;
                 }
             }
             if (!$statusMatch) {
-                array_push($statusList, array("name" => $this->getJob()->getStatus(), "selected" => true));
+                array_push($statusList, array("name" => $this->workItem()->getStatus(), "selected" => true));
             }
         }
         return $statusList;
@@ -102,22 +102,44 @@ class AddJobView extends View {
 
     public function getBudgetCombo() {
         $user = User::find($this->currentUser['id']);
-        return $user->getBudgetCombo($this->getJob()->getBudget_id());
+        return $user->getBudgetCombo($this->workItem()->getBudget_id());
     }
 
     public function canSeeBudgetArea() {
         $worklist = $this->worklist;
         $user = User::find($this->currentUser['id']);
         return (
-            $user->isRunnerOfWorkitem($this->getJob())
+            $user->isRunnerOfWorkitem($this->workItem)
           || $_SESSION['userid'] == $worklist['budget_giver_id']
           || strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false
         );
     }
 
     public function isRunnerOfWorkitem() {
-        $workitem = $this->getJob();
+        $workitem = $this->workItem;
         $user = User::find($this->currentUser['id']);
         return $user->isRunnerOfWorkitem($workitem);
+    }
+
+    public function canReassignRunner() {
+        $workitem = $this->workItem;
+        $user = User::find($this->currentUser['id']);
+        return (int) (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])));
+    }
+
+    public function editableRunnerBox() {
+        $workitem = $this->workItem;
+        $worklist = $this->worklist;
+        $user = User::find($this->currentUser['id']);
+        $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
+        $ret = '<select name="runner">';
+        foreach ($runnerslist as $runner) {
+            $ret .=
+                '<option value="' . $runner->getId() . '"' . (($worklist['runner_id'] == $runner->getId()) ? ' selected="selected"' : '') . '>' .
+                    $runner->getNickname() .
+                '</option>';
+        }
+        $ret .= '</select>';
+        return $ret;
     }
 }

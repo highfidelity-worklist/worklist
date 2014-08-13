@@ -191,3 +191,8 @@ section#footer {
 #save-button {
     padding-left: 0px;
 }
+
+div#job-designer {
+    max-width: 275px;
+    margin-bottom: 15px;
+}

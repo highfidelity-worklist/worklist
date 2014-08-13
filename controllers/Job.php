@@ -1538,7 +1538,8 @@ class JobController extends Controller {
                 'sandbox',
                 'budget_id',
                 'assigned',
-                'is_internal'
+                'is_internal',
+                'runner_id'
             );
 
             foreach ($args as $arg) {
@@ -1553,6 +1554,7 @@ class JobController extends Controller {
             $new_update_message='';
             $budget_id = !empty($_REQUEST['budget_id']) ? (int) $_REQUEST['budget_id'] : 0;
             $project_id = !empty($_REQUEST['project_id']) ? (int) $_REQUEST['project_id'] : 0;
+            $runner_id = !empty($_REQUEST['runner_id']) ? (int) $_REQUEST['runner_id'] : 0;
             $sandbox = isset($_REQUEST['sandbox']) ?  $_REQUEST['sandbox'] : '';
             $old_budget_id = -1;
             if ($budget_id && isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
@@ -1639,6 +1641,12 @@ class JobController extends Controller {
                 $workitem->setSandbox($sandbox);
                 $new_update_message .= "Branch changed. ";
                 $job_changes[] = '-branch';
+            }
+
+            // Runner
+            if (isset($_REQUEST['runner_id']) && $runner_id && $workitem->getRunnerId() != $runner_id) {
+                $workitem->setRunnerId($runner_id);
+                $workitem->save();
             }
 
             // Assignee
