@@ -666,10 +666,13 @@ class User {
                 . ' ORDER BY id DESC ';
         $result = mysql_query($query);
         $ret = "";
+        $option = "";
+        $isSelected = false;
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {
                 if (isset($budget_id) && $budget_id == $row['id']) {
                     $selected = "selected='selected'";
+                    $isSelected = true;
                 } else {
                     $selected = "";
                 }
@@ -677,7 +680,12 @@ class User {
                         $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
-        return $ret;
+        if (!$isSelected) {
+            $option = "<option value='0' selected='selected' >Select a Budget</option>";
+        } else {
+            $option = "<option value='0'>Select a Budget</option>";
+        }
+        return $option.$ret;
     }
    
     public function getTotalManaged() {

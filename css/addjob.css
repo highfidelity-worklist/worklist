@@ -39,8 +39,10 @@ body > .container-fluid {
     font-size: 1.1em;
 }
 
-#itemProjectCombo + .chosen-container:before {
-    content: 'Job is for this project...';
+#addJob .row:nth-child(1) p {
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    font-size: 13px;
     color: #666;
 }
 
@@ -126,6 +128,9 @@ select[name="assigned"] + .chosen-container-single {
     #labels li input[type="checkbox"] + label {
         font-size: 1.2em;
     }
+    #save-button {
+        margin-top: 5px;
+    }
 }
 
 #labels li input[type="checkbox"]:checked + label {
@@ -179,7 +184,15 @@ select[name="assigned"] + .chosen-container-single {
 }
 
 /* won't display the footer on addjob */
-section#footer,
-#addJobButton {
+section#footer {
     display: none !important;
+}
+
+#save-button {
+    padding-left: 0px;
+}
+
+div#job-designer {
+    max-width: 275px;
+    margin-bottom: 15px;
 }

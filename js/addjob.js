@@ -2,18 +2,21 @@ var AddJob = {
     submitIsRunning: false,
     uploadedFiles: [],
     filesUploading: 0,
-
-    init: function() {
-        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"]').chosen({
+    editing: false,
+    jobId: 0,
+    init: function(job_id, editing) {
+        AddJob.jobId = job_id;
+        AddJob.editing = editing;
+        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
             width: '100%',
             disable_search_threshold: 10
         });
-        $('select[name="itemProject"]').change(AddJob.showProjectDescription);
         $('select[name="assigned"]').change(AddJob.checkAssignedUser);
-
         $('form#addJob').submit(AddJob.formSubmit);
-
         AddJob.initFileUpload();
+        if (!AddJob.editing) {
+            $('#addJobButton').hide();
+        }
     },
 
     showProjectDescription: function() {
@@ -24,7 +27,6 @@ var AddJob = {
                 if (!json.success) {
                     return;
                 }
-                $("select[name='itemProject']").parent().next().text(json.data.short_description);
             }
         });
     },
@@ -54,7 +56,23 @@ var AddJob = {
 
         $('#attachments > label > em').click(function() {
             $('#attachments input.fd-file').click();
-        })
+        });
+        if (AddJob.editing) {
+            $.ajax({
+                type: 'get',
+                url: './file/listForJob/' + AddJob.jobId,
+                dataType: 'json',
+                success: function(data) {
+                    if (!data.success) {
+                        return;
+                    }
+                    for (i = 0; i < data.data.length; i++) {
+                        var fileData = data.data[i];
+                        AddJob.renderAttachment(fileData);
+                    }
+                }
+            });
+        }
     },
 
     fileUploadDone: function(xhr) {
@@ -67,15 +85,18 @@ var AddJob = {
                 if (json.success == true) {
                     fileData.url = json.url;
                 }
-                Utils.parseMustache('partials/upload-document', fileData, function(parsed) {
-                    $('#attachments > ul').append(parsed);
-                    $('#attachments li[attachment=' + fileData.fileid + '] > i').click(AddJob.removeFile);
-                    AddJob.uploadedFiles.push(fileData.fileid);
-                });
+                AddJob.renderAttachment(fileData);
                 AddJob.fileUploadFinished();
             }
         });
+    },
 
+    renderAttachment: function(file) {
+        Utils.parseMustache('partials/upload-document', file, function(parsed) {
+            $('#attachments > ul').append(parsed);
+            $('#attachments li[attachment=' + file.fileid + '] > i').click(AddJob.removeFile);
+            AddJob.uploadedFiles.push(file.fileid);
+        });
     },
 
     fileUploadError: function(e, xhr) {
@@ -90,12 +111,26 @@ var AddJob = {
     },
 
     removeFile: function(event) {
-        var id = parseInt($(this).parent().attr('attachment'))
-        $('#attachments li[attachment=' + id + ']').remove();
-        for (var i = 0; i < AddJob.uploadedFiles.length; i++) {
-            if (AddJob.uploadedFiles[i] == id) {
-                AddJob.uploadedFiles.splice(i, 1);
+       var id = parseInt($(this).parent().attr('attachment'));
+       function removeHtml() {
+            $('#attachments li[attachment=' + id + ']').remove();
+            for (var i = 0; i < AddJob.uploadedFiles.length; i++) {
+                if (AddJob.uploadedFiles[i] == id) {
+                    AddJob.uploadedFiles.splice(i, 1);
+                }
             }
+        }
+        if (AddJob.editing) {
+            $.ajax({
+                url: './file/remove/' + id,
+                type: 'POST',
+                dataType: "json",
+                success: function(json) {
+                    if (json.success == true) {
+                        removeHtml();
+                    }
+                }
+            });
         }
     },
 
@@ -152,32 +187,12 @@ var AddJob = {
                 skills += (skills.length ? ', ' : '') + $(this).val();
             }
         });
+        if (!AddJob.editing) {
+            AddJob.save(skills);
+        } else {
+            AddJob.update(skills);
+        }
 
-        $.ajax({
-            url: './job/add',
-            dataType: 'json',
-            data: {
-                summary: $("input[name='summary']").val(),
-                is_internal: $("input[name='is_internal']").is(':checked') ? 1 : 0,
-                files: $("input[name='files']").val(),
-                notes: $("textarea[name='notes']").val(),
-                page: $("input[name='page']").val(),
-                project_id: $("select[name='itemProject']").val(),
-                status: $("select[name='itemStatus']").val(),
-                skills: skills,
-                fileUpload: {uploads: AddJob.uploadedFiles},
-                assigned: $('select[name="assigned"]').val()
-            },
-            type: 'POST',
-            success: function(json) {
-                AddJob.submitIsRunning = false;
-                if (json.error) {
-                    alert(json.error);
-                } else {
-                    location.href = './' + json.workitem;
-                }
-            }
-        });
         return false;
     },
 
@@ -193,5 +208,62 @@ var AddJob = {
         }
         $('#labels').attr('val', val).html(html);
         $('#labels + input').val('');
+    },
+    save: function(skills)  {
+          $.ajax({
+            url: './job/add',
+            dataType: 'json',
+            data: {
+                summary: $("input[name='summary']").val(),
+                is_internal: $("input[name='is_internal']").is(':checked') ? 1 : 0,
+                files: $("input[name='files']").val(),
+                notes: $("textarea[name='notes']").val(),
+                page: $("input[name='page']").val(),
+                project_id: $("select[name='itemProject']").val(),
+                status: $("select[name='itemStatus']").val(),
+                skills: skills,
+                fileUpload: {uploads: AddJob.uploadedFiles},
+                assigned: $('select[name="assigned"]').val(),
+                itemid: AddJob.jobId > 0 ? AddJob.jobId : "",
+                budget_id: AddJob.editing ? $('#budget-source-combo').val() : ""
+            },
+            type: 'POST',
+            success: function(json) {
+                AddJob.submitIsRunning = false;
+                if (json.error) {
+                    alert(json.error);
+                } else {
+                    location.href = './' + json.workitem;
+                }
+            }
+        });
+    },
+    update: function(skills) {
+           $.ajax({
+            url: './job/edit',
+            dataType: 'json',
+            data: {
+                summary: $("input[name='summary']").val(),
+                is_internal: $("input[name='is_internal']").is(':checked') ? 1 : 0,
+                files: $("input[name='files']").val(),
+                notes: $.trim($("textarea[name='notes']").val()),
+                project_id: $("select[name='itemProject']").val(),
+                status: $("select[name='itemStatus']").val(),
+                skills: skills,
+                fileUpload: {uploads: AddJob.uploadedFiles},
+                budget_id: $('#budget-source-combo').val() != null ? $('#budget-source-combo').val() : 0,
+                worklist_id: AddJob.jobId,
+                runner_id: $("select[name='runner']").val()
+            },
+            type: 'POST',
+            success: function(json) {
+                if (json.error) {
+                    alert(json.error);
+                } else {
+                    location.href = './' + json.workitem;
+                }
+            }
+        });
     }
+
 }
