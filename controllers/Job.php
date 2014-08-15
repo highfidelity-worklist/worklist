@@ -1497,7 +1497,7 @@ class JobController extends Controller {
             echo json_encode(array('error' => "Invalid parameters !"));
             return;
         }
-
+        $this->write('user', $user);
         $worklist_id = isset($_REQUEST['worklist_id']) ? $_REQUEST['worklist_id'] : $worklist_id;
         $notifyEmpty = true;
         $workitem = new WorkItem();
@@ -1528,7 +1528,7 @@ class JobController extends Controller {
         $journal_message = null;
         $status_change = '';
         $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
-        $fileUpload = $_REQUEST['fileUpload'];
+        $fileUpload = isset($_REQUEST['fileUpload']) ? $_REQUEST['fileUpload'] : array();
         $statusList = $this->getStatusList($workitem, $user);
         $args = array(
                 'summary',
@@ -1557,10 +1557,12 @@ class JobController extends Controller {
             $runner_id = !empty($_REQUEST['runner_id']) ? (int) $_REQUEST['runner_id'] : 0;
             $sandbox = isset($_REQUEST['sandbox']) ?  $_REQUEST['sandbox'] : '';
             $old_budget_id = -1;
-            if ($budget_id && isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
+
+            if (isset($_REQUEST['budget_id']) && $workitem->getBudget_id() != $budget_id) {
                 $new_update_message .= 'Budget changed. ';
                 $old_budget_id = (int) $workitem->getBudget_id();
                 $workitem->setBudget_id($budget_id);
+                $job_changes[] = '-budget';
             }
 
             if (isset($_REQUEST['is_internal']) && $user->isInternal()
@@ -1728,7 +1730,6 @@ class JobController extends Controller {
                 );
                 $data = array(
                     'nick' => $_SESSION['nickname'],
-                    'runner_nickname' => $workitem->getRunner()->getNickname(),
                     'new_update_message' => $new_update_message,
                     'related' => $related
                 );

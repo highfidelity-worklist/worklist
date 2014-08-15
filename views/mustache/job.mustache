@@ -133,34 +133,9 @@
                 {{/skills}}
             </ul>
         </div>
-        {{#canReview}}
-        <div class="col-sm-12 col-md-12 job-code-review">
-                <div class="code-review">
-                    <h4>Time for a code review!</h4>
-                    The code written for this job is ready to be reviewed.
-                    <strong>View the diff</strong> to see the code, then start the review ...
-                    {{^workitem.getCRStarted}}
-                        {{#userHasRights}}
-                            <input type="submit" value="Start Code Review" onClick="return CheckCodeReviewStatus();"
-                            title="Start a code review on this job." data-toggle="tooltip" />
-                        {{/userHasRights}}
-                        {{^userHasRights}}
-                            <input type="submit" value="Start Code Review" onClick="return false;"
-                            title="You are not authorized to Code Review this job." data-toggle="tooltip" />
-                        {{/userHasRights}}
-                    {{/workitem.getCRStarted}}
-                    {{#workitem.getCRStarted}}
-                        {{^workitem.getCRCompleted}}
-                            {{#canEndReview}}
-                                <input type="submit" value="End Code Review" onClick="return showEndReviewForm();"
-                                title="End a code review on this job." data-toggle="tooltip" />
-                            {{/canEndReview}}
-                        {{/workitem.getCRCompleted}}
-                    {{/workitem.getCRStarted}}
-                    <div id="review-pointer"></div>
-                </div>
-            </div>
-        {{/canReview}}
+        {{#codeReview.canI}}
+              {{> job/codeReview }}
+        {{/codeReview.canI}}
         <div class="col-sm-12 col-md-12 job-bid">
             <div class="moneyZone">
                     <div id="bid-panel">

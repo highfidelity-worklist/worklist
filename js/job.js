@@ -887,7 +887,7 @@ var Job = {
     refreshCodeReviewPartial: function(data) {
         Utils.parseMustache('partials/job/codeReview', data, function(parsed) {
             $('#code-review').remove();
-            $('.skills').after(parsed);
+            $('#labels').after(parsed);
             Job.setCodeReviewEvents();
         });
     },
