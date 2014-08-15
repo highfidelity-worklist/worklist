@@ -657,7 +657,7 @@ class User {
 
     public function getBudgetCombo($budget_id = 0)
     {
-        $userid = 1020;
+        $userid = isset($_SESSION['userid']) ?  $_SESSION['userid'] : 0;
 // Query to get User's Budget entries
         $query =  ' SELECT amount, remaining, reason, id '
                 . ' FROM ' . BUDGETS 
@@ -680,7 +680,7 @@ class User {
                         $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
-        if ($selected) {
+        if (!$selected) {
             $option = "<option value='0' selected='selected' />";
         } else {
             $option = "<option value='0'/>";

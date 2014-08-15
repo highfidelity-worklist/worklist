@@ -877,10 +877,10 @@ var Job = {
     setFollowingText: function(isFollowing) {
         if(isFollowing == true) {
             $('#following').attr('title', 'You are currently following this job');
-            $('#following').html('<span class="glyphicon glyphicon-eye-close"></span> <span>Un-Follow this job</span>');
+            $('#following').html('<i class="glyphicon glyphicon-eye-close"></i> <span>Un-Follow this job</span>');
         } else {
             $('#following').attr('title', 'Click to receive updates for this job');
-            $('#following').html('<span class="glyphicon glyphicon-eye-open"></span> <span>Follow this job</span>');
+            $('#following').html('<i class="glyphicon glyphicon-eye-open"></i> <span>Follow this job</span>');
         }
     },
 

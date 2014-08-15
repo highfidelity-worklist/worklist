@@ -523,7 +523,7 @@ class JobController extends Controller {
                 $is_job_runner = $workitem->getRunnerId() == getSessionUserId();
                 $is_assigned = $workitem->getAssigned_id() == getSessionUserId();
                 // only runners can accept bids
-                if (($workitem->getIsRelRunner() || $is_job_runner || $is_assigned || ($user->getIs_admin() == 1
+                if (($is_project_runner || $is_job_runner || $is_assigned || ($user->getIs_admin() == 1
                      && $is_runner) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding")) {
                     // query to get a list of bids (to use the current class rather than breaking uniformity)
                     // I could have done this quite easier with just 1 query and an if statement..
@@ -604,7 +604,7 @@ class JobController extends Controller {
                     $_SESSION['workitem_error'] = "Invalid budget!";
                 }
                 if (count($bid_id) > 0) {
-                //only runners$is_project_runner can accept bids
+                //only runners can accept bids
                     if (($is_project_runner || $workitem->getRunnerId() == getSessionUserId() ||
                          ($user->getIs_admin() == 1 && $is_runner)) && !$workitem->hasAcceptedBids() && $workitem->getStatus() == "Bidding") {
                         $total = 0;
@@ -842,7 +842,7 @@ class JobController extends Controller {
 
         $this->write('bids', $bids);
 
-        //$this->write('userHasCodeReviewRights', $this->hasCodeReviewRights($user_id, $workitem));
+        $this->write('userHasCodeReviewRights', $this->hasCodeReviewRights($user_id, $workitem));
 
         $this->write('mechanic', $workitem->getUserDetails($worklist['mechanic_id']));
 
@@ -864,7 +864,7 @@ class JobController extends Controller {
         parent::run();
     }
 
-    public function add($id = 0) {
+    public function add() {
         $this->view = null;
         if (isset($_POST['api_key'])) {
             validateAPIKey();
@@ -881,7 +881,6 @@ class JobController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            $this->write('jobId', $id);
             $this->view = new AddJobView();
             parent::run();
             return;
