@@ -1520,6 +1520,7 @@ class JobController extends Controller {
             }
             $this->view = null;
             $this->write('jobId', $worklist_id);
+            $this->write('user', $user);
             $this->view = new AddJobView();
             parent::run();
             return;
@@ -1643,10 +1644,34 @@ class JobController extends Controller {
                 $job_changes[] = '-branch';
             }
 
-            // Runner
+            // Designer
             if (isset($_REQUEST['runner_id']) && $runner_id && $workitem->getRunnerId() != $runner_id) {
+                $older_runner = $workitem->getRunner();
                 $workitem->setRunnerId($runner_id);
                 $workitem->save();
+                $runner = User::find($runner_id);
+                $message = '\\#' . $workitem->getId() . ' updated by @' . $_SESSION['nickname'] . ' Designer reassigned to @' . $runner->getNickname();
+                sendJournalNotification($message);
+                $emails = !empty($older_runner) ? array($older_runner->getUsername()) : array();
+                array_push($emails, $runner->getUsername());
+                if ($workitem->getCreator()) {
+                    array_push($emails, $workitem->getCreator()->getUsername());
+                }
+                if ($workitem->getMechanic()) {
+                    array_push($emails, $workitem->getMechanic()->getUsername());
+                }
+                if ($user->getSelf_notif()) {
+                    array_push($emails, $user->getUsername());
+                }
+                $options = array(
+                    'type' => 'change-designer',
+                    'workitem' => $workitem,
+                    'emails' => $emails
+                );
+                $data = array(
+                    'runner_nickname' => $runner->getNickname()
+                );
+                Notification::workitemNotify($options, $data);
             }
 
             // Assignee
@@ -1704,6 +1729,7 @@ class JobController extends Controller {
                 );
                 $data = array(
                     'nick' => $_SESSION['nickname'],
+                    'runner_nickname' => $workitem->getRunner()->getNickname(),
                     'new_update_message' => $new_update_message,
                     'related' => $related
                 );

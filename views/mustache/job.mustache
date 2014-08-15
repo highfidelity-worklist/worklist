@@ -35,7 +35,7 @@
 <div class="top-bar">
     <ul class="job-status {{#canChangeStatus}}job-status-editable{{/canChangeStatus}}">
         {{& editableStatusSelect}}
-        <li><span id="job-status-edit">Status Changed!</span></li>
+        <li><span id="job-status-edit">Status changed!</span></li>
     </ul>
 </div>
 <div class="col-sm-12 col-md-12 job-summary">
@@ -93,18 +93,13 @@
         </div>
     </div>
     <div class="col-sm-5 col-md-5 job-meta-info">
-        <div class="col-sm-12 col-md-12 job-qa-testing">
-            <span class="job-info-heading">
-                QA Testing:
-            </span>
-            {{#worklist.mechanic_id}}
-                <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
-            {{/worklist.mechanic_id}}
-            {{^worklist.mechanic_id}}
-                <span>Not assigned</span>
-            {{/worklist.mechanic_id}}
-        </div>
-        {{#worklist.mechanic_id}}
+       {{#worklist.mechanic_id}}
+            <div class="col-sm-12 col-md-12 job-qa-testing">
+                <span class="job-info-heading">
+                    QA Testing:
+                </span>
+                    <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
+            </div>
             <div class="col-sm-12 col-md-12 job-qa-sandbox">
                 <span {{#canEditSandboxUrl}}id="edit_review_url"{{/canEditSandboxUrl}} title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
                     Git branch:

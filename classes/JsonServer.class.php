@@ -153,10 +153,10 @@ class JsonServer
 
     }
 
-    protected function actionChangeRunner()
+    public function actionChangeRunner($workitem = 0, $runner_id = 0)
     {
-        $workitem = (int)$this->getRequest()->getParam('workitem');
-        $runner_id = (int) $this->getRequest()->getParam('runner');
+        $workitem = $workitem = 0 ? (int)$this->getRequest()->getParam('workitem') : $workitem;
+        $runner_id = $runner_id = 0 ? (int) $this->getRequest()->getParam('runner') : $runner_id;
         $runner = new User();
         
         if ($this->getUser()->isRunner()) {

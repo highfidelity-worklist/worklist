@@ -657,7 +657,7 @@ class User {
 
     public function getBudgetCombo($budget_id = 0)
     {
-        $userid = isset($_SESSION['userid']) ?  $_SESSION['userid'] : 0;
+        $userid = 1020;
 // Query to get User's Budget entries
         $query =  ' SELECT amount, remaining, reason, id '
                 . ' FROM ' . BUDGETS 
@@ -666,10 +666,13 @@ class User {
                 . ' ORDER BY id DESC ';
         $result = mysql_query($query);
         $ret = "";
+        $option = "";
+        $selected = false;
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {
                 if (isset($budget_id) && $budget_id == $row['id']) {
                     $selected = "selected='selected'";
+                    $selected = true;
                 } else {
                     $selected = "";
                 }
@@ -677,7 +680,12 @@ class User {
                         $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
-        return $ret;
+        if ($selected) {
+            $option = "<option value='0' selected='selected' />";
+        } else {
+            $option = "<option value='0'/>";
+        }
+        return $option.$ret;
     }
    
     public function getTotalManaged() {

@@ -501,6 +501,13 @@ class Notification {
                 $body .= '<p><a href="' . SERVER_URL . '">www.worklist.net</a></p>';
             break;
 
+            case 'change-designer':
+                $headers['From'] = '"' . $project_name . '-designer reassigned" ' . $from_address;
+                $body = "<p>Hi there,</p>";
+                $body .= "<p>I just wanted to let you know that the Job #" . $workitem->getId() . " (" . $workitem->getSummary() . ") has been reassigned to Designer " . $data['runner_nickname'] . ".</p>";
+                $body .= "<p>See you in the Worklist!</p>";
+            break;
+
         }
         if($recipients) {
             foreach($recipients as $recipient) {

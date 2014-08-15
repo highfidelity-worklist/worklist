@@ -1097,7 +1097,7 @@ h1.newProject {
         content: ' ';
     }
 
-    #following span,
+    #following span:nth-child(2),
     #switchmode_edit span#edit-text,
     #tweet-link span {
         display: none;

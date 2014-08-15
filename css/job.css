@@ -219,10 +219,6 @@ section#footer li:nth-child(-n+3) {
     padding:0px 8px 19px 8px;
 }
 
-.job-bid {
-    margin-top: 15px;
-}
-
 .job-bid table {
     font-size: 13px;
     border: none !important;
@@ -264,6 +260,7 @@ section#footer li:nth-child(-n+3) {
     padding: 9px 10px 5px 0;
     border-right: 2px solid #e1e8ea;
     border-bottom: 2px solid #e1e8ea;
+    height: 34px;
 }
 
 .visits-box .visits {
@@ -323,6 +320,7 @@ div.job-social {
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;
     border-right: 2px solid #e1e8ea;
+    height: 34px;
 }
 
 span.job-internal label {
@@ -331,7 +329,7 @@ span.job-internal label {
     padding-left: 15px;
     text-indent: -15px;
     position: relative;
-    top: 4px;
+    top: 6px;
 }
 
 span.job-internal input {
@@ -533,9 +531,12 @@ div.job-meta-info > div {
 }
 
 div.job-qa-sandbox,
-div.job-qa-labels,
-div.job-bid {
+div.job-qa-labels {
     padding-top: 15px;
+}
+
+div.job-bid {
+    margin-top: 15px;
 }
 
 #labels {
@@ -578,10 +579,6 @@ div.job-bid {
 li.job-skills-noneditable input[type="checkbox"] + label {
     background-color: #007F7c !important;
     color: #fff !important;
-}
-
-#labels li {
-    display: inline-block;
 }
 
 span#job-internal-edit,
@@ -633,6 +630,10 @@ span.edit-mode-only {
     border-right: 2px solid #e1e8ea;
 }
 
+#labels li:nth-child(odd) {
+    float: left;
+    width: 110px;
+}
 
 @media  (max-width: 767px) and (max-width : 768px) {
     div.job-qa-testing {
@@ -666,6 +667,10 @@ span.edit-mode-only {
 
     span.job-internal {
         border-left: 2px solid #E1E8EA;
+    }
+
+    div.job-bid {
+        padding-top: 20px;
     }
 }
 
