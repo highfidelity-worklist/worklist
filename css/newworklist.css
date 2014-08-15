@@ -1308,7 +1308,12 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     }
 
     .navbar-inverse .navbar-collapse {
-        max-height: inherit;
+        background: none repeat scroll 0 0 #333;
+        left: 0;
+        max-height: 325px;
+        position: absolute;
+        right:0px;
+        top: 48px;
     }
 
     #footer {
