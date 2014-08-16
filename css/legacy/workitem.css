@@ -708,7 +708,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     line-height: 19px;
     clear: left;
     padding-top: 15px;
-    line-height: 24px;
 }
 
 .job-info .notestext a, .comment a {
