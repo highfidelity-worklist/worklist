@@ -708,14 +708,15 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     line-height: 19px;
     clear: left;
     padding-top: 15px;
+    line-height: 24px;
 }
 
-#for_view .notestext a, .comment a {
+.job-info .notestext a, .comment a {
     color: #336666;
     text-decoration: underline;
 }
 
-#for_view .notestext a:hover, .comment a:hover {
+.job-info .notestext a:hover, .comment a:hover {
     text-decoration:none;
 }
 
