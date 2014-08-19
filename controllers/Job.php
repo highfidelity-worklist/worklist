@@ -1497,7 +1497,7 @@ class JobController extends Controller {
             echo json_encode(array('error' => "Invalid parameters !"));
             return;
         }
-        $this->write('user', $user);
+        $this->view = null;
         $worklist_id = isset($_REQUEST['worklist_id']) ? $_REQUEST['worklist_id'] : $worklist_id;
         $notifyEmpty = true;
         $workitem = new WorkItem();
@@ -1505,10 +1505,9 @@ class JobController extends Controller {
             $workitem->loadById($worklist_id);
         } catch(Exception $e) {
             $error  = $e->getMessage();
-            $this->view = null;
             die($error);
         }
-        $this->write('workitem', $workitem);
+
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             if (($workitem->isInternal() && ! $user->isInternal()) || !$this->canEdit($workitem, $user)) {
                 $this->write('msg', 'You don\'t have permissions to edit this job.');
@@ -1520,6 +1519,7 @@ class JobController extends Controller {
             $this->view = null;
             $this->write('jobId', $worklist_id);
             $this->write('user', $user);
+            $this->write('workitem', $workitem);
             $this->view = new AddJobView();
             parent::run();
             return;
