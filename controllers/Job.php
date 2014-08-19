@@ -1508,7 +1508,7 @@ class JobController extends Controller {
             $this->view = null;
             die($error);
         }
-
+        $this->write('workitem', $workitem);
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             if (($workitem->isInternal() && ! $user->isInternal()) || !$this->canEdit($workitem, $user)) {
                 $this->write('msg', 'You don\'t have permissions to edit this job.');
