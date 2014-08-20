@@ -1616,8 +1616,10 @@ class JobController extends Controller {
                             $new_update_message .= ", ";
                         }
                         $status_change = '-' . ucfirst(strtolower($status));
-
-                      $new_update_message .= "Status set to *$status*. ";
+                        if ($status == 'Bidding' && Project::isAllowedRunnerForProject($user->getId(), $workitem->getProjectId())) {
+                            $workitem->setRunnerId($user->getId());
+                        }
+                        $new_update_message .= "Status set to *$status*. ";
                     }
                 }
             }
@@ -1630,7 +1632,6 @@ class JobController extends Controller {
                 $related = getRelated($notes);
             }
             // project
-
             if ($project_id && $workitem->getProjectId() != $project_id) {
                 $workitem->setProjectId($project_id);
                 if ($workitem->getStatus() != 'Draft') {
@@ -1650,29 +1651,31 @@ class JobController extends Controller {
                 $older_runner = $workitem->getRunner();
                 $workitem->setRunnerId($runner_id);
                 $workitem->save();
-                $runner = User::find($runner_id);
-                $message = '\\#' . $workitem->getId() . ' updated by @' . $_SESSION['nickname'] . ' Designer reassigned to @' . $runner->getNickname();
-                sendJournalNotification($message);
-                $emails = !empty($older_runner) ? array($older_runner->getUsername()) : array();
-                array_push($emails, $runner->getUsername());
-                if ($workitem->getCreator()) {
-                    array_push($emails, $workitem->getCreator()->getUsername());
+                if (!empty($older_runner)) {
+                    $runner = User::find($runner_id);
+                    $message = '\\#' . $workitem->getId() . ' updated by @' . $_SESSION['nickname'] . ' Designer reassigned to @' . $runner->getNickname();
+                    sendJournalNotification($message);
+                    $emails = !empty($older_runner) ? array($older_runner->getUsername()) : array();
+                    array_push($emails, $runner->getUsername());
+                    if ($workitem->getCreator()) {
+                        array_push($emails, $workitem->getCreator()->getUsername());
+                    }
+                    if ($workitem->getMechanic()) {
+                        array_push($emails, $workitem->getMechanic()->getUsername());
+                    }
+                    if ($user->getSelf_notif()) {
+                        array_push($emails, $user->getUsername());
+                    }
+                    $options = array(
+                        'type' => 'change-designer',
+                        'workitem' => $workitem,
+                        'emails' => $emails
+                    );
+                    $data = array(
+                        'runner_nickname' => $runner->getNickname()
+                    );
+                    Notification::workitemNotify($options, $data);
                 }
-                if ($workitem->getMechanic()) {
-                    array_push($emails, $workitem->getMechanic()->getUsername());
-                }
-                if ($user->getSelf_notif()) {
-                    array_push($emails, $user->getUsername());
-                }
-                $options = array(
-                    'type' => 'change-designer',
-                    'workitem' => $workitem,
-                    'emails' => $emails
-                );
-                $data = array(
-                    'runner_nickname' => $runner->getNickname()
-                );
-                Notification::workitemNotify($options, $data);
             }
 
             // Assignee
