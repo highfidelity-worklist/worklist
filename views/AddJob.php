@@ -139,6 +139,8 @@ class AddJobView extends View {
             if ($worklist['runner_id'] == $runner->getId()) {
                 $selected = " selected='selected'";
                 $isSelected = true;
+            } else {
+                $selected = '';
             }
             $ret .=
                 '<option value="' . $runner->getId() . '"' . $selected . '>' .
@@ -147,8 +149,6 @@ class AddJobView extends View {
         }
         if (!$isSelected) {
             $defaultOption = "<option value='0' selected='selected' >Select a Designer</option>";
-        } else {
-            $defaultOption = "<option value='0'>Select a Designer</option>";
         }
         $ret .= $defaultOption.'</select>';
         return $ret;
