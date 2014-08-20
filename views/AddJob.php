@@ -133,13 +133,24 @@ class AddJobView extends View {
         $user = User::find($this->currentUser['id']);
         $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
         $ret = '<select name="runner">';
+        $isSelected = false;
+        $selected = '';
         foreach ($runnerslist as $runner) {
+            if ($worklist['runner_id'] == $runner->getId()) {
+                $selected = " selected='selected'";
+                $isSelected = true;
+            } else {
+                $selected = '';
+            }
             $ret .=
-                '<option value="' . $runner->getId() . '"' . (($worklist['runner_id'] == $runner->getId()) ? ' selected="selected"' : '') . '>' .
+                '<option value="' . $runner->getId() . '"' . $selected . '>' .
                     $runner->getNickname() .
                 '</option>';
         }
-        $ret .= '</select>';
+        if (!$isSelected) {
+            $defaultOption = "<option value='0' selected='selected' >Select a Designer</option>";
+        }
+        $ret .= $defaultOption.'</select>';
         return $ret;
     }
 }
