@@ -930,57 +930,69 @@ class Project {
      * @return unknown|boolean
      */
     public function getCodeReviewers() {
-        $team_id = $this->codeReviewersGitHubTeamId();
-        if (!$team_id) {
-            return array();
-        }
+        try {
+            $team_id = $this->codeReviewersGitHubTeamId();
+            if (!$team_id) {
+                return array();
+            }
 
-        $client = new Github\Client(
-            new Github\HttpClient\CachedHttpClient(array(
-                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
-            ))
-        );
-        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $members = $client->api('organizations')->teams()->members($team_id);
-        return $members;
+            $client = new Github\Client(
+                new Github\HttpClient\CachedHttpClient(array(
+                    'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+                ))
+            );
+            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $members = $client->api('organizations')->teams()->members($team_id);
+            return $members;
+        } catch(Exception $e) {
+            return false;
+        }
     }
 
     public function codeReviewersGitHubTeamId() {
-        $client = new Github\Client(
-            new Github\HttpClient\CachedHttpClient(array(
-                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
-            ))
-        );
-        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $repo_info = $this->extractOwnerAndNameFromRepoURL();
-        $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
-        foreach ($teams as $team) {
-            if ($team['name'] == $repo_info['name'] . 'CodeReviewers') {
-                return $team['id'];
+        try {
+            $client = new Github\Client(
+                new Github\HttpClient\CachedHttpClient(array(
+                    'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+                ))
+            );
+            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $repo_info = $this->extractOwnerAndNameFromRepoURL();
+            $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
+            foreach ($teams as $team) {
+                if ($team['name'] == $repo_info['name'] . 'CodeReviewers') {
+                    return $team['id'];
+                }
             }
+            return false;
+        } catch(Exception $e) {
+            return false;
         }
-        return false;
     }
 
     public function createCodeReviewersGitHubteam() {
-        $team_id = $this->codeReviewersGitHubTeamId();
-        if ($team_id) {
-            return null;
-        }
+        try {
+            $team_id = $this->codeReviewersGitHubTeamId();
+            if ($team_id) {
+                return null;
+            }
 
-        $client = new Github\Client(
-            new Github\HttpClient\CachedHttpClient(array(
-                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
-            ))
-        );
-        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $repo_info = $this->extractOwnerAndNameFromRepoURL();
-        $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
-            'name' => $repo_info['name'] . 'CodeReviewers',
-            'repo_names' => array($repo_info['owner'] . '/' . $repo_info['name']),
-            'permission' => 'push'
-        ));
-        return $ret['id'] ? $ret['id'] : false;
+            $client = new Github\Client(
+                new Github\HttpClient\CachedHttpClient(array(
+                    'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+                ))
+            );
+            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $repo_info = $this->extractOwnerAndNameFromRepoURL();
+            $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
+                'name' => $repo_info['name'] . 'CodeReviewers',
+                'repo_names' => array($repo_info['owner'] . '/' . $repo_info['name']),
+                'permission' => 'push'
+            ));
+            return $ret['id'] ? $ret['id'] : false;
+        } catch(Exception $e) {
+            return false;
+        }
     }
 
     public function isCodeReviewer($user_id = false) {
@@ -1000,37 +1012,45 @@ class Project {
      * @return number
      */
     public function addCodeReviewer($codeReviewer_id) {
-        $team_id = $this->codeReviewersGitHubTeamId();
-        if (!$team_id) {
-            if (!$team_id = $this->createCodeReviewersGitHubteam()) {
-                return false;
+        try {
+            $team_id = $this->codeReviewersGitHubTeamId();
+            if (!$team_id) {
+                if (!$team_id = $this->createCodeReviewersGitHubteam()) {
+                    return false;
+                }
             }
+            $user = User::find($codeReviewer_id);
+            $client = new Github\Client(
+                new Github\HttpClient\CachedHttpClient(array(
+                    'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+                ))
+            );
+            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
+            return true;
+        } catch(Exception $e) {
+            return false;
         }
-        $user = User::find($codeReviewer_id);
-        $client = new Github\Client(
-            new Github\HttpClient\CachedHttpClient(array(
-                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
-            ))
-        );
-        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
-        return true;
     }
 
     public function deleteCodeReviewer($codeReviewer_id) {
-        $team_id = $this->codeReviewersGitHubTeamId();
-        if (!$team_id) {
+        try {
+            $team_id = $this->codeReviewersGitHubTeamId();
+            if (!$team_id) {
+                return false;
+            }
+            $user = User::find($codeReviewer_id);
+            $client = new Github\Client(
+                new Github\HttpClient\CachedHttpClient(array(
+                    'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+                ))
+            );
+            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
+            return true;
+        } catch(Exception $e) {
             return false;
         }
-        $user = User::find($codeReviewer_id);
-        $client = new Github\Client(
-            new Github\HttpClient\CachedHttpClient(array(
-                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
-            ))
-        );
-        $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-        $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
-        return true;
     }
 
     /*
