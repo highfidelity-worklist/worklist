@@ -3,7 +3,6 @@
 use \Michelf\Markdown;
 
 class StatusController extends Controller {
-    protected $token = GITHUB_API_TOKEN;
     protected $client = null;
 
     public function run() {
@@ -14,7 +13,7 @@ class StatusController extends Controller {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $this->client->authenticate($this->token, '', Github\Client::AUTH_HTTP_TOKEN);
+            $this->client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
 
             // first: request github for 3 pages with 30 events data each 
             $gh_events = array_merge(
