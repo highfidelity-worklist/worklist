@@ -20,6 +20,7 @@ body > nav.navbar + .container-fluid > .row {
 
 h2 {
     font-size: 170%;
+    width: 1020px;
 }
 
 h3 {
