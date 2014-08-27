@@ -239,15 +239,6 @@ replacement data:
                <p>The Worklist</p>'
 ),
 
-'unixusername-created' => array(
-    'subject' => 'New Unix Account Created',
-    'body' => '<p>Hi {nickname}!</p>
-               <p>You have been granted SSH credentials for our development environment at "' . SANDBOX_SERVER . '"</p>
-               <p> Your username is {nickname} using password {password} .</p>
-               <p>If you have any questions, look for assistance in our Chat.</p>
-               <p>-Worklist / High Fidelity</p>'
-),
-
 'branch-created' => array(
     'subject' => 'New branch {branch_name} created for repo {users_fork} on your GitHub account',
     'body' => '<p>Hi {nickname}!</p>

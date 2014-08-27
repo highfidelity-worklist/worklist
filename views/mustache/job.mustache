@@ -1,393 +1,228 @@
-<div id="info-top">
-    <div class="info-summ-big">
-        <div class="visits-box">Viewed <span class="visits"> </span> times</div>
-        <div class="info-ID">
-            <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
+<div class="col-sm-12 col-md-12 job-social">
+        <div class="col-sm-8 col-md-8">
+            <div class="visits-box">Viewed <span class="visits"> </span> times</div>
+            <div class="info-ID">
+                <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
+            </div>
+            <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript"><span>Tweet</span></span>
         </div>
-        <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript"><span>Tweet</span></span>
-        
-        {{#canEditAndNotEditing}}
-            {{#statusDone}}
-                <span class="switchmode-done" title="Jobs set to Done status may not be edited">Edit</span>
-            {{/statusDone}}
-            {{^statusDone}}
-                <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                    <a title="Switch to Edit Mode" href="./{{worklist.id}}?action=edit">
-                        <span class="glyphicon glyphicon-pencil"></span> <span id="edit-text">Edit</span>
-                    </a>
-                </span>
-            {{/statusDone}}
-        {{/canEditAndNotEditing}}
-        {{#editing}}
-            <span class="switchmode wl-icon-edit" id="switchmode_edit">
-                <a title="Switch to View Mode" href="./{{worklist.id}}?action=view">
-                    <span class="glyphicon glyphicon-ok"></span> <span id="edit-text">View</span>
-                </a>
-            </span>
-        {{/editing}}
-    </div>
+        <div class="col-sm-4 col-md-4">
+          <div id="internal-edit">
+                {{#userIsInternal}}
+                    <span id="job-internal-edit">Saved!</span>
+                    <span class="job-internal">
+                        <label for="is_internal"><input type="checkbox" name="is_internal" {{#workitem.isInternal}}checked{{/workitem.isInternal}} id="is_internal" />
+                        Internal</label>
+                    </span>
+                {{/userIsInternal}}
+                {{#canEditAndNotEditing}}
+                    {{^statusDone}}
+                        <span class="switchmode wl-icon-edit {{^userIsInternal}}edit-mode-only{{/userIsInternal}}" id="switchmode_edit">
+                            <a title="Switch to Edit Mode" href="./{{worklist.id}}/edit">
+                                <span class="glyphicon glyphicon-pencil"></span> <span id="edit-text">Edit</span>
+                            </a>
+                        </span>
+                    {{/statusDone}}
+                {{/canEditAndNotEditing}}
+            </div>
+        </div>
 </div>
-<div id="info-top" class="info-summ-big-text">
-    #{{worklist.id}}
+<div class="col-sm-12 col-md-12 info-summ-big-text">
+    <span><a href="./{{worklist.project_name}}">{{worklist.project_name}}:</a></span>
+    <span>#{{worklist.id}}</span>
     <span class="title {{classEditable}}">{{worklist.summary}}</span>
 </div>
-{{#editing}}
-    <form id="workitem-form" method="post" action="./{{worklist.id}}">
-{{/editing}}
-<div id="info-top" class="top-bar">
-    {{^editing}}
-    <div id="quick-status">
-        <span class="info-label">
-            <a href="./help#ff5">Job status:</a>
-            {{^canChangeStatus}}
-                <strong>{{currentStatus}}</strong>
-            {{/canChangeStatus}}
-        </span>
-        {{#canChangeStatus}}
-        <form id="searchForm" method="post" action="">
-            <input type="hidden" id="status-switch" name="status-switch" value="1" />
-            <select id="statusCombo" name="quick-status">
-                <option value="{{worklist.status}}" selected="selected">{{currentStatus}}</option>
-                {{& editableStatusSelect}}
-            </select>
-        </form>
-        {{/canChangeStatus}}
-    </div>
-    {{#userIsInternal}}
-        <input type="checkbox" name="is_internal" id="is_internal" {{internalChecked}} />
-        <label for="is_internal">Internal</label>
-    {{/userIsInternal}}
-    {{/editing}}
-    {{& jobBudget}}
-    <div class="project">
-    {{#editing}}
-        <input type="hidden" name="save_workitem" value="save_workitem" />
-        <input type="hidden" name="action" value="save_workitem" />
-        <span class="inline-label" id="edit-project-label">Project</span>
-        {{#canEditProject}}
-            {{& editableProjectSelect}}
-        {{/canEditProject}}
-        {{^canEditProject}}
-            {{#worklist.project_id}}
-             <a href="{{& projectUrl}}" class="edit-project">{{worklist.project_name}}</a>
-             {{/worklist.project_id}}
-        {{/canEditProject}}
-        {{^canEditProject}}
-            <span>Not assigned</span>
-        {{/canEditProject}}
-    {{/editing}}
-    {{^editing}}
-        <div class="project-label">Project:</div>
-        {{#worklist.project_id}}
-            <a href="{{& projectUrl}}">{{worklist.project_name}}</a>
-        {{/worklist.project_id}}
-        {{^worklist.project_id}}
-            <span>Not assigned</span>
-        {{/worklist.project_id}}
-    {{/editing}}
-    </div>
+<div class="top-bar">
+    <ul class="job-status {{#canChangeStatus}}job-status-editable{{/canChangeStatus}}">
+        {{& editableStatusSelect}}
+        <li><span id="job-status-edit">Status changed!</span></li>
+    </ul>
 </div>
-{{#erroneous}}
-<div style='color: red; text-align: center;'>{{the_errors}}</div>
-{{/erroneous}}
-<div>
-    {{#action_error}}
-    <div id="action-error" class="LV_invalid">Error performing requested action: {{action_error}}</div>
-    {{/action_error}}
-    <div style="clear:both; float:none;"> </div>
-</div>
-<div id="page-content" class="row">
-    <div class="col-sm-7 col-xs-12">
-        {{^editing}}
-        <div class="people-info">
-            <div id="creatorBox">
-                <span id="pingCreator" class="creatorName">
-                    Job creator:
+<div class="col-sm-12 col-md-12 job-summary">
+    <div class="col-sm-7 col-md-7 job-info">
+        <ul class="col-sm-12 col-md-12">
+           {{#userIsInternal}}
+                <li class="col-sm-5 col-md-5 job-assignee">
+                    <select name="assigned" data-placeholder="Select assignee">
+                        <option value="0">No one assigned</option>
+                        {{#internalUsers}}
+                            <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
+                                {{nickname}}
+                            </option>
+                        {{/internalUsers}}
+                    </select>
+                </li>
+            {{/userIsInternal}}
+            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-creator">
+                <span class="job-info-heading">
+                    Creator:
                 </span>
                 <a href="./user/{{worklist.creator_id}}">{{worklist.creator_nickname}}</a>
-            </div>
-            <div id="runnerBox">
+            </li>
+            <li class="{{#userIsInternal}}col-sm-2 col-md-2{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-runner">
                 {{& nonEditableRunnerBox}}
-            </div>
-            <div id="mechanicBox">
+            </li>
+            <li class="{{#userIsInternal}}col-sm-3 col-md-3{{/userIsInternal}} {{^userIsInternal}}col-sm-4 col-md-4{{/userIsInternal}} job-mechanic">
                 {{& mechanicBox}}
+            </li>
+        </ul>
+        <p class="notestext">{{& notesHtmlWithLinks}}</p>
+        <div id="commentZone">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="info-comments">Comments &amp; Activity</h3>
+                </div>
             </div>
-            {{#userIsInternal}}{{#assigneeNickname}}
-            <div id="assigneeBox">
-                <span class="assigneeName">
-                    Assignee:
-                </span>
-                <a id="ping-btn" href="./user/{{assigneeNickname}}" >{{assigneeNickname}}</a>
-            </div>
-            {{/assigneeNickname}}{{/userIsInternal}}
+            <ul id="entries">
+                {{& taskEntries}}
+            </ul>
+            {{#canComment}}
+            <a name="commentform"></a>
+            <form action="" method="post" id="commentform">
+                <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
+                <input type="hidden" name="user_id" value="{{currentUser.id}}" />
+                <input type="hidden" name="comment_id" value="" />
+                <div class="form-group">
+                    <textarea name="comment" class="form-control autogrow mentions"></textarea>
+                </div>
+                <input type="submit" name="newcomment" value="Comment" />
+                <span class="tip">You can mention users with <strong>@username</strong></span>
+                <input type="button" name="cancel" value="Cancel" />
+            </form>
+            {{/canComment}}
         </div>
-        {{/editing}}
-        <div id="for_view">
-            {{#editing}}
-                <ul style="margin:0; padding:0; border:none;">
-                    <li>
-                        {{#userIsInternal}}
-                        <span class="inline-label">Assignee</span>
-                        <select name="assigned" data-placeholder="Select assignee">
-                            <option value="0">No one assigned</option>
-                            {{#internalUsers}}
-                                <option value="{{id}}" {{#current}}selected="selected"{{/current}}>
-                                    {{nickname}}
-                                </option>
-                            {{/internalUsers}}
-                        </select>
-                        {{/userIsInternal}}
-                    </li>
-                    <li>
-                        {{#canReassignRunner}}
-                        <div id="runnerBox">
-                            {{& editableRunnerBox}}
-                        </div>
-                        {{/canReassignRunner}}
-                    </li>
-                    <li>
-                        <span class="info-label">Summary</span>
-                        <span class="info-data">
-                        {{#canEditSummary}}
-                        <input type="text" size="30" class="text-field" id="summary" name="summary" value="{{worklist.summary}}"/>
-                        {{/canEditSummary}}
-                        {{^canEditSummary}}
-                        <span class="info-summ">{{worklist.summary}}</span>
-                        {{/canEditSummary}}
-                        </span>
-                    </li>
-                    <li>
-                        <span class="info-label"><a href="./help#ff5">Status</a></span>
-                        <span class="info-data">
-                            {{& statusInfo}}
-                        </span>
-                    </li>
-                    <li>
-                        <span class="sections">Notes</span>
-                            <span id="info-notes">
-                            {{#canEditNotes}}
-                                <textarea name="notes" id="edit-notes" class="autogrow mentions" {{#activeBidsCount}}disabled="disabled"{{/activeBidsCount}}>{{worklist.notes}}</textarea>
-                            {{/canEditNotes}}
-                            {{^canEditNotes}}
-                                {{& notesHtml}}
-                            {{/canEditNotes}}
-                            </span>
-                    </li>
-                    {{#canSeeBudgetArea}}
-                    <li>
-                        <div class="budgetArea">
-                            <div class="budget-label">Budget</div>
-                                {{#isRunnerOfWorkitem}}
-                                <span id="budget-source-combo-area">
-                                    <select id="budget-source-combo" name="budget-source-combo" class="project-dropdown">
-                                        <option value="0">Select a budget</option>
-                                        {{& getBudgetCombo}}
-                                    </select>
-                                </span>
-                                {{/isRunnerOfWorkitem}}
-                                {{^isRunnerOfWorkitem}}
-                                    {{#worklist.budget_id}}{{worklist.budget_reason}}{{/worklist.budget_id}}{{^worklist.budget_id}}<span>Not assigned</span>{{/worklist.budget_id}}
-                                {{/isRunnerOfWorkitem}}
-                                <div style="clear: both;"></div>
-                        </div>
-                    </li>
-                    {{/canSeeBudgetArea}}
-                    <!-- Edit: Sandbox textarea -->
-                    {{#worklist.mechanic_id}}
-                    <li>
-                        <div class="sandbox-container">
-                            <span class="functional-label" >Branch:</span><br />
-                            {{#canEditSandboxUrlOnEdit}}
-                            <input type="text" size="30" class="text-field" name="sandbox" id="sandbox" value="{{worklist.sandbox}}" />
-                            {{/canEditSandboxUrlOnEdit}}
-                            {{^canEditSandboxUrlOnEdit}}
-                                {{#worklist.sandbox}}
-                                <a href="{{& worklist.sandbox}}" >{{worklist.sandbox}}</a>
-                                {{/worklist.sandbox}}
-                                {{^worklist.sandbox}}
-                                <span>Not assigned</span>
-                                {{/worklist.sandbox}}
-                            {{/canEditSandboxUrlOnEdit}}
-                        </div>
-                    </li>
-                    {{/worklist.mechanic_id}}
-                </ul>
-            {{/editing}}
-            {{^editing}}
-                <span class="sections">Notes</span>
-                <p class="notestext">{{& notesHtmlWithLinks}}</p>
-                <!-- View: Sandbox textarea -->
-                {{#worklist.mechanic_id}}
-                    <div class="sandbox-container">
-                        {{#canEditSandboxUrl}}
-                            <span class="functional-label" id="edit_review_url" title="Click to change your branch url." data-toggle="tooltip">Branch:</span><br />
-                        {{/canEditSandboxUrl}}
-                        {{^canEditSandboxUrl}}
-                            <span class="functional-label">Branch:</span><br />
-                        {{/canEditSandboxUrl}}
-                        {{#worklist.sandbox}}
-                            <div class="sandboxlink">
-                                <div class="relative">
-                                    <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
-                                </div>
-                            </div>
-                            {{#canViewDiff}}
-                                <input type="submit" id="view-sandbox" value="View diff" />
-                            {{/canViewDiff}}
-                        {{/worklist.sandbox}}
-                        {{^worklist.sandbox}}
-                            <span>Not assigned</span>
-                        {{/worklist.sandbox}}
-                        <div>
-                            <span class="functional-label" >QA URL:</span><br />
-                            <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
-                        </div>
-                    </div>
-                {{/worklist.mechanic_id}}
-                <div id="commentZone">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h3 class="info-comments">Comments &amp; Activity</h3>
-                        </div>
-                    </div>
-                    <ul id="entries">
-                        {{& taskEntries}}
-                    </ul>
-                    {{#canComment}}
-                    <a name="commentform"></a>
-                    <form action="" method="post" id="commentform">
-                        <input type="hidden" name="worklist_id" value="{{worklist.id}}" />
-                        <input type="hidden" name="user_id" value="{{currentUser.id}}" />
-                        <input type="hidden" name="comment_id" value="" />
-                        <div class="form-group">
-                            <textarea name="comment" class="form-control autogrow mentions"></textarea>
-                        </div>
-                        <input type="submit" name="newcomment" value="Comment" /> 
-                        <span class="tip">You can mention users with <strong>@username</strong></span>
-                        <input type="button" name="cancel" value="Cancel" />
-                    </form>
-                    {{/canComment}}
-                </div>
-            {{/editing}}
-        </div>  <!-- End of div for_view -->
     </div>
-    <div class="col-sm-5 col-xs-12">
-        {{#editing}}
-            <div class="skills">
-                <span class="skills-label">Labels:</span><br/>
-                {{#skillsCount}}
-                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="{{commaSeparatedSkills}}," /></span>
-                {{/skillsCount}}
-                {{^skillsCount}}
-                <input type="text" size="60" class="text-field" name="skills" id="skills-edit" value="" /></span>
-                {{/skillsCount}}
-                <div class="clear"></div>
+    <div class="col-sm-5 col-md-5 job-meta-info">
+       {{#worklist.mechanic_id}}
+            <div class="col-sm-12 col-md-12 job-qa-testing">
+                <span class="job-info-heading">
+                    QA Testing:
+                </span>
+                    <a href="https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/">https://dev.worklist.net/~{{worklist.mechanic_nickname}}/{{worklist.project_name}}/</a>
             </div>
-        {{/editing}}
-        {{^editing}}
-            <div class="skills">
-                <div class="skills-label">Labels:</div>
-                {{#skillsCount}}{{commaSeparatedSkills}}{{/skillsCount}}{{^skillsCount}}<i>None</i>{{/skillsCount}}
+            <div class="col-sm-12 col-md-12 job-qa-sandbox">
+                <span {{#canEditSandboxUrl}}id="edit_review_url"{{/canEditSandboxUrl}} title="Click to change your branch url." data-toggle="tooltip" class="job-info-heading">
+                    Git branch:
+                </span>
+                {{#worklist.sandbox}}
+                    <a href="{{worklist.sandbox}}" target="_blank">{{worklist.sandbox}}</a>
+                {{/worklist.sandbox}}
+                {{^worklist.sandbox}}
+                    <span>Not assigned</span>
+                {{/worklist.sandbox}}
             </div>
-            {{#codeReview.canI}}
+        {{/worklist.mechanic_id}}
+        <div class="col-sm-12 col-md-12 job-qa-labels">
+            <span class="job-info-heading" id="job-labels">Labels <i id="job-skills-edit">Saved!</i> </span>
+            <ul id="labels" class="{{#canEdit}}job-skills-editable{{/canEdit}}">
+                {{#skills}}
+                    {{^canEdit}}
+                      {{#checked}}
+                            <li class="job-skills-noneditable">
+                                <input id="label{{id}}" type="checkbox"  checked name="label[{{id}}]" value="{{skill}}" />
+                                <label for="label{{id}}">{{skill}}</label>
+                            </li>
+                        {{/checked}}
+                    {{/canEdit}}
+                    {{#canEdit}}
+                        <li>
+                            <input id="label{{id}}" type="checkbox" {{#checked}}checked{{/checked}}  name="label[{{id}}]" value="{{skill}}" />
+                            <label for="label{{id}}">{{skill}}</label>
+                        </li>
+                    {{/canEdit}}
+                {{/skills}}
+            </ul>
+        </div>
+        {{#codeReview.canI}}
               {{> job/codeReview }}
-            {{/codeReview.canI}}
-        {{/editing}}
-        {{^editing}}
-        <div id="for_view">
+        {{/codeReview.canI}}
+        <div class="col-sm-12 col-md-12 job-bid">
             <div class="moneyZone">
-                <div id="bid-panel">
-                    <table class="table table-striped table-bids">
-                        <caption class="table-caption" >
-                            <h4>Bids</h4>
-                            <span>
-                                {{#currentUser.id}}
-                                    {{#canBid}}
-                                        <input type="submit" value="{{addBidMsg}}" data-toggle="tooltip"
-                                          title="Make an offer to do this job."
-                                          onClick="return Job.showBid{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
-                                        {{#canAcceptBids}}
-                                            <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
-                                              onClick="javascript:Job.AcceptMultipleBidOpen();"/>
-                                        {{/canAcceptBids}}
-                                     {{/canBid}}
-                                {{/currentUser.id}}
-                                {{^currentUser.id}}
-                                    <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to bid</a>
-                                {{/currentUser.id}}
-                            </span>
-                        </caption>
-                        <thead>
-                            <tr>
-                                <td>Who</td>
-                                <td>Amount</td>
-                                <td class="money">Done in ...</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{& bidsList}}
-                        </tbody>
-                    </table>
-                </div>
-                {{#currentUser.id}}
-                <div id="fee-panel" >
-                    <table class="table table-striped table-fees">
-                        <caption>
-                            <h4>Fees</h4>
-                            <span>
-                                {{^statusDone}}
-                                    {{#userIsMechanic}}
-                                        <input type="submit" value="Tip User" 
-                                          title="Tip a user" data-toggle="tooltip" />
-                                    {{/userIsMechanic}}
-                                    <input type="submit" value="Add a Fee" data-toggle="tooltip"
-                                      title="Add a fee you would like to be paid for work done on this job." 
-                                      onClick="return Job.showFee{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
-                                {{/statusDone}}
-                            </span>
-                        </caption>
-                        <thead>
-                            <tr>
-                                <td class="who">Who</td>
-                                <td class="fee">Amount</td>
-                                <td class="what">What</td>
-                                <td class="when">When</td>
-                                <td class="paid">Paid</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{& feesList}}
-                        </tbody>
-                    </table>
-                    <br />
-                    <form id="withdraw" method="post" action="./{{worklist.id}}" >
-                        <input type="hidden" name="action" value="withdraw_bid" />
-                        <input type="hidden" class="fee_id" name="fee_id" value="" />
-                    </form>
-                    <div style="clear: both"></div>
-                </div> <!-- End of div fee-panel -->
-                {{/currentUser.id}}
-                {{^currentUser.id}}
-                    {{#canBid}}
-                        <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to add fees</a>
-                    {{/canBid}}
-                {{/currentUser.id}}
-            </div> <!-- End of div moneyZone -->
-            <fieldset id="attachments">
-              <label>Drag &amp; drop or <em>select files</em> files to attach.</label>
-              <ul></ul>
-            </fieldset>
-        </div> <!-- End of for_view -->
-        {{/editing}}
-    </div> <!-- End of div right-panel-->
-    {{#canEditAndEditing}}
-    <div class="clear"></div>
-    <input type="submit" value="Save" name="save_workitem" id="save_workitem" />
-    {{/canEditAndEditing}}
-</div> <!-- End of div pageContent -->
-{{#editing}}
-    </form>
-{{/editing}}
+                    <div id="bid-panel">
+                        <table class="table table-striped table-bids">
+                            <caption class="table-caption" >
+                                <h4>Bids</h4>
+                                <span>
+                                    {{#currentUser.id}}
+                                        {{#canBid}}
+                                            <input type="submit" value="{{addBidMsg}}" data-toggle="tooltip"
+                                            title="Make an offer to do this job."
+                                            onClick="return Job.showBid{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
+                                            {{#canAcceptBids}}
+                                                <input type="submit" value="Accept Multiple"  id="btnAcceptMultiple"
+                                                onClick="javascript:Job.AcceptMultipleBidOpen();"/>
+                                            {{/canAcceptBids}}
+                                        {{/canBid}}
+                                    {{/currentUser.id}}
+                                    {{^currentUser.id}}
+                                        <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to bid</a>
+                                    {{/currentUser.id}}
+                                </span>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <td>Who</td>
+                                    <td>Amount</td>
+                                    <td class="money">Done in ...</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{& bidsList}}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{#currentUser.id}}
+                    <div id="fee-panel" >
+                        <table class="table table-striped table-fees">
+                            <caption>
+                                <h4>Fees</h4>
+                                <span>
+                                    {{^statusDone}}
+                                        {{#userIsMechanic}}
+                                            <input type="submit" value="Tip User"
+                                            title="Tip a user" data-toggle="tooltip" />
+                                        {{/userIsMechanic}}
+                                        <input type="submit" value="Add a Fee" data-toggle="tooltip"
+                                        title="Add a fee you would like to be paid for work done on this job."
+                                        onClick="return Job.showFee{{#userIsEligible}}ConfirmForm{{/userIsEligible}}{{^userIsEligible}}Ineligible{{/userIsEligible}}();" />
+                                    {{/statusDone}}
+                                </span>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <td class="who">Who</td>
+                                    <td class="fee">Amount</td>
+                                    <td class="what">What</td>
+                                    <td class="when">When</td>
+                                    <td class="paid">Paid</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{& feesList}}
+                            </tbody>
+                        </table>
+                        <br />
+                        <form id="withdraw" method="post" action="./{{worklist.id}}" >
+                            <input type="hidden" name="action" value="withdraw_bid" />
+                            <input type="hidden" class="fee_id" name="fee_id" value="" />
+                        </form>
+                        <div style="clear: both"></div>
+                    </div> <!-- End of div fee-panel -->
+                    {{/currentUser.id}}
+                    {{^currentUser.id}}
+                        {{#canBid}}
+                            <a href="./github/login/{{redir_url}}" class="btn btn-primary btn-sm">Login to add fees</a>
+                        {{/canBid}}
+                    {{/currentUser.id}}
+                </div> <!-- End of div moneyZone -->
+                <fieldset id="attachments">
+                <label>Drag &amp; drop or <em>select files</em> files to attach.</label>
+                <ul></ul>
+                </fieldset>
+            </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};

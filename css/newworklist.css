@@ -456,26 +456,6 @@ button:focus, a:focus {
     outline: none;
 }
 
-@media only screen and (max-width: 450px) {
-
-    #select-budget.dropdown-menu {
-        left: inherit;
-        right: 0;
-        min-width: inherit;
-        width: 255%;
-    }
-    .dropdown-menu > li > a {
-        display: inline-block;
-        white-space: inherit;
-    }
-    #select-budget.dropdown-menu li:not(:first-child) {
-        word-wrap: break-word;
-    }
-    #footer {
-        display: none;
-    }
-}
-
 /* Navbar styles for responsiveness */
 .navbar .dropdown-menu {
     box-shadow: -1px 3px 10px rgba(0,0,0,.75);
@@ -1309,4 +1289,34 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 #attachments.fd-zone {
   position: relative;
   overflow: hidden;
+}
+
+@media only screen and (max-width: 450px) {
+
+    #select-budget.dropdown-menu {
+        left: inherit;
+        right: 0;
+        min-width: inherit;
+        width: 255%;
+    }
+    .dropdown-menu > li > a {
+        display: inline-block;
+        white-space: inherit;
+    }
+    #select-budget.dropdown-menu li:not(:first-child) {
+        word-wrap: break-word;
+    }
+
+    .navbar-inverse .navbar-collapse {
+        background: none repeat scroll 0 0 #333;
+        left: 0;
+        max-height: 325px;
+        position: absolute;
+        right:0px;
+        top: 48px;
+    }
+
+    #footer {
+        display: none;
+    }
 }

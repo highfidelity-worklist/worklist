@@ -10,13 +10,10 @@ var Job = {
         $('#statusCombo, #project_id').chosen({
             width: '200px'
         });
-
-        if (action == 'edit') {
-            $('select[name="runner"], select[name="status"], select[name="assigned"]').chosen({
-                width: '140px',
-                disable_search_threshold: 10
-            });
-        }
+        $('select[name="runner"], select[name="assigned"]').chosen({
+            width: '100%',
+            disable_search_threshold: 10
+        });
 
         if (status_error) {
             openNotifyOverlay(status_error, false);
@@ -55,14 +52,6 @@ var Job = {
             return false;
         });
 
-        if (user_id) {
-            $.get('api.php?action=getSkills', function(data) {
-                var skillsData = eval(data);
-                var autoArgsSkills = autocompleteMultiple('getskills', skillsData);
-                $("#skills-edit").bind("keydown", autoArgsSkills.bind);
-                $("#skills-edit").autocomplete(autoArgsSkills);
-            });
-        }
         makeWorkitemTooltip(".worklist-item");
 
         $('#workitem-form').submit(function() {
@@ -78,33 +67,10 @@ var Job = {
 
         $.loggedin = (user_id > 0);
 
-        $(".editable").attr("title","Switch to Edit Mode").click(function() {
-            window.location.href = "./" + workitem_id + "?action=edit";
-        });
-
         $('.table-bids tbody td > a[href^="./user/"]').click(function(event) {
             event.stopPropagation();
             return true;
         });
-
-        // Reassign runner
-        if (canReassignRunner) {
-            $('#runnerBox span.changeRunner input[name=changerunner]').click(function() {
-                var runner_id = $('#runnerBox span.changeRunner select[name=runner]').val();
-                $.ajax({
-                    type: 'post',
-                    url: 'jsonserver.php',
-                    data: {
-                        action: 'changeRunner',
-                        // to avoid script loading error when not logged
-                        userid: user_id,
-                        runner: runner_id,
-                        workitem: workitem_id
-                    },
-                    dataType: 'json'
-                });
-            });
-        }
 
         //-- gets every element who has .iToolTip and sets it's title to values from tooltip.php
         setTimeout(MapToolTips, 800);
@@ -117,21 +83,6 @@ var Job = {
         });
 
         $('#commentform input[name=cancel]').addClass('hidden');
-
-        if ($('#is_internal').length) {
-            $('#is_internal').on('click', function() {
-                $.ajax({
-                    type: 'post',
-                    url: './job/toggleInternal/' + workitem_id,
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data.success) {
-                            // nothing to do here at this stage
-                        }
-                    }
-                });
-            });
-        }
 
         $('#following').click(function() {
             $.ajax({
@@ -146,6 +97,22 @@ var Job = {
                 }
             });
         });
+
+        $('ul.job-status-editable li').click(function() {
+            $('ul.job-status-editable li').removeClass('job-status-selected');
+            $(this).addClass('job-status-selected');
+            Job.update('status');
+        });
+
+        $('span.job-internal #is_internal').click(function() {
+            Job.update('internal');
+        });
+
+        $('ul.job-skills-editable li input').click(function() {
+            Job.update('skills');
+        });
+
+        $('select[name="assigned"]').change(Job.checkAssignedUserAndUpdate);
 
         // journal info accordian
         // flag to say we've not loaded anything in there yet
@@ -920,7 +887,7 @@ var Job = {
     refreshCodeReviewPartial: function(data) {
         Utils.parseMustache('partials/job/codeReview', data, function(parsed) {
             $('#code-review').remove();
-            $('.skills').after(parsed);
+            $('#labels').after(parsed);
             Job.setCodeReviewEvents();
         });
     },
@@ -1106,5 +1073,42 @@ var Job = {
                 });
             }
         });
+    },
+
+    update: function(mode) {
+        var data = {};
+        var skills = '';
+        $('#labels li input[name^="label"]').each(function() {
+            if ($(this).is(':checked')) {
+                skills += (skills.length ? ', ' : '') + $(this).val();
+            }
+        });
+        data.skills = skills;
+        if (mode == 'assignee') {
+            data.assigned = $('select[name="assigned"]').val();
+        }
+        data.status = $('.job-status-selected').data('status');
+        data.is_internal = $("input[name='is_internal']").is(':checked') ? 1 : 0;
+        data.worklist_id = workitem_id;
+        $.ajax({
+            type: 'post',
+            url: './job/edit',
+            dataType: 'json',
+            data: data,
+            success: function(data) {
+                if (data.success) {
+                    $('#job-'+ mode + '-edit').show().fadeOut(8000);
+                }
+            }
+        });
+    },
+
+    checkAssignedUserAndUpdate: function() {
+        if (parseInt($(this).val()) > 0) {
+            $("input[name='is_internal']").prop('checked', true);
+            $('ul.job-status-editable li').removeClass('job-status-selected');
+            $('ul.job-status-editable').find("[data-status='Bidding']").addClass('job-status-selected');
+            Job.update('assignee');
+        }
     }
 };

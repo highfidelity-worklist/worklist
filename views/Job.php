@@ -90,7 +90,7 @@ class JobView extends View {
     }
 
     public function canEditAndNotEditing() {
-        return $this->allowEdit && $this->action != 'edit';
+        return $this->allowEdit;
     }
 
     public function canEditAndEditing() {
@@ -121,41 +121,41 @@ class JobView extends View {
         $statusListMechanic = $this->read('statusListMechanic');
         $statusListRunner = $this->read('statusListRunner');
         $statusListCreator = $this->read('statusListCreator');
-
+        $selectedCurrentStatus = false;
+        $statusList = array();
         $ret = '';
-        if (!
-            ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) 
-          &&($worklist['mechanic_id'] == $this->currentUser['id'])
-          && $worklist['status'] != 'Done') 
-        { 
+        if (!($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner))
+          && $worklist['mechanic_id'] > 0 &&  ($worklist['mechanic_id'] == $this->currentUser['id'])
+          && $worklist['status'] != 'Done') {
             //mechanics
-            foreach ($statusListMechanic as $status) {
-                if ($status != $worklist['status']) {
-                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' . $status . '">' . $printStatus  . '</option>';
-                }
-            }
+            $statusList = $statusListMechanic;
         } else if ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) { 
             //runners and admins
-            foreach ($statusListRunner as $status) {
-                if ( $status != $worklist['status'] ) {
-                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' .  $status . '">' . $printStatus . '</option>';
-                }
-            }
-        } else if (
-             $worklist['creator_id']== $this->currentUser['id'] 
+            $statusList = $statusListRunner;
+
+        } else if ($worklist['creator_id'] == $this->currentUser['id']
           && $worklist['status'] != 'In Progress'
           && $worklist['status'] != 'QA Ready' && $worklist['status'] != 'Review'
           && $worklist['status'] != 'Merged' && $worklist['status'] != 'Done'
+          && $worklist['creator_id'] > 0
         ) {
             //creator
-            foreach ($statusListCreator as $status) {
-                if (!($status == 'Suggestion' && $status != $worklist['status'])) {
-                    $printStatus = $status == 'Review' ? 'Code Review' : $status;
-                    $ret .= '<option value="' . $status . '">' . $printStatus . '</option>';
-                }
+            $statusList = $statusListCreator;
+        }
+
+        foreach ($statusList as $status) {
+            $printStatus = $status == 'Review' ? 'Code Review' : $status;
+            $actualStatus = $status == 'Code Review' ? 'Review' : $status;
+            if ($actualStatus != $worklist['status'] ) {
+                $ret .= '<li data-status="'. $status .'"><a>' . $printStatus  . '</a></li>';
+            } else if ($actualStatus == $worklist['status']) {
+                $selectedCurrentStatus = true;
+                $ret .= '<li class="job-status-selected" data-status="'. $status .'"><a>' . $printStatus . '</a></li>';
             }
+        }
+        if (!$selectedCurrentStatus) {
+            $printStatus = $worklist['status'] == 'Review' ? 'Code Review' : $worklist['status'];
+            $ret .= '<li class="job-status-selected" data-status="'. $worklist['status'] .'"><a>' . $printStatus  . '</a></li>';
         }
 
         return $ret;
@@ -197,46 +197,18 @@ class JobView extends View {
         return $this->workitem_project->getRepo_type() == 'git';
     }
 
-    public function editableRunnerBox() {
-        $workitem = $this->workitem;
-        $worklist = $this->worklist;
-        $user = $this->user;
-        $runnerslist = Project::getAllowedRunnerlist($worklist['project_id']);
-        $ret = ' ';
-        if ($worklist['runner_nickname'] != 'Not funded') {
-            $ret .= 
-                '<span class="inline-label"><a href="./user/' . $worklist['runner_id'] . '"' .
-                ' data-user-id="' . $worklist['runner_id'] . '">Designer</a></span>
-                ';
-        } else {
-            $ret .= $worklist['runner_nickname'];
-        }
-        $ret .= '<span class="changeRunner"><select name="runner">';
-        foreach ($runnerslist as $r) {
-            $ret .= 
-                '<option value="' . $r->getId() . '"' . (($worklist['runner_id'] == $r->getId()) ? ' selected="selected"' : '') . '>' . 
-                    $r->getNickname() . 
-                '</option>';
-        }
-        $ret .= 
-            '</select>' .
-            '<input type="button" class="smbutton" name="changerunner" value="Change Designer" />' .
-            '</span>';
-        return $ret;
-    }
-
     public function nonEditableRunnerBox() {
         $worklist = $this->worklist;
         $ret = '';
         if ($worklist['runner_nickname'] != 'Not funded' && $worklist['runner_nickname'] != '') {
             $ret .= 
-                '<span class="runnerName">' .
+                '<span class="job-info-heading">' .
                 'Designer:</span>' .
                 '<a href="./user/' . $worklist['runner_id'] . '" >' . 
                     substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
                 '</a>';
         } else {
-            $ret .= '<span class="runnerName">Designer:</span> Not funded';
+            $ret .= '<span class="job-info-heading">Designer:</span> Not funded';
         }
         return $ret;
     }
@@ -254,12 +226,12 @@ class JobView extends View {
             }
         }
         if ($mech == '') {
-            $mech = '<span class="mechanicName">Developer:</span>Not assigned';
+            $mech = '<span class="job-info-heading">Developer:</span>Not assigned';
         } else {
             $tooltip = isset($_SESSION['userid']) ? "Ping Developer" : "Log in to Ping Developer";
             $mech = 
-                '<span id ="pingMechanic" class="mechanicName" title="' . $tooltip . '" >' . 
-                  '<a href="#">Developer:</a>' . 
+                '<span  class="job-info-heading" title="' . $tooltip . '" >' .
+                  'Developer:' .
                 '</span>' . 
                 '<a id="ping-btn" href="./user/' . $worklist['mechanic_id'] . '" >' . $mech . '</a>';
         }
@@ -938,5 +910,34 @@ class JobView extends View {
         $worklist = $this->worklist;
         $assignedUser = User::find($worklist['assigned_id']);
         return $assignedUser->getNickname();
+    }
+
+    public function skills() {
+        $skillModel = new SkillModel();
+        $skillList = $skillModel->loadAll();
+        $skills = array();
+        foreach($skillList as $skill) {
+            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
+            if (in_array($skill->skill, $this->workitem->getSkills())) {
+                $skillObj['checked'] = true;
+            }
+            array_push($skills, $skillObj);
+        }
+        return $skills;
+    }
+
+    public function canEdit() {
+        $workitem = $this->workitem;
+        $worklist = $this->worklist;
+        $user = $this->user;
+        $is_runner = $this->currentUser['is_runner'];
+
+       return (
+             (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) && $worklist['status']!='Done')
+          || (
+                 $worklist['creator_id'] == $this->currentUser['id']
+              && ($worklist['status']=='Suggestion') && is_null($worklist['runner_id'])
+            )
+        );
     }
 }

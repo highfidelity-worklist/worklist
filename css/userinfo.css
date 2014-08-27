@@ -581,3 +581,81 @@ body .white-theme .ui-dialog-content label {
     float:right;
     font-size:10px;
 }
+
+form#roles ul {
+    padding: 0;
+}
+form#roles ul li {
+    display: inline;
+}
+
+@media (max-width: 480px) {
+    .nav-tabs {
+        border-bottom: none;
+    }
+
+    #profile-nav li {
+        font-size: 10px;
+    }
+
+    #user-avatar #userName {
+        font-size: 20px;
+    }
+
+    #profileInfoFavorite {
+        left: 15px;
+        top: 115px;
+    }
+
+    #profileInfoFavorite {
+        width: 90%;
+        clear: both;
+    }
+
+    .listReviewElement,
+    .listReviewElement .reviewText,
+    #globalinfo #user-age,
+    #globalinfo .totals,
+    #user-location,
+    #info-currenttime {
+        width: 100% !important;
+        clear: both;
+    }
+
+    .listReviewElement {
+        overflow-y: inherit;
+    }
+
+    .userName{
+        width: 100%;
+    }
+
+    #info-currenttime span {
+        font-size: 25px;
+    }
+
+    #globalinfo #user-age.info-label {
+        margin-top: 5px;
+    }
+
+    .profileContactFavorite {
+        margin-top: 10px;
+    }
+
+    .button-row {
+        float: none;
+        text-align: left;
+    }
+
+    .button-row span {
+        margin: 0;
+    }
+
+    #jobs-table tr > td:first-child {
+        max-width: 125px;
+    }
+
+    form#roles ul li {
+        display: block;
+    }
+}

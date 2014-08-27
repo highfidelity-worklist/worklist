@@ -666,10 +666,13 @@ class User {
                 . ' ORDER BY id DESC ';
         $result = mysql_query($query);
         $ret = "";
+        $option = "";
+        $isSelected = false;
         if ($result) {
             while ($row = mysql_fetch_assoc($result)) {
                 if (isset($budget_id) && $budget_id == $row['id']) {
                     $selected = "selected='selected'";
+                    $isSelected = true;
                 } else {
                     $selected = "";
                 }
@@ -677,7 +680,12 @@ class User {
                         $row['reason'] . ' ($' . $row['remaining'] . ")</option>\n";
             }
         }
-        return $ret;
+        if (!$isSelected) {
+            $option = "<option value='0' selected='selected' >Select a Budget</option>";
+        } else {
+            $option = "<option value='0'>Select a Budget</option>";
+        }
+        return $option.$ret;
     }
    
     public function getTotalManaged() {
@@ -2568,7 +2576,7 @@ class User {
                 `b`.`amount`,
                 CASE WHEN `b`.`active` = 1 THEN `b`.`remaining` ELSE 0.00 END AS `remaining`,
                 `b`.`reason`,
-                `b`.`active`,
+                CASE WHEN `b`.`active` = 1 THEN TRUE ELSE FALSE END AS `active`,
                 `b`.`notes`,
                 `b`.`seed`,
                 `b`.`id` AS `budget_id`,
@@ -2605,7 +2613,8 @@ class User {
                     $givers[] = array('nickname' => $nickname);
                 }
                 $ret[] = array_merge($row, array(
-                    'givers' => $givers
+                    'givers' => $givers,
+                    'active' => ($row['active'] ? true : false)
                 ));
             }
             return array(

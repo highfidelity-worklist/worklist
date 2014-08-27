@@ -38,22 +38,6 @@ span.info-whisper {
     height:25px;
 }
 
-.info-summ-big {
-    clear:both;
-    height: 37px;
-    margin-top: 12px;
-    font-size: 13px;
-    border-bottom: 2px solid #e1e8ea;
-    float: left;
-    color: #666;
-}
-
-@media (max-width: 480px) {
-    .info-summ-big {
-        font-size: 12px;
-    }
-}
-
 .info-summ-big-text {
     font-size: 30px;
     margin-top: 12px !important;
@@ -341,27 +325,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     margin-left: 15px !important;
 }
 
-.runnerName,
-.mechanicName,
-.assigneeName,
-.creatorName,
-.skills-label {
-    float: left;
-    width: 100%;
-    color: #007F7C;
-    margin-bottom: 2px;
-    font-weight: normal;
-}
-
-.runnerName a,
-.mechanicName a,
-.assigneeName a,
-.creatorName a,
-.skills-label a {
-    text-decoration: none;
-    color: #007F7C !important;
-}
-
 .changeRunner select {
     float: left;
 }
@@ -448,16 +411,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     float: left;
     display: block;
     color: #930;
-}
-
-#edit_review_url {
-    cursor: pointer;
-    color: #007F7C;
-}
-
-#edit_review_url:hover {
-    cursor: pointer;
-    text-decoration: underline;
 }
 
 .inline-label,
@@ -749,19 +702,20 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 }
 
 .notestext {
-    margin: 15px 0 25px;
     padding-right: 5px;
     word-wrap: break-word;
-    font-size: 1.1em;
+    font-size: 15px;
     line-height: 19px;
+    clear: left;
+    padding-top: 15px;
 }
 
-#for_view .notestext a, .comment a {
+.job-info .notestext a, .comment a {
     color: #336666;
     text-decoration: underline;
 }
 
-#for_view .notestext a:hover, .comment a:hover {
+.job-info .notestext a:hover, .comment a:hover {
     text-decoration:none;
 }
 
@@ -911,7 +865,8 @@ a.profile-link {
 
 #following,
 .switchmode,
-.switchmode-done {
+.switchmode-done,
+span#job-internal-edit {
     float: left;
 }
 
@@ -922,27 +877,18 @@ a.profile-link {
     color: #608e96 !important;
 }
 
-#following {
-    border-right: 2px solid #e1e8ea;
-}
-
-#following {
-    padding: 10px 14px 7px 10px;
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-}
-
 .switchmode,
 .switchmode-done {
-    padding: 10px 15px 7px 10px;
+    padding: 8px 17px 5px 10px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
+    border-bottom: 2px solid #e1e8ea;
 }
 
 .switchmode a,
 .switchmode-done span {
     text-decoration: none;
-    color: #333;
+    color: #666;
 }
 
 .switchmode:hover a{
@@ -1090,12 +1036,6 @@ h1.newProject {
     color: #000 !important;
 }
 
-
-.sandboxlink {
-    max-width: 340px;
-    overflow: hidden;
-}
-
 .relative {
     position: relative;
 }
@@ -1157,14 +1097,14 @@ h1.newProject {
         content: ' ';
     }
 
-    #following span,
+    #following span:nth-child(2),
     #switchmode_edit span#edit-text,
     #tweet-link span {
         display: none;
     }
 
     #tweet-link {
-        height: 35px;
+        height: 34px;
         padding: 10px 17px 15px 28px;
         background-position: 10px 10px;
     }
