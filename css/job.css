@@ -686,3 +686,11 @@ span.edit-mode-only {
         height: 33px;
     }
 }
+
+#bid-panel span {
+    margin-top: 8px;
+}
+
+#bid-panel span input {
+    margin: 0px;
+}
