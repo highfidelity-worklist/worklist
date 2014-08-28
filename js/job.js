@@ -509,7 +509,7 @@ var Job = {
                         depth = 0;
                     }
                     var newcomment =
-                        '<li id="comment-' + data.id + '" class="imOdd depth-' + depth + '">' +
+                        '<li id="comment-' + data.id + '" class="depth-' + depth + '">' +
                             '<div class="comment">' +
                                 '<a href="./user/' + data.userid + '" >' +
                                     '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -519,9 +519,9 @@ var Job = {
                                         '<a class="author profile-link" href="./user/' + data.userid +'" >' +
                                             data.nickname +
                                         '</a> ' +
-                                        '<span class="date">' +
+                                        '<a class="date" href="./' + workitem_id + '#comment-' + data.id + '">' +
                                             data.date +
-                                        '</span>' +
+                                        '</a>' +
                                     '</div>' +
                                     '<div class="comment-text">' +
                                          data.comment +

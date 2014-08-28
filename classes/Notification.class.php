@@ -151,7 +151,9 @@ class Notification {
             case 'comment':
                 $headers['From'] = '"' . $project_name . '-comment" ' . $from_address;
                 $headers['Reply-To'] = '"' . $_SESSION['nickname'] . '" <' . $_SESSION['username'] . '>';
-                $body .= $data['who'] . ' commented on ' . $itemLink . ':<br>'
+                $commentUrl = WORKLIST_URL . $workitem->getId() . '#comment-' . $data['comment-id'];
+                $commentLink = ' <a href="' . $commentUrl . '">commented</a> ';
+                $body .= $data['who'] . $commentLink . ' on ' . $itemLink . ':<br>'
                       . nl2br($data['comment']) . '<br /><br />';
                 if ($current_user->getSelf_notif()) {
                     array_push($emails, $current_user->getUsername());
