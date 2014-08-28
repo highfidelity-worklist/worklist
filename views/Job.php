@@ -803,7 +803,7 @@ class JobView extends View {
                         '                <a class="author profile-link" href="./user/' . $commentObj->getUser()->getId() . '">' .
                         '                    ' . $commentObj->getUser()->getNickname() .
                         '                </a>' .
-                        '                <a class="date" href="#comment-' . $comment['id'] . '">' .
+                        '                <a class="date" href="./' . $this->worklist['id'] . '#comment-' . $comment['id'] . '">' .
                         '                ' . $commentObj->getRelativeDate() .
                         '                </a>' .
                         '            </div>' .
