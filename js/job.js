@@ -519,9 +519,9 @@ var Job = {
                                         '<a class="author profile-link" href="./user/' + data.userid +'" >' +
                                             data.nickname +
                                         '</a> ' +
-                                        '<span class="date">' +
+                                        '<a class="date" href="#comment-' + data.id + '">' +
                                             data.date +
-                                        '</span>' +
+                                        '</a>' +
                                     '</div>' +
                                     '<div class="comment-text">' +
                                          data.comment +
