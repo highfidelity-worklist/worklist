@@ -246,11 +246,37 @@ section#footer li:nth-child(-n+3) {
     margin-left: -55px;
 }
 
+/**
+ * fix issues with fixed navbar for links with fragment id
+ */
+#entries > li[id^="comment-"] {
+    padding-top: 90px;
+    margin-top: -70px;
+}
+@media  (max-width: 767px) {
+    #entries > li[id^="comment-"] {
+        padding-top: 70px;
+        margin-top: -50px;
+    }
+}
+
 /*
  * User profile avatars rounded (in circle) for job comments
  */
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
+}
+
+/**
+ * Comments timestamps links styling
+ */
+#entries li[id^="comment-"] .comment a.date {
+    color:#666;
+    text-decoration: none;
+    font-weight: normal;
+}
+#entries li[id^="comment-"] .comment a.date:hover {
+    text-decoration: underline;
 }
 
 .visits-box {

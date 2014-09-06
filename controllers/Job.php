@@ -199,7 +199,8 @@ class JobController extends Controller {
                         'who' => $_SESSION['nickname'],
                         // removed nl2br as it's cleaner to be able to choose if this is used on output
                         'comment' => $comment,
-                        'related' => $related
+                        'related' => $related,
+                        'comment-id' => $rt['id']
                     );
 
                     Notification::workitemNotify($options, $data, false);
@@ -226,12 +227,13 @@ class JobController extends Controller {
                                 ) {
 
                                     $emailTemplate = 'workitem-mention';
+                                    $comment_url = WORKLIST_URL . $workitem->getId() . '#comment-' . $rt['id'];
                                     $data = array(
                                         'job_id' => $workitem->getId(),
                                         'summary' => $workitem->getSummary(),
                                         'author' => $_SESSION['nickname'],
                                         'text' => $comment,
-                                        'link' => '<a href="' . WORKLIST_URL . $workitem->getId() . '">See the comment</a>'
+                                        'link' => '<a href="' . $comment_url . '">See the comment</a>'
                                     );
 
                                     $senderEmail = 'Worklist - ' . $_SESSION['nickname'] . ' <contact@worklist.net> ';
