@@ -255,9 +255,9 @@ section#footer li:nth-child(-n+3) {
 
 .visits-box {
     float: left;
-    color: #999999;
-    min-width: 105px;
-    padding: 9px 10px 5px 0;
+    color: #666666;
+    min-width: 72px;
+    padding: 9px 10px 5px 5px;
     border-right: 2px solid #e1e8ea;
     border-bottom: 2px solid #e1e8ea;
     height: 34px;
@@ -289,9 +289,6 @@ section#footer li:nth-child(-n+3) {
         background-image: url("../images/wl-icons/tweet.svg");
         padding: 10px 17px 15px 28px;
         background-position: 10px 10px;
-    }
-    .visits-box {
-        min-width: 95px;
     }
 }
 
@@ -671,6 +668,19 @@ span.edit-mode-only {
 
     div.job-bid {
         padding-top: 20px;
+    }
+
+    div.info-summ-big-text {
+        font-size: 18px;
+        line-height: 20px;
+    }
+
+    a.commenter-avatar {
+        display: none;
+    }
+
+    li div.comment {
+        margin-left: 45px;
     }
 }
 

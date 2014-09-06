@@ -66,6 +66,7 @@ class JobView extends View {
             'feeAmount' => $this->crFee()
         );
 
+        $this->views = $this->read('views');
         return parent::render();
     }
 
@@ -795,7 +796,7 @@ class JobView extends View {
                     $ret .=
                         '<li id="comment-' . $comment['id'] . '" class="depth-' . $comment['depth'] . '">' .
                         '    <div class="comment">' .
-                        '        <a href="./user/' . $commentObj->getUser()->getId() . '">' .
+                        '        <a class="commenter-avatar" href="./user/' . $commentObj->getUser()->getId() . '">' .
                         '            <img class="picture profile-link" src="' . $commentObj->getUser()->getAvatar() . '" title="Profile Picture - ' . $commentObj->getUser()->getNickname() . '" />' .
                         '        </a>' .
                         '        <div class="comment-container">' .
