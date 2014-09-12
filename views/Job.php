@@ -757,6 +757,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
+        $row_class .= ($this->read('place_bid_id') == $$itemId) ? ' place_bid_id ' : '' ;
         return $this->read('isGitHubConnected') ? 'Add my bid' : 'Authorize GitHub app';
     }
 

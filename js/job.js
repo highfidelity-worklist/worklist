@@ -363,7 +363,13 @@ var Job = {
 
         Job.setCodeReviewEvents();
         Job.initFileUpload();
-    },
+
+        // parse query string and then run specific actions from params if requested
+        var queryString = Utils.queryString();
+        if (queryString.hasOwnProperty('placeBid')) {
+            $('input[value="Add my bid"]').click();
+        }
+     },
 
     initFileUpload: function() {
         var options = {iframe: {url: './file/add/' + workitem_id}};

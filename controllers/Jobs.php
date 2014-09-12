@@ -63,7 +63,7 @@ class JobsController extends Controller {
         }
 
         $filter->setFollowing(($filterName != null && $filterName == "following") ? true : false);
-        $filter->setStatus(($filterName != null && $filterName != "following") ? $filterName : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
+        $filter->setStatus(($filterName != null && $filterName != "following") ? $filterName : "Draft,Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
 
         // Prevent reposts on refresh
         if (! empty($_POST)) {

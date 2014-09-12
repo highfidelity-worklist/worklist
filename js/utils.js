@@ -217,6 +217,22 @@ var Utils = {
             justNow = typeof(justNow) == 'undefined' ? true : justNow;
             return justNow ? 'just now' : '';
         }
-    }
-};
-
+    },
+    queryString: function() {
+        var query_string = {};
+        var query = window.location.search.substring(1);
+        var vars = query.split('&');
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split('=');
+            if (typeof query_string[pair[0]] === 'undefined') { // If first entry with this name
+                query_string[pair[0]] = pair[1];
+            } else if (typeof query_string[pair[0]] === 'string') { // If second entry with this name
+                var arr = [ query_string[pair[0]], pair[1] ];
+                query_string[pair[0]] = arr;
+            } else { // If third or later entry with this name
+               query_string[pair[0]].push(pair[1]);
+            }
+        }
+        return query_string;
+     }
+ };
