@@ -273,25 +273,27 @@ class Notification {
                 $urlAcceptBid  = $workItemUrl;
                 $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . '\'s bid</a>';
                 $body .=  $urlAcceptBid;
-                $headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
+                $bidder_address = '<' . $_SESSION['username'] . '>';
+                $headers['From'] = '"' . $project_name . '-new bid" ' . $bidder_address;
                 $body =  ' New bid from <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> on: <br />'
                     . $itemLink . ' '.$workitem->getSummary() . '<br />'
-                    .'----------------------------------------------------------------<br /><br />'
+                    . '----------------------------------------------------------------<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Functioning in: ' . $data['done_in'] . '<br />'
-                    .'----<br />'
+                    . '----<br />'
                     . 'Notes: ' . '<br />'
                     . ' ' . nl2br(stripslashes($data['notes'])) . '<br />'
-                    .'----<br />'
+                    . '----<br />'
                     . $urlAcceptBid . ' / reply to this email to ask questions or <a href="https://gitter.im/highfidelity/worklist">chat via Gitter</a><br /><br />'
-                    .'----------------------------------------------------------------<br />'
-                    .'<a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '\'s profile</a> / ' . $totalActiveJobs . ' / ' . $totalJobs .'<br />'
-                    .'----------------------------------------------------------------';
+                    . '----------------------------------------------------------------<br />'
+                    . '<a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '\'s profile</a> / ' . $totalActiveJobs . ' / ' . $totalJobs .'<br />'
+                    . '----------------------------------------------------------------';
 
            break;
 
             case 'bid_updated':
-                $headers['From'] = '"' . $project_name . '-bid updated" ' . $from_address;
+                $bidder_address = '<' . $_SESSION['username'] . '>';
+                $headers['From'] = '"' . $project_name . '-bid updated" ' . $bidder_address;
                 $body = 'Bid updated for ' . $itemLink . '<br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Functioning in: ' . $data['done_in'] . '<br />'
@@ -370,7 +372,7 @@ class Notification {
                 $urlPlacebid  = '<a href="' . WORKLIST_URL . $itemId . '?placeBid">Submit a bid</a>';
                 $body = "Now accepting bids: <br />"
                 . $itemLink . ' ' . $workitem->getSummary() . '<br />'
-                .'----------------------------------------------------------------<br />'
+                . '----------------------------------------------------------------<br />'
                 . 'Project: ' . '<a href="' . SERVER_URL . $project_name . '">' . $project_name. '</a>'
                 . ' / Creator: ' . '<a href="' . SERVER_URL . 'user/' . $workitem->getCreator()->getNickname() . '">' . $workitem->getCreator()->getNickname() . '<a>';
                 if($workitem->getRunner() != '') {
