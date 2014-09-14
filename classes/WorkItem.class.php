@@ -753,11 +753,11 @@ class WorkItem {
 
     public function getProjectRunnersId() {
         // Fix for #15353: Only select active runners 20-SEP-2011 <danS>
-        $query = " SELECT DISTINCT(w.`runner_id`) as runner
-            FROM `" . WORKLIST . "` AS w INNER JOIN `" . USERS . "` u ON u.`id` = w.`runner_id`
-            WHERE w.`project_id` = " . $this->getProjectId() . "
-              AND u.`is_runner` = 1
-              AND u.`is_active` = 1";
+        $query = " SELECT DISTINCT(r.`runner_id`) as runner
+            FROM `" . PROJECT_RUNNERS . "` as r INNER JOIN `" . USERS . "` u ON u.`id` = w.`runner_id`
+            WHERE r.`project_id` = " . $this->getProjectId() . "
+            AND u.`is_runner` = 1
+            AND u.`is_active` = 1";
         $result_query = mysql_query($query);
         if($result_query) {
             $temp_array = array();

@@ -87,6 +87,14 @@ class JobController extends Controller {
             exit;
         }
 
+        if ($workitem->getStatus() == 'Draft' &&  $workitem->getCreatorId() != $_SESSION['userid']){
+            $this->write('msg', 'You don\'t have permissions to view this job.');
+            $this->write('link', WORKLIST_URL);
+            $this->view = new ErrorView();
+            parent::run();
+            exit;
+        }
+
         $this->write('workitem', $workitem);
 
         // we need to be able to grant runner rights to a project founder for all jobs for their project

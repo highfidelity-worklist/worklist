@@ -4,6 +4,9 @@
             <div class="info-ID">
                 <span class="wl-icon-follow" id="following"><span id="followingLogin"></span></span>
             </div>
+            {{^workitem.isInternal}}
+                <span class="wl-icon-tweet" id="tweet-link" title="Tweet" data-jobid={{worklist.id}} data-jobsummary="{{worklist.summary}}" href="javascript"><span>Tweet</span></span>
+            {{/workitem.isInternal}}
         </div>
         <div class="col-sm-4 col-md-4">
           <div id="internal-edit">

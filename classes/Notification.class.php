@@ -166,7 +166,7 @@ class Notification {
                 $body = 'New fee was added to the item ' . $itemLink . '.<br>'
                         . 'Who: ' . $data['fee_adder'] . '<br/>'
                         . 'Amount: ' . $data['fee_amount'] . '<br/>'
-                        . '<div>Fee Notes:<br/> ' . nl2br($data['fee_desc']) . '</div><br/><br/>'
+                        . '<div>Fee Notes:<br/> ' . nl2br(stripslashes($data['fee_desc'])) . '</div><br/><br/>'
                         . 'Project: ' . $project_name . '<br/>'
                         . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                         if($workitem->getRunner() != '') {
@@ -267,57 +267,41 @@ class Notification {
       
                 //now get total jobs and total jobs and create links
                 $totalJobs = $workItemUrl;
-                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['totalJobs'] . ' Jobs Total</a><br />';
+                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['totalJobs'] . ' jobs in total</a><br />';
                 $totalActiveJobs = $workItemUrl;
-                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['activeJobs'] . ' Jobs Active</a><br />';
-                $urlAcceptBid  = '<br />' . $workItemUrl;
-                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept this bid </a>';
+                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['activeJobs'] . ' jobs currently active</a>';
+                $urlAcceptBid  = $workItemUrl;
+                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . '\'s bid</a>';
                 $body .=  $urlAcceptBid;
-
-                $headers['From'] = '"' . $project_name . '-new bid" ' . $from_address;
-                $body =  ' <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> placed a bid on
-                         ' . $itemLink . '<br /><br />'
+                $bidder_address = '<' . $_SESSION['username'] . '>';
+                $headers['From'] = '"' . $project_name . '-new bid" ' . $bidder_address;
+                $body =  ' New bid from <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> on: <br />'
+                    . $itemLink . ' '.$workitem->getSummary() . '<br />'
+                    . '----------------------------------------------------------------<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
-                    . 'Functioning In: ' . $data['done_in'] . '<br /><br />'
-                    . ' ' . nl2br($data['notes']) . '<br /><br />'
-                    . $urlAcceptBid . 'or email ' . $_SESSION['nickname'] . ' via <a href="mailto:' . $_SESSION['username']. '">' . $_SESSION['username']. '</a><br /><br />'
-                    .'----<br />'
-                    .'Stats for ' . $_SESSION['nickname'] . ': <br />'
-                    .'----<br />'
-                    . $totalJobs .  '<br /><br />'
-                    . $totalActiveJobs . '<br /><br />'
-                    . '3 most recent jobs for ' . $project_name . ':<br /><br />'
-                    . $jobs . '<br />'
-                    .'----<br />'
-                    .'Job Details:<br />'
-                    .'----<br />'
-                    . 'Project: ' . $project_name . '<br />'
-                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                    if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br /><br />';
-                    }
-                    if($workitem->getMechanic() != '') {
-                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                    }
-                $body .= ''. nl2br($workitem->getNotes()) . '<br /><br />' . '----<br />';
-                $urlAcceptBidB  = $workItemUrl;
-                $urlAcceptBidB .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . ' \'s bid </a>';
-                $body .=  $urlAcceptBidB . 'for $' . number_format($data['bid_amount'], 2)
-                      .'<br />'
-                      .'----';
+                    . 'Functioning in: ' . $data['done_in'] . '<br />'
+                    . '----<br />'
+                    . 'Notes: ' . '<br />'
+                    . ' ' . nl2br(stripslashes($data['notes'])) . '<br />'
+                    . '----<br />'
+                    . $urlAcceptBid . ' / reply to this email to ask questions or <a href="https://gitter.im/highfidelity/worklist">chat via Gitter</a><br /><br />'
+                    . '----------------------------------------------------------------<br />'
+                    . '<a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '\'s profile</a> / ' . $totalActiveJobs . ' / ' . $totalJobs .'<br />'
+                    . '----------------------------------------------------------------';
 
            break;
 
             case 'bid_updated':
-                $headers['From'] = '"' . $project_name . '-bid updated" ' . $from_address;
-                $body = 'Bid updated for ' . $itemLink . '<br /><br/>'
+                $bidder_address = '<' . $_SESSION['username'] . '>';
+                $headers['From'] = '"' . $project_name . '-bid updated" ' . $bidder_address;
+                $body = 'Bid updated for ' . $itemLink . '<br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
-                    . 'Functioning In: ' . $data['done_in'] . '<br />'
+                    . 'Functioning in: ' . $data['done_in'] . '<br />'
                     . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
                     . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes:<br/> ' . nl2br($data['notes']) . '<br /><br />'
+                    . 'Notes:<br/> ' . nl2br(stripslashes($data['notes'])) . '<br /><br />'
                     . 'Project: ' . $project_name . '<br />'
-                        . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
                     if($workitem->getRunner() != '') {
                         $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
                     }
@@ -385,18 +369,20 @@ class Notification {
             break;
 
             case 'new_bidding':
-                $body = "Summary: " . $itemLink . ' ' . $workitem->getSummary() . '<br /><br />'
-                . 'Project: ' . $project_name . '<br />'
-                . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
+                $urlPlacebid  = '<a href="' . WORKLIST_URL . $itemId . '?placeBid">Submit a bid</a>';
+                $body = "Now accepting bids: <br />"
+                . $itemLink . ' ' . $workitem->getSummary() . '<br />'
+                . '----------------------------------------------------------------<br />'
+                . 'Project: ' . '<a href="' . SERVER_URL . $project_name . '">' . $project_name. '</a>'
+                . ' / Creator: ' . '<a href="' . SERVER_URL . 'user/' . $workitem->getCreator()->getNickname() . '">' . $workitem->getCreator()->getNickname() . '<a>';
                 if($workitem->getRunner() != '') {
-                    $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
+                    $body .= ' / Designer: ' . '<a href="' . SERVER_URL . 'user/' . $workitem->getRunner()->getNickname(). '">' . $workitem->getCreator()->getNickname() . '<a> <br />'
+                          .'----------------------------------------------------------------<br />';
                 }
-                if($workitem->getMechanic() != '') {
-                   $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />'
-                . 'You are welcome to bid the job <a href="' . WORKLIST_URL . $itemId . '">here</a>.' . '<br /><br />'
-                . '<a href="' . SERVER_URL . '">www.worklist.net</a>' ;
+                $body .= 'Notes:<br /> '
+                . nl2br(stripslashes($workitem->getNotes())) . '<br />'
+                .'----------------------------------------------------------------<br />'
+                . '<a href="' . WORKLIST_URL . $itemId . '">View the job</a>' . ' / ' . $urlPlacebid;
             break;
 
             case 'new_qa':

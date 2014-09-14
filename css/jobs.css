@@ -248,6 +248,14 @@ ul.project-jobs li:nth-child(4):after {
     color: #ff9900;
 }
 
+.project-jobs-status-draft span {
+    color: #EDDFB4;
+}
+
+.project-jobs-status-draft i {
+    background-color: #EDDFB4;
+}
+
 .project-jobs-status-bidding span {
     color: #ff9900;
 }
