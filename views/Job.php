@@ -67,6 +67,7 @@ class JobView extends View {
         );
 
         $this->views = $this->read('views');
+        $this->viewCount = $this->read('viewCount');
         return parent::render();
     }
 
@@ -227,7 +228,7 @@ class JobView extends View {
             }
         }
         if ($mech == '') {
-            $mech = '<span class="job-info-heading">Developer:</span>Not assigned';
+            $mech = '<span class="job-info-heading">Developer:</span><span id="job-info-not-assigned">Not assigned</span>';
         } else {
             $tooltip = isset($_SESSION['userid']) ? "Ping Developer" : "Log in to Ping Developer";
             $mech = 
