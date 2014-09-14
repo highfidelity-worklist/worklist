@@ -284,7 +284,7 @@ section#footer li:nth-child(-n+3) {
     float: left;
     color: #666666;
     min-width: 72px;
-    padding: 9px 10px 5px 5px;
+    padding: 9px 9px 5px 5px;
     border-right: 2px solid #e1e8ea;
     border-bottom: 2px solid #e1e8ea;
     height: 34px;
@@ -329,7 +329,7 @@ span.job-internal {
     border-bottom: 2px solid #E1E8EA;
     border-right: 2px solid #E1E8EA;
     float: left;
-    padding: 2px 12px 6px 9px;
+    padding: 2px 9px 6px 9px;
 }
 
 div.job-social {
@@ -339,7 +339,7 @@ div.job-social {
 }
 
 #following {
-    padding: 10px 14px 4px 10px;
+    padding: 10px 10px 4px 10px;
     background-position: 10px 10px;
     background-repeat: no-repeat;
     border-bottom: 2px solid #e1e8ea;

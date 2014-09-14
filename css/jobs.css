@@ -446,7 +446,7 @@ ul.project-jobs li:nth-child(4),
 ul.project-jobs li:nth-child(5) {
     overflow: hidden;
     position: relative;
-    height: 20px;
+    height: 22px;
 }
 
 ul.project-jobs li:nth-child(2) {
@@ -484,13 +484,14 @@ ul.project-jobs {
 
     ul.project-jobs li:nth-child(1) {
         clear: left;
-        height: 24px;
+        height: 19px;
     }
 
     ul.project-jobs li:nth-child(2) a {
         color: #333333;
         font-weight: bold;
         font-size: 14px;
+	padding: 0px 7px 0px;
     }
 
     ul.project-jobs li:nth-child(1),
@@ -500,13 +501,14 @@ ul.project-jobs {
 
     ul.project-jobs li:nth-child(2) {
         width: calc(100% - 80px);
+        height: 19px;
     }
 
     ul.project-jobs li:nth-child(4),
     ul.project-jobs li:nth-child(5) {
         display: inline-block;
         margin-right: 5px;
-        margin-left: 8px;
+        margin-left: 5px;
     }
 
     .project-jobs-status,
@@ -579,6 +581,7 @@ ul.project-jobs {
     .project-header h2 {
         font-size: 20px;
         margin-bottom: 0px;
+        margin-left: 10px;
     }
 
     .project-jobs-status span {
@@ -587,6 +590,18 @@ ul.project-jobs {
 
     ul.project-jobs .project-jobs-comment-count a {
         padding: 1px 7px 1px;
+    }
+
+    li.project-jobs-participants a {
+        padding: 0px;
+    }
+
+    ul.project-jobs li:nth-child(3) {
+        padding-left: 59px;
+    }
+
+    ul.project-jobs li:nth-child(4) {
+        line-height: 14px;
     }
 
 }
