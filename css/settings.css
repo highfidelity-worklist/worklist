@@ -43,14 +43,14 @@
     padding: 15px 10px;
 }
 
-#settings label + ul {
+#settings section > label + ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
 #settings > .row > section > p:nth-child(odd),
-#settings label + ul > li:nth-child(odd) {
+#settings section > label + ul > li:nth-child(odd) {
     background-color: #d6d6d6;
 }
 
@@ -176,4 +176,25 @@
     position: relative;
     vertical-align: top;
     background-position: 8px 6px;
+}
+
+/*
+ * list items for uploaded W9 documents don't have an <i> element inside in order to
+ * disable removal, so let's just do the text gradient with a pseudo element
+ */
+#attachments > ul > li > a:after {
+    content: '\00a0';
+    line-height: 1.3em;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 4px 0;
+    width: 35px;
+    background: -moz-linear-gradient(left, rgba(233,238,239,0) 0%, rgba(233,238,239,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(233,238,239,0)), color-stop(100%, rgba(233,238,239,1)));
+    background: -webkit-linear-gradient(left, rgba(233,238,239,0) 0%, rgba(233,238,239,1) 100%);
+    background: -o-linear-gradient(left, rgba(233,238,239,0) 0%, rgba(233,238,239,1) 100%);
+    background: -ms-linear-gradient(left, rgba(233,238,239,0) 0%, rgba(233,238,239,1) 100%);
+    background: linear-gradient(to right, rgba(233,238,239,0) 0%, rgba(233,238,239,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00e9eeef', endColorstr='#e9eeef',GradientType=1);
 }
