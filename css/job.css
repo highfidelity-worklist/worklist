@@ -17,6 +17,7 @@
 @media (max-width: 480px) {
     #tweet-link {
         padding: 10px 5px 7px 25px;
+        display: none;
     }
 }
 
@@ -426,7 +427,7 @@ ul.job-status-editable li a {
 ul.job-status li {
     display: inline-block;
     position: relative;
-    padding-right: 8px;
+    padding-right: 5px;
     margin-bottom: 5px;
 }
 
@@ -708,6 +709,14 @@ span.edit-mode-only {
     li div.comment {
         margin-left: 45px;
     }
+
+    .info-comments {
+        display: none;
+    }
+
+    #job-info-not-assigned {
+        font-size: 12px;
+    }
 }
 
 @media  (max-width: 529px) and (max-width : 530px) {
@@ -715,11 +724,12 @@ span.edit-mode-only {
         border-left: 0px;
     }
 
-    div.job-social > div:nth-child(1),
-    div.job-social > div:nth-child(2) {
-        width: 100%;
-        clear: both;
-        height: 33px;
+    #tweet-link {
+        display: none;
+    }
+
+    .top-bar {
+        margin-top: 8px !important;
     }
 }
 
