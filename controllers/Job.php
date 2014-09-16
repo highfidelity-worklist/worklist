@@ -452,7 +452,10 @@ class JobController extends Controller {
                 $options = array(
                     'type' => 'bid_updated',
                     'workitem' => $workitem,
-                    'recipients' => array('runner')
+                    'recipients' => array('runner'),
+                    'jobsInfo' => $user->jobsForProject('Done', $workitem->getProjectId(), 1, 3),
+                    'totalJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done')),
+                    'activeJobs' => $user->jobsCount(array('In Progress', 'QA Ready', 'Review'))
                 );
                 $data = array(
                     'done_in' => $done_in,
