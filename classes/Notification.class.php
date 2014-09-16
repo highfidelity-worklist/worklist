@@ -315,7 +315,7 @@ class Notification {
                 $body .=  $urlAcceptBid;
                 $bidder_address = '<' . $_SESSION['username'] . '>';
                 $headers['From'] = '"' . $project_name . '-bid updated" ' . $bidder_address;
-                $body =  ' Bid updated by <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> on: <br />'
+                $body =  'Bid updated by <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> on: <br />'
                     . $itemLink . ' '.$workitem->getSummary() . '<br />'
                     . '----------------------------------------------------------------<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
