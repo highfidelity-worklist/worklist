@@ -292,27 +292,42 @@ class Notification {
            break;
 
             case 'bid_updated':
+                $projectId = $workitem->getProjectId();;
+                $jobsInfo = $options['jobsInfo'];
+                $lastThreeJobs = $jobsInfo['joblist'];
+                $workItemUrl = '<a href="' . WORKLIST_URL;
+                //create the last three jobs and link them to those Jobs.
+                foreach ($lastThreeJobs as $row){
+                    $jobs .= $workItemUrl;
+                    $jobs .= $row['id'] . '">#' . $row['id'] . '</a>' . ' - ' . $row['summary'] . '<br /><br />';
+                }
+                //if no Jobs then display 'None'
+                if (!$jobs){
+                    $jobs = 'None <br />';
+                }
+                //now get total jobs and total jobs and create link
+                $totalJobs = $workItemUrl;
+                $totalJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['totalJobs'] . ' jobs in total</a><br />';
+                $totalActiveJobs = $workItemUrl;
+                $totalActiveJobs .= $workitem->getId() . '?action=view&userinfotoshow=' . $_SESSION['userid'] . '">' . $options['activeJobs'] . ' jobs currently active</a>';
+                $urlAcceptBid  = $workItemUrl;
+                $urlAcceptBid .= $itemId . '?bid_id=' . $data['bid_id'] . '&action=view_bid">Accept ' . $_SESSION['nickname'] . '\'s bid</a>';
+                $body .=  $urlAcceptBid;
                 $bidder_address = '<' . $_SESSION['username'] . '>';
                 $headers['From'] = '"' . $project_name . '-bid updated" ' . $bidder_address;
-                $body = 'Bid updated for ' . $itemLink . '<br />'
+                $body =  ' Bid updated by <a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '</a> on: <br />'
+                    . $itemLink . ' '.$workitem->getSummary() . '<br />'
+                    . '----------------------------------------------------------------<br /><br />'
                     . 'Amount: $' . number_format($data['bid_amount'], 2) . '<br />'
                     . 'Functioning in: ' . $data['done_in'] . '<br />'
-                    . 'Expires: ' . $data['bid_expires'] . '<br /><br />'
-                    . 'Bidder Email: <a href="mailto:' . $_SESSION['username'] . '">' . $_SESSION['username'] . '</a><br /><br />'
-                    . 'Notes:<br/> ' . nl2br(stripslashes($data['notes'])) . '<br /><br />'
-                    . 'Project: ' . $project_name . '<br />'
-                    . 'Creator: ' . $workitem->getCreator()->getNickname() . '<br />';
-                    if($workitem->getRunner() != '') {
-                        $body .= 'Designer: ' . $workitem->getRunner()->getNickname() . '<br />';
-                    }
-                    if($workitem->getMechanic() != '') {
-                        $body .= 'Developer: ' . $workitem->getMechanic()->getNickname()  . '<br /><br />';
-                        }
-                $body .= 'Notes:<br/> ' . nl2br($workitem->getNotes()) . '<br /><br />';
-                $urlacceptbid  = '<br /><a href="./';
-                $urlacceptbid .= $itemId . '?bid_id=' . $data['bid_id'] .
-                                 '&action=view_bid">Click here to accept bid.</a>';
-                $body .=  $urlacceptbid;
+                    . '----<br />'
+                    . 'Notes: ' . '<br />'
+                    . ' ' . nl2br(stripslashes($data['notes'])) . '<br />'
+                    . '----<br />'
+                    . $urlAcceptBid . ' / reply to this email to ask questions or <a href="https://gitter.im/highfidelity/worklist">chat via Gitter</a><br /><br />'
+                    . '----------------------------------------------------------------<br />'
+                    . '<a href="' . SERVER_URL .'user/' .$_SESSION['userid'] . '">' . $_SESSION['nickname'] . '\'s profile</a> / ' . $totalActiveJobs . ' / ' . $totalJobs .'<br />'
+                    . '----------------------------------------------------------------';
             break;
 
             case 'bid_discarded':
