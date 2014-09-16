@@ -251,7 +251,7 @@ class Notification {
             break;
 
             case 'bid_placed':
-                $projectId = $workitem->getProjectId();;
+                $projectId = $workitem->getProjectId();
                 $jobsInfo = $options['jobsInfo'];
                 $lastThreeJobs = $jobsInfo['joblist'];
                 $workItemUrl = '<a href="' . WORKLIST_URL;
@@ -292,7 +292,7 @@ class Notification {
            break;
 
             case 'bid_updated':
-                $projectId = $workitem->getProjectId();;
+                $projectId = $workitem->getProjectId();
                 $jobsInfo = $options['jobsInfo'];
                 $lastThreeJobs = $jobsInfo['joblist'];
                 $workItemUrl = '<a href="' . WORKLIST_URL;
