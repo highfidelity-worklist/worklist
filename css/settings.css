@@ -43,14 +43,14 @@
     padding: 15px 10px;
 }
 
-#settings label + ul {
+#settings section > label + ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
 #settings > .row > section > p:nth-child(odd),
-#settings label + ul > li:nth-child(odd) {
+#settings section > label + ul > li:nth-child(odd) {
     background-color: #d6d6d6;
 }
 
