@@ -808,6 +808,7 @@ class JobController extends Controller {
         $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
         $creator_id = isset($worklist['creator_id']) ? $worklist['creator_id'] : 0;
         $mechanic_id = isset($worklist['mechanic_id']) ? $worklist['mechanic_id'] : 0;
+        $runner_id = isset($worklist['runner_id']) ? $worklist['runner_id'] : 0;
         $status_error = '';
 
         $has_budget = 0;
@@ -836,8 +837,9 @@ class JobController extends Controller {
 
         $allowEdit = false;
         $classEditable = "";
-        if (($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $is_runner)) ||
-             ($creator_id == $user_id && $worklist['status'] == 'Suggestion' && is_null($worklist['runner_id']))) {
+        if (($workitem->getIsRelRunner() && is_null($worklist['runner_id']) || ($user->getIs_admin() == 1 && $is_runner)) ||
+             ($creator_id == $user_id && $worklist['status'] == 'Suggestion' && is_null($worklist['runner_id'])) ||
+              ($runner_id == $user_id)) {
             $allowEdit = true;
             if ($action !="edit") {
                 $classEditable = " editable";
@@ -910,12 +912,13 @@ class JobController extends Controller {
         $user = new User();
         $user->findUserById( $userId );
         $nick = $user->getNickname();
-        $runner_id = $user->getIs_runner() ? $userId : '';
+        $runner_id = Project::isAllowedRunnerForProject($user->getId(), $_REQUEST['project_id']) ? $userId : '';
         $itemid = $_REQUEST['itemid'];
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
         $skills = $_REQUEST['skills'];
-        $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
+        $status = (Project::isAllowedRunnerForProject($user->getId(), $_REQUEST['project_id'])
+                   || ($user->getIs_admin() == 1 && $user->getIs_runner())) ? $_REQUEST['status'] : 'Suggestion';
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
         $is_rewarder = $_REQUEST['is_rewarder'];
