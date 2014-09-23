@@ -839,7 +839,7 @@ class JobController extends Controller {
         $classEditable = "";
         if (($workitem->getIsRelRunner() && is_null($worklist['runner_id']) || ($user->getIs_admin() == 1 && $is_runner)) ||
              ($creator_id == $user_id && $worklist['status'] == 'Suggestion' && is_null($worklist['runner_id'])) ||
-              ($runner_id == $user_id)) {
+             ($runner_id == $user_id)) {
             $allowEdit = true;
             if ($action !="edit") {
                 $classEditable = " editable";
