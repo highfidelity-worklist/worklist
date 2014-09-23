@@ -296,7 +296,7 @@ class JobController extends Controller {
                                         'workitem' => $workitem,
                                         'status_change' => $status_change,
                                         'job_changes' => $job_changes,
-                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers')),
+                                        'recipients' => array($workitem->getRunnerId(), 'creator', 'mechanic', 'followers')),
                                         array('changes' => $new_update_message));
                                     $notifyEmpty = true;
                                 }
@@ -305,7 +305,7 @@ class JobController extends Controller {
                                         'workitem' => $workitem,
                                         'status_change' => $status_change,
                                         'job_changes' => $job_changes,
-                                        'recipients' => array('runner', 'creator', 'mechanic', 'followers', 'reviewNotifs')),
+                                        'recipients' => array($workitem->getRunnerId(), 'creator', 'mechanic', 'followers', 'reviewNotifs')),
                                         array('changes' => $new_update_message));
                                     $notifyEmpty = true;
                                 }
