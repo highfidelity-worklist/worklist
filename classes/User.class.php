@@ -1921,8 +1921,8 @@ class User {
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
         $params = array(
-            'title' => 'CR for Job #' . $branch_name . " - " . $workitem_title,
-            'body' => 'Code Review for Job #' . $branch_name . " - Workitem available at https://www.worklist.net/" . $branch_name,
+            'title' => 'CR for Job #' . $branch_name . ' - ' . $workitem_title,
+            'body' => 'Code Review for Job #' . $branch_name . ' - Workitem available at https://www.worklist.net/' . $branch_name,
             'head' => $gitHubUsername . ':' . $branch_name,
             'base' => 'master'
         );
