@@ -1356,7 +1356,7 @@ class JobController extends Controller {
                 }
             } elseif ($repoType == 'git') {
                 $GitHubUser = new User($workitem->getMechanicId());
-                $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $thisProject);
+                $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $workitem->getSummary(), $thisProject);
 
                 if (!$pullResults['error'] && !isset($pullResults['data']['errors'])) {
                     $codeReviewURL = $pullResults['data']['html_url'] . '/files';
