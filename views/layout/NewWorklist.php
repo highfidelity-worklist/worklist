@@ -36,7 +36,6 @@ class NewWorklistLayout extends Layout {
         'js/userstats.js',
         'js/worklist.js',
         'js/budget.js',
-        'js/newworklist.js',
-        'js/mention.js'
+        'js/newworklist.js'
     );
 }
