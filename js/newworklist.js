@@ -29,7 +29,6 @@ var NewWorklist = {
          */
         Budget.init();
         UserStats.init();
-        NewWorklist.initMentions();
         NewWorklist.initJobSearch();
     },
 
@@ -74,17 +73,6 @@ var NewWorklist = {
                 },
             });
         }
-    },
-
-    initMentions: function() {
-        $('.mentions').mention({
-            delimiter: '@',
-            sensitive : true,
-            queryBy: ['name, nickname, username'],
-            ajax : true,
-            ajaxUrl : 'user/mentionsList',
-            users: [{ }]
-        });    
     },
 
     initJobSearch: function() {

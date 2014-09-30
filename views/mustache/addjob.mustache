@@ -50,11 +50,7 @@
                     {{#internalUsers}}
                         <option value="{{getId}}">{{getNickname}}</option>
                     {{/internalUsers}}
-               3
-Consider using 'dppx' units, as in CSS 'dpi' means dots-per-CSS-inch, not dots-per-physical-inch, so does not correspond to the actual 'dpi' of a screen. In media query expression: only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 144dpi)
-Consider using 'dppx' units, as in CSS 'dpi' means dots-per-CSS-inch, not dots-per-physical-inch, so does not correspond to the actual 'dpi' of a screen. In media query expression: not all, only screen and (min-resolution: 192dpi)
-Uncaught SyntaxError: Unexpected token , edit:220
- </select>
+                </select>
             </div>
         </section>
         {{/userIsInternal}}
@@ -62,7 +58,7 @@ Uncaught SyntaxError: Unexpected token , edit:220
     <div class="row">
         <div class="col-md-9 col-sm-9">
             <label for="notes">Description</label>
-            <textarea class="form-control autogrow mentions" name="notes" id="notes"
+            <textarea class="form-control autogrow" name="notes" id="notes"
               placeholder="describe the work necessary to successfully complete this job">{{#editing}}{{workitem.getNotes}} {{/editing}}</textarea>
         </div>
         <div class="col-sm-3">

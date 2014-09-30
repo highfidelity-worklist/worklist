@@ -28,7 +28,6 @@ class NewWorklistLayout extends Layout {
         'js/bootstrap/bootstrap.min.js',
         'js/bootstrap/bootstrap-datepicker.js',
         'js/bootstrap/bootstrap-select.min.js',
-        'js/bootstrap/bootstrap-typeahead.js',
         'js/autosize/jquery.autosize.min.js',
         'js/chosen/chosen.jquery.min.js',
         'js/mustache/mustache.js',
