@@ -1059,17 +1059,6 @@ function decodeDelimitedLinks($matches) {
     return html_entity_decode($result, ENT_QUOTES);
 }
 
-/**
- * Return a trimmed version of the nickname
- */
-function getSubNickname($nickname, $length = 18) {
-    if (strlen($nickname) > $length) {
-        return substr($nickname, 0, $length) . '...';
-    } else {
-        return $nickname;
-    }
-}
-
 function getProjectList() {
     $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
     $query = mysql_query($query);

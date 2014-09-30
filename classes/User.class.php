@@ -703,7 +703,7 @@ class User {
      * @return the $nickname
      */
     public function getNickname() {
-        return $this->getSubNickname($this->nickname);
+        return $this->nickname;
     }
 
     /**
@@ -1635,16 +1635,6 @@ class User {
         return $this;
     }
     
-    /**
-     * Return a trimmed version of the nickname
-     */
-    public function getSubNickname($nickname, $length = 13) {
-        if (strlen($nickname) > $length) {
-            return substr($nickname, 0, $length) . '...';
-        } else {
-            return $nickname;
-        }
-    }
     /**
      * @return the $has_W2
      */

@@ -204,9 +204,7 @@ class JobView extends View {
             $ret .= 
                 '<span class="job-info-heading">' .
                 'Designer:</span>' .
-                '<a href="./user/' . $worklist['runner_id'] . '" >' . 
-                    substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
-                '</a>';
+                '<a href="./user/' . $worklist['runner_id'] . '" >' . $worklist['runner_nickname'] . '</a>';
         } else {
             $ret .= '<span class="job-info-heading">Designer:</span> Not funded';
         }
@@ -547,7 +545,7 @@ class JobView extends View {
                  '<td>'
                 . (
                     $canSeeBid 
-                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
+                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . $bid['nickname'] . '</a>'
                       : $bid['nickname']
                   )
                 .'</td>'
@@ -591,7 +589,7 @@ class JobView extends View {
                     '</script>' .
                     '<td class="nickname who">' .
                         '<a href="./user/' . $fee['user_id'] . '"  title="' . $fee['nickname'] . '">' .
-                            getSubNickname($fee['nickname'], 8) .
+                            $fee['nickname'] .
                         '</a>' .
                     '</td>' .
                     '<td class="fee">' .
