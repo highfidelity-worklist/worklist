@@ -745,10 +745,30 @@ span.edit-mode-only {
 #commentform textarea + ul li,
 #commentform textarea + .autocompleteMirrorDiv + ul li {
     padding: 2px 5px;
+    font-size: 1.1em;
 }
 
 #commentform textarea + ul li.active,
 #commentform textarea + .autocompleteMirrorDiv + ul li.active {
     background-color: #009999;
     color: #fff;
+}
+
+#commentform textarea + ul li img,
+#commentform textarea + .autocompleteMirrorDiv + ul li img {
+    width: 24px;
+    height: 24px;
+}
+
+#commentform textarea + ul li b,
+#commentform textarea + .autocompleteMirrorDiv + ul li b {
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+#commentform textarea + ul li i,
+#commentform textarea + .autocompleteMirrorDiv + ul li i {
+    font-size: 0.9em;
+    color: #ccc;
+    font-style: normal;
 }

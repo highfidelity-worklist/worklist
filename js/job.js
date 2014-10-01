@@ -388,6 +388,7 @@ var Job = {
     },
 
     lastAutocompleteEventTimeStamp: 0,
+    typingStr: '',
     autocompleteMentions: function(e) {
         if (!Job.autocompleteSuggestionList) {
             Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
@@ -405,10 +406,8 @@ var Job = {
             }
             var mentionDetected = Job.mentionTypingDetector();
             if (mentionDetected) {
-                var typingStr = mentionDetected[1];
-
-                Job.suggestionsEngine.get(typingStr.replace(/^@/, ''), Job.updateSuggestionsList);
-                Job.showSuggestionList(typingStr.length);
+                Job.typingStr = mentionDetected[1];
+                Job.suggestionsEngine.get(Job.typingStr.replace(/^@/, ''), Job.updateSuggestionsList);
             } else {
                 Job.hideSuggestionList();
             }
@@ -472,18 +471,24 @@ var Job = {
         for(var i = 0; i < suggestions.length; i++) {
             var suggestion = suggestions[i];
             var nickname = suggestion.nickname;
-            var real_name = suggestion.first_name && suggestion.first_name != null ? suggestion.first_name : '';
-            if (real_name && suggestion.last_name && suggestion.last_name != null) {
-                real_name += ' ' + suggestion.last_name;
+            var realName = suggestion.first_name && suggestion.first_name != null ? suggestion.first_name : '';
+            if (realName && suggestion.last_name && suggestion.last_name != null) {
+                realName += ' ' + suggestion.last_name;
             }
             var active = (i == Job.activeSuggestionItem);
+            var typingStr = Job.typingStr.replace(/^@/, '');
+            var replacementRegex = new RegExp('(' + typingStr + ')' , 'gi');
+            var nicknameHtml = nickname.replace(replacementRegex, '<b>$1</b>');
+            var realNameHtml = realName.replace(replacementRegex, '<b>$1</b>');
             var li_html =
                 '<li' + (active ? ' class="active"' : '') + ' nickname="' + nickname + '">' +
-                  nickname + ' <i>' + real_name + '</i>'
+                  '<img src="./user/avatar/'+ nickname + '/24x24" title="' + nickname + '" /> ' +
+                  nicknameHtml + ' <i>' + realNameHtml + '</i>'
                 '</li>';
             html += li_html;
         }
         $(Job.autocompleteSuggestionList)[0].innerHTML = html;
+        Job.showSuggestionList(Job.typingStr.length);
     },
 
     showSuggestionList: function(mentionLength) {
