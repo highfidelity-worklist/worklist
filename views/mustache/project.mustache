@@ -35,7 +35,7 @@
     </div>
     <div class="rightCol">
         <section id="modeSwitch">
-        {{#runnerOrPayerOrOwner}}
+        {{#adminOrOwner}}
             {{#edit_mode}}
                 <div id="buttonHolder">
                     <input class="left-button" type="submit" id="cancel_project_edit" name="cancel" value="Cancel">
@@ -48,7 +48,7 @@
                     <input type="submit" id="edit_project" name="edit" value="Edit project details">
                 </div>
             {{/edit_mode}}
-        {{/runnerOrPayerOrOwner}}
+        {{/adminOrOwner}}
         </section>
         <div>
             <div id="contactInfo"><span>Contact Info:</span> 
