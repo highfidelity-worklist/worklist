@@ -422,28 +422,25 @@ var Job = {
         var eventType = e.type;
         var key = e.keyCode;
         var keyPressed = eventType == 'keydown' || eventType == 'keypress';
-        var arrowPressed = keyPressed && key > 37 && key <= 40;
+        var arrowPressed = keyPressed && (key == 38 || key == 40);
         var enterPressed = keyPressed && key == 13;
         var charTyped = String.fromCharCode(e.charCode);
-        if ((arrowPressed || enterPressed)) {
-            if (key == 38 || key == 40) {
-                var activeItem = Job.activeSuggestionItem += (key == 38 ? -1 : 1);
-                var itemsCount = $('li', Job.autocompleteSuggestionList).length;
-                if (activeItem < 0) {
-                    activeItem = Job.activeSuggestionItem = itemsCount -2;
-                } else if (activeItem >= itemsCount) {
-                    activeItem = Job.activeSuggestionItem = 0;
-                }
-                $('li.active', Job.autocompleteSuggestionList).removeClass('active');
-                $('li:eq(' + activeItem + ')', Job.autocompleteSuggestionList).addClass('active');
-                return false;
+        if (arrowPressed) {
+            var activeItem = Job.activeSuggestionItem += (key == 38 ? -1 : 1);
+            var itemsCount = $('li', Job.autocompleteSuggestionList).length;
+            if (activeItem < 0) {
+                activeItem = Job.activeSuggestionItem = itemsCount -2;
+            } else if (activeItem >= itemsCount) {
+                activeItem = Job.activeSuggestionItem = 0;
             }
-            if (key == 39 || enterPressed) {
-                var activeItem = Job.activeSuggestionItem;
-                Job.chooseSuggestionItem(activeItem);
-                Job.hideSuggestionList();
-                return false;
-            }
+            $('li.active', Job.autocompleteSuggestionList).removeClass('active');
+            $('li:eq(' + activeItem + ')', Job.autocompleteSuggestionList).addClass('active');
+            return false;
+        } else if (enterPressed) {
+            var activeItem = Job.activeSuggestionItem;
+            Job.chooseSuggestionItem(activeItem);
+            Job.hideSuggestionList();
+            return false;
         } else if (eventType == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^\w$/)) {
             var activeItem = Job.activeSuggestionItem;
             Job.chooseSuggestionItem(activeItem, charTyped);
