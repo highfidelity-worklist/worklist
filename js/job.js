@@ -369,7 +369,176 @@ var Job = {
         if (queryString.hasOwnProperty('placeBid')) {
             $('input[value="Add my bid"]').click();
         }
+
+        Job.initMentions();
      },
+
+    autocompleteInput: undefined,
+    initMentions: function() {
+        Job.autocompleteInput = $('#commentform textarea')[0];
+        Job.suggestionsEngine = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nickname'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: './user/suggestMentions/%QUERY'
+            }
+        });
+        Job.suggestionsEngine.initialize();
+        $(Job.autocompleteInput).on('keydown keypress cut paste', Job.autocompleteMentions);
+    },
+
+    lastAutocompleteEventTimeStamp: 0,
+    autocompleteMentions: function(e) {
+        // avoid this handler to be called multiple time when some events
+        // are fired at the same time (such as keydown & keypress)
+        if (e.timeStamp <= Job.lastAutocompleteEventTimeStamp) {
+            return;
+        }
+        Job.lastAutocompleteEventTimeStamp = e.timeStamp;
+
+        setTimeout(function() {
+            var input = Job.autocompleteInput;
+            if (input.selectionStart != input.selectionEnd) {
+                return; // let's ignore autocompleter when selecting text
+            }
+            var mentionDetected = Job.mentionTypingDetector();
+            if (mentionDetected) {
+                var typingStr = mentionDetected[1];
+                if (!Job.autocompleteSuggestionList) {
+                    Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
+                }
+
+                Job.suggestionsEngine.get(typingStr.replace(/^@/, ''), Job.updateSuggestionsList);
+                Job.showSuggestionList(typingStr.length);
+            } else {
+                Job.hideSuggestionList();
+            }
+        }, 3);
+    },
+
+    updateSuggestionsList: function(suggestions) {
+        var html = '';
+        for(var i = 0; i < suggestions.length; i++) {
+            var suggestion = suggestions[i];
+            var real_name = suggestion.first_name && suggestion.first_name != null ? suggestion.first_name : '';
+            if (real_name && suggestion.last_name && suggestion.last_name != null) {
+                real_name += ' ' + suggestion.last_name;
+            }
+            real_name = real_name ? ' (' + real_name + ')' : '';
+            var li_html = '<li>' + suggestion.nickname + real_name + '</li>';
+            html += li_html;
+        }
+        $(Job.autocompleteSuggestionList)[0].innerHTML = html;
+    },
+
+    showSuggestionList: function(mentionLength) {
+        var input = Job.autocompleteInput;
+        var position = Job.getCaretCoordinates(input, input.selectionEnd -mentionLength);
+        var positionEnd = Job.getCaretCoordinates(input, input.selectionEnd);
+        var listElement = Job.autocompleteSuggestionList;
+        $(listElement).css({
+            display: 'block',
+            top: (position.top + 20) + 'px',
+            left: position.left + 'px',
+            'min-width': (positionEnd.left - position.left) + 'px'
+        })
+    },
+
+    hideSuggestionList: function() {
+        var listElement = Job.autocompleteSuggestionList;
+        $(listElement).css({
+            display: 'none'
+        });
+    },
+
+    mentionTypingDetector: function() {
+        var input = Job.autocompleteInput;
+        var text = input.value.substring(0, input.selectionEnd);
+        return text.match(/(?:^|\s)(@\w+)$/);
+    },
+
+    // 3rd party code, copied and adapted for WL
+    // credits: https://github.com/component/textarea-caret-position
+    getCaretCoordinates: function (element, position) {
+        // The properties that we copy into a mirrored div.
+        // Note that some browsers, such as Firefox,
+        // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
+        // so we have to do every single property specifically.
+        var properties = [
+
+            'boxSizing',
+            'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
+            'height',
+            'overflowX', 'overflowY',  // copy the scrollbar for IE
+
+            'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
+
+            'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+
+            // https://developer.mozilla.org/en-US/docs/Web/CSS/font
+            'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize', 'lineHeight', 'fontFamily',
+
+            'textAlign', 'textTransform', 'textIndent',
+            'textDecoration',  // might not make a difference, but better be safe
+
+            'letterSpacing', 'wordSpacing'
+        ];
+
+        var isFirefox = !(window.mozInnerScreenX == null);
+        var mirrorDiv = $('.autocompleteMirrorDiv', $(element).parent())[0];
+        if (!mirrorDiv) {
+            var mirrorDiv = $('<div>').addClass('autocompleteMirrorDiv').insertAfter(element)[0];
+        }
+
+        var style = mirrorDiv.style;
+        var computed = getComputedStyle(element);
+
+        // default textarea styles
+        style.whiteSpace = 'pre-wrap';
+        if (element.nodeName !== 'INPUT') {
+            style.wordWrap = 'break-word';  // only for textarea-s
+        }
+
+        // position off-screen
+        style.position = 'absolute';  // required to return coordinates properly
+        style.top = element.offsetTop + parseInt(computed.borderTopWidth) + 'px';
+        style.visibility = 'hidden';  // not 'display: none' because we want rendering
+
+        // transfer the element's properties to the div
+        properties.forEach(function (prop) {
+            style[prop] = computed[prop];
+        });
+
+        if (isFirefox) {
+            //style.width = parseInt(computed.width) - 2 + 'px'  // Firefox adds 2 pixels to the padding - https://bugzilla.mozilla.org/show_bug.cgi?id=753662
+            // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
+            if (element.scrollHeight > parseInt(computed.height)) {
+                style.overflowY = 'scroll';
+            }
+        } else {
+            style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
+        }
+
+        mirrorDiv.textContent = element.value.substring(0, position);
+        // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
+        if (element.nodeName === 'INPUT') {
+            mirrorDiv.textContent = mirrorDiv.textContent.replace(/\s/g, "\u00a0");
+        }
+
+        var span = document.createElement('span');
+        // Wrapping must be replicated *exactly*, including when a long word gets
+        // onto the next line, with whitespace at the end of the line before (#7).
+        // The  *only* reliable way to do that is to copy the *entire* rest of the
+        // textarea's content into the <span> created at the caret position.
+        // for inputs, just '.' would be enough, but why bother?
+        span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
+        span.style.opacity = '1';
+        mirrorDiv.appendChild(span);
+        return {
+            top: span.offsetTop + parseInt(computed['borderTopWidth']),
+            left: span.offsetLeft + parseInt(computed['borderLeftWidth'])
+        };
+    },
 
     initFileUpload: function() {
         var options = {iframe: {url: './file/add/' + workitem_id}};

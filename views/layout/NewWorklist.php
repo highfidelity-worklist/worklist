@@ -31,6 +31,7 @@ class NewWorklistLayout extends Layout {
         'js/autosize/jquery.autosize.min.js',
         'js/chosen/chosen.jquery.min.js',
         'js/mustache/mustache.js',
+        'js/typeahead.js/typeahead.bundle.js',
         'js/common.js',
         'js/utils.js',
         'js/userstats.js',

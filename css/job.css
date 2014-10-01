@@ -721,3 +721,27 @@ span.edit-mode-only {
 #bid-panel span input {
     margin: 0px;
 }
+
+#commentform .form-group {
+    position: relative;
+}
+
+#commentform textarea + ul,
+#commentform textarea + .autocompleteMirrorDiv + ul {
+    position: absolute;
+    display: block;
+    width: 50px;
+    background-color: #efefef;
+    opacity: .65;
+    width: 250px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+}
+
+#commentform textarea + ul li,
+#commentform textarea + .autocompleteMirrorDiv + ul li {
+    padding: 2px 5px;
+}

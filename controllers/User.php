@@ -26,7 +26,7 @@ class UserController extends Controller {
             case 'latestEarnings':
             case 'projectHistory':
             case 'counts':
-            case 'mentionsList':
+            case 'suggestMentions':
             case 'review':
             case 'payBonus':
             case 'setW9Status':
@@ -438,40 +438,9 @@ class UserController extends Controller {
         ));
     }
 
-    public function mentionsList() {
+    public function suggestMentions($startsWith = '_', $maxLimit = 10) {
         $this->view = null;
-
-        $data = array();
-
-        if (isset($_REQUEST['contains']) && !empty($_REQUEST['contains'])) {
-            $result = User::mentionsList($_REQUEST['contains']);
-
-            while ($result && $row = mysql_fetch_assoc($result)) {
-                $fullname = '';
-                if (! empty($row['first_name'])) {
-                    $fullname .= $row['first_name'];
-                }
-
-                if (! empty($row['last_name'])) {
-                    $fullname .= " " . $row['last_name'];
-                }
-
-                if (! empty($fullname)) {
-                    $row['name'] = $fullname;
-                }
-
-                $data[] = array_merge($row, array(
-                    'username' => $row['nickname'],
-                    'image' => $row['picture'] . "s=30"
-                ));
-            }
-        }
-
-        $users = array(
-            $data
-        );
-
-        echo json_encode($data);
+        echo json_encode(User::suggestMentions($startsWith, $maxLimit));
     }
 
     public function review($id) {

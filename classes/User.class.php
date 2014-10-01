@@ -2534,27 +2534,28 @@ class User {
     /**
      * Find users by nickname or full name (first_name, last_name)
      *
-     * @param string $contains
+     * @param string $startsWith
+     * @param integer $maxLimit
      */
-    public function mentionsList($contains) {
-
-        $likeString =  'LIKE "%' . mysql_real_escape_string($contains) . '%"';
-
-        $query = "
-            SELECT id, nickname, username, picture, first_name, last_name
-            FROM " . USERS . "
+    public function suggestMentions($startsWith = '_', $maxLimit = 10) {
+        $limit = (int) $maxLimit;
+        $query = '
+            SELECT nickname, first_name, last_name
+            FROM ' . USERS . '
             WHERE (
-                nickname {$likeString} OR
-                first_name {$likeString} OR
-                last_name {$likeString}
-                ) AND
-                picture IS NOT NULL AND picture LIKE \"%http%\"
-            ORDER BY nickname LIMIT 0, 10
-        ";
-
-        $result = mysql_query($query);
-
-        return $result;
+                nickname LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                first_name LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                last_name LIKE "' . mysql_real_escape_string($startsWith) . '%"
+            )
+            ORDER BY nickname
+            LIMIT ' . $limit;
+        $ret = array();
+        if ($result = mysql_query($query)) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $ret[] = $row;
+            }
+        }
+        return $ret;
     }
 
     public function budgetHistory($giver = null, $page = 1, $itemsPerPage = 10) {

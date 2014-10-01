@@ -218,11 +218,12 @@ var Utils = {
             return justNow ? 'just now' : '';
         }
     },
+
     queryString: function() {
         var query_string = {};
         var query = window.location.search.substring(1);
         var vars = query.split('&');
-        for (var i=0;i<vars.length;i++) {
+        for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split('=');
             if (typeof query_string[pair[0]] === 'undefined') { // If first entry with this name
                 query_string[pair[0]] = pair[1];
@@ -235,4 +236,4 @@ var Utils = {
         }
         return query_string;
      }
- };
+};
