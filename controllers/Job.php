@@ -1800,7 +1800,9 @@ class JobController extends Controller {
     }
 
     private function canEdit($workitem, $user) {
-       return ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner())) && $workitem->getStatus() != 'Done') || ($workitem->getCreatorId() == $user->getId() && ($workitem->getStatus() == 'Suggestion') ));
+       return ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner()))
+                 && $workitem->getStatus() != 'Done') || ($workitem->getCreatorId() == $user->getId()
+                 && ($workitem->getStatus() == 'Suggestion') ));
     }
 
     private function getStatusList($workitem, $user) {
@@ -1815,7 +1817,7 @@ class JobController extends Controller {
             && $workitem->getStatus() != 'In Progress'
             && $workitem->getStatus() != 'QA Ready' && $workitem->getStatus() != 'Review'
             && $workitem->getStatus() != 'Merged' && $workitem->getStatus() != 'Done') {
-            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");;
+            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass", "Suggestion");
         }
         return $statusList;
     }
