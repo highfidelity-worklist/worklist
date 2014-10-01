@@ -1817,7 +1817,7 @@ class JobController extends Controller {
             && $workitem->getStatus() != 'In Progress'
             && $workitem->getStatus() != 'QA Ready' && $workitem->getStatus() != 'Review'
             && $workitem->getStatus() != 'Merged' && $workitem->getStatus() != 'Done') {
-            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass", "Suggestion");;
+            $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass", "Suggestion");
         }
         return $statusList;
     }
