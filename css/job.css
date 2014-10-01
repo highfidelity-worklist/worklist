@@ -731,17 +731,24 @@ span.edit-mode-only {
     position: absolute;
     display: block;
     width: 50px;
-    background-color: #efefef;
-    opacity: .65;
-    width: 250px;
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    list-style-type: none;
+    background-color: #fff;
+    opacity: 1;
+    min-width: 250px;
+    padding: 4px 15px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    list-style: none outside none;
     padding: 5px;
     margin: 0;
+    border-radius: 2px;
 }
 
 #commentform textarea + ul li,
 #commentform textarea + .autocompleteMirrorDiv + ul li {
     padding: 2px 5px;
+}
+
+#commentform textarea + ul li.active,
+#commentform textarea + .autocompleteMirrorDiv + ul li.active {
+    background-color: #009999;
+    color: #fff;
 }

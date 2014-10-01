@@ -389,12 +389,14 @@ var Job = {
 
     lastAutocompleteEventTimeStamp: 0,
     autocompleteMentions: function(e) {
-        // avoid this handler to be called multiple time when some events
-        // are fired at the same time (such as keydown & keypress)
-        if (e.timeStamp <= Job.lastAutocompleteEventTimeStamp) {
-            return;
+        if (!Job.autocompleteSuggestionList) {
+            Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
         }
-        Job.lastAutocompleteEventTimeStamp = e.timeStamp;
+        if ($(Job.autocompleteSuggestionList).is(':visible')) {
+            if (!Job.checkAutocompleteKeys(e)) {
+                return false;
+            }
+        }
 
         setTimeout(function() {
             var input = Job.autocompleteInput;
@@ -404,9 +406,6 @@ var Job = {
             var mentionDetected = Job.mentionTypingDetector();
             if (mentionDetected) {
                 var typingStr = mentionDetected[1];
-                if (!Job.autocompleteSuggestionList) {
-                    Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
-                }
 
                 Job.suggestionsEngine.get(typingStr.replace(/^@/, ''), Job.updateSuggestionsList);
                 Job.showSuggestionList(typingStr.length);
@@ -416,16 +415,72 @@ var Job = {
         }, 3);
     },
 
+    checkAutocompleteKeys: function(e) {
+        // if list is currently empty, let's not process any key
+        if ($('li', Job.autocompleteSuggestionList).length == 0) {
+            return true;
+        }
+        var eventType = e.type;
+        var key = e.keyCode;
+        var keyPressed = eventType == 'keydown' || eventType == 'keypress';
+        var arrowPressed = keyPressed && key > 37 && key <= 40;
+        var enterPressed = keyPressed && key == 13;
+        var charTyped = String.fromCharCode(e.charCode);
+        if ((arrowPressed || enterPressed)) {
+            if (key == 38 || key == 40) {
+                var activeItem = Job.activeSuggestionItem += (key == 38 ? -1 : 1);
+                var itemsCount = $('li', Job.autocompleteSuggestionList).length;
+                if (activeItem < 0) {
+                    activeItem = Job.activeSuggestionItem = itemsCount -2;
+                } else if (activeItem >= itemsCount) {
+                    activeItem = Job.activeSuggestionItem = 0;
+                }
+                $('li.active', Job.autocompleteSuggestionList).removeClass('active');
+                $('li:eq(' + activeItem + ')', Job.autocompleteSuggestionList).addClass('active');
+                return false;
+            }
+            if (key == 39 || enterPressed) {
+                var activeItem = Job.activeSuggestionItem;
+                Job.chooseSuggestionItem(activeItem);
+                Job.hideSuggestionList();
+                return false;
+            }
+        } else if (eventType == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^\w$/)) {
+            var activeItem = Job.activeSuggestionItem;
+            Job.chooseSuggestionItem(activeItem, charTyped);
+            Job.hideSuggestionList();
+            return false;
+        }
+        return true;
+    },
+
+    chooseSuggestionItem: function(item, appendChar) {
+        var nickname = $('li:eq(' + item + ')', Job.autocompleteSuggestionList).attr('nickname');
+        var input = Job.autocompleteInput;
+        var mention = Job.mentionTypingDetector()[1].replace(/^@/, '');
+        var textBefore = input.value.substring(0, input.selectionEnd).replace(/@\w+$/, '@');
+        var textAfter = input.value.substring(input.selectionEnd, input.value.length);
+        appendChar = typeof appendChar == 'string' ? appendChar : ' ';
+        input.value = textBefore + nickname + appendChar + textAfter;
+        input.selectionStart = input.selectionEnd = (textBefore + nickname + ' ').length;
+    },
+
+    activeSuggestionItem: 0,
     updateSuggestionsList: function(suggestions) {
+        Job.activeSuggestionItem = 0;
         var html = '';
         for(var i = 0; i < suggestions.length; i++) {
             var suggestion = suggestions[i];
+            var nickname = suggestion.nickname;
             var real_name = suggestion.first_name && suggestion.first_name != null ? suggestion.first_name : '';
             if (real_name && suggestion.last_name && suggestion.last_name != null) {
                 real_name += ' ' + suggestion.last_name;
             }
-            real_name = real_name ? ' (' + real_name + ')' : '';
-            var li_html = '<li>' + suggestion.nickname + real_name + '</li>';
+            var active = (i == Job.activeSuggestionItem);
+            var li_html =
+                '<li' + (active ? ' class="active"' : '') + ' nickname="' + nickname + '">' +
+                  nickname + ' <i>' + real_name + '</i>'
+                '</li>';
             html += li_html;
         }
         $(Job.autocompleteSuggestionList)[0].innerHTML = html;
@@ -440,11 +495,12 @@ var Job = {
             display: 'block',
             top: (position.top + 20) + 'px',
             left: position.left + 'px',
-            'min-width': (positionEnd.left - position.left) + 'px'
+            width: (positionEnd.left - position.left) + 'px'
         })
     },
 
     hideSuggestionList: function() {
+        $('li', Job.autocompleteSuggestionList).remove();
         var listElement = Job.autocompleteSuggestionList;
         $(listElement).css({
             display: 'none'
