@@ -878,7 +878,7 @@ class JobView extends View {
         if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
             // linkify mentions and tasks references
             $ret = $ret;
-            $mention_regex = '/(^|\s)@(\w+)/';
+            $mention_regex = '/(^|\s)@([A-Za-z0-9][A-Za-z0-9-]+)/';
             $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
             $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
             $ret = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $ret);
