@@ -484,8 +484,12 @@ var Job = {
                 '</li>';
             html += li_html;
         }
-        $(Job.autocompleteSuggestionList)[0].innerHTML = html;
-        Job.showSuggestionList(Job.typingStr.length);
+        if (html) {
+            $(Job.autocompleteSuggestionList)[0].innerHTML = html;
+            Job.showSuggestionList(Job.typingStr.length);
+        } else {
+            Job.hideSuggestionList();
+        }
     },
 
     showSuggestionList: function(mentionLength) {
