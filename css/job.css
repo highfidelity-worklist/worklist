@@ -729,7 +729,7 @@ span.edit-mode-only {
 #commentform textarea + ul,
 #commentform textarea + .autocompleteMirrorDiv + ul {
     position: absolute;
-    display: block;
+    display: none;
     width: 50px;
     background-color: #fff;
     opacity: 1;
