@@ -259,7 +259,6 @@ var Utils = {
         // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
         // so we have to do every single property specifically.
         var properties = [
-
             'boxSizing',
             'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
             'height',

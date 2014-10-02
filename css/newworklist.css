@@ -1339,3 +1339,50 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
         display: none;
     }
 }
+
+.autocomplete {
+    position: relative;
+}
+
+.autocomplete ul {
+    position: absolute;
+    display: none;
+    width: 50px;
+    background-color: #fff;
+    opacity: 1;
+    min-width: 250px;
+    padding: 4px 15px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    list-style: none outside none;
+    padding: 5px;
+    margin: 0;
+    border-radius: 2px;
+    z-index: 10;
+}
+
+.autocomplete ul li {
+    padding: 2px 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.autocomplete ul li.active {
+    background-color: #009999;
+    color: #fff;
+}
+
+.autocomplete ul li img {
+    width: 24px;
+    height: 24px;
+}
+
+.autocomplete ul li b {
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+.autocomplete ul li i {
+    font-size: 0.9em;
+    color: #ccc;
+    font-style: normal;
+}
