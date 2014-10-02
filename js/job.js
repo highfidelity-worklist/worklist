@@ -390,7 +390,6 @@ var Job = {
         $(Job.autocompleteInput).on('keydown keypress cut paste', Job.autocompleteMentions);
     },
 
-    lastAutocompleteEventTimeStamp: 0,
     typingStr: '',
 
     /**
