@@ -740,12 +740,14 @@ span.edit-mode-only {
     padding: 5px;
     margin: 0;
     border-radius: 2px;
+    z-index: 10;
 }
 
 #commentform textarea + ul li,
 #commentform textarea + .autocompleteMirrorDiv + ul li {
     padding: 2px 5px;
     font-size: 1.1em;
+    cursor: pointer;
 }
 
 #commentform textarea + ul li.active,

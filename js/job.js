@@ -487,6 +487,19 @@ var Job = {
         if (html) {
             $(Job.autocompleteSuggestionList)[0].innerHTML = html;
             Job.showSuggestionList(Job.typingStr.length);
+            $('li', Job.autocompleteSuggestionList).on({
+                hover: function() {
+                    var index = $(this).prevAll().length;
+                    $('li.active', Job.autocompleteSuggestionList).removeClass('active');
+                    $('li:eq(' + index + ')', Job.autocompleteSuggestionList).addClass('active');
+                },
+                click: function() {
+                    var index = $(this).prevAll().length;
+                    Job.chooseSuggestionItem(index);
+                    Job.hideSuggestionList();
+                    $(Job.autocompleteInput).focus();
+                }
+            });
         } else {
             Job.hideSuggestionList();
         }
