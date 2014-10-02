@@ -757,6 +757,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
+        $row_class .= ($this->read('place_bid_id') == $$itemId) ? ' place_bid_id ' : '' ;
         return $this->read('isGitHubConnected') ? 'Add my bid' : 'Authorize GitHub app';
     }
 
@@ -803,7 +804,9 @@ class JobView extends View {
                         '                <a class="author profile-link" href="./user/' . $commentObj->getUser()->getId() . '">' .
                         '                    ' . $commentObj->getUser()->getNickname() .
                         '                </a>' .
-                        '                <span class="date">' . $commentObj->getRelativeDate() . '</span>' .
+                        '                <a class="date" href="./' . $this->worklist['id'] . '#comment-' . $comment['id'] . '">' .
+                        '                ' . $commentObj->getRelativeDate() .
+                        '                </a>' .
                         '            </div>' .
                         '            <div class="comment-text">' .
                         '              ' . $commentObj->getCommentWithLinks() .

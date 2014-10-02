@@ -35,12 +35,6 @@ class ProjectView extends View {
             || $this->read('is_owner');
     }
 
-    public function runnerOrPayerOrOwner() {
-        return $this->currentUser['is_runner'] 
-            || $this->currentUser['is_payer'] 
-            || $this->read('is_owner');
-    }
-
     public function adminOrOwner() {
         return $this->currentUser['is_admin'] 
             || $this->read('is_owner');

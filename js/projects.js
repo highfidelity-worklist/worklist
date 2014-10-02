@@ -154,7 +154,7 @@ var Projects = {
 
     initFileUpload: function() {
         var options = {iframe: {url: './file/add'}};
-        var zone = new FileDrop('projectlogoupload', options);
+        var zone = new FileDrop('attachments', options);
 
         zone.event('send', function (files) {
             files.each(function (file) {
@@ -167,8 +167,8 @@ var Projects = {
         });
         zone.multiple(false);
 
-        $('#projectlogoupload > label > em').click(function() {
-            $('#projectlogoupload input.fd-file').click();
+        $('#attachments > label > em').click(function() {
+            $('#attachments input.fd-file').click();
         })
     },
 
@@ -183,8 +183,8 @@ var Projects = {
                     fileData.url = json.url;
                 }
                 Utils.parseMustache('partials/upload-document', fileData, function(parsed) {
-                    $('#projectlogoupload > ul').html(parsed);
-                    $('#projectlogoupload li[attachment=' + fileData.fileid + '] > i').click(Projects.removeFile);
+                    $('#attachments > ul').html(parsed);
+                    $('#attachments li[attachment=' + fileData.fileid + '] > i').click(Projects.removeFile);
                     Projects.uploadedFile = fileData.fileid;
                 });
                 Projects.fileUploadFinished();
@@ -203,16 +203,16 @@ var Projects = {
 
     removeFile: function(event) {
         var id = parseInt($(this).parent().attr('attachment'))
-        $('#projectlogoupload li[attachment=' + id + ']').remove();
+        $('#attachments li[attachment=' + id + ']').remove();
         Project.uploadedFile = null;
     },
 
     animateUploadSpin: function() {
-        if ($('#projectlogoupload > .loading').length) {
+        if ($('#attachments > .loading').length) {
             return;
         }
-        $('<div>').addClass('loading').prependTo('#projectlogoupload');
-        var target = $('#projectlogoupload > .loading')[0];
+        $('<div>').addClass('loading').prependTo('#attachments');
+        var target = $('#attachments > .loading')[0];
         var spinner = new Spinner({
             lines: 9,
             length: 3,
@@ -228,6 +228,6 @@ var Projects = {
     },
 
     stopUploadSpin: function() {
-        $('#projectlogoupload > .loading').remove();
+        $('#attachments > .loading').remove();
     }
 }

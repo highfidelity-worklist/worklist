@@ -644,10 +644,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     display:inline;
 }
 
-.date {
-    color:#666;
-}
-
 .picture {
     float: left;
     height: 50px;

@@ -50,6 +50,15 @@
     color: #ff9900;
 }
 
+/* draft status change entries colors */
+#entries li[type="worklist"].statusDraft:before {
+    background-color: #EDDFB4;
+}
+#entries li[type="worklist"].statusDraft em,
+#entries li[type="worklist"].statusDraft a[href^="./"] {
+    color: #EDDFB4;
+}
+
 /* working status change entries colors */
 #entries li[type="worklist"].statusInProgress:before {
     background-color: #22bc7a;

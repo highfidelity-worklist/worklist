@@ -363,7 +363,13 @@ var Job = {
 
         Job.setCodeReviewEvents();
         Job.initFileUpload();
-    },
+
+        // parse query string and then run specific actions from params if requested
+        var queryString = Utils.queryString();
+        if (queryString.hasOwnProperty('placeBid')) {
+            $('input[value="Add my bid"]').click();
+        }
+     },
 
     initFileUpload: function() {
         var options = {iframe: {url: './file/add/' + workitem_id}};
@@ -509,7 +515,7 @@ var Job = {
                         depth = 0;
                     }
                     var newcomment =
-                        '<li id="comment-' + data.id + '" class="imOdd depth-' + depth + '">' +
+                        '<li id="comment-' + data.id + '" class="depth-' + depth + '">' +
                             '<div class="comment">' +
                                 '<a href="./user/' + data.userid + '" >' +
                                     '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -519,9 +525,9 @@ var Job = {
                                         '<a class="author profile-link" href="./user/' + data.userid +'" >' +
                                             data.nickname +
                                         '</a> ' +
-                                        '<span class="date">' +
+                                        '<a class="date" href="./' + workitem_id + '#comment-' + data.id + '">' +
                                             data.date +
-                                        '</span>' +
+                                        '</a>' +
                                     '</div>' +
                                     '<div class="comment-text">' +
                                          data.comment +
