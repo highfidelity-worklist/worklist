@@ -384,25 +384,38 @@ var Job = {
             }
         });
         Job.suggestionsEngine.initialize();
+        if (!Job.autocompleteSuggestionList) {
+            Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
+        }
         $(Job.autocompleteInput).on('keydown keypress cut paste', Job.autocompleteMentions);
     },
 
     lastAutocompleteEventTimeStamp: 0,
     typingStr: '',
+
+    /**
+     * Event handler for mentions autocomplete, manages most of the events
+     * related to text changes on the inputs that supports autocomplete
+     */
     autocompleteMentions: function(e) {
-        if (!Job.autocompleteSuggestionList) {
-            Job.autocompleteSuggestionList = $('<ul>').insertAfter(Job.autocompleteInput)[0];
-        }
+        // if the dropdown is visible, gotta check pressed keys
         if ($(Job.autocompleteSuggestionList).is(':visible')) {
             if (!Job.checkAutocompleteKeys(e)) {
                 return false;
             }
         }
 
+        // at any case, ESC key won't fire a new thread at all
+        if ((e.type == 'keydown' || e.type == 'keypress') && e.keyCode == 27) {
+            return false;
+        }
+
+        // let's run the rest of the code as an asynchronous thread
+        // in order to return the input control/flow to the UI
         setTimeout(function() {
             var input = Job.autocompleteInput;
             if (input.selectionStart != input.selectionEnd) {
-                return; // let's ignore autocompleter when selecting text
+                return; // let's ignore autocompleter when the user is selecting text
             }
             var mentionDetected = Job.mentionTypingDetector();
             if (mentionDetected) {
@@ -414,22 +427,43 @@ var Job = {
         }, 3);
     },
 
+    /**
+     * Manages special keys being typed when the mentions suggestions
+     * is being shown, such as up/down arrows, enter/tab and non word
+     * chars.
+     *
+     * @return bool whether to cancel the input or not
+     */
     checkAutocompleteKeys: function(e) {
-        // if list is currently empty, let's not process any key
+        // let's not do this when no suggestions items exists in the list
         if ($('li', Job.autocompleteSuggestionList).length == 0) {
             return true;
         }
-        var eventType = e.type;
+
         var key = e.keyCode;
-        var keyPressed = eventType == 'keydown' || eventType == 'keypress';
+        var keyPressed = e.type == 'keydown' || e.type == 'keypress';
+
+        // esc key will inmediatly close the suggestions dropdown
+        if (keyPressed && key == 27) {
+            Job.hideSuggestionList();
+            return false;
+        }
+
+        // determines whether it's an up/down arrow key event
         var arrowPressed = keyPressed && (key == 38 || key == 40);
-        var enterPressed = keyPressed && key == 13;
+
+        // tab key works the same as enter
+        var enterPressed = keyPressed && (key == 13 || key == 9);
+
+        // stores the typed char as string
         var charTyped = String.fromCharCode(e.charCode);
+
         if (arrowPressed) {
+            // up/down pressed, let's do the maths inc/decrement and toggle active items
             var activeItem = Job.activeSuggestionItem += (key == 38 ? -1 : 1);
             var itemsCount = $('li', Job.autocompleteSuggestionList).length;
             if (activeItem < 0) {
-                activeItem = Job.activeSuggestionItem = itemsCount -2;
+                activeItem = Job.activeSuggestionItem = itemsCount -1;
             } else if (activeItem >= itemsCount) {
                 activeItem = Job.activeSuggestionItem = 0;
             }
@@ -437,11 +471,13 @@ var Job = {
             $('li:eq(' + activeItem + ')', Job.autocompleteSuggestionList).addClass('active');
             return false;
         } else if (enterPressed) {
+            // enter/tab pressed, will choose the active item
             var activeItem = Job.activeSuggestionItem;
             Job.chooseSuggestionItem(activeItem);
             Job.hideSuggestionList();
             return false;
-        } else if (eventType == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^\w$/)) {
+        } else if (e.type == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^\w$/)) {
+            // non-word char typed, choose active item and append the typed char
             var activeItem = Job.activeSuggestionItem;
             Job.chooseSuggestionItem(activeItem, charTyped);
             Job.hideSuggestionList();
@@ -450,6 +486,10 @@ var Job = {
         return true;
     },
 
+    /**
+     * Handler caled on nicknames suggestions/autocomplete list
+     * item selection (whether mouse clicks and/or by keys)
+     */
     chooseSuggestionItem: function(item, appendChar) {
         var nickname = $('li:eq(' + item + ')', Job.autocompleteSuggestionList).attr('nickname');
         var input = Job.autocompleteInput;
@@ -462,6 +502,11 @@ var Job = {
     },
 
     activeSuggestionItem: 0,
+
+    /**
+     * Callback to Bloodhoud#get. Recreates the nicknames autocomplete/suggestions
+     * dropdown items according to query results made to the Bloodhound engine
+     */
     updateSuggestionsList: function(suggestions) {
         Job.activeSuggestionItem = 0;
         var html = '';
@@ -505,10 +550,14 @@ var Job = {
         }
     },
 
+    /**
+     * shows the nicknames autocomplete/suggestions dropdown
+     * at current cursor coordinates
+     */
     showSuggestionList: function(mentionLength) {
         var input = Job.autocompleteInput;
-        var position = Job.getCaretCoordinates(input, input.selectionEnd -mentionLength);
-        var positionEnd = Job.getCaretCoordinates(input, input.selectionEnd);
+        var position = Utils.getCursorCoordinates(input, input.selectionEnd -mentionLength);
+        var positionEnd = Utils.getCursorCoordinates(input, input.selectionEnd);
         var listElement = Job.autocompleteSuggestionList;
         $(listElement).css({
             display: 'block',
@@ -518,6 +567,10 @@ var Job = {
         })
     },
 
+    /**
+     * removes child items and hides the nicknames
+     * autocomplete/suggestions dropdown
+     */
     hideSuggestionList: function() {
         $('li', Job.autocompleteSuggestionList).remove();
         var listElement = Job.autocompleteSuggestionList;
@@ -526,93 +579,14 @@ var Job = {
         });
     },
 
+    /**
+     * Detects whether the current cursor is at a probable
+     * mention, used to guess whether the user is mentionig
+     */
     mentionTypingDetector: function() {
         var input = Job.autocompleteInput;
         var text = input.value.substring(0, input.selectionEnd);
         return text.match(/(?:^|\s)(@\w+)$/);
-    },
-
-    // 3rd party code, copied and adapted for WL
-    // credits: https://github.com/component/textarea-caret-position
-    getCaretCoordinates: function (element, position) {
-        // The properties that we copy into a mirrored div.
-        // Note that some browsers, such as Firefox,
-        // do not concatenate properties, i.e. padding-top, bottom etc. -> padding,
-        // so we have to do every single property specifically.
-        var properties = [
-
-            'boxSizing',
-            'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
-            'height',
-            'overflowX', 'overflowY',  // copy the scrollbar for IE
-
-            'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
-
-            'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-
-            // https://developer.mozilla.org/en-US/docs/Web/CSS/font
-            'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize', 'lineHeight', 'fontFamily',
-
-            'textAlign', 'textTransform', 'textIndent',
-            'textDecoration',  // might not make a difference, but better be safe
-
-            'letterSpacing', 'wordSpacing'
-        ];
-
-        var isFirefox = !(window.mozInnerScreenX == null);
-        var mirrorDiv = $('.autocompleteMirrorDiv', $(element).parent())[0];
-        if (!mirrorDiv) {
-            var mirrorDiv = $('<div>').addClass('autocompleteMirrorDiv').insertAfter(element)[0];
-        }
-
-        var style = mirrorDiv.style;
-        var computed = getComputedStyle(element);
-
-        // default textarea styles
-        style.whiteSpace = 'pre-wrap';
-        if (element.nodeName !== 'INPUT') {
-            style.wordWrap = 'break-word';  // only for textarea-s
-        }
-
-        // position off-screen
-        style.position = 'absolute';  // required to return coordinates properly
-        style.top = element.offsetTop + parseInt(computed.borderTopWidth) + 'px';
-        style.visibility = 'hidden';  // not 'display: none' because we want rendering
-
-        // transfer the element's properties to the div
-        properties.forEach(function (prop) {
-            style[prop] = computed[prop];
-        });
-
-        if (isFirefox) {
-            //style.width = parseInt(computed.width) - 2 + 'px'  // Firefox adds 2 pixels to the padding - https://bugzilla.mozilla.org/show_bug.cgi?id=753662
-            // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
-            if (element.scrollHeight > parseInt(computed.height)) {
-                style.overflowY = 'scroll';
-            }
-        } else {
-            style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
-        }
-
-        mirrorDiv.textContent = element.value.substring(0, position);
-        // the second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
-        if (element.nodeName === 'INPUT') {
-            mirrorDiv.textContent = mirrorDiv.textContent.replace(/\s/g, "\u00a0");
-        }
-
-        var span = document.createElement('span');
-        // Wrapping must be replicated *exactly*, including when a long word gets
-        // onto the next line, with whitespace at the end of the line before (#7).
-        // The  *only* reliable way to do that is to copy the *entire* rest of the
-        // textarea's content into the <span> created at the caret position.
-        // for inputs, just '.' would be enough, but why bother?
-        span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
-        span.style.opacity = '1';
-        mirrorDiv.appendChild(span);
-        return {
-            top: span.offsetTop + parseInt(computed['borderTopWidth']),
-            left: span.offsetLeft + parseInt(computed['borderLeftWidth'])
-        };
     },
 
     initFileUpload: function() {
