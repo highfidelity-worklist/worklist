@@ -252,7 +252,7 @@ class ProjectController extends Controller {
                 throw new Exception('Could not add the user as a designer for this project');
             }
             $founder = User::find($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -301,7 +301,7 @@ class ProjectController extends Controller {
                 throw new Exception('Could not add the user as a designer for this project');
             }
             $founder = User::find($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -376,7 +376,7 @@ class ProjectController extends Controller {
                     $deleted_runners[] = $runner;
                     $user = User::find($runner);
                     $founder = User::find($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -453,7 +453,7 @@ class ProjectController extends Controller {
                     $deleted_codeReviewers[] = $codeReviewer;
                     $user = User::find($codeReviewer);
                     $founder = User::find($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),

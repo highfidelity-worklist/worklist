@@ -68,12 +68,12 @@ Uncaught SyntaxError: Unexpected token , edit:220
         <div class="col-sm-3">
             <label>Labels</label>
             <ul id="labels">
-                {{#skills}}
+                {{#labels}}
                     <li>
-                        <input id="label{{id}}" type="checkbox" {{#checked}} checked {{/checked}}name="label[{{id}}]" value="{{skill}}" />
-                        <label for="label{{id}}">{{skill}}</label>
+                        <input id="label{{id}}" type="checkbox" {{#checked}} checked {{/checked}}name="label[{{id}}]" value="{{label}}" />
+                        <label for="label{{id}}">{{label}}</label>
                     </li>
-                {{/skills}}
+                {{/labels}}
             </ul>
         </div>
     </div>

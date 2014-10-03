@@ -114,13 +114,5 @@ class Users_Favorite extends DataObject {
         }
         return "";
     }
-    
-    public function insertNewSkill($values) {
-        return $this->dbInsert($values);
-    }
-    
-    public function updateSkill($sql) {
-        return $this->dbUpdate($sql);
-    }
 }
 ?>

@@ -1733,13 +1733,13 @@ class Project {
                     {$commentsjoin}
                     {$followingSql}
                     ";
-            $skillSql = ", (SELECT GROUP_CONCAT(CONCAT(s.skill,'~~', s.id)) from `workitem_skills` ws inner join `skills` s on s.id = ws.skill_id where workitem_id = `worklist`.`id`) as skills ";
+            $labelSql = ", (SELECT GROUP_CONCAT(CONCAT(l.label,'~~', l.id)) from `workitem_labels` wl inner join `labels` l on l.id = wl.label_id where workitem_id = `worklist`.`id`) as labels ";
             $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
             $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
 
             $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
             $results = array();
-            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+            $resultQuery = mysql_query("{$sql} {$labelSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
             $jobsCount = array();
             while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
                 $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
@@ -1762,7 +1762,7 @@ class Project {
                     "comments" => $row['comments'],
                     "project_id" => $row['project_id'],
                     "project_name" => $row['project_name'],
-                    "skills" => $row['skills'] != null ? $row['skills']: "",
+                    "labels" => $row['labels'] != null ? $row['labels']: "",
                     "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
                     "done_job_count" => $jobsCount['done'][$id],
                     "pass_job_count" => $jobsCount['pass'][$id]

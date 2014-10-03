@@ -181,16 +181,16 @@ var AddJob = {
             AddJob.submitIsRunning = false;
             return false;
         }
-        var skills = '';
+        var labels = '';
         $('#labels li input[name^="label"]').each(function() {
             if ($(this).is(':checked')) {
-                skills += (skills.length ? ', ' : '') + $(this).val();
+                labels += (labels.length ? ', ' : '') + $(this).val();
             }
         });
         if (!AddJob.editing) {
-            AddJob.save(skills);
+            AddJob.save(labels);
         } else {
-            AddJob.update(skills);
+            AddJob.update(labels);
         }
 
         return false;
@@ -209,7 +209,7 @@ var AddJob = {
         $('#labels').attr('val', val).html(html);
         $('#labels + input').val('');
     },
-    save: function(skills)  {
+    save: function(labels)  {
           $.ajax({
             url: './job/add',
             dataType: 'json',
@@ -221,7 +221,7 @@ var AddJob = {
                 page: $("input[name='page']").val(),
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='itemStatus']").val(),
-                skills: skills,
+                labels: labels,
                 fileUpload: {uploads: AddJob.uploadedFiles},
                 assigned: $('select[name="assigned"]').val(),
                 itemid: AddJob.jobId > 0 ? AddJob.jobId : "",
@@ -238,7 +238,7 @@ var AddJob = {
             }
         });
     },
-    update: function(skills) {
+    update: function(labels) {
            $.ajax({
             url: './job/edit',
             dataType: 'json',
@@ -249,7 +249,7 @@ var AddJob = {
                 notes: $.trim($("textarea[name='notes']").val()),
                 project_id: $("select[name='itemProject']").val(),
                 status: $("select[name='itemStatus']").val(),
-                skills: skills,
+                labels: labels,
                 fileUpload: {uploads: AddJob.uploadedFiles},
                 budget_id: $('#budget-source-combo').val() != null ? $('#budget-source-combo').val() : 0,
                 worklist_id: AddJob.jobId,

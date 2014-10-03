@@ -49,18 +49,18 @@ class AddJobView extends View {
         return $ret;
     }
 
-    public function skills() {
-        $skillModel = new SkillModel();
-        $skillList = $skillModel->loadAll();
-        $skills = array();
-        foreach($skillList as $skill) {
-            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
-            if ($this->editing() && in_array($skill->skill, $this->workItem()->getSkills())) {
-                $skillObj['checked'] = true;
+    public function labels() {
+        $labelModel = new LabelModel();
+        $labelList = $labelModel->loadAll();
+        $labels = array();
+        foreach($labelList as $label) {
+            $labelObj = array("id" => $label->id, "label" => $label->label, "checked" => false);
+            if ($this->editing() && in_array($label->label, $this->workItem()->getLabels())) {
+                $labelObj['checked'] = true;
             }
-            array_push($skills, $skillObj);
+            array_push($labels, $labelObj);
         }
-        return $skills;
+        return $labels;
     }
 
     public function internalUsers() {

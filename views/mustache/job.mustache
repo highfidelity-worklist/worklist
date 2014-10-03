@@ -115,24 +115,24 @@
             </div>
         {{/worklist.mechanic_id}}
         <div class="col-sm-12 col-md-12 job-qa-labels">
-            <span class="job-info-heading" id="job-labels">Labels <i id="job-skills-edit">Saved!</i> </span>
-            <ul id="labels" class="{{#canEdit}}job-skills-editable{{/canEdit}}">
-                {{#skills}}
+            <span class="job-info-heading" id="job-labels">Labels <i id="job-labels-edit">Saved!</i> </span>
+            <ul id="labels" class="{{#canEdit}}job-labels-editable{{/canEdit}}">
+                {{#labels}}
                     {{^canEdit}}
                       {{#checked}}
-                            <li class="job-skills-noneditable">
-                                <input id="label{{id}}" type="checkbox"  checked name="label[{{id}}]" value="{{skill}}" />
-                                <label for="label{{id}}">{{skill}}</label>
+                            <li class="job-labels-noneditable">
+                                <input id="label{{id}}" type="checkbox"  checked name="label[{{id}}]" value="{{label}}" />
+                                <label for="label{{id}}">{{label}}</label>
                             </li>
                         {{/checked}}
                     {{/canEdit}}
                     {{#canEdit}}
                         <li>
-                            <input id="label{{id}}" type="checkbox" {{#checked}}checked{{/checked}}  name="label[{{id}}]" value="{{skill}}" />
-                            <label for="label{{id}}">{{skill}}</label>
+                            <input id="label{{id}}" type="checkbox" {{#checked}}checked{{/checked}}  name="label[{{id}}]" value="{{label}}" />
+                            <label for="label{{id}}">{{label}}</label>
                         </li>
                     {{/canEdit}}
-                {{/skills}}
+                {{/labels}}
             </ul>
         </div>
         {{#codeReview.canI}}

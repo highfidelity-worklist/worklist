@@ -58,7 +58,7 @@ var jobs = {
             if (!$('.project-jobs-status').hasClass("project-"+ data[index].project_id + "-jobs-status-" + data[index].status.toLowerCase().replace(/ /g, '-'))) {
                 $('#jobs-sections').append(jobs.renderJobStatus(data[index].project_id, data[index].status));
             }
-            $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].skills, data[index].comments, data[index].participants));
+            $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].labels, data[index].comments, data[index].participants));
             var totalJobsRender = $('ul.project-jobs').length;
             var totalHitCount = $('body').data("jobs-total-hit-count");
             if (totalHitCount == totalJobsRender) {
@@ -76,13 +76,13 @@ var jobs = {
         return html;
     },
 
-    renderJob: function(id, project_id, summary, skills, comments, participants) {
-        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><a href=\"./"+ id +"\">"+summary+"</a></li><li class=\"col-sm-2 col-md-2 project-jobs-skill\">";
-        if($.trim(skills).length > 0) {
-            var skills = skills.split(",");
-            for(skillIndex in skills) {
-                var skill = skills[skillIndex].split("~~");
-                html += "<a>" + skill[0] + "</a>";
+    renderJob: function(id, project_id, summary, labels, comments, participants) {
+        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><a href=\"./"+ id +"\">"+summary+"</a></li><li class=\"col-sm-2 col-md-2 project-jobs-label\">";
+        if($.trim(labels).length > 0) {
+            var labels = labels.split(",");
+            for(labelIndex in labels) {
+                var label = labels[labelIndex].split("~~");
+                html += "<a>" + label[0] + "</a>";
             }
         }
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";

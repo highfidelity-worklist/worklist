@@ -161,34 +161,6 @@ class JobView extends View {
         return $ret;
     }
 
-    public function jobBudget() {
-        $workitem = $this->workitem;
-        $worklist = $this->worklist;
-        $user = $this->user;
-        $ret = '';
-        if (
-            (
-                $user->isRunnerOfWorkitem($workitem) 
-              || (
-                    array_key_exists('userid', $_SESSION)
-                  && (
-                        $_SESSION['userid'] == $worklist['budget_giver_id'] 
-                      || strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false
-                    ) 
-                ) 
-            ) 
-          && !empty($worklist['budget_id'])
-        ) {
-            if ($this->action !="edit") {
-                $ret = '<div class="job-budget">'
-                    .    '<div class="project-label">Budget:</div>'
-                    .    $worklist['budget_id'] . " - " . htmlspecialchars($worklist['budget_reason'])
-                    . '</div>';
-            }
-        }
-        return $ret;
-    }
-
     public function statusDone() {
         return $this->worklist['status'] == "Done";
     }
@@ -408,12 +380,12 @@ class JobView extends View {
         return $this->order_by == 'DESC';
     }
 
-    public function skillsCount() {
-        return count($this->workitem->getSkills());
+    public function labelsCount() {
+        return count($this->workitem->getLabels());
     }
 
-    public function commaSeparatedSkills() {
-        return implode(', ', $this->workitem->getSkills());
+    public function commaSeparatedLabels() {
+        return implode(', ', $this->workitem->getLabels());
     }
 
     public function canReview() {
@@ -915,18 +887,18 @@ class JobView extends View {
         return $assignedUser->getNickname();
     }
 
-    public function skills() {
-        $skillModel = new SkillModel();
-        $skillList = $skillModel->loadAll();
-        $skills = array();
-        foreach($skillList as $skill) {
-            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
-            if (in_array($skill->skill, $this->workitem->getSkills())) {
-                $skillObj['checked'] = true;
+    public function labels() {
+        $labelModel = new LabelModel();
+        $labelList = $labelModel->loadAll();
+        $labels = array();
+        foreach($labelList as $label) {
+            $labelObj = array("id" => $label->id, "label" => $label->label, "checked" => false);
+            if (in_array($label->label, $this->workitem->getlabels())) {
+                $labelObj['checked'] = true;
             }
-            array_push($skills, $skillObj);
+            array_push($labels, $labelObj);
         }
-        return $skills;
+        return $labels;
     }
 
     public function canEdit() {

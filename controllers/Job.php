@@ -914,7 +914,7 @@ class JobController extends Controller {
         $itemid = $_REQUEST['itemid'];
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
-        $skills = $_REQUEST['skills'];
+        $labels = $_REQUEST['labels'];
         $status = $user->getIs_runner() ? $_REQUEST['status'] : 'Suggestion';
         $notes = $_REQUEST['notes'];
         $is_expense = $_REQUEST['is_expense'];
@@ -937,12 +937,12 @@ class JobController extends Controller {
             $workitem_added = true;
         }
         $workitem->setSummary($summary);
-        $skillsArr = explode(',', $skills);
+        $labelsArr = explode(',', $labels);
         $workitem->setRunnerId($runner_id);
         $workitem->setProjectId($project_id);
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
-        $workitem->setWorkitemSkills($skillsArr);
+        $workitem->setWorkitemLabels($labelsArr);
         $workitem->setIs_internal($is_internal);
         $workitem->setAssigned_id($assigned_id);
         $workitem->save();
@@ -1594,29 +1594,29 @@ class JobController extends Controller {
                 }
             }
 
-            if (isset($_REQUEST['skills']) && !empty($_REQUEST['skills'])) {
-                $skillsArr = explode(',', $_REQUEST['skills']);
+            if (isset($_REQUEST['labels']) && !empty($_REQUEST['labels'])) {
+                $labelsArr = explode(',', $_REQUEST['labels']);
                 // remove empty values
-                foreach ($skillsArr as $key => $value) {
-                    $skillsArr[$key] = trim($value);
+                foreach ($labelsArr as $key => $value) {
+                    $labelsArr[$key] = trim($value);
                     if (empty($value)) {
-                        unset($skillsArr[$key]);
+                        unset($labelsArr[$key]);
                     }
                 }
-                // get current skills
-                $skillsCur = $workitem->getSkills();
-                // have skills been updated?
-                $skillsDiff = array_diff($skillsArr, $skillsCur);
-                if (is_array($skillsDiff) && !empty($skillsDiff)) {
+                // get current labels
+                $labelsCur = $workitem->getLabels();
+                // have labels been updated?
+                $labelsDiff = array_diff($labelsArr, $labelsCur);
+                if (is_array($labelsDiff) && !empty($labelsDiff)) {
                     if ($workitem->getStatus() != 'Draft') {
-                        $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+                        $new_update_message .= 'Labels updated: ' . implode(', ', $labelsArr);
                     }
                     // remove nasty end comma
                     $new_update_message = rtrim($new_update_message, ', ') . '. ';
-                    $job_changes[] = '-skills';
+                    $job_changes[] = '-labels';
                 }
 
-                $workitem->setWorkitemSkills($skillsArr);
+                $workitem->setWorkitemLabels($labelsArr);
                 $workitem->save();
             }
 

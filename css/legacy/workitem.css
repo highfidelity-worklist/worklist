@@ -47,12 +47,6 @@ span.info-whisper {
     font-weight: bold;
 }
 
-.info-label{
-    font-weight: bold;
-    float: left;
-    width: 100%;
-}
-
 .info-data{
     display:inline-block;
 }
@@ -175,114 +169,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     width: 280px;
 }
 
-#quick-status  .info-label {
-    width: auto;
-    margin-top: 13px;
-    margin-left: 1px;
-    margin-right: 3px;
-}
-
-.project .info-label {
-    width: auto;
-    margin-top: 7px;
-    margin-left: 1px;
-}
-
-#for_view .info-label,
-#for_view .sections {
-    margin-bottom: 5px;
-}
-
-#uploadPanel {
-    margin: 13px 0 0 0;
-}
-
-#uploadPanel h3 {
-    font-size: 18px;
-    margin: 0 2px;
-}
-
-#uploadPanel .filesIcon {
-    margin: 12px 9px 0 9px;
-    border-color: #999999;
-}
-
-#uploadPanel .filesIcon img{
-    width: 68px;
-    height: 68px;
-}
-
-#uploadPanel .filesDescription {
-    padding: 12px 2px 7px 2px;
-    min-height: 51px;
-    margin: 9px 0 0 0;
-}
-
-#uploadPanel .filesDescription h3 {
-    color: #000;
-    font-size: 14px;
-    font-weight: normal;
-    margin: 4px 0 3px 0;
-}
-
-#uploadPanel .filesDescription p {
-    color: #999;
-    font-size: 11px;
-    font-weight: normal;
-    margin: 0;
-}
-
-#uploadPanel .filesDescription form {
-    float: left;
-}
-
-#uploadPanel .filesDescription input {
-    width: 200px !important;
-}
-
-.filesDescription h3:hover, .filesDescription p:hover {
-    background: #FFFFFF;
-}
-
-
-#uploadPanel .fileimagecontainer, .filedocumentcontainer{
-    border-top: 2px solid #e1e8ea;
-    margin: 4px 0 20px 0;
-    padding-top: 1px;
-}
-
-#uploadPanel . filesIcon{
-    margin: 10px;
-}
-
-#fileimagecontainer{
-    margin-bottom:10px;
-}
-
-.bid-form p {
-    line-height:1.2em;
-    margin:0px;
-}
-
-.bid-form input[type="text"] {
-    width:13em;
-}
-
-.bid-form label {
-    float: left;
-    width: 6em;
-    margin-right: 1em;
-}
-
-.bid-form ul, {
-    padding: 0 0 0 0.5em;
-    list-style: none!important;
-}
-
-.bid-form textarea {
-    width:18em;
-}
-
 .info-notes {
     font-size: 14px;
 }
@@ -381,42 +267,11 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     font-weight: normal;
 }
 
-.skills,
-.people-info {
-    height: 64px;
-    border-bottom: 2px solid #e1e8ea;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.skills {
-    padding-left: 10px;
-}
-
-.project-label {
-    float: left;
-    font-weight: bold;
-    margin-right: 3px;
-}
-
 .sandbox-container {
     margin: 15px 0 25px;
     background-color: #e6f3f4;
     padding: 9px 12px;
     font-size: 14px;
-}
-
-.functional-label {
-    font-weight: bold;
-    float: left;
-    display: block;
-    color: #930;
-}
-
-.inline-label,
-.budget-label {
-    font-weight: bold;
-    display: inline-block;
 }
 
 .budgetArea {
@@ -753,17 +608,6 @@ input.button-disabled ,
     font-size:12px;
 }
 
-#skills-list {
-    display: inline-block;
-    font-size: 12px;
-}
-
-#skills-edit {
-    width: 312px;
-    margin: 0 0 23px -1px;
-    padding: 6px 9px;
-}
-
 /* Budget info */
 #be-block {
     font-size:14px;
@@ -1059,10 +903,6 @@ h1.newProject {
     .project-github h1 {
         float: right;
         line-height: 21px;
-    }
-
-    .people-info {
-        font-size: 13px;
     }
 
     #creatorBox, #runnerBox, #mechanicBox {

@@ -30,7 +30,7 @@ class WorkItem {
 
     var $status_changed;
 
-    var $skills = array();
+    var $labels = array();
 
     protected $origStatus = null;
 
@@ -115,7 +115,7 @@ class WorkItem {
              ->setCRStarted($row['code_review_started'])
              ->setCRCompleted($row['code_review_completed'])
              ->setAssigned_id($row['assigned_id'])
-             ->setWorkitemSkills();
+             ->setWorkitemLabels();
         $this->status_changed = $row['status_changed'];
         $this->project_name = $row['project_name'];
         return true;
@@ -388,33 +388,33 @@ class WorkItem {
         return $this->code_review_completed;
     }
 
-    public function setWorkitemSkills($skills = false) {
-        // if no array provided, get skill from db
-        if (! $skills) {
-            $query = "SELECT s.skill
-                      FROM ".SKILLS." AS s, ".WORKITEM_SKILLS." AS ws
-                      WHERE s.id = ws.skill_id AND ws.workitem_id = " . $this->getId();
+    public function setWorkitemLabels($labels = false) {
+        // if no array provided, get label from db
+        if (! $labels) {
+            $query = "SELECT l.label
+                      FROM " . LABELS . " AS l, " . WORKITEM_LABELS . " AS wl
+                      WHERE l.id = wl.label_id AND wl.workitem_id = " . $this->getId();
 
             $result = mysql_query($query);
             if (mysql_num_rows($result)) {
                 while ($row = mysql_fetch_assoc($result)) {
-                    $this->skills[] = $row['skill'];
+                    $this->labels[] = $row['label'];
                 }
             }
 
         } else {
-            $this->skills = $skills;
+            $this->labels = $labels;
         }
     }
 
-    public function saveSkills() {
-        // clear current skills
+    public function saveLabels() {
+        // clear current labels
         if ($this->getId()) {
-            $query = "DELETE FROM ".WORKITEM_SKILLS." WHERE workitem_id=" . $this->getId();
+            $query = "DELETE FROM " . WORKITEM_LABELS . " WHERE workitem_id = " . $this->getId();
             $result = mysql_query($query);
-            foreach ($this->skills as $skill) {
-                $query = "INSERT INTO ".WORKITEM_SKILLS." (workitem_id, skill_id)
-                          SELECT ".$this->getId().", id FROM ".SKILLS." WHERE skill='". trim($skill) ."'";
+            foreach ($this->labels as $label) {
+                $query = "INSERT INTO ".WORKITEM_LABELS." (workitem_id, label_id)
+                          SELECT ".$this->getId().", id FROM ".LABELS." WHERE label='". trim($label) ."'";
                 mysql_query($query) || die('There was an error ' . mysql_error() . ' QUERY: ' . $query);
             }
 
@@ -425,8 +425,8 @@ class WorkItem {
 
     }
 
-    public function getSkills() {
-        return $this->skills;
+    public function getLabels() {
+        return $this->labels;
     }
 
     /**
@@ -636,14 +636,14 @@ class WorkItem {
         if(isset($this->id)){
             if ($this->idExists($this->getId())) {
                 if ($this->update()) {
-                    $this->saveSkills($this->skills);
+                    $this->saveLabels($this->labels);
                     return true;
                 } else {
                     error_log("error1 in update, save function");
                 }
             } else {
                 if ($this->insert()) {
-                    $this->saveSkills($this->skills);
+                    $this->saveLabels($this->labels);
                     return true;
                 } else {
                     error_log("error2 in insert, save function");
@@ -651,7 +651,7 @@ class WorkItem {
             }
         } else {
             if ($this->insert()) {
-                $this->saveSkills($this->skills);
+                $this->saveLabels($this->labels);
             } else {
                 error_log("error3 in insert, save function");
             }
