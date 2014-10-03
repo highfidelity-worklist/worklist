@@ -440,7 +440,8 @@ class UserController extends Controller {
 
     public function suggestMentions($startsWith = '_', $maxLimit = 10) {
         $this->view = null;
-        echo json_encode(User::suggestMentions($startsWith, $maxLimit));
+        $user = User::find(getSessionUserId());
+        echo json_encode(User::suggestMentions($user, $startsWith, $maxLimit));
     }
 
     public function review($id) {

@@ -1081,6 +1081,7 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
     bottom: 0;
 }
 
+.modal-footer .btn-group.open button > span:first-child:not(.caret):after,
 .modal-footer .btn-group button:hover > span:first-child:not(.caret):after {
     background: -moz-linear-gradient(left,  rgba(235,235,235,0) 0%, rgba(235,235,235,1) 100%) transparent;
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(235,235,235,0)), color-stop(100%,rgba(235,235,235,1)))  transparent;

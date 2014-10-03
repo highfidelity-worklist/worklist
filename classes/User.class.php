@@ -2534,21 +2534,26 @@ class User {
     /**
      * Find users by nickname or full name (first_name, last_name)
      *
+     * @param mixed $user the requestor
      * @param string $startsWith
      * @param integer $maxLimit
      */
-    public function suggestMentions($startsWith = '_', $maxLimit = 10) {
+    public function suggestMentions($user, $startsWith = '_', $maxLimit = 10) {
+        $user = User::find($user);
+        $user_id = (int) $user->getId();
         $limit = (int) $maxLimit;
         $query = '
-            SELECT nickname, first_name, last_name
-            FROM ' . USERS . '
+            SELECT `u`.`nickname`, `u`.`first_name`, `u`.`last_name`
+            FROM `' . USERS . '` `u`
+              LEFT JOIN `' . USERS_FAVORITES . '` `f`
+                ON `f`.`user_id` = ' . $user_id . ' AND `f`.`favorite_user_id` = `u`.`id`
             WHERE (
-                nickname LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
-                first_name LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
-                last_name LIKE "' . mysql_real_escape_string($startsWith) . '%"
+                `u`.`nickname` LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                `u`.`first_name` LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                `u`.`last_name` LIKE "' . mysql_real_escape_string($startsWith) . '%"
             )
-            ORDER BY nickname
-            LIMIT ' . $limit;
+            ORDER BY CASE WHEN `f`.`user_id` IS NULL THEN 1 ELSE 0 END ASC, nickname
+            LIMIT ' . $limit; error_log($query);
         $ret = array();
         if ($result = mysql_query($query)) {
             while ($row = mysql_fetch_assoc($result)) {
