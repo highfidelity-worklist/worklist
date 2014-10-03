@@ -391,17 +391,18 @@ class WorkItem {
     public function setWorkitemLabels($labels = false) {
         // if no array provided, get label from db
         if (! $labels) {
-            $query = "SELECT l.label
-                      FROM " . LABELS . " AS l, " . WORKITEM_LABELS . " AS wl
-                      WHERE l.id = wl.label_id AND wl.workitem_id = " . $this->getId();
-
+            $query = "
+                SELECT `l`.`label`
+                FROM `" . WORKITEM_LABELS . "` `wl`
+                  JOIN `" . LABELS . "` `l`
+                    ON `l`.`id` = `wl`.`label_id`
+                WHERE `wl`.`workitem_id` = " . $this->getId();
             $result = mysql_query($query);
             if (mysql_num_rows($result)) {
                 while ($row = mysql_fetch_assoc($result)) {
                     $this->labels[] = $row['label'];
                 }
             }
-
         } else {
             $this->labels = $labels;
         }
@@ -410,19 +411,27 @@ class WorkItem {
     public function saveLabels() {
         // clear current labels
         if ($this->getId()) {
-            $query = "DELETE FROM " . WORKITEM_LABELS . " WHERE workitem_id = " . $this->getId();
+            $query = "
+                DELETE
+                FROM " . WORKITEM_LABELS . "
+                WHERE workitem_id = " . $this->getId();
             $result = mysql_query($query);
-            foreach ($this->labels as $label) {
-                $query = "INSERT INTO ".WORKITEM_LABELS." (workitem_id, label_id)
-                          SELECT ".$this->getId().", id FROM ".LABELS." WHERE label='". trim($label) ."'";
-                mysql_query($query) || die('There was an error ' . mysql_error() . ' QUERY: ' . $query);
+            $query = "
+                INSERT
+                INTO `" . WORKITEM_LABELS . "` (`workitem_id`, `label_id`)
+                SELECT " . $this->getId() . ", `l`.`id`
+                FROM `" . PROJECT_LABELS . "` `pl`
+                  JOIN `" . LABELS . "` `l`
+                    ON `l`.`id` = `pl`.`label_id`
+                WHERE `pl`.`project_id` = " . $this->getProjectId() . "
+                  AND `l`.`label` IN ('" . implode("','", $this->labels) . "')";
+            if (!mysql_query($query)) {
+                error_log('Workitem::saveLavels: ' . mysql_error() . ' - ' . $query);
             }
-
             return true;
         } else {
             return false;
         }
-
     }
 
     public function getLabels() {

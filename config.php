@@ -106,6 +106,7 @@ if (!defined('STATUS_LOG'))     define('STATUS_LOG', 'status_log');
 if (!defined('TASK_FOLLOWERS')) define('TASK_FOLLOWERS', 'task_followers');
 if (!defined('TOKENS'))         define('TOKENS', 'tokens');
 if (!defined('WORKITEM_LABELS')) define('WORKITEM_LABELS', 'workitem_labels');
+if (!defined('PROJECT_LABELS')) define('PROJECT_LABELS', 'project_labels');
 if (!defined('USER_STATUS'))    define('USER_STATUS', 'user_status');
 if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('USERS_AUTH_TOKENS')) define('USERS_AUTH_TOKENS', 'users_auth_tokens');
