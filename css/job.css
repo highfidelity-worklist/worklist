@@ -520,6 +520,9 @@ li.job-creator a {
     font-weight: bold;
     color: #007f7c;
     white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
 }
 
 .job-info-heading {
