@@ -35,7 +35,7 @@
     </div>
     <div class="rightCol">
         <section id="modeSwitch">
-        {{#runnerOrPayerOrOwner}}
+        {{#adminOrOwner}}
             {{#edit_mode}}
                 <div id="buttonHolder">
                     <input class="left-button" type="submit" id="cancel_project_edit" name="cancel" value="Cancel">
@@ -48,7 +48,7 @@
                     <input type="submit" id="edit_project" name="edit" value="Edit project details">
                 </div>
             {{/edit_mode}}
-        {{/runnerOrPayerOrOwner}}
+        {{/adminOrOwner}}
         </section>
         <div>
             <div id="contactInfo"><span>Contact Info:</span> 
@@ -101,7 +101,7 @@
                     {{/project.getContributors}}
                 </p>
             </li>
-            {{#runnerOrPayerOrOwner}}
+            {{#adminOrOwner}}
                 <li id="projectRoles">
                     <h3>Team member roles</h3>
                     <div id="for_view">
@@ -143,7 +143,7 @@
                         </div>
                     </div>
                 </li>
-            {{/runnerOrPayerOrOwner}}
+            {{/adminOrOwner}}
             <li id="projectRunners">
                 <h3>Project designers</h3>
                 <table class="table table-striped" id="project_runners_table">

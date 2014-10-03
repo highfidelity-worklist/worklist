@@ -131,7 +131,7 @@ class ProjectController extends Controller {
         }
 
         $edit_mode = false;
-        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_runner || $is_payer || $is_owner)) {
+        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'edit' && ( $is_admin || $is_owner)) {
             $edit_mode = true;
         }
 

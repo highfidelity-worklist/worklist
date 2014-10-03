@@ -703,7 +703,7 @@ class User {
      * @return the $nickname
      */
     public function getNickname() {
-        return $this->getSubNickname($this->nickname);
+        return $this->nickname;
     }
 
     /**
@@ -1636,16 +1636,6 @@ class User {
     }
     
     /**
-     * Return a trimmed version of the nickname
-     */
-    public function getSubNickname($nickname, $length = 13) {
-        if (strlen($nickname) > $length) {
-            return substr($nickname, 0, $length) . '...';
-        } else {
-            return $nickname;
-        }
-    }
-    /**
      * @return the $has_W2
      */
     public function getHas_W2() {
@@ -1914,15 +1904,15 @@ class User {
         return false;
     }
     
-    public function createPullRequest($branch_name, Project $project) {
+    public function createPullRequest($branch_name, $workitem_title, Project $project) {
         $token = $this->authTokenForGitHubId($project->getGithubId());
         $repoDetails = $project->extractOwnerAndNameFromRepoURL();
         $userDetails = $this->getGitHubUserDetails($project);
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
         $params = array(
-            'title' => 'Code Review for Job #' . $branch_name,
-            'body' => 'Code Review for Job #' . $branch_name . " - Workitem available at https://www.worklist.net/" . $branch_name,
+            'title' => 'CR for Job #' . $branch_name . ' - ' . $workitem_title,
+            'body' => 'Code Review for Job #' . $branch_name . ' - Workitem available at https://www.worklist.net/' . $branch_name,
             'head' => $gitHubUsername . ':' . $branch_name,
             'base' => 'master'
         );
@@ -2544,27 +2534,33 @@ class User {
     /**
      * Find users by nickname or full name (first_name, last_name)
      *
-     * @param string $contains
+     * @param mixed $user the requestor
+     * @param string $startsWith
+     * @param integer $maxLimit
      */
-    public function mentionsList($contains) {
-
-        $likeString =  'LIKE "%' . mysql_real_escape_string($contains) . '%"';
-
-        $query = "
-            SELECT id, nickname, username, picture, first_name, last_name
-            FROM " . USERS . "
+    public function suggestMentions($user, $startsWith = '_', $maxLimit = 10) {
+        $user = User::find($user);
+        $user_id = (int) $user->getId();
+        $limit = (int) $maxLimit;
+        $query = '
+            SELECT `u`.`nickname`, `u`.`first_name`, `u`.`last_name`
+            FROM `' . USERS . '` `u`
+              LEFT JOIN `' . USERS_FAVORITES . '` `f`
+                ON `f`.`user_id` = ' . $user_id . ' AND `f`.`favorite_user_id` = `u`.`id`
             WHERE (
-                nickname {$likeString} OR
-                first_name {$likeString} OR
-                last_name {$likeString}
-                ) AND
-                picture IS NOT NULL AND picture LIKE \"%http%\"
-            ORDER BY nickname LIMIT 0, 10
-        ";
-
-        $result = mysql_query($query);
-
-        return $result;
+                `u`.`nickname` LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                `u`.`first_name` LIKE "' . mysql_real_escape_string($startsWith) . '%" OR
+                `u`.`last_name` LIKE "' . mysql_real_escape_string($startsWith) . '%"
+            )
+            ORDER BY CASE WHEN `f`.`user_id` IS NULL THEN 1 ELSE 0 END ASC, nickname
+            LIMIT ' . $limit;
+        $ret = array();
+        if ($result = mysql_query($query)) {
+            while ($row = mysql_fetch_assoc($result)) {
+                $ret[] = $row;
+            }
+        }
+        return $ret;
     }
 
     public function budgetHistory($giver = null, $page = 1, $itemsPerPage = 10) {
