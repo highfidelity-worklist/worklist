@@ -1044,7 +1044,7 @@ function linkify($url, $author = null, $bot = false, $process = true)
 
     // mentions - @username, comments and job descriptions
     $url = preg_replace(
-        '/(^|[^a-z0-9_])@([a-z0-9_]+)/i',
+        '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9\-]+)/',
         '$1<a href="' . WORKLIST_URL . 'user/$2">@$2</a>',
     $url);
 

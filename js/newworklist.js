@@ -191,7 +191,7 @@ var NewWorklist = {
             NewWorklist.chooseAutocompleteItem(activeItem);
             NewWorklist.hideSuggestionList();
             return false;
-        } else if (e.type == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^[A-Za-z0-9-]$/)) {
+        } else if (e.type == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^[a-zA-Z0-9-]$/)) {
             // non-word char typed, choose active item and append the typed char
             var activeItem = NewWorklist.activeSuggestionItem;
             NewWorklist.chooseAutocompleteItem(activeItem, charTyped);
@@ -209,7 +209,7 @@ var NewWorklist = {
         var nickname = $('li:eq(' + item + ')', NewWorklist.autocompleteSuggestionList).attr('nickname');
         var input = NewWorklist.autocompleteInput;
         var mention = NewWorklist.mentionDetector()[1].replace(/^@/, '');
-        var textBefore = input.value.substring(0, input.selectionEnd).replace(/@[A-Za-z0-9][A-Za-z0-9-]+$/, '@');
+        var textBefore = input.value.substring(0, input.selectionEnd).replace(/@[a-zA-Z0-9][a-zA-Z0-9-]+$/, '@');
         var textAfter = input.value.substring(input.selectionEnd, input.value.length);
         appendChar = typeof appendChar == 'string' ? appendChar : ' ';
         input.value = textBefore + nickname + appendChar + textAfter;
@@ -301,6 +301,6 @@ var NewWorklist = {
     mentionDetector: function() {
         var input = NewWorklist.autocompleteInput;
         var text = input.value.substring(0, input.selectionEnd);
-        return text.match(/(?:^|\s)(@[A-Za-z0-9][A-Za-z0-9-]+)$/);
+        return text.match(/(?:^|\s)(@[a-zA-Z0-9][a-zA-Z0-9-]+)$/);
     },
 }
