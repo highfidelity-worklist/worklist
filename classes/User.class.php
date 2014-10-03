@@ -1904,15 +1904,15 @@ class User {
         return false;
     }
     
-    public function createPullRequest($branch_name, Project $project) {
+    public function createPullRequest($branch_name, $workitem_title, Project $project) {
         $token = $this->authTokenForGitHubId($project->getGithubId());
         $repoDetails = $project->extractOwnerAndNameFromRepoURL();
         $userDetails = $this->getGitHubUserDetails($project);
         $gitHubUsername = $userDetails['data']['login'];
         $path = 'repos/' . $repoDetails['owner'] . '/' . $repoDetails['name'] . '/pulls';
         $params = array(
-            'title' => 'Code Review for Job #' . $branch_name,
-            'body' => 'Code Review for Job #' . $branch_name . " - Workitem available at https://www.worklist.net/" . $branch_name,
+            'title' => 'CR for Job #' . $branch_name . ' - ' . $workitem_title,
+            'body' => 'Code Review for Job #' . $branch_name . ' - Workitem available at https://www.worklist.net/' . $branch_name,
             'head' => $gitHubUsername . ':' . $branch_name,
             'base' => 'master'
         );
