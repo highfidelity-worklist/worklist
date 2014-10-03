@@ -2553,7 +2553,7 @@ class User {
                 `u`.`last_name` LIKE "' . mysql_real_escape_string($startsWith) . '%"
             )
             ORDER BY CASE WHEN `f`.`user_id` IS NULL THEN 1 ELSE 0 END ASC, nickname
-            LIMIT ' . $limit; error_log($query);
+            LIMIT ' . $limit;
         $ret = array();
         if ($result = mysql_query($query)) {
             while ($row = mysql_fetch_assoc($result)) {
