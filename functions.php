@@ -1044,7 +1044,7 @@ function linkify($url, $author = null, $bot = false, $process = true)
 
     // mentions - @username, comments and job descriptions
     $url = preg_replace(
-        '/(^|[^a-z0-9_])@([a-z0-9_]+)/i',
+        '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9\-]+)/',
         '$1<a href="' . WORKLIST_URL . 'user/$2">@$2</a>',
     $url);
 
@@ -1057,17 +1057,6 @@ function linkify($url, $author = null, $bot = false, $process = true)
 function decodeDelimitedLinks($matches) {
     $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
     return html_entity_decode($result, ENT_QUOTES);
-}
-
-/**
- * Return a trimmed version of the nickname
- */
-function getSubNickname($nickname, $length = 18) {
-    if (strlen($nickname) > $length) {
-        return substr($nickname, 0, $length) . '...';
-    } else {
-        return $nickname;
-    }
 }
 
 function getProjectList() {

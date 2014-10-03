@@ -204,9 +204,7 @@ class JobView extends View {
             $ret .= 
                 '<span class="job-info-heading">' .
                 'Designer:</span>' .
-                '<a href="./user/' . $worklist['runner_id'] . '" >' . 
-                    substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
-                '</a>';
+                '<a href="./user/' . $worklist['runner_id'] . '" >' . $worklist['runner_nickname'] . '</a>';
         } else {
             $ret .= '<span class="job-info-heading">Designer:</span> Not funded';
         }
@@ -547,7 +545,7 @@ class JobView extends View {
                  '<td>'
                 . (
                     $canSeeBid 
-                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
+                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . $bid['nickname'] . '</a>'
                       : $bid['nickname']
                   )
                 .'</td>'
@@ -591,7 +589,7 @@ class JobView extends View {
                     '</script>' .
                     '<td class="nickname who">' .
                         '<a href="./user/' . $fee['user_id'] . '"  title="' . $fee['nickname'] . '">' .
-                            getSubNickname($fee['nickname'], 8) .
+                            $fee['nickname'] .
                         '</a>' .
                     '</td>' .
                     '<td class="fee">' .
@@ -880,7 +878,7 @@ class JobView extends View {
         if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
             // linkify mentions and tasks references
             $ret = $ret;
-            $mention_regex = '/(^|\s)@(\w+)/';
+            $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
             $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
             $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
             $ret = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $ret);

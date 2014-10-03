@@ -1,5 +1,4 @@
 var filterName = '.worklist';
-isJobsPage = true;
 var jobs = {
     offset: 0,
     limit: 30,
