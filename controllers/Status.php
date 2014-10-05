@@ -99,7 +99,7 @@ class StatusController extends Controller {
                     $date = strtotime($entry->date);
                     $relativeDate = relativeTime($date - $now);
 
-                    $mention_regex = '/(^|\s)@(\w+)/';
+                    $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
                     $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
                     $content = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
                     $content = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $content);

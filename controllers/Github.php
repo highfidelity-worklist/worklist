@@ -90,6 +90,9 @@ class GithubController extends Controller {
                         if (!$testUser->findUserByAuthToken($access_token)) {
                             // credentials not stored in db and not used by any other user
                             $user->storeCredentials($access_token);
+                        } else {
+                            // credentials found, let's just sync account with GH data
+                            $this->sync($user, $gh_user);
                         }
                         Utils::redirect($redir);
                     } else {

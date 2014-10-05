@@ -93,7 +93,7 @@ class Dispatcher {
 
         $dispatcher->any('/user/:method(/:param)', array('User'), array(
             'require' => array(
-                'method' => '[a-zA-Z0-9]+',
+                'method' => '[a-zA-Z0-9][a-zA-Z0-9-]+',
                 'param' => '.*'
             ),
             'default' => array('method' => 'index')
