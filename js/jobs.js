@@ -81,7 +81,7 @@ var jobs = {
             var labels = labels.split(",");
             for(labelIndex in labels) {
                 var label = labels[labelIndex].split("~~");
-                html += "<a>" + label[0] + "</a>";
+                html += "<a class=" + (label[2] == '1' ? 'active' : '') + ">" + label[0] + "</a>";
             }
         }
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";

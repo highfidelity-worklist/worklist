@@ -207,18 +207,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
     text-decoration: underline;
 }
 
-#runnerBox .buttonContainer {
-    margin-left: 15px !important;
-}
-
-.changeRunner select {
-    float: left;
-}
-
-.changeRunner .buttonContainer {
-    margin-left: 5px !important;
-}
-
 .editable:hover,
 .clickable {
     cursor:pointer;
@@ -304,19 +292,6 @@ input[type=password]:active, input[type=password]:hover, input[type=password]:fo
 .feebutton .smbutton {
     padding: 2px 0px 2px 9px !important;
     right: -6px !important;
-}
-
-.buttonContainer input:hover {
-    text-decoration: underline !important;
-}
-
-.buttonContainer-save {
-    margin:15px 0px 20px -8px;
-}
-
-.buttonContainer input {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size: 12px;
 }
 
 .view-sandbox .smbutton {

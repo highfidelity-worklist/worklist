@@ -388,19 +388,30 @@ class WorkItem {
         return $this->code_review_completed;
     }
 
-    public function setWorkitemLabels($labels = false) {
+    public function setWorkitemLabels($labels = false, $activeOnly = true) {
         // if no array provided, get label from db
         if (! $labels) {
+            $workitem_id = (int) $this->getId();
+            $project_id = (int) $this->getProjectId();;
             $query = "
-                SELECT `l`.`label`
-                FROM `" . WORKITEM_LABELS . "` `wl`
+                SELECT
+                    `l`.`id`,
+                    `l`.`label`,
+                    CASE WHEN (
+                        SELECT COUNT(*)
+                        FROM `" . WORKITEM_LABELS . "` `wl`
+                        WHERE `wl`.`workitem_id` = " . $workitem_id . "
+                          AND `wl`.`label_id` = `l`.`id`
+                        ) > 0 THEN 1 ELSE 0 END AS `checked`
+                FROM `" . PROJECT_LABELS . "` `pl`
                   JOIN `" . LABELS . "` `l`
-                    ON `l`.`id` = `wl`.`label_id`
-                WHERE `wl`.`workitem_id` = " . $this->getId();
+                    ON `l`.`id` = `pl`.`label_id`
+                WHERE `pl`.`project_id` = " . $project_id .
+                    ($activeOnly ? ' AND `pl`.`active`' : '');
             $result = mysql_query($query);
             if (mysql_num_rows($result)) {
                 while ($row = mysql_fetch_assoc($result)) {
-                    $this->labels[] = $row['label'];
+                    $this->labels[] = $row;
                 }
             }
         } else {

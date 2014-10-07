@@ -926,6 +926,70 @@ class Project {
     }
 
     /**
+     * Add Label to Project
+     */
+    public function addLabel($label) {
+        $project_id = $this->getProjectId();
+        $labelObj = new LabelModel();
+        $labelObj->findByLabel($label);
+        $label_id = $labelObj->id;
+        if (!$label_id) {
+            $labelObj->label = $label;
+            $label_id = $labelObj->insert();
+        }
+        $query = "
+            INSERT
+            INTO `" . PROJECT_LABELS . "` (`project_id`, `label_id`, `active`)
+            SELECT " . $project_id . ", `l`.`id`, 1
+            FROM `" . LABELS . "` `l`
+            WHERE `l`.`id` = " . $label_id . "
+            ON DUPLICATE KEY update `active` = 1;";
+        return mysql_query($query) ? true : false;
+    }
+
+    /**
+     * Remove (disable) Label from Project
+     */
+    public function deleteLabel($label) {
+        $project_id = $this->getProjectId();
+        $query = "
+            UPDATE `" . PROJECT_LABELS . "`
+            SET `active` = 0
+            WHERE `project_id` = " . $project_id . "
+              AND `label_id` = (
+                SELECT `l`.`id`
+                FROM `" . LABELS . "` `l`
+                WHERE `l`.`label` = '" . mysql_real_escape_string($label) . "'
+              )
+              AND `active`;";
+        $result = mysql_query($query);
+        return $result ? true : false;
+    }
+
+    /**
+     * Get Labels for Project
+     */
+    public function getLabels() {
+        $project_id = $this->getProjectId();
+        $query = "
+            SELECT `l`.`label`
+            FROM `" . PROJECT_LABELS . "` `pl`
+              JOIN `" . LABELS . "` `l`
+                ON `l`.`id` = `pl`.`label_id`
+            WHERE `pl`.`project_id` = " . $project_id . "
+              AND `pl`.`active`;";
+        $result = mysql_query($query);
+        if (!$result) {
+            return false;
+        }
+        $ret = array();
+        while($label = mysql_fetch_assoc($result)) {
+            $ret[] = $label['label'];
+        }
+        return $ret;
+    }
+
+    /**
      * Get the Reviewers for current project
      * @return unknown|boolean
      */
@@ -1733,7 +1797,7 @@ class Project {
                     {$commentsjoin}
                     {$followingSql}
                     ";
-            $labelSql = ", (SELECT GROUP_CONCAT(CONCAT(l.label,'~~', l.id)) from `workitem_labels` wl inner join `labels` l on l.id = wl.label_id where workitem_id = `worklist`.`id`) as labels ";
+            $labelSql = ", (SELECT GROUP_CONCAT(CONCAT_WS('~~', l.label, l.id, CASE WHEN (SELECT `pl`.`active` FROM `" . PROJECT_LABELS . "` `pl` WHERE `pl`.`project_id`=`worklist`.`project_id` AND `pl`.`label_id`=`l`.`id`) THEN '1' ELSE '0' END)) from `workitem_labels` wl inner join `labels` l on l.id = wl.label_id where workitem_id = `worklist`.`id`) as labels ";
             $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
             $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
 

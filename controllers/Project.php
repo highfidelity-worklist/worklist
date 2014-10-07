@@ -10,6 +10,9 @@ class ProjectController extends Controller {
             case 'addDesigner':
             case 'designers':
             case 'removeDesigner':
+            case 'addLabel':
+            case 'labels':
+            case 'removeLabel':
             case 'addCodeReviewer':
             case 'codeReviewers':
             case 'removeCodeReviewer':
@@ -392,6 +395,80 @@ class ProjectController extends Controller {
             echo json_encode(array(
                 'success' => true,
                 'data' => array('deleted_runners' => $deleted_runners)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function addLabel($id, $label) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            if (!$project->addLabel($label)) {
+                throw new Exception("There was a problem while adding label to the project");
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => 'Label added successfully'
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function labels($id) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if ($labels = $project->getLabels()) {
+                foreach ($labels as $label) {
+                    $data[] = array('label' => $label);
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('labels' => $data)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function removeLabel($id) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $labels = array_slice(func_get_args(), 1);
+            $deleted_labels = array();
+            foreach($labels as $label) {
+                if ($project->deleteLabel($label)) {
+                    $deleted_labels[] = $label;
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('deleted_labels' => $deleted_labels)
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();

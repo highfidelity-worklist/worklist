@@ -886,16 +886,7 @@ class JobView extends View {
     }
 
     public function labels() {
-        $labelModel = new LabelModel();
-        $labelList = $labelModel->loadAll();
-        $labels = array();
-        foreach($labelList as $label) {
-            $labelObj = array("id" => $label->id, "label" => $label->label, "checked" => false);
-            if (in_array($label->label, $this->workitem->getlabels())) {
-                $labelObj['checked'] = true;
-            }
-            array_push($labels, $labelObj);
-        }
+        $labels = $this->workitem->getlabels();
         return $labels;
     }
 

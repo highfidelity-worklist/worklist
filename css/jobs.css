@@ -359,6 +359,11 @@ ul.project-jobs li.project-jobs-label a {
     border: 1px solid #B3E0DC;
     font-size: 13px;
     margin-bottom: 2px;
+    opacity: .6;
+}
+
+ul.project-jobs li.project-jobs-label a.active {
+    opacity: 1;
 }
 
 ul.project-jobs .project-jobs-comment-count a {

@@ -501,10 +501,6 @@ td.textAlignReport {
 .noMargin {
     margin: 0;
 }
-/*roles section*/
-.buttonContainer-save {
-    margin:15px 0px 20px -8px;
-}
 
 .detailContainer {
     width: 50%;

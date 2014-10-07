@@ -209,6 +209,24 @@
                     {{/edit_mode}}
                 </div>
             </li>  
+            <li id="projectLabels">
+                <h3>Project labels</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Label</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                {{#adminOrOwner}}
+                    <div class="buttonContainer">
+                        <button class="btn btn-primary" action="add">Add</button>
+                        <button class="btn btn-primary" action="remove">Remove</button>
+                    </div>
+                {{/adminOrOwner}}
+            </li>
         </ul>
     </div>
     <div class="rightCol">

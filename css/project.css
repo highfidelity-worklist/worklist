@@ -277,7 +277,8 @@ p#projectFundingSource {
 
 #projectRoles .buttonContainer,
 #projectRunners .buttonContainer,
-#projectCodeReviewRights .buttonContainer {
+#projectCodeReviewRights .buttonContainer,
+#projectLabels .buttonContainer {
     text-align: right;
 }
 
