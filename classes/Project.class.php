@@ -972,7 +972,7 @@ class Project {
     public function getLabels() {
         $project_id = $this->getProjectId();
         $query = "
-            SELECT `l`.`label`
+            SELECT `l`.`label`, `l`.`id`
             FROM `" . PROJECT_LABELS . "` `pl`
               JOIN `" . LABELS . "` `l`
                 ON `l`.`id` = `pl`.`label_id`
@@ -984,7 +984,7 @@ class Project {
         }
         $ret = array();
         while($label = mysql_fetch_assoc($result)) {
-            $ret[] = $label['label'];
+            $ret[] = $label;
         }
         return $ret;
     }

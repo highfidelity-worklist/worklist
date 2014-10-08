@@ -49,20 +49,6 @@ class AddJobView extends View {
         return $ret;
     }
 
-    public function labels() {
-        $labelModel = new LabelModel();
-        $labelList = $labelModel->loadAll();
-        $labels = array();
-        foreach($labelList as $label) {
-            $labelObj = array("id" => $label->id, "label" => $label->label, "checked" => false);
-            if ($this->editing() && in_array($label->label, $this->workItem()->getLabels())) {
-                $labelObj['checked'] = true;
-            }
-            array_push($labels, $labelObj);
-        }
-        return $labels;
-    }
-
     public function internalUsers() {
         return User::getInternals();
     }

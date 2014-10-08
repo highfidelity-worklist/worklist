@@ -388,7 +388,7 @@ class WorkItem {
         return $this->code_review_completed;
     }
 
-    public function setWorkitemLabels($labels = false, $activeOnly = true) {
+    public function setWorkitemLabels($labels = false) {
         // if no array provided, get label from db
         if (! $labels) {
             $workitem_id = (int) $this->getId();
@@ -397,18 +397,20 @@ class WorkItem {
                 SELECT
                     `l`.`id`,
                     `l`.`label`,
-                    CASE WHEN (
-                        SELECT COUNT(*)
-                        FROM `" . WORKITEM_LABELS . "` `wl`
-                        WHERE `wl`.`workitem_id` = " . $workitem_id . "
-                          AND `wl`.`label_id` = `l`.`id`
-                        ) > 0 THEN 1 ELSE 0 END AS `checked`
+                    CASE WHEN `wl`.`label_id` THEN 1 ELSE 0 END AS `checked`,
+                    `pl`.`active`
                 FROM `" . PROJECT_LABELS . "` `pl`
                   JOIN `" . LABELS . "` `l`
                     ON `l`.`id` = `pl`.`label_id`
-                WHERE `pl`.`project_id` = " . $project_id .
-                    ($activeOnly ? ' AND `pl`.`active`' : '');
+                  LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
+                    ON `wl`.`workitem_id` = " . $workitem_id . "
+                      AND `wl`.`label_id` = `l`.`id`
+                WHERE `pl`.`project_id` = " . $project_id . "
+                  AND (`pl`.`active` OR `wl`.`label_id` IS NOT NULL)";
             $result = mysql_query($query);
+            if (!$result) {
+                return false;
+            }
             if (mysql_num_rows($result)) {
                 while ($row = mysql_fetch_assoc($result)) {
                     $this->labels[] = $row;

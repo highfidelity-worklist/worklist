@@ -121,14 +121,18 @@
                     {{^canEdit}}
                       {{#checked}}
                             <li class="job-labels-noneditable">
-                                <input id="label{{id}}" type="checkbox"  checked name="label[{{id}}]" value="{{label}}" />
+                                <input id="label{{id}}" type="checkbox"
+                                  checked name="label[{{id}}]" value="{{label}}" />
                                 <label for="label{{id}}">{{label}}</label>
                             </li>
                         {{/checked}}
                     {{/canEdit}}
                     {{#canEdit}}
                         <li>
-                            <input id="label{{id}}" type="checkbox" {{#checked}}checked{{/checked}}  name="label[{{id}}]" value="{{label}}" />
+                            <input id="label{{id}}" type="checkbox"
+                              {{#checked}}checked{{/checked}}
+                              {{#active}}active{{/active}}
+                              name="label[{{id}}]" value="{{label}}" />
                             <label for="label{{id}}">{{label}}</label>
                         </li>
                     {{/canEdit}}

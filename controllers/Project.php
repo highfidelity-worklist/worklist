@@ -437,7 +437,7 @@ class ProjectController extends Controller {
             }
             echo json_encode(array(
                 'success' => true,
-                'data' => array('labels' => $data)
+                'data' => $labels
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();

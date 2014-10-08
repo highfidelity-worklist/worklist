@@ -17,11 +17,48 @@ var AddJob = {
         if (!AddJob.editing) {
             $('#addJobButton').hide();
         }
+        AddJob.initLabels();
+        AddJob.refreshLabels();
+    },
+
+    initLabels: function() {
+        $("select[name='itemProject']").on('change', AddJob.refreshLabels);
+        AddJob.refreshLabels();
+    },
+
+    refreshLabels: function() {
+        var projectId = $("select[name='itemProject']").val();
+        $.ajax({
+            url: './project/labels/' + $("select[name='itemProject']").val(),
+            dataType: "json",
+            success: function(json) {
+                if (!json.success) {
+                    return;
+                }
+                $('ul#labels li').remove();
+                var labels = json.data;
+                for(var i = 0; i < labels.length; i++) {
+                    var label = labels[i];
+                    var item = $('<li>');
+                    $('<input>').attr({
+                        id: 'label' + label.id,
+                        name: 'label' + label.id,
+                        type: 'checkbox',
+                        value: label.label
+                    }).appendTo(item);
+                    $('<label>')
+                        .attr('for', 'label' + label.id)
+                        .text(label.label)
+                        .appendTo(item);
+                    $('ul#labels').append(item);
+                }
+            }
+        });
     },
 
     showProjectDescription: function() {
         $.ajax({
-            url: 'project/info/' + $("select[name='itemProject']").val(),
+            url: './project/info/' + $("select[name='itemProject']").val(),
             dataType: "json",
             success: function(json) {
                 if (!json.success) {
