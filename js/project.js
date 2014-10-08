@@ -488,7 +488,7 @@ var Project = {
             success: function(data) {
                 $('#projectLabels tbody').html('');
                 if (data.success) {
-                    labels = data.data.labels;
+                    labels = data.data;
                     var html = '';
                     if (labels.length > 0) {
                         for(var i=0; i < labels.length; i++) {
@@ -536,7 +536,10 @@ var Project = {
                     var label = $('input[name="newlabel"]', modal).val();
                     $.ajax({
                         type: 'post',
-                        url: './project/addLabel/' + projectName + '/' + label,
+                        url: './project/addLabel/' + projectName,
+                        data: {
+                            label: label
+                        },
                         dataType: 'json',
                         success: function(data) {
                             if (data.success) {
@@ -560,7 +563,10 @@ var Project = {
         });
         $.ajax({
             type: 'post',
-            url: './project/removeLabel/' + projectName + '/' + labels.join('/'),
+            url: './project/removeLabel/' + projectName,
+            data: {
+                labels: labels.join(',')
+            },
             dataType: 'json',
             success: function(data) {
                 if (data.success) {

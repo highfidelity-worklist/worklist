@@ -405,10 +405,18 @@ class ProjectController extends Controller {
         }
     }
 
-    public function addLabel($id, $label) {
+    public function addLabel($id) {
         $this->view = null;
         try {
             $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $label = $_POST['label'];
             if (!$project->addLabel($label)) {
                 throw new Exception("There was a problem while adding label to the project");
             }
@@ -459,7 +467,7 @@ class ProjectController extends Controller {
             if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
                 throw new Exception('Not enough rights');
             }
-            $labels = array_slice(func_get_args(), 1);
+            $labels = preg_split('/,/', $_POST['labels']);
             $deleted_labels = array();
             foreach($labels as $label) {
                 if ($project->deleteLabel($label)) {
