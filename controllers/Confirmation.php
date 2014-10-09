@@ -68,8 +68,8 @@ class ConfirmationController extends Controller {
             $jumbotron = "<h2>Thank you for confirming your changed email address.</h2>";
         }
 
-        $jobs = new JobsController();
+        $jobs = new JobController();
         $jobs->view->jumbotron = $jumbotron;
-        $jobs->run();
+        $jobs->getListView();
     }
 }

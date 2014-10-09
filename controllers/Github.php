@@ -105,7 +105,7 @@ class GithubController extends Controller {
                                 User::login($user, $redir);
                             } else {
                                 // users that didn't confirmed their email addresses
-                                $jobs = new JobsController();
+                                $jobs = new JobController();
                                 $jobs->view->jumbotron =
                                     "<h2>E-mail confirmation required!</h2>
                                     <p>
@@ -113,7 +113,7 @@ class GithubController extends Controller {
                                       from Worklist. Then try to login again.
                                     </p>
                                     ";
-                                $jobs->run();
+                                $jobs->getListView();
                                 return;
                             }
                             return;

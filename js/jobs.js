@@ -4,19 +4,22 @@ var jobs = {
     limit: 30,
     query: null,
     following: 0,
+    labels: [],
+
     init: function() {
         if (search_query != '') {
             $('#search-query input[type="text"]').val(search_query);
         }
         jobs.query =  $('#search-query input[type="text"]').val();
         jobs.following = $('#jobs-im-following').is(":checked") ? 1 : 0;
-        jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
+        jobs.labels = search_labels.split(',');
+        jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
         jobs.renderDataOnScroll();
         jobs.filterChangeEventTrigger();
         jobs.jobsEvent();
     },
 
-    fetchJobs: function(offset, limit, project_id, status, query, following) {
+    fetchJobs: function(offset, limit, project_id, status, query, following, labels) {
         $.ajax({
             url: './job/search',
             cache: false,
@@ -27,7 +30,8 @@ var jobs = {
                 status: status,
                 query: query,
                 following: following,
-                participated: $('#only-jobs-i-participated input').is(':checked') ? 1 : 0
+                participated: $('#only-jobs-i-participated input').is(':checked') ? 1 : 0,
+                labels: labels.join(',')
             },
             dataType: 'json',
             success: function(data) {
@@ -115,7 +119,7 @@ var jobs = {
             var windowHeight = ($(document).height() - $(window).height());
             var totalJobsRender = $('ul.project-jobs').length;
             if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
-                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query);
+                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.labels);
             }
         });
     },
@@ -132,14 +136,14 @@ var jobs = {
                 search_query = '';
                 jobs.offset = 0;
                 jobs.query = $(this).val();
-                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
+                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
             }
         });
         $("#query-search-button").click(function() {
                 search_query = '';
                 jobs.offset = 0;
                 jobs.query = $('#search-query input[type="text"]').val();
-                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
+                jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
         });
         $('#jobs-im-following').click(function() {
             var project_name = $("select[name=project] option:selected").val() != 0 ? $("select[name=project] option:selected").text() : "all";
@@ -151,7 +155,7 @@ var jobs = {
         });
         $('#only-jobs-i-participated').click(function() {
             jobs.offset = 0;
-            jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following);
+            jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
         });
     },
 
