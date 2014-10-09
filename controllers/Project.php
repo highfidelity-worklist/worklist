@@ -1,30 +1,16 @@
 <?php
 
 class ProjectController extends Controller {
-    public function run($action, $param = '') {
-        $method = '';
-        switch($action) {
-            case 'view':
-            case 'info':
-            case 'add':
-            case 'addDesigner':
-            case 'designers':
-            case 'removeDesigner':
-            case 'addLabel':
-            case 'labels':
-            case 'removeLabel':
-            case 'addCodeReviewer':
-            case 'codeReviewers':
-            case 'removeCodeReviewer':
-                $method = $action;
-                break;
-            default:
-                $method = 'view';
-                $param = $action;
-        }
-        $params = preg_split('/\//', $param);
-        call_user_func_array(array($this, $method), $params);
+    /**
+     * Non existing method call will fall to run this method, so here
+     * we guess that the requestor is trying to reach a specific project.
+     * Let's take it's arguments and route to the right process path.
+     */
+    public function __call($id, $arguments) {
+        $arguments = array_merge(array($id), $arguments);
+        call_user_func_array(array($this, 'view'), $arguments);
     }
+
 
     public function view($id) {
         try {

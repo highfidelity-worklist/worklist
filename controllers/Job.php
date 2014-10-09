@@ -11,6 +11,16 @@ class JobController extends Controller {
     public $is_runner = 0;
     public $is_internal = 0;
 
+    /**
+     * Non existing method call will fall to run this method, so here
+     * we guess that the requestor is trying to reach a specific job.
+     * Let's take it's arguments and route to the right process path.
+     */
+    public function __call($id, $arguments) {
+        $arguments = array_merge(array($id), $arguments);
+        call_user_func_array(array($this, 'view'), $arguments);
+    }
+
     public function view($job_id) {
         $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
         $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
