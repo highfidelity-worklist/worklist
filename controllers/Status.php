@@ -6,7 +6,7 @@ class StatusController extends Controller {
     protected $token = GITHUB_API_TOKEN;
     protected $client = null;
 
-    public function run() {
+    public function getView() {
         $gh_events = array();
         try {
             $this->client = new Github\Client(
@@ -44,20 +44,53 @@ class StatusController extends Controller {
     }
 
     /**
-     * Status api dispatcher
+     * Worklist entries longpoll, retrieves new entries by simulating server pushes
+     * to the status page. Refer to client side code at js/status.js to clarify.
      */
-    public function api() {
+    public function longpoll() {
         $this->view = new JsonView();
         $ret = array();
         try {
-            if (!isset($_REQUEST['action'])) {
-                throw new Exception("Invalid action", 1);                
-            }
-            $action = $_REQUEST['action'];
-            switch($action) {
-                case 'worklist_longpoll':
-                    $ret = $this->worklist_longpoll();
+            $since = $_POST['since'];
+            $entry = new EntryModel();
+            $ret = array();
+
+            // this is a 30 seconds timeout long poll, so let's loop up to 25 times
+            // with 1 sec delays at the end of each iteration
+            $fromTime = (int) $since;
+            for ($i = 0; $i < 25; $i++) {
+                $toTime = strtotime(Model::now());
+                $seconds_ago = abs($toTime - $fromTime);
+
+                // we are searching for new worklist entries
+                $entries = $entry->latest($seconds_ago, 90);
+                if ($entries) {
+                    $now = 0;
+                    foreach($entries as $entry) {
+                        if (!$now) {
+                            $now = strtotime(Model::now());
+                        }
+                        $date = strtotime($entry->date);
+                        $relativeDate = relativeTime($date - $now);
+
+                        $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
+                        $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
+                        $content = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
+                        $content = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $content);
+                        // proccesed entries are returned as markdown-processed html
+                        $content = Markdown::defaultTransform($content);
+
+                        $ret[] = array(
+                            'id' => $entry->id,
+                            'date' => $date,
+                            'relativeDate' => $relativeDate,
+                            'content' => $content
+                        );
+                    }
+                    // if we found new entries, no need to keep looping so we can return data inmediatly
                     break;
+                }
+                sleep(1);
             }
             $ret = array(
                 'success' => true,
@@ -70,55 +103,6 @@ class StatusController extends Controller {
             );
         }
         $this->write('output', $ret);
-    }
-
-    /**
-     * Worklist entries longpoll, retrieves new entries by simulating server pushes
-     * to the status page. Refer to client side code at js/status.js to clarify.
-     */
-    public function worklist_longpoll() {
-        $since = $_POST['since'];
-        $entry = new EntryModel();
-        $ret = array();
-
-        // this is a 30 seconds timeout long poll, so let's loop up to 25 times
-        // with 1 sec delays at the end of each iteration 
-        $fromTime = (int) $since;
-        for ($i = 0; $i < 25; $i++) {
-            $toTime = strtotime(Model::now());
-            $seconds_ago = abs($toTime - $fromTime);
-
-            // we are searching for new worklist entries
-            $entries = $entry->latest($seconds_ago, 90);
-            if ($entries) {
-                $now = 0;
-                foreach($entries as $entry) {
-                    if (!$now) {
-                        $now = strtotime(Model::now());
-                    }
-                    $date = strtotime($entry->date);
-                    $relativeDate = relativeTime($date - $now);
-
-                    $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
-                    $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
-                    $content = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
-                    $content = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $content);
-                    // proccesed entries are returned as markdown-processed html
-                    $content = Markdown::defaultTransform($content);
-
-                    $ret[] = array(
-                        'id' => $entry->id,
-                        'date' => $date,
-                        'relativeDate' => $relativeDate,
-                        'content' => $content
-                    );
-                }
-                // if we found new entries, no need to keep looping so we can return data inmediatly
-                break;
-            }
-            sleep(1);
-        }
-        return $ret;
     }
 
     /**
@@ -145,7 +129,7 @@ class StatusController extends Controller {
             $events = Github\HttpClient\Message\ResponseMediator::getContent($response);
             return $events;
         } catch(Exception $e) {
-            return false;
+            return array();
         }
     }
 }

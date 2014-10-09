@@ -28,7 +28,7 @@ class Dispatcher {
         $this->dispatcher->get('/projects', array('Projects'));
         $this->dispatcher->any('/reports', array('Reports'));
         $this->dispatcher->any('/resend', array('Resend'));
-        $this->dispatcher->any('/status', array('Status'));
+        $this->dispatcher->get('/status', array('Status', 'getView'));
         $this->dispatcher->any('/settings', array('Settings'));
         $this->dispatcher->get('/team', array('Team'));
         $this->dispatcher->get('/timeline', array('Timeline'));
@@ -88,16 +88,22 @@ class Dispatcher {
     public function dispatch() {
         try {
             $route = $this->dispatcher->dispatch('/' . self::$url);
+            $vars = array_key_exists(3 , $route) && array_key_exists('vars', $route[3])
+                ? $route[3]['vars']
+                : array();
+            $default = array_key_exists(3 , $route) && array_key_exists('default', $route[3])
+                ? $route[3]['default']
+                : array();
             $controller = ucfirst
                 (
                     !is_null($route[2]) && array_key_exists(0, $route[2])
                         ? $route[2][0]
                         : (
-                            !is_null($route[3]) && array_key_exists('controller', $route[3]['vars'])
-                                ? $route[3]['vars']['controller']
+                            array_key_exists('controller', $vars)
+                                ? $vars['controller']
                                 : (
-                                    !is_null($route[3]['default']) && array_key_exists('controller', $route[3]['default'])
-                                        ? $route[3]['default']['controller']
+                                    array_key_exists('controller', $default)
+                                        ? $default['controller']
                                         : DEFAULT_CONTROLLER_NAME
                                 )
                         )
@@ -106,34 +112,28 @@ class Dispatcher {
                 $controller .= 'Controller';
             }
             $Controller = new $controller();
-            $method =
-                (
-                    !is_null($route[2]) && array_key_exists(1, $route[2])
-                        ? $route[2][1]
+            $method = (!is_null($route[2]) && array_key_exists(1, $route[2])
+                ? $route[2][1]
+                : (array_key_exists('method', $vars)
+                    ? $vars['method']
+                    : (array_key_exists('method', $default)
+                            ? $default['method']
+                            : DEFAULT_CONTROLLER_METHOD
+                    )
+                )
+            );
+            $args = (!is_null($route[2]) && array_key_exists(2, $route[2])
+                ? $route[2][1]
+                : (
+                    !is_null($route[3]) && array_key_exists('args', $vars)
+                        ? preg_split('/\//', $vars['args'])
                         : (
-                            !is_null($route[3]) && array_key_exists('method', $route[3]['vars'])
-                                ? $route[3]['vars']['method']
-                                : (
-                                    !is_null($route[3]['default']) && array_key_exists('method', $route[3]['default'])
-                                        ? $route[3]['default']['method']
-                                        : DEFAULT_CONTROLLER_METHOD
-                                )
+                            !is_null($default) && array_key_exists('args', $default)
+                                ? $default['args']
+                                : array()
                         )
-                );
-            $args =
-                (
-                    !is_null($route[2]) && array_key_exists(2, $route[2])
-                        ? $route[2][1]
-                        : (
-                            !is_null($route[3]) && array_key_exists('args', $route[3]['vars'])
-                                ? preg_split('/\//', $route[3]['vars']['args'])
-                                : (
-                                    !is_null($route[3]['default']) && array_key_exists('args', $route[3]['default'])
-                                        ? $route[3]['default']['args']
-                                        : array()
-                                )
-                        )
-                );
+                )
+            );
             call_user_func_array(array($Controller, $method), $args);
         } catch(Exception $e) {
             // TO-DO:
