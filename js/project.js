@@ -490,9 +490,14 @@ var Project = {
                 if (data.success) {
                     labels = data.data;
                     var html = '';
+                    var inactiveLabels = [];
                     if (labels.length > 0) {
                         for(var i=0; i < labels.length; i++) {
                             var label = labels[i];
+                            if (!parseInt(label.active)) {
+                                inactiveLabels.push(label);
+                                continue;
+                            }
                             html =
                                 '<tr>' +
                                   '<td>' +
@@ -504,6 +509,12 @@ var Project = {
                                   '</td>' +
                                 '</tr>';
                             $('#projectLabels tbody').append(html);
+                        }
+                        $('#inactiveLabels li').remove();
+                        for(var i = 0; i < inactiveLabels.length; i++) {
+                            var inactiveLabel = inactiveLabels[i];
+                            var item = $('<li>').text(inactiveLabel.label);
+                            $('#inactiveLabels').append(item);
                         }
                     }
                 }

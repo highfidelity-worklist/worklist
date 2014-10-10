@@ -973,15 +973,15 @@ class Project {
     /**
      * Get Labels for Project
      */
-    public function getLabels() {
+    public function getLabels($activeOnly = false) {
         $project_id = $this->getProjectId();
         $query = "
-            SELECT `l`.`label`, `l`.`id`
+            SELECT `l`.`label`, `l`.`id`, `pl`.`active`
             FROM `" . PROJECT_LABELS . "` `pl`
               JOIN `" . LABELS . "` `l`
                 ON `l`.`id` = `pl`.`label_id`
-            WHERE `pl`.`project_id` = " . $project_id . "
-              AND `pl`.`active`;";
+            WHERE `pl`.`project_id` = " . $project_id .
+                ($activeOnly ? ' AND `pl`.`active`;' : '');
         $result = mysql_query($query);
         if (!$result) {
             return false;

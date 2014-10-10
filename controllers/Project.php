@@ -419,12 +419,12 @@ class ProjectController extends Controller {
         }
     }
 
-    public function labels($id) {
+    public function labels($id, $activeOnly = false) {
         $this->view = null;
         try {
             $data = array();
             $project = Project::find($id);
-            if ($labels = $project->getLabels()) {
+            if ($labels = $project->getLabels((bool) $activeOnly)) {
                 foreach ($labels as $label) {
                     $data[] = array('label' => $label);
                 }

@@ -498,3 +498,24 @@ table + div.buttonContainer {
 table + div.buttonContainer {
     padding: 5px 15px;
 }
+
+ul#inactiveLabels {
+    list-style-type: none;
+    margin: 5px 0;
+    padding: 0;
+}
+ul#inactiveLabels:before {
+    content: 'Inactive labels: ';
+    color: #666;
+}
+ul#inactiveLabels li {
+    margin: 0 .2em;
+    background-color: #E9EEEF;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 0.8em;
+    padding: 0 5px;
+    white-space: nowrap;
+    color: #333;
+    opacity: .6;
+}
