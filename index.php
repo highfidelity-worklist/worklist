@@ -53,8 +53,8 @@ class Dispatcher {
         self::$dispatcher->get('/projects', array('Project', 'listView'));
 
         // uploads is another special case
-        self::$dispatcher->get('/uploads/:filename', array('Upload'), array(
-            'require' => array('filename' => '.+')
+        self::$dispatcher->get('/uploads/:args', array('Upload'), array(
+            'require' => array('args' => '.+')
         ));
 
         // enable /job_number requests, alias of /job/view/job_number
