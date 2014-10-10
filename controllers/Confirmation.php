@@ -70,6 +70,6 @@ class ConfirmationController extends Controller {
 
         $jobs = new JobController();
         $jobs->view->jumbotron = $jumbotron;
-        $jobs->getListView();
+        $jobs->listView();
     }
 }

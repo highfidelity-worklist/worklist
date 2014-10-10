@@ -1805,7 +1805,7 @@ class JobController extends Controller {
         return $statusList;
     }
 
-    public function getListView($projectName = null, $filterName = null) {
+    public function listView($projectName = null, $filterName = null) {
         $this->view = new JobsView();
         // $nick is setup above.. and then overwritten here -- lithium
         $nick = '';

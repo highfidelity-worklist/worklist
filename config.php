@@ -1324,15 +1324,10 @@ defineOnce('CODE_REVIEW_ADMINS', 'joanneci,kordero,birarda');
 require_once('vendor/autoload.php');
 require_once('functions.php');
 
-//Sanitize::filterInput();
-
 function shutdown() {
-    foreach (get_declared_classes() as $class) {
-        if ($class == 'Dispatcher') {
-            $controller = new $class();
-            $controller->run();
-            break;
-        }
+    if (!in_array('Dispatcher', get_declared_classes())) {
+        return;
     }
+    Dispatcher::dispatch();
 }
 register_shutdown_function('shutdown');

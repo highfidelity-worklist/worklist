@@ -5,7 +5,7 @@ class HomeController extends Controller {
         $this->view = null;
         if (isset($_SESSION['userid']) && $_SESSION['userid']) {
             $controller = 'Job';
-            $method = 'getListView';
+            $method = 'listView';
         } else {
             $controller = 'Welcome';
             $method = DEFAULT_CONTROLLER_METHOD;

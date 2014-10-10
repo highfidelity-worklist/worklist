@@ -7,60 +7,56 @@ require_once("config.php");
 
 class Dispatcher {
     static public $url = '';
+    static public $dispatcher = null;
 
-    protected $dispatcher = null;
+    static public function loadRoutes() {
+        // root url path routes to Home controller, that will take
+        // the user to /jobs or /welcome if not authenticated
+        self::$dispatcher->any('/', array('Home'));
 
-    public function run() {
-        self::$url = isset($_GET['url']) ? $_GET['url'] : '';
-        $this->dispatcher = new Pux\Mux;
-        $this->loadRoutes();
-        $this->dispatch();
-    }
+        // static routes
+        self::$dispatcher->any('/confirmation', array('Confirmation'));
+        self::$dispatcher->get('/feedlist', array('FeedList'));
+        self::$dispatcher->get('/feeds', array('Feeds'));
+        self::$dispatcher->get('/help', array('Help'));
+        self::$dispatcher->any('/payments', array('Payments'));
+        self::$dispatcher->get('/privacy', array('Privacy'));
+        self::$dispatcher->any('/reports', array('Reports'));
+        self::$dispatcher->any('/resend', array('Resend'));
+        self::$dispatcher->get('/status', array('Status', 'getView'));
+        self::$dispatcher->any('/settings', array('Settings'));
+        self::$dispatcher->get('/team', array('Team'));
+        self::$dispatcher->get('/timeline', array('Timeline'));
+        self::$dispatcher->get('/welcome', array('Welcome'));
+        self::$dispatcher->any('/login', array('Github', 'federated'));
+        self::$dispatcher->any('/signup', array('Github', 'federated'));
 
-    public function loadRoutes() {
-        $this->dispatcher->any('/', array('Job', 'getListview'));
-        $this->dispatcher->any('/confirmation', array('Confirmation'));
-        $this->dispatcher->get('/feedlist', array('FeedList'));
-        $this->dispatcher->get('/feeds', array('Feeds'));
-        $this->dispatcher->get('/help', array('Help'));
-        $this->dispatcher->any('/payments', array('Payments'));
-        $this->dispatcher->get('/privacy', array('Privacy'));
-        $this->dispatcher->get('/projects', array('Projects'));
-        $this->dispatcher->any('/reports', array('Reports'));
-        $this->dispatcher->any('/resend', array('Resend'));
-        $this->dispatcher->get('/status', array('Status', 'getView'));
-        $this->dispatcher->any('/settings', array('Settings'));
-        $this->dispatcher->get('/team', array('Team'));
-        $this->dispatcher->get('/timeline', array('Timeline'));
-        $this->dispatcher->get('/welcome', array('Welcome'));
-        $this->dispatcher->any('/login', array('Github', 'federated'));
-        $this->dispatcher->any('/signup', array('Github', 'federated'));
-
-        $this->dispatcher->any('/jobs(/:args)', array('Job', 'getListView'), array(
-            'require' => array(
-                'args' => '.*'
-            ),
-            'default' => array(
-                'args' => array()
-            )
-        ));
-        $this->dispatcher->get('/uploads/:filename', array('Upload'), array(
-            'require' => array(
-                'filename' => '.+'
-            )
+        // the /jobs url is actually an alias of /job/listView
+        self::$dispatcher->any('/jobs(/:args)', array('Job', 'listView'), array(
+            'require' => array('args' => '.*'),
+            'default' => array('args' => array())
         ));
 
-        $this->dispatcher->any('/:args', null, array(
-            'require' => array(
-                'args' => '\d+'
-            ),
+        // as well as /projects is an alias of /project/listView
+        self::$dispatcher->get('/projects', array('Project', 'listView'));
+
+        // uploads is another special case
+        self::$dispatcher->get('/uploads/:filename', array('Upload'), array(
+            'require' => array('filename' => '.+')
+        ));
+
+        // enable /job_number requests, alias of /job/view/job_number
+        self::$dispatcher->any('/:args', null, array(
+            'require' => array('args' => '\d+'),
             'default' => array(
                 'controller' => 'job',
                 'method' => 'view',
                 'args' => array()
             )
         ));
-        $this->dispatcher->any('/:args', null, array(
+
+        // enable /project_name requests, alias of /project/view/project_name
+        self::$dispatcher->any('/:args', null, array(
             'require' => array(
                 'args' => '\w+'
             ),
@@ -70,7 +66,9 @@ class Dispatcher {
                 'args' => array()
             )
         ));
-        $this->dispatcher->any('/:controller(/:method(/:args))', null, array(
+
+        // generic route
+        self::$dispatcher->any('/:controller(/:method(/:args))', null, array(
             'require' => array(
                 'controller' => '\w+',
                 'method' => '\w+',
@@ -78,16 +76,18 @@ class Dispatcher {
             ),
             'default' => array(
                 'controller' => 'job',
-                'method' => 'getListView',
+                'method' => 'listView',
                 'args' => array()
             )
         ));
-
     }
 
-    public function dispatch() {
+    static public function dispatch() {
         try {
-            $route = $this->dispatcher->dispatch('/' . self::$url);
+            self::$url = isset($_GET['url']) ? $_GET['url'] : '';
+            self::$dispatcher = new Pux\Mux;
+            self::loadRoutes();
+            $route = self::$dispatcher->dispatch('/' . self::$url);
             $vars = array_key_exists(3 , $route) && array_key_exists('vars', $route[3])
                 ? $route[3]['vars']
                 : array();

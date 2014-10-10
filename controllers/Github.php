@@ -113,7 +113,7 @@ class GithubController extends Controller {
                                       from Worklist. Then try to login again.
                                     </p>
                                     ";
-                                $jobs->getListView();
+                                $jobs->listView();
                                 return;
                             }
                             return;

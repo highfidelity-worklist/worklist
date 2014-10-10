@@ -132,4 +132,3 @@ Status = {
 $(function() {
     Status.init();
 });
-

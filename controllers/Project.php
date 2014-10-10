@@ -549,4 +549,9 @@ class ProjectController extends Controller {
             ));
         }
     }
+
+    public function listView() {
+        $this->view = new ProjectsView();
+        parent::run();
+    }
  }
