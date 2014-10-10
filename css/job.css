@@ -597,16 +597,21 @@ div.job-bid {
     cursor: default;
 }
 
-.job-skills-editable li input[type="checkbox"] + label {
+.job-labels-editable li input[type="checkbox"] + label {
     cursor: pointer !important;
+    opacity: .6;
 }
 
-.job-skills-editable li input[type="checkbox"]:checked + label {
+.job-labels-editable li input[type="checkbox"]:checked + label {
     background-color: #007F7c !important;
     color: #fff !important;
 }
 
-li.job-skills-noneditable input[type="checkbox"] + label {
+.job-labels-editable li input[type="checkbox"][active] + label {
+    opacity: 1;
+}
+
+li.job-labels-noneditable input[type="checkbox"] + label {
     background-color: #007F7c !important;
     color: #fff !important;
 }
@@ -620,7 +625,7 @@ span#job-status-edit {
     display: none;
 }
 
-#job-skills-edit {
+#job-labels-edit {
     display: none;
 }
 

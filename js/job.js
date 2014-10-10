@@ -18,7 +18,6 @@ var Job = {
         if (status_error) {
             openNotifyOverlay(status_error, false);
         }
-        applyPopupBehavior();
 
         Job.showUniquePageViews();
 
@@ -108,8 +107,8 @@ var Job = {
             Job.update('internal');
         });
 
-        $('ul.job-skills-editable li input').click(function() {
-            Job.update('skills');
+        $('ul.job-labels-editable li input').click(function() {
+            Job.update('labels');
         });
 
         $('select[name="assigned"]').change(Job.checkAssignedUserAndUpdate);
@@ -1083,13 +1082,13 @@ var Job = {
 
     update: function(mode) {
         var data = {};
-        var skills = '';
+        var labels = '';
         $('#labels li input[name^="label"]').each(function() {
             if ($(this).is(':checked')) {
-                skills += (skills.length ? ', ' : '') + $(this).val();
+                labels += (labels.length ? ', ' : '') + $(this).val();
             }
         });
-        data.skills = skills;
+        data.labels = labels;
         if (mode == 'assignee') {
             data.assigned = $('select[name="assigned"]').val();
         }

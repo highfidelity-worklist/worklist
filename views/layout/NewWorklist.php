@@ -35,7 +35,6 @@ class NewWorklistLayout extends Layout {
         'js/common.js',
         'js/utils.js',
         'js/userstats.js',
-        'js/worklist.js',
         'js/budget.js',
         'js/newworklist.js'
     );

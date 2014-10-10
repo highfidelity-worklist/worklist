@@ -39,6 +39,7 @@ class Agency_Worklist_Filter {
     protected $filterMobile = false;
     protected $following = false;
     protected $participated = false;
+    protected $labels = '';
 
     public function getPaidstatus()
     {
@@ -663,4 +664,20 @@ class Agency_Worklist_Filter {
         return $this;
     }
 
+    /**
+     * @return the $labels
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @param $labels the $labels to set
+     */
+    public function setLabels($labels)
+    {
+        $this->labels = is_array($labels) ? implode(',', $labels) : $labels;
+        return $this;
+    }
 }

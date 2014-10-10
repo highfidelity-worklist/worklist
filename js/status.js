@@ -90,7 +90,7 @@ Status = {
             Status.recentWorklistEntryDate = Status.findRecentGithubEntryDate();
         }
         $.ajax({ 
-            url: "./status", 
+            url: "./status/longpoll",
             dataType: "json", 
             type: "post", 
             complete: function() {
@@ -100,7 +100,6 @@ Status = {
             },
             timeout: 30000,
             data: {
-                action: 'worklist_longpoll',
                 since: Status.recentWorklistEntryDate
             },
             success: function(response) {
@@ -133,4 +132,3 @@ Status = {
 $(function() {
     Status.init();
 });
-

@@ -77,15 +77,13 @@ var NewWorklist = {
 
     initJobSearch: function() {
         $('#search-query input[type="text"]').keypress(function(event) {
-            if ($.trim($(this).val()).length > 0 && event.keyCode == '13') {
-                if(typeof jobs == 'undefined') {
-                    window.location = "./jobs?query=" + $(this).val();
-                }
+            if ($.trim($(this).val()).length > 0 && event.keyCode == '13' && typeof jobs == 'undefined') {
+                window.location = "./jobs?query=" + $(this).val();
             }
         });
         $("#query-search-button").click(function() {
             if($.trim($('#search-query input[type="text"]').val()).length > 0 && typeof jobs == 'undefined') {
-                    window.location = "./jobs?query=" + $('#search-query input[type="text"]').val();
+                window.location = "./jobs?query=" + $('#search-query input[type="text"]').val();
             }
         });
     },

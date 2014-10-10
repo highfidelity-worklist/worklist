@@ -58,17 +58,21 @@ class Project {
      */
     public static function find($expr)
     {
-        $project = new Project();
-        if (is_object($expr) && (get_class($expr) == 'Project' || is_subclass_of($expr, 'Project'))) {
-            $project = $expr;
-        } else {
-            if (is_numeric($expr)) { // id
-                $project->loadById((int) $expr);
-            } else { // name
-                $project->loadByName($expr);
+        try {
+            $project = new Project();
+            if (is_object($expr) && (get_class($expr) == 'Project' || is_subclass_of($expr, 'Project'))) {
+                $project = $expr;
+            } else {
+                if (is_numeric($expr)) { // id
+                    $project->loadById((int) $expr);
+                } else { // name
+                    $project->loadByName($expr);
+                }
             }
+            return $project;
+        } catch(Exception $e) {
+            return false;
         }
-        return $project;
     }
 
     static public function getById($project_id) {
@@ -926,6 +930,70 @@ class Project {
     }
 
     /**
+     * Add Label to Project
+     */
+    public function addLabel($label) {
+        $project_id = $this->getProjectId();
+        $labelObj = new LabelModel();
+        $labelObj->findByLabel($label);
+        $label_id = $labelObj->id;
+        if (!$label_id) {
+            $labelObj->label = $label;
+            $label_id = $labelObj->insert();
+        }
+        $query = "
+            INSERT
+            INTO `" . PROJECT_LABELS . "` (`project_id`, `label_id`, `active`)
+            SELECT " . $project_id . ", `l`.`id`, 1
+            FROM `" . LABELS . "` `l`
+            WHERE `l`.`id` = " . $label_id . "
+            ON DUPLICATE KEY update `active` = 1;";
+        return mysql_query($query) ? true : false;
+    }
+
+    /**
+     * Remove (disable) Label from Project
+     */
+    public function deleteLabel($label) {
+        $project_id = $this->getProjectId();
+        $query = "
+            UPDATE `" . PROJECT_LABELS . "`
+            SET `active` = 0
+            WHERE `project_id` = " . $project_id . "
+              AND `label_id` = (
+                SELECT `l`.`id`
+                FROM `" . LABELS . "` `l`
+                WHERE `l`.`label` = '" . mysql_real_escape_string($label) . "'
+              )
+              AND `active`;";
+        $result = mysql_query($query);
+        return $result ? true : false;
+    }
+
+    /**
+     * Get Labels for Project
+     */
+    public function getLabels($activeOnly = false) {
+        $project_id = $this->getProjectId();
+        $query = "
+            SELECT `l`.`label`, `l`.`id`, `pl`.`active`
+            FROM `" . PROJECT_LABELS . "` `pl`
+              JOIN `" . LABELS . "` `l`
+                ON `l`.`id` = `pl`.`label_id`
+            WHERE `pl`.`project_id` = " . $project_id .
+                ($activeOnly ? ' AND `pl`.`active`;' : '');
+        $result = mysql_query($query);
+        if (!$result) {
+            return false;
+        }
+        $ret = array();
+        while($label = mysql_fetch_assoc($result)) {
+            $ret[] = $label;
+        }
+        return $ret;
+    }
+
+    /**
      * Get the Reviewers for current project
      * @return unknown|boolean
      */
@@ -1492,199 +1560,220 @@ class Project {
         $where = '';
         if ($statusFilter) {
             $where = "WHERE (";
-                foreach ($statusFilter as $val) {
-                    $val = mysql_real_escape_string($val);
-                    if (empty($val)) {
-                        $val = 'ALL';
-                    }
-                    if ($val == 'ALL' && !$isRunner) {
-                        $where .= "`status` != 'Draft'";
-                        if (! empty($filterByUser) && $filterByUser != 'ALL') {
-                            $where .= " AND IF(status = 'Bidding', IF(`fees`.user_id = $filterByUser, 0, 1), 1) OR ";
-                        } else {
-                            $where .= " OR ";
-                        }
-                    }
-                    if ($val == 'ALL' && $isRunner == 1 ) {
-                        $where .= "status != 'Draft' OR (status = 'Draft' AND creator_id = $userId) OR ";
-                    }
-                    if ($val == 'Draft') {
-                        $where .= " (status = 'Draft' AND creator_id = $userId) OR ";
+            foreach ($statusFilter as $val) {
+                $val = mysql_real_escape_string($val);
+                if (empty($val)) {
+                    $val = 'ALL';
+                }
+                if ($val == 'ALL' && !$isRunner) {
+                    $where .= "`status` != 'Draft'";
+                    if (! empty($filterByUser) && $filterByUser != 'ALL') {
+                        $where .= " AND IF(status = 'Bidding', IF(`fees`.user_id = $filterByUser, 0, 1), 1) OR ";
                     } else {
-                        if ($val == 'Bidding') {
-                            if ($isRunner || $mobileFilter) {
-                                $where .= "(status = '$val') OR ";
-                            } else if ($filterByUser != 'ALL' && !empty($filterByUser)) {
-                                $where .= "(status = 'Bidding' AND ((`" . WORKLIST . "`.`id` IN (
-                                            SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$userId' AND status = 'Bidding')) OR runner_id = $userId)) OR ";
-                            } else {
-                                $where .= "status = '$val' OR ";
-                            }
-                        }
-                        else if ($val == 'Code Review') {
-                            $where .= "status = 'Review' OR ";
-                        }
-                        else if ($val == 'Needs-Review') {
-                            $where .= "(status = 'Review' AND code_review_started = 0) OR ";
-                        }
-                        else if ($val != 'ALL') {
+                        $where .= " OR ";
+                    }
+                }
+                if ($val == 'ALL' && $isRunner == 1 ) {
+                    $where .= "status != 'Draft' OR (status = 'Draft' AND creator_id = $userId) OR ";
+                }
+                if ($val == 'Draft') {
+                    $where .= " (status = 'Draft' AND creator_id = $userId) OR ";
+                } else {
+                    if ($val == 'Bidding') {
+                        if ($isRunner || $mobileFilter) {
+                            $where .= "(status = '$val') OR ";
+                        } else if ($filterByUser != 'ALL' && !empty($filterByUser)) {
+                            $where .= "(status = 'Bidding' AND ((`" . WORKLIST . "`.`id` IN (
+                                        SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$userId' AND status = 'Bidding')) OR runner_id = $userId)) OR ";
+                        } else {
                             $where .= "status = '$val' OR ";
                         }
                     }
+                    else if ($val == 'Code Review') {
+                        $where .= "status = 'Review' OR ";
+                    }
+                    else if ($val == 'Needs-Review') {
+                        $where .= "(status = 'Review' AND code_review_started = 0) OR ";
+                    }
+                    else if ($val != 'ALL') {
+                        $where .= "status = '$val' OR ";
+                    }
                 }
-                $where .= "0)";
             }
-            if (!empty($filterByUser) && $filterByUser != 'ALL') {
-                if (empty($where)) {
-                    $where = "WHERE (";
+            $where .= "0)";
+        }
+        if (!empty($filterByUser) && $filterByUser != 'ALL') {
+            if (empty($where)) {
+                $where = "WHERE (";
+            } else {
+                $where .= " AND (";
+            }
+            $severalStatus = "";
+            foreach ($statusFilter as $val) {
+                if ($val == 'ALL') {
+                    $status_cond = "";
                 } else {
-                    $where .= " AND (";
+                    $status_cond = "
+                        `status` = '$val' AND
+                    ";
                 }
-                $severalStatus = "";
-                foreach ($statusFilter as $val) {
-                    if ($val == 'ALL') {
-                        $status_cond = "";
-                    } else {
-                        $status_cond = "
-                            `status` = '$val' AND
-                        ";
-                    }
-                    if ($val == 'Bidding' && $mobileFilter) {
-                        $where .= $severalStatus . "( $status_cond 1)";
-                    }
-                    else if ($isRunner && $val == 'Bidding') {
-                        $where .= "
-                        $severalStatus (
-                        $status_cond (
-                                    `mechanic_id` = '$filterByUser' OR
-                                    `runner_id` = '$filterByUser' OR
-                                    `creator_id` = '$filterByUser' OR
-                                    `" . WORKLIST . "`.`id` in (
-                                        SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$filterByUser'
-                                    )
-                                )
-                            )
-                        ";
-                    }
-                    else if (!$isRunner && $val == 'Bidding') {
-                        $where .= "
-                        $severalStatus (
-                        $status_cond (
-                            `runner_id` = '$filterByUser' OR
-                            `creator_id` = '$filterByUser' OR `" . WORKLIST . "`.`id` IN (
-                             SELECT `worklist_id` FROM `". BIDS ."` WHERE `bidder_id` = '$filterByUser'
-                             )
-                            )
-                          )
-                        ";
-                    } else if ($val == 'Bidding' && $filterByUser != $userId) {
-                        $where .= "
-                        $severalStatus (
-                            $status_cond (
+                if ($val == 'Bidding' && $mobileFilter) {
+                    $where .= $severalStatus . "( $status_cond 1)";
+                }
+                else if ($isRunner && $val == 'Bidding') {
+                    $where .= "
+                    $severalStatus (
+                    $status_cond (
                                 `mechanic_id` = '$filterByUser' OR
                                 `runner_id` = '$filterByUser' OR
-                                `creator_id` = '$filterByUser'
-                            )
-                        )";
-                    }
-                    else if ($val == 'In Progress' || $val =='Review' || $val =='QA Ready' || $val =='Merged') {
-                        $where .= "
-                        $severalStatus (
-                            $status_cond (
-                                `mechanic_id` = '$filterByUser' OR
                                 `creator_id` = '$filterByUser' OR
-                                `runner_id` = '$filterByUser'
-                            )
-                         )
-                       ";
-                    } else  {
-                        $where .= "
-                        $severalStatus (
-                        $status_cond (
-                            `creator_id` = '$filterByUser' OR
-                            `runner_id` = '$filterByUser' OR
-                            `mechanic_id` = '$filterByUser' OR (
-                                `" . FEES . "`.user_id = '$filterByUser' AND
-                                `status` != 'Bidding'
-                            ) OR `" . WORKLIST . "`.`id` IN (
-                                SELECT `worklist_id` FROM `".BIDS."`
-                                WHERE `bidder_id` = '$filterByUser' AND status != 'Bidding'
-                                    )
+                                `" . WORKLIST . "`.`id` in (
+                                    SELECT `worklist_id` FROM `" . BIDS . "` WHERE `bidder_id` = '$filterByUser'
                                 )
                             )
-                        ";
-                    }
-                    $severalStatus = " OR ";
-                }
-                $statusCommentFilter = '';
-                if (! empty($statusFilter) && $statusFilter[0] != 'ALL') {
-                    $statusCommentFilter = "AND status IN ('" . implode("','", $statusFilter) . "') ";
-                }
-                $rt = mysql_query("
-                    SELECT worklist_id FROM `".COMMENTS."` c
-                    JOIN `".WORKLIST."` w ON c.worklist_id = w.id $statusCommentFilter
-                    WHERE user_id = $filterByUser
-                    GROUP BY w.id
-                ");
-                $orUserHasCommented = '';
-                while ($row = mysql_fetch_assoc($rt)) {
-                    $orUserHasCommented .= $row['worklist_id'] . ',';
-                }
-                $orUserHasCommented = rtrim($orUserHasCommented, ',');
-                if (! empty($orUserHasCommented)) {
-                    $where .= " OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
-                }
-            }
-            $commentsjoin = "";
-            if ($query != null) {
-                $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
-                $array = explode(",", rawurldecode($query));
-                $commentPart = "";
-                foreach ($array as $item) {
-                    $item = mysql_escape_string($item);
-                    if ($commentFilter == 1) {
-                        $commentPart = " OR MATCH (`com`.`comment`) AGAINST ('$item')";
-                    }
-                    if ($filterByUser !== 'ALL' && !empty($filterByUser)) {
-                        $textMatchAndOr = ' OR ';
-                        $partialMatch = '';
-                    } else {
-                        $textMatchAndOr = ' AND ';
-                        $partialMatch = '*';
-                    }
-                    $where .= "
-                        $textMatchAndOr (
-                            MATCH(summary, `" . WORKLIST . "`.`notes`) AGAINST ('$item') OR
-                            MATCH(`".FEES."`.notes) AGAINST ('$item$partialMatch' ) OR
-                            MATCH(`ru`.`nickname`) AGAINST ('$item$partialMatch' ) OR
-                            MATCH (`cu`.`nickname`) AGAINST ('$item$partialMatch' ) OR
-                            MATCH (`mu`.`nickname`) AGAINST ('$item$partialMatch')
-                            $commentPart
                         )
-                        ";
+                    ";
                 }
-
+                else if (!$isRunner && $val == 'Bidding') {
+                    $where .= "
+                    $severalStatus (
+                    $status_cond (
+                        `runner_id` = '$filterByUser' OR
+                        `creator_id` = '$filterByUser' OR `" . WORKLIST . "`.`id` IN (
+                         SELECT `worklist_id` FROM `". BIDS ."` WHERE `bidder_id` = '$filterByUser'
+                         )
+                        )
+                      )
+                    ";
+                } else if ($val == 'Bidding' && $filterByUser != $userId) {
+                    $where .= "
+                    $severalStatus (
+                        $status_cond (
+                            `mechanic_id` = '$filterByUser' OR
+                            `runner_id` = '$filterByUser' OR
+                            `creator_id` = '$filterByUser'
+                        )
+                    )";
+                }
+                else if ($val == 'In Progress' || $val =='Review' || $val =='QA Ready' || $val =='Merged') {
+                    $where .= "
+                    $severalStatus (
+                        $status_cond (
+                            `mechanic_id` = '$filterByUser' OR
+                            `creator_id` = '$filterByUser' OR
+                            `runner_id` = '$filterByUser'
+                        )
+                     )
+                   ";
+                } else  {
+                    $where .= "
+                    $severalStatus (
+                    $status_cond (
+                        `creator_id` = '$filterByUser' OR
+                        `runner_id` = '$filterByUser' OR
+                        `mechanic_id` = '$filterByUser' OR (
+                            `" . FEES . "`.user_id = '$filterByUser' AND
+                            `status` != 'Bidding'
+                        ) OR `" . WORKLIST . "`.`id` IN (
+                            SELECT `worklist_id` FROM `".BIDS."`
+                            WHERE `bidder_id` = '$filterByUser' AND status != 'Bidding'
+                                )
+                            )
+                        )
+                    ";
+                }
+                $severalStatus = " OR ";
+            }
+            $statusCommentFilter = '';
+            if (! empty($statusFilter) && $statusFilter[0] != 'ALL') {
+                $statusCommentFilter = "AND status IN ('" . implode("','", $statusFilter) . "') ";
+            }
+            $rt = mysql_query("
+                SELECT worklist_id FROM `".COMMENTS."` c
+                JOIN `".WORKLIST."` w ON c.worklist_id = w.id $statusCommentFilter
+                WHERE user_id = $filterByUser
+                GROUP BY w.id
+            ");
+            $orUserHasCommented = '';
+            while ($row = mysql_fetch_assoc($rt)) {
+                $orUserHasCommented .= $row['worklist_id'] . ',';
+            }
+            $orUserHasCommented = rtrim($orUserHasCommented, ',');
+            if (! empty($orUserHasCommented)) {
+                $where .= " OR `".WORKLIST."`.`id` IN ($orUserHasCommented) ";
+            }
+        }
+        $commentsjoin = "";
+        if ($query != null) {
+            $query = preg_replace('/,OR,/', ' ', implode(',', array_filter(explode(' ', $query)))) ;
+            $array = explode(",", rawurldecode($query));
+            $commentPart = "";
+            foreach ($array as $item) {
+                $item = mysql_escape_string($item);
                 if ($commentFilter == 1) {
-                    $commentsjoin = "LEFT OUTER JOIN `" . COMMENTS . "` AS `com` ON `" . WORKLIST . "`.`id` =                                      `com`.`worklist_id`";
+                    $commentPart = " OR MATCH (`com`.`comment`) AGAINST ('$item')";
                 }
-            }
-            if (!empty($filterByUser) && $filterByUser != 'ALL') {
-                $where .= ")";
-            }
-            if (!empty($projectFilter) && $projectFilter != 'All') {
-                if (empty($where)) {
-                    $where = "WHERE ";
+                if ($filterByUser !== 'ALL' && !empty($filterByUser)) {
+                    $textMatchAndOr = ' OR ';
+                    $partialMatch = '';
                 } else {
-                    $where .= " AND ";
+                    $textMatchAndOr = ' AND ';
+                    $partialMatch = '*';
                 }
-                $where .= " `".WORKLIST."`.`project_id` = '{$projectFilter}' ";
+                $where .= "
+                    $textMatchAndOr (
+                        MATCH(summary, `" . WORKLIST . "`.`notes`) AGAINST ('$item') OR
+                        MATCH(`".FEES."`.notes) AGAINST ('$item$partialMatch' ) OR
+                        MATCH(`ru`.`nickname`) AGAINST ('$item$partialMatch' ) OR
+                        MATCH (`cu`.`nickname`) AGAINST ('$item$partialMatch' ) OR
+                        MATCH (`mu`.`nickname`) AGAINST ('$item$partialMatch')
+                        $commentPart
+                    )
+                    ";
             }
-            $publicOnlySql = " AND `".WORKLIST."`.is_internal = 0";
-            if ($publicOnly) {
-                $where .= $publicOnlySql;
+
+            if ($commentFilter == 1) {
+                $commentsjoin = "LEFT OUTER JOIN `" . COMMENTS . "` AS `com` ON `" . WORKLIST . "`.`id` =                                      `com`.`worklist_id`";
             }
-            $totalHitCountSql  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
-            $sql  = "
+        }
+        if (!empty($filterByUser) && $filterByUser != 'ALL') {
+            $where .= ")";
+        }
+        if (!empty($projectFilter) && $projectFilter != 'All') {
+            if (empty($where)) {
+                $where = "WHERE ";
+            } else {
+                $where .= " AND ";
+            }
+            $where .= " `".WORKLIST."`.`project_id` = '{$projectFilter}' ";
+        }
+        $labels = preg_split('/,/', $filter->getLabels());
+        if ($labels) {
+            $labelsCond = '';
+            foreach($labels as $label) {
+                if (!strlen(trim($label))) {
+                    continue;
+                }
+                $labelsCond .= (strlen($labelsCond) ? ' AND ' : '') .
+                    "(
+                        SELECT COUNT(*)
+                        FROM `" . WORKITEM_LABELS . "` `wl2`
+                          JOIN `" . LABELS . "` `l2`
+                            ON `l2`.`id` = `wl2`.`label_id`
+                        WHERE `wl2`.`workitem_id` = `worklist`.`id`
+                          AND `l2`.`label` = '" . mysql_real_escape_string($label) . "'
+                    ) = 1 ";
+            }
+            if ($labelsCond) {
+                $where = (empty($where) ? "WHERE " : $where . " AND ") . $labelsCond;
+            }
+        }
+        $publicOnlySql = " AND `".WORKLIST."`.is_internal = 0";
+        if ($publicOnly) {
+            $where .= $publicOnlySql;
+        }
+        $totalHitCountSql  = "SELECT count(DISTINCT `".WORKLIST."`.`id`)";
+        $sql  = "
             SELECT `".WORKLIST."`.`id`, `summary`,`short_description`,
             (CASE
                 WHEN status = 'Review' AND code_review_started = 0 THEN 'Needs Review'
@@ -1713,64 +1802,64 @@ class Project {
             `creator_id`, `runner_id`, `mechanic_id`,
             (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
             WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
-            if (getSessionUserId()) {
-                $sql .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0  AND `".WORKLIST."`.`status`='Bidding' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
-                $sql .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-                $sql .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND `".WORKLIST."`.`status`='Bidding' AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
-            }
+        if (getSessionUserId()) {
+            $sql .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0  AND `".WORKLIST."`.`status`='Bidding' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
+            $sql .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
+            $sql .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND `".WORKLIST."`.`status`='Bidding' AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
+        }
 
-            $followingSql = "";
-            if ($filter->getFollowing()) {
-                $followingSql = " INNER JOIN `task_followers` on `task_followers`.`workitem_id` = `".WORKLIST."`.`id`
-                               AND `task_followers`.`user_id` = ".getSessionUserId();
-            }
+        $followingSql = "";
+        if ($filter->getFollowing()) {
+            $followingSql = " INNER JOIN `task_followers` on `task_followers`.`workitem_id` = `".WORKLIST."`.`id`
+                           AND `task_followers`.`user_id` = ".getSessionUserId();
+        }
 
-            $innerSql = "FROM `".WORKLIST."`
-                    LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
-                    LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
-                    LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
-                    LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0 INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1 AND `proj`.`active` = 1
-                    {$commentsjoin}
-                    {$followingSql}
-                    ";
-            $skillSql = ", (SELECT GROUP_CONCAT(CONCAT(s.skill,'~~', s.id)) from `workitem_skills` ws inner join `skills` s on s.id = ws.skill_id where workitem_id = `worklist`.`id`) as skills ";
-            $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
-            $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
+        $innerSql = "FROM `".WORKLIST."`
+                LEFT JOIN `".USERS."` AS cu ON `".WORKLIST."`.`creator_id` = `cu`.`id`
+                LEFT JOIN `".USERS."` AS ru ON `".WORKLIST."`.`runner_id` = `ru`.`id`
+                LEFT JOIN `" . USERS . "` AS mu ON `" . WORKLIST . "`.`mechanic_id` = `mu`.`id`
+                LEFT JOIN `" . FEES . "` ON `" . WORKLIST . "`.`id` = `" . FEES . "`.`worklist_id` AND `" . FEES . "`.`withdrawn` = 0 INNER JOIN `".PROJECTS."` AS `proj` ON `".WORKLIST."`.`project_id` = `proj`.`project_id` AND `proj`.`internal` = 1 AND `proj`.`active` = 1
+                {$commentsjoin}
+                {$followingSql}
+                ";
+        $labelSql = ", (SELECT GROUP_CONCAT(CONCAT_WS('~~', l.label, l.id, CASE WHEN (SELECT `pl`.`active` FROM `" . PROJECT_LABELS . "` `pl` WHERE `pl`.`project_id`=`worklist`.`project_id` AND `pl`.`label_id`=`l`.`id`) THEN '1' ELSE '0' END)) from `workitem_labels` wl inner join `labels` l on l.id = wl.label_id where workitem_id = `worklist`.`id`) as labels ";
+        $orderFilter = count($statusFilter) == 1 ? "`".WORKLIST."`.`id` desc" : "project_id desc,status_order, `".WORKLIST."`.`id` desc";
+        $orderBy = " GROUP BY `".WORKLIST."`.`id` ORDER BY {$orderFilter} LIMIT ".$offset .",{$limit}";
 
-            $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
-            $results = array();
-            $resultQuery = mysql_query("{$sql} {$skillSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
-            $jobsCount = array();
-            while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
-                $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
-                $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
-                if ($publicOnly) {
-                    $passJobSql .= $publicOnlySql;
-                    $doneJobSql .= $publicOnlySql;
-                }
-                $id = $row['id'];
-                if (empty($jobsCount['done'][$id])) {
-                    $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql"));
-                }
-                if (empty($jobsCount['pass'][$id])) {
-                    $jobsCount['pass'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
-                }
-                $result = array("id" => $id,
-                    "summary" => $row['summary'],
-                    "status" => $row['status'],
-                    "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
-                    "comments" => $row['comments'],
-                    "project_id" => $row['project_id'],
-                    "project_name" => $row['project_name'],
-                    "skills" => $row['skills'] != null ? $row['skills']: "",
-                    "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
-                    "done_job_count" => $jobsCount['done'][$id],
-                    "pass_job_count" => $jobsCount['pass'][$id]
-                 );
-                array_push($results, $result);
+        $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
+        $results = array();
+        $resultQuery = mysql_query("{$sql} {$labelSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+        $jobsCount = array();
+        while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
+            $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];
+            $passJobSql = " WHERE `status` = 'pass' AND `proj`.project_id = ".$row['project_id'];
+            if ($publicOnly) {
+                $passJobSql .= $publicOnlySql;
+                $doneJobSql .= $publicOnlySql;
             }
-            $searchResult = array("search_result" => $results, "total_Hit_count" => $searchResultTotalHitCount);
-            return $searchResult;
+            $id = $row['id'];
+            if (empty($jobsCount['done'][$id])) {
+                $jobsCount['done'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $doneJobSql"));
+            }
+            if (empty($jobsCount['pass'][$id])) {
+                $jobsCount['pass'][$id] = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $passJobSql"));
+            }
+            $result = array("id" => $id,
+                "summary" => $row['summary'],
+                "status" => $row['status'],
+                "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
+                "comments" => $row['comments'],
+                "project_id" => $row['project_id'],
+                "project_name" => $row['project_name'],
+                "labels" => $row['labels'] != null ? $row['labels']: "",
+                "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
+                "done_job_count" => $jobsCount['done'][$id],
+                "pass_job_count" => $jobsCount['pass'][$id]
+             );
+            array_push($results, $result);
+        }
+        $searchResult = array("search_result" => $results, "total_Hit_count" => $searchResultTotalHitCount);
+        return $searchResult;
     }
 
     static public  function isJobId($id) {

@@ -94,6 +94,13 @@ function resetAction() {
 }
 
 $(document).ready(function() {
+    $(".disableable").click(function() {
+        $(this).click(function() {
+            $(this).attr('disabled', 'disabled');
+        });
+        return true;
+    });
+
     $('#fund_id').change(function() {
         $('#fundForm').submit();
     });
