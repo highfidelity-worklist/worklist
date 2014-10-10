@@ -1881,10 +1881,4 @@ class JobController extends Controller {
         $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
         parent::run();
     }
-
-    public function method() {
-        $this->view = null;
-        print_r(func_get_args());
-    }
-
 }
