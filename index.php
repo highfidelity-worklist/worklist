@@ -70,7 +70,7 @@ class Dispatcher {
         // enable /project_name requests, alias of /project/view/project_name
         self::$dispatcher->any('/:args', null, array(
             'require' => array(
-                'args' => '\w+'
+                'args' => '\w[a-zA-Z0-9-]+'
             ),
             'default' => array(
                 'controller' => 'project',
