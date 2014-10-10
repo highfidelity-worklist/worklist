@@ -1,5 +1,14 @@
 <?php
 /**
+ * Dispatcher class
+ *
+ * Takes care of dispatching the flow of the request/server thread to its
+ * corresponding controller object and method. Also handles arguments sending
+ * too in case they are expected/present.
+ *
+ * This is just a wrapper class that handles a proper running and parsing of
+ * the real dispatcher (Pux), for more information see https://github.com/c9s/Pux
+ *
  * Copyright 2014 - High Fidelity, Inc.
  */
 
@@ -9,6 +18,9 @@ class Dispatcher {
     static public $url = '';
     static public $dispatcher = null;
 
+    /**
+     * Loads routes used by the app to be used by the dispatcher
+     */
     static public function loadRoutes() {
         // root url path routes to Home controller, that will take
         // the user to /jobs or /welcome if not authenticated
@@ -82,58 +94,87 @@ class Dispatcher {
         ));
     }
 
+    /**
+     * Call route loads, process requested url and dispatchs to controllers
+     */
     static public function dispatch() {
         try {
             self::$url = isset($_GET['url']) ? $_GET['url'] : '';
             self::$dispatcher = new Pux\Mux;
             self::loadRoutes();
+
+            // real dispatcher (Pux) call
             $route = self::$dispatcher->dispatch('/' . self::$url);
+
+            // shorthand pointers to processed route variables
             $vars = array_key_exists(3 , $route) && array_key_exists('vars', $route[3])
                 ? $route[3]['vars']
                 : array();
             $default = array_key_exists(3 , $route) && array_key_exists('default', $route[3])
                 ? $route[3]['default']
                 : array();
-            $controller = ucfirst
-                (
-                    !is_null($route[2]) && array_key_exists(0, $route[2])
-                        ? $route[2][0]
-                        : (
-                            array_key_exists('controller', $vars)
-                                ? $vars['controller']
-                                : (
-                                    array_key_exists('controller', $default)
-                                        ? $default['controller']
-                                        : DEFAULT_CONTROLLER_NAME
-                                )
-                        )
-                );
-            if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {
-                $controller .= 'Controller';
-            }
-            $Controller = new $controller();
-            $method = (!is_null($route[2]) && array_key_exists(1, $route[2])
-                ? $route[2][1]
-                : (array_key_exists('method', $vars)
-                    ? $vars['method']
-                    : (array_key_exists('method', $default)
-                            ? $default['method']
-                            : DEFAULT_CONTROLLER_METHOD
+
+            // parse controller name from the processed route
+            $controller = ucfirst(!is_null($route[2]) && array_key_exists(0, $route[2])
+                // search for controller name at static params
+                ? $route[2][0]
+                : (array_key_exists('controller', $vars)
+                    // if not present, look at values returned by route variables
+                    ? $vars['controller']
+                    : (array_key_exists('controller', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['controller']
+                        // non of the attempts worked (worst case)
+                        // let's use a hardcoded one
+                        : DEFAULT_CONTROLLER_NAME
                     )
                 )
             );
-            $args = (!is_null($route[2]) && array_key_exists(2, $route[2])
+
+            // all controller must have the Controller suffix
+            if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {
+                $controller .= 'Controller';
+            }
+
+            // let's instantiate the controller so if it not exists, should fire
+            // an exception and the rest of the code in this method won't run
+            $Controller = new $controller();
+
+            // parse method name from the processed route
+            $method = (!is_null($route[2]) && array_key_exists(1, $route[2])
+                // search for method name at static params
                 ? $route[2][1]
-                : (
-                    !is_null($route[3]) && array_key_exists('args', $vars)
-                        ? preg_split('/\//', $vars['args'])
-                        : (
-                            !is_null($default) && array_key_exists('args', $default)
-                                ? $default['args']
-                                : array()
-                        )
+                : (array_key_exists('method', $vars)
+                    // if not present, look at values returned by route variables
+                    ? $vars['method']
+                    : (array_key_exists('method', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['method']
+                        // non of the attempts worked (worst case)
+                        // let's use a hardcoded one
+                        : DEFAULT_CONTROLLER_METHOD
+                    )
                 )
             );
+
+            // parse arguments to be sent to the controller method from the processed route
+            $args = (!is_null($route[2]) && array_key_exists(2, $route[2])
+                // search for static arguments
+                ? $route[2][3]
+                : (!is_null($route[3]) && array_key_exists('args', $vars)
+                    // if not present, look at values returned by route variables
+                    ? preg_split('/\//', $vars['args'])
+                    : (!is_null($default) && array_key_exists('args', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['args']
+                        // non of the attempts worked (worst case)
+                        // let's not send arguments at all
+                        : array()
+                    )
+                )
+            );
+
+            // there we go
             call_user_func_array(array($Controller, $method), $args);
         } catch(Exception $e) {
             // TO-DO:
