@@ -29,7 +29,7 @@ var AddJob = {
     refreshLabels: function() {
         var projectId = $("select[name='itemProject']").val();
         $.ajax({
-            url: './project/labels/' + $("select[name='itemProject']").val(),
+            url: './project/labels/' + $("select[name='itemProject']").val() + '/active',
             dataType: "json",
             success: function(json) {
                 if (!json.success) {
