@@ -14,7 +14,6 @@ var jobs = {
         jobs.following = $('#jobs-im-following').is(":checked") ? 1 : 0;
         jobs.labels = search_labels.split(',');
         jobs.fetchJobs(jobs.offset, jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
-        jobs.renderDataOnScroll();
         jobs.filterChangeEventTrigger();
         jobs.jobsEvent();
     },
@@ -68,6 +67,17 @@ var jobs = {
                 $('#jobs-sections').append(jobs.renderPassedJobsLink(data[index].project_name, data[index].done_job_count, data[index].pass_job_count));
             }
         }
+        if (!jobs.renderDataOnScroll) {
+            jobs.renderDataOnScroll = function() {
+                var scrollTop = $(window).scrollTop() + 300;
+                var windowHeight = ($(document).height() - $(window).height());
+                var totalJobsRender = $('ul.project-jobs').length;
+                if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
+                    jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.labels);
+                }
+            }
+            $(window).scroll(jobs.renderDataOnScroll);
+        }
     },
     renderProjectHeader: function(id, project_name, project_short_description, done_job_count, pass_job_count) {
         var html = "<div data-done-job-count=\"" + pass_job_count+ "\" data-pass-job-count=\"" + pass_job_count + "\" class=\"project-header project-header-" + id + " col-sm-12 col-md-12 dd-max-width\"><h2>"+ project_name + "</h2><p>"+ project_short_description +"</p><hr/></div>";
@@ -111,17 +121,6 @@ var jobs = {
         }
         html += "</div>";
         return html;
-    },
-
-    renderDataOnScroll: function() {
-        $(window).scroll(function() {
-            var scrollTop = $(window).scrollTop() + 300;
-            var windowHeight = ($(document).height() - $(window).height());
-            var totalJobsRender = $('ul.project-jobs').length;
-            if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
-                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.labels);
-            }
-        });
     },
 
     filterChangeEventTrigger: function() {
