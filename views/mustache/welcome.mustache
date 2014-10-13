@@ -22,7 +22,11 @@
         {{#biddingJobs}}
         <tr>
             <td><a href="./{{id}}">{{summary}}</a></td>
-            <td>{{labels}}</td>
+            <td>
+                {{#labels}}
+                  <a href="./jobs/0/0/{{label}}">{{label}}</a>
+                {{/labels}}
+            </td>
             <td><a href="./{{project}}">{{project}}</a></td>
         </tr>
         {{/biddingJobs}}
