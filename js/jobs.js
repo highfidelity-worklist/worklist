@@ -31,7 +31,7 @@ var jobs = {
                 query: query,
                 following: following,
                 participated: $('#only-jobs-i-participated input').is(':checked') ? 1 : 0,
-                labels: labels.join(',')
+                labels: (typeof labels != 'undefined' ? labels.join(',') : '')
             },
             dataType: 'json',
             success: function(data) {
