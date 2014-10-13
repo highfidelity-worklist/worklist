@@ -1,27 +1,16 @@
 <?php
 
 class ProjectController extends Controller {
-    public function run($action, $param = '') {
-        $method = '';
-        switch($action) {
-            case 'view':
-            case 'info':
-            case 'add':
-            case 'addDesigner':
-            case 'designers':
-            case 'removeDesigner':
-            case 'addCodeReviewer':
-            case 'codeReviewers':
-            case 'removeCodeReviewer':
-                $method = $action;
-                break;
-            default:
-                $method = 'view';
-                $param = $action;
-        }
-        $params = preg_split('/\//', $param);
-        call_user_func_array(array($this, $method), $params);
+    /**
+     * Non existing method call will fall to run this method, so here
+     * we guess that the requestor is trying to reach a specific project.
+     * Let's take it's arguments and route to the right process path.
+     */
+    public function __call($id, $arguments) {
+        $arguments = array_merge(array($id), $arguments);
+        call_user_func_array(array($this, 'view'), $arguments);
     }
+
 
     public function view($id) {
         try {
@@ -252,7 +241,7 @@ class ProjectController extends Controller {
                 throw new Exception('Could not add the user as a designer for this project');
             }
             $founder = User::find($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -301,7 +290,7 @@ class ProjectController extends Controller {
                 throw new Exception('Could not add the user as a designer for this project');
             }
             $founder = User::find($project->getOwnerId());
-            $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+            $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
             $data = array(
                 'nickname' => $user->getNickname(),
                 'projectName' => $project->getName(),
@@ -376,7 +365,7 @@ class ProjectController extends Controller {
                     $deleted_runners[] = $runner;
                     $user = User::find($runner);
                     $founder = User::find($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -392,6 +381,88 @@ class ProjectController extends Controller {
             echo json_encode(array(
                 'success' => true,
                 'data' => array('deleted_runners' => $deleted_runners)
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function addLabel($id) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $label = $_POST['label'];
+            if (!$project->addLabel($label)) {
+                throw new Exception("There was a problem while adding label to the project");
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => 'Label added successfully'
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function labels($id, $activeOnly = false) {
+        $this->view = null;
+        try {
+            $data = array();
+            $project = Project::find($id);
+            if ($labels = $project->getLabels((bool) $activeOnly)) {
+                foreach ($labels as $label) {
+                    $data[] = array('label' => $label);
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => $labels
+            ));
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            echo json_encode(array(
+                'success' => false,
+                'data' => $error
+            ));
+        }
+    }
+
+    public function removeLabel($id) {
+        $this->view = null;
+        try {
+            $project = Project::find($id);
+            if (! $project->getProjectId()) {
+                throw new Exception('Not a project in our system');
+            }
+            $request_user = User::find(getSessionUserId());
+            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
+                throw new Exception('Not enough rights');
+            }
+            $labels = preg_split('/,/', $_POST['labels']);
+            $deleted_labels = array();
+            foreach($labels as $label) {
+                if ($project->deleteLabel($label)) {
+                    $deleted_labels[] = $label;
+                }
+            }
+            echo json_encode(array(
+                'success' => true,
+                'data' => array('deleted_labels' => $deleted_labels)
             ));
         } catch (Exception $e) {
             $error = $e->getMessage();
@@ -453,7 +524,7 @@ class ProjectController extends Controller {
                     $deleted_codeReviewers[] = $codeReviewer;
                     $user = User::find($codeReviewer);
                     $founder = User::find($project->getOwnerId());
-                    $founderUrl = SECURE_SERVER_URL . 'jobs#userid=' . $founder->getId();
+                    $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
                     $data = array(
                         'nickname' => $user->getNickname(),
                         'projectName' => $project->getName(),
@@ -477,5 +548,10 @@ class ProjectController extends Controller {
                 'data' => $error
             ));
         }
+    }
+
+    public function listView() {
+        $this->view = new ProjectsView();
+        parent::run();
     }
  }

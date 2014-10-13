@@ -180,19 +180,10 @@ if(validateAction()) {
             case 'getReport':
                 getReport();
                 break;
-            case 'getSkills':
-                getSkills();
-                break;
             case 'getStats':
                 $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
                 $interval =  isset($_REQUEST['req'])? $_REQUEST['req'] : 30;
                 echo json_encode(getStats($req, $interval));
-                break;
-            case 'getUserItem':
-                getUserItem();
-                break;
-            case 'getUserItems':
-                getUserItems();
                 break;
             case 'getUserList':
                 getUserList();
@@ -1666,83 +1657,6 @@ function getReport() {
         echo json_encode($payee_report);
     }
 
-}
-
-function getSkills() {
-    $query = "SELECT `skill` FROM ".SKILLS." ORDER BY skill";
-    $result = mysql_query($query);
-
-    $data = array();
-    while ($result && $row=mysql_fetch_assoc($result)) {
-        $data[] = $row['skill'];
-    }
-
-    echo json_encode($data);
-}
-
-function getUserItem() {
-    $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'item';
-
-    if( $req == 'id' )  {
-        // Convert Nickname to User ID
-        $author = $_REQUEST['nickname'];
-        $rt = mysql_query("SELECT id FROM ".USERS." WHERE nickname='$author'");
-        $row = mysql_fetch_assoc($rt);
-        $json_array = array();
-        foreach( $row as $item )    {
-            $json_array[] = $item;
-        }
-        echo json_encode( $json_array );
-
-    } else if ( $req == 'item' )    {
-        $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
-        if ( empty($item) ) {
-            return;
-        }
-
-        $query = "SELECT id, nickname,username,about,contactway,payway,skills,timezone,DATE_FORMAT(added, '%m/%d/%Y'),is_runner,is_payer
-                        FROM ".USERS." WHERE id= $item";
-
-        $rt = mysql_query($query);
-        $row = mysql_fetch_assoc($rt);
-        $json_row = array();
-        foreach($row as $item){
-            $json_row[] = $item;
-        }
-
-        //changing timezone to human-readable
-        if( $json_row[7] )  {
-            $json_row[7] = $timezoneTable[$json_row[7]];
-        }
-
-        $json = json_encode($json_row);
-        echo $json;
-    }
-}
-
-function getUserItems() {
-    $userId = isset($_REQUEST["id"]) ? intval($_REQUEST["id"]) : 0;
-    if (empty($userId))
-        return;
-
-    $query = "SELECT `" . WORKLIST . "`.`id`, `summary`, `bid_amount`, `bid_done`,"
-          . " TIMESTAMPDIFF(SECOND, NOW(), `" . BIDS . "`.`bid_done`) AS `future_delta` FROM `" . WORKLIST . "`"
-          . " LEFT JOIN `" . BIDS . "` ON `bidder_id` = `mechanic_id`"
-          . " AND `" . BIDS . "`.`accepted`= 1 AND `" . BIDS . "`.`withdrawn`= 0 AND `worklist_id` = `" . WORKLIST . "`.`id`"
-          . " WHERE `mechanic_id` = $userId AND status = 'In Progress'";
-    $rt = mysql_query($query);
-
-    $items = array();
-
-    while($row = mysql_fetch_assoc($rt)){
-
-        $row['relative'] = relativeTime($row['future_delta']);
-        $items[] = $row;
-    }
-
-    $json = json_encode($items);
-
-    echo $json;
 }
 
 function getUserList() {

@@ -58,18 +58,14 @@
     <div class="row">
         <div class="col-md-9 col-sm-9">
             <label for="notes">Description</label>
-            <textarea class="form-control autogrow mentions" name="notes" id="notes"
-              placeholder="describe the work necessary to successfully complete this job">{{#editing}}{{workitem.getNotes}} {{/editing}}</textarea>
+            <div class="autocomplete">
+                <textarea class="form-control autogrow" name="notes" id="notes"
+                  placeholder="describe the work necessary to successfully complete this job">{{#editing}}{{workitem.getNotes}}{{/editing}}</textarea>
+            </div>
         </div>
         <div class="col-sm-3">
             <label>Labels</label>
             <ul id="labels">
-                {{#skills}}
-                    <li>
-                        <input id="label{{id}}" type="checkbox" {{#checked}} checked {{/checked}}name="label[{{id}}]" value="{{skill}}" />
-                        <label for="label{{id}}">{{skill}}</label>
-                    </li>
-                {{/skills}}
             </ul>
         </div>
     </div>
