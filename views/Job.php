@@ -161,34 +161,6 @@ class JobView extends View {
         return $ret;
     }
 
-    public function jobBudget() {
-        $workitem = $this->workitem;
-        $worklist = $this->worklist;
-        $user = $this->user;
-        $ret = '';
-        if (
-            (
-                $user->isRunnerOfWorkitem($workitem) 
-              || (
-                    array_key_exists('userid', $_SESSION)
-                  && (
-                        $_SESSION['userid'] == $worklist['budget_giver_id'] 
-                      || strpos(BUDGET_AUTHORIZED_USERS, "," . $_SESSION['userid'] . ",") !== false
-                    ) 
-                ) 
-            ) 
-          && !empty($worklist['budget_id'])
-        ) {
-            if ($this->action !="edit") {
-                $ret = '<div class="job-budget">'
-                    .    '<div class="project-label">Budget:</div>'
-                    .    $worklist['budget_id'] . " - " . htmlspecialchars($worklist['budget_reason'])
-                    . '</div>';
-            }
-        }
-        return $ret;
-    }
-
     public function statusDone() {
         return $this->worklist['status'] == "Done";
     }
@@ -204,9 +176,7 @@ class JobView extends View {
             $ret .= 
                 '<span class="job-info-heading">' .
                 'Designer:</span>' .
-                '<a href="./user/' . $worklist['runner_id'] . '" >' . 
-                    substr($worklist['runner_nickname'], 0, 9) . (strlen($worklist['runner_nickname']) > 9 ? '...' : '') . 
-                '</a>';
+                '<a href="./user/' . $worklist['runner_id'] . '" >' . $worklist['runner_nickname'] . '</a>';
         } else {
             $ret .= '<span class="job-info-heading">Designer:</span> Not funded';
         }
@@ -408,12 +378,12 @@ class JobView extends View {
         return $this->order_by == 'DESC';
     }
 
-    public function skillsCount() {
-        return count($this->workitem->getSkills());
+    public function labelsCount() {
+        return count($this->workitem->getLabels());
     }
 
-    public function commaSeparatedSkills() {
-        return implode(', ', $this->workitem->getSkills());
+    public function commaSeparatedLabels() {
+        return implode(', ', $this->workitem->getLabels());
     }
 
     public function canReview() {
@@ -547,7 +517,7 @@ class JobView extends View {
                  '<td>'
                 . (
                     $canSeeBid 
-                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . getSubNickname($bid['nickname']) . '</a>' 
+                      ? '<a href="./user/' . $bid['bidder_id'] . '" bidderId="' . $bid['bidder_id'] . '">' . $bid['nickname'] . '</a>'
                       : $bid['nickname']
                   )
                 .'</td>'
@@ -591,7 +561,7 @@ class JobView extends View {
                     '</script>' .
                     '<td class="nickname who">' .
                         '<a href="./user/' . $fee['user_id'] . '"  title="' . $fee['nickname'] . '">' .
-                            getSubNickname($fee['nickname'], 8) .
+                            $fee['nickname'] .
                         '</a>' .
                     '</td>' .
                     '<td class="fee">' .
@@ -757,6 +727,7 @@ class JobView extends View {
     }
 
     public function addBidMsg() {
+        $row_class .= ($this->read('place_bid_id') == $$itemId) ? ' place_bid_id ' : '' ;
         return $this->read('isGitHubConnected') ? 'Add my bid' : 'Authorize GitHub app';
     }
 
@@ -803,7 +774,9 @@ class JobView extends View {
                         '                <a class="author profile-link" href="./user/' . $commentObj->getUser()->getId() . '">' .
                         '                    ' . $commentObj->getUser()->getNickname() .
                         '                </a>' .
-                        '                <span class="date">' . $commentObj->getRelativeDate() . '</span>' .
+                        '                <a class="date" href="./' . $this->worklist['id'] . '#comment-' . $comment['id'] . '">' .
+                        '                ' . $commentObj->getRelativeDate() .
+                        '                </a>' .
                         '            </div>' .
                         '            <div class="comment-text">' .
                         '              ' . $commentObj->getCommentWithLinks() .
@@ -877,7 +850,7 @@ class JobView extends View {
         if (strtotime($entry->date) > strtotime('2014-03-06 00:00:00')) {
             // linkify mentions and tasks references
             $ret = $ret;
-            $mention_regex = '/(^|\s)@(\w+)/';
+            $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
             $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';
             $ret = preg_replace($mention_regex, '\1[\2](./user/\2)', $entry->entry);
             $ret = preg_replace($task_regex, '\1[\\\\#\2](./\2)', $ret);
@@ -912,18 +885,9 @@ class JobView extends View {
         return $assignedUser->getNickname();
     }
 
-    public function skills() {
-        $skillModel = new SkillModel();
-        $skillList = $skillModel->loadAll();
-        $skills = array();
-        foreach($skillList as $skill) {
-            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
-            if (in_array($skill->skill, $this->workitem->getSkills())) {
-                $skillObj['checked'] = true;
-            }
-            array_push($skills, $skillObj);
-        }
-        return $skills;
+    public function labels() {
+        $labels = $this->workitem->getlabels();
+        return $labels;
     }
 
     public function canEdit() {

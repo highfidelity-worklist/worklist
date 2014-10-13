@@ -248,6 +248,14 @@ ul.project-jobs li:nth-child(4):after {
     color: #ff9900;
 }
 
+.project-jobs-status-draft span {
+    color: #EDDFB4;
+}
+
+.project-jobs-status-draft i {
+    background-color: #EDDFB4;
+}
+
 .project-jobs-status-bidding span {
     color: #ff9900;
 }
@@ -343,7 +351,7 @@ ul.project-jobs li:first-child a {
     font-size: 13px;
 }
 
-ul.project-jobs li.project-jobs-skill a {
+ul.project-jobs li.project-jobs-label a {
     color: #669999;
     border-radius: 5px;
     margin-left: 3px;
@@ -351,6 +359,11 @@ ul.project-jobs li.project-jobs-skill a {
     border: 1px solid #B3E0DC;
     font-size: 13px;
     margin-bottom: 2px;
+    opacity: .6;
+}
+
+ul.project-jobs li.project-jobs-label a.active {
+    opacity: 1;
 }
 
 ul.project-jobs .project-jobs-comment-count a {
@@ -564,7 +577,7 @@ ul.project-jobs {
         background: #f4f4f4;
     }
 
-    ul.project-jobs li.project-jobs-skill a {
+    ul.project-jobs li.project-jobs-label a {
         margin-left: 5px;
     }
 

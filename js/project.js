@@ -23,22 +23,22 @@ var Project = {
             Project.validateCodeReviews(this);
         });
 
-        Project.updateDesigners();
-
+        Project.refreshDesigners();
         $('#removerunner').click(Project.removeDesigner);
+        $('#addrunner').click(Project.addDesignerModal);
 
         Project.refreshCodeReviewers();
-
         $('#removecodereviewer').click(Project.removeCodeReviewer);
+        $('#addcodereviewer').click(Project.addCodeReviewerModal);
 
         makeWorkitemTooltip(".payment-joblink, .joblink");
 
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
         $('tr.role').click(Project.showRoleInfoModal);
 
-        $('#addrunner').click(Project.addDesignerModal);
-
-        $('#addcodereviewer').click(Project.addCodeReviewerModal);
+        Project.refreshLabels();
+        $('#projectLabels button[action="remove"]').click(Project.removeLabel);
+        $('#projectLabels button[action="add"]').click(Project.addLabelModal);
 
         if (edit_mode) {
             $('#cancel_project_edit').click(function() {
@@ -337,7 +337,7 @@ var Project = {
         return false;
     },
 
-    updateDesigners: function() {
+    refreshDesigners: function() {
         $('#projectRunners tbody').html('Loading ...');
         $.ajax({
             type: 'post',
@@ -448,7 +448,7 @@ var Project = {
                         dataType: 'json',
                         success: function(data) {
                             if (data.success) {
-                                Project.updateDesigners();
+                                Project.refreshDesigners();
                             }
                         }
                     });
@@ -472,7 +472,116 @@ var Project = {
             dataType: 'json',
             success: function(data) {
                 if (data.success) {
-                    Project.updateDesigners();
+                    Project.refreshDesigners();
+                }
+            }
+        });
+        return false;
+    },
+
+    refreshLabels: function() {
+        $('#projectLabels tbody').html('Loading ...');
+        $.ajax({
+            type: 'post',
+            url: './project/labels/' + projectName,
+            dataType: 'json',
+            success: function(data) {
+                $('#projectLabels tbody').html('');
+                if (data.success) {
+                    labels = data.data;
+                    var html = '';
+                    var inactiveLabels = [];
+                    if (labels.length > 0) {
+                        for(var i=0; i < labels.length; i++) {
+                            var label = labels[i];
+                            if (!parseInt(label.active)) {
+                                inactiveLabels.push(label);
+                                continue;
+                            }
+                            html =
+                                '<tr>' +
+                                  '<td>' +
+                                    ((is_admin || is_owner)
+                                        ? '<input type="checkbox" class="wlcheckbox" id="label' + label.label + '" name="label' + label.label + '" />'
+                                        : ''
+                                    ) +
+                                    '<label for="label' + label.label + '">' + label.label + '</label>' +
+                                  '</td>' +
+                                '</tr>';
+                            $('#projectLabels tbody').append(html);
+                        }
+                        $('#inactiveLabels li').remove();
+                        for(var i = 0; i < inactiveLabels.length; i++) {
+                            var inactiveLabel = inactiveLabels[i];
+                            var item = $('<li>').text(inactiveLabel.label);
+                            $('#inactiveLabels').append(item);
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    addLabelModal: function() {
+        Utils.emptyFormModal({
+            content:
+                '<div class="row">' +
+                '  <div class="col-md-6">' +
+                '    <label for="newlabel">New Label</label>' +
+                '  </div>' +
+                '  <div class="col-md-6">' +
+                '    <input type="text" class="form-control" name="newlabel">' +
+                '  </div>' +
+                '</div>',
+            buttons: [
+                {
+                    type: 'submit',
+                    name: 'addlabel',
+                    content: 'Add Label',
+                    className: 'btn-primary',
+                    dismiss: false
+                }
+            ],
+            open: function(modal) {
+                $('form', modal).submit(function() {
+                    var label = $('input[name="newlabel"]', modal).val();
+                    $.ajax({
+                        type: 'post',
+                        url: './project/addLabel/' + projectName,
+                        data: {
+                            label: label
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                Project.refreshLabels();
+                            }
+                        }
+                    });
+                    $(modal).modal('hide');
+                    return false;
+                });
+            }
+        });
+        return false;
+    },
+
+    removeLabel: function() {
+        var labels = [];
+        $('#projectLabels input[name^=label]:checked').each(function() {
+            var label = $(this).attr('name').substring(5);
+            labels.push(label);
+        });
+        $.ajax({
+            type: 'post',
+            url: './project/removeLabel/' + projectName,
+            data: {
+                labels: labels.join(',')
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    Project.refreshLabels();
                 }
             }
         });

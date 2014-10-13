@@ -246,11 +246,37 @@ section#footer li:nth-child(-n+3) {
     margin-left: -55px;
 }
 
+/**
+ * fix issues with fixed navbar for links with fragment id
+ */
+#entries > li[id^="comment-"] {
+    padding-top: 90px;
+    margin-top: -70px;
+}
+@media  (max-width: 767px) {
+    #entries > li[id^="comment-"] {
+        padding-top: 70px;
+        margin-top: -50px;
+    }
+}
+
 /*
  * User profile avatars rounded (in circle) for job comments
  */
 #entries li[id^="comment-"] .comment > a > img {
     border-radius: 30px
+}
+
+/**
+ * Comments timestamps links styling
+ */
+#entries li[id^="comment-"] .comment a.date {
+    color:#666;
+    text-decoration: none;
+    font-weight: normal;
+}
+#entries li[id^="comment-"] .comment a.date:hover {
+    text-decoration: underline;
 }
 
 .visits-box {
@@ -493,6 +519,10 @@ li.job-runner a,
 li.job-creator a {
     font-weight: bold;
     color: #007f7c;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
 }
 
 .job-info-heading {
@@ -567,16 +597,21 @@ div.job-bid {
     cursor: default;
 }
 
-.job-skills-editable li input[type="checkbox"] + label {
+.job-labels-editable li input[type="checkbox"] + label {
     cursor: pointer !important;
+    opacity: .6;
 }
 
-.job-skills-editable li input[type="checkbox"]:checked + label {
+.job-labels-editable li input[type="checkbox"]:checked + label {
     background-color: #007F7c !important;
     color: #fff !important;
 }
 
-li.job-skills-noneditable input[type="checkbox"] + label {
+.job-labels-editable li input[type="checkbox"][active] + label {
+    opacity: 1;
+}
+
+li.job-labels-noneditable input[type="checkbox"] + label {
     background-color: #007F7c !important;
     color: #fff !important;
 }
@@ -590,7 +625,7 @@ span#job-status-edit {
     display: none;
 }
 
-#job-skills-edit {
+#job-labels-edit {
     display: none;
 }
 
@@ -613,10 +648,10 @@ li.job-runner:after,
 li.job-creator:after {
     content: "";
     width: 25px;
-    height: 50px;
+    height: 20px;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 17px;
+    right: 15px;
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 56%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(56%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1)));
     background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
@@ -685,4 +720,12 @@ span.edit-mode-only {
         clear: both;
         height: 33px;
     }
+}
+
+#bid-panel span {
+    margin-top: 8px;
+}
+
+#bid-panel span input {
+    margin: 0px;
 }

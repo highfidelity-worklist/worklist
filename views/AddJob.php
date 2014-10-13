@@ -49,20 +49,6 @@ class AddJobView extends View {
         return $ret;
     }
 
-    public function skills() {
-        $skillModel = new SkillModel();
-        $skillList = $skillModel->loadAll();
-        $skills = array();
-        foreach($skillList as $skill) {
-            $skillObj = array("id" => $skill->id, "skill" => $skill->skill, "checked" => false);
-            if ($this->editing() && in_array($skill->skill, $this->workItem()->getSkills())) {
-                $skillObj['checked'] = true;
-            }
-            array_push($skills, $skillObj);
-        }
-        return $skills;
-    }
-
     public function internalUsers() {
         return User::getInternals();
     }

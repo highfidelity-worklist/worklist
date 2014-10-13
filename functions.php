@@ -1044,7 +1044,7 @@ function linkify($url, $author = null, $bot = false, $process = true)
 
     // mentions - @username, comments and job descriptions
     $url = preg_replace(
-        '/(^|[^a-z0-9_])@([a-z0-9_]+)/i',
+        '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9\-]+)/',
         '$1<a href="' . WORKLIST_URL . 'user/$2">@$2</a>',
     $url);
 
@@ -1057,17 +1057,6 @@ function linkify($url, $author = null, $bot = false, $process = true)
 function decodeDelimitedLinks($matches) {
     $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
     return html_entity_decode($result, ENT_QUOTES);
-}
-
-/**
- * Return a trimmed version of the nickname
- */
-function getSubNickname($nickname, $length = 18) {
-    if (strlen($nickname) > $length) {
-        return substr($nickname, 0, $length) . '...';
-    } else {
-        return $nickname;
-    }
 }
 
 function getProjectList() {
@@ -1518,7 +1507,7 @@ function getStats($req = 'table', $interval = 30) {
                             );
 
     } else if( $req == 'Bidding' ) {
-        $query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'Bidding'");
+        $query_b = mysql_query("SELECT id FROM ".WORKLIST." WHERE status = 'Bidding' and is_internal = 0");
         $results_b = array();
         while ($row = mysql_fetch_array($query_b, MYSQL_NUM)) {
             $results_b[] = $row[0];

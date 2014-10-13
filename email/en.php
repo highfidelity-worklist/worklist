@@ -373,13 +373,12 @@ replacement data:
     {text}'
 ),
 'job-assigned' => array(
-    'subject' => 'Assigned Job #{job_id} - {summary}',
+    'subject' => 'You got assigned to #{job_id} {summary}',
     'body' => '
-      <p>Hi {assigned}</p>
-      <p>
-        Just wanted to let you know that {assigner} has assigned you to job:
-        <a href="' . WORKLIST_URL . '{job_id}">{job_id} - {summary}</a>.
+      {assigner} has assigned you to: <a href="' . WORKLIST_URL . '{job_id}">{job_id} {summary}</a>.
       </p>
-      <p>- Worklist.net</p>'
+      <p>
+      Do the work, delegate the work, or wait for some bids.
+      </p>'
 )
 );

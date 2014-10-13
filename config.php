@@ -97,11 +97,12 @@ if (!defined('PROJECTS'))       define('PROJECTS', 'projects');
 if (!defined('PROJECT_USERS'))  define('PROJECT_USERS', 'project_users');
 defineOnce("PROJECT_RUNNERS", "rel_project_runners");
 if (!defined('ROLES'))          define('ROLES', 'roles');
-if (!defined('SKILLS'))         define('SKILLS', 'skills');
+if (!defined('LABELS'))         define('LABELS', 'labels');
 if (!defined('STATUS_LOG'))     define('STATUS_LOG', 'status_log');
 if (!defined('TASK_FOLLOWERS')) define('TASK_FOLLOWERS', 'task_followers');
 if (!defined('TOKENS'))         define('TOKENS', 'tokens');
-if (!defined('WORKITEM_SKILLS')) define('WORKITEM_SKILLS', 'workitem_skills');
+if (!defined('WORKITEM_LABELS')) define('WORKITEM_LABELS', 'workitem_labels');
+if (!defined('PROJECT_LABELS')) define('PROJECT_LABELS', 'project_labels');
 if (!defined('USER_STATUS'))    define('USER_STATUS', 'user_status');
 if (!defined('USERS'))          define('USERS', 'users');
 if (!defined('USERS_AUTH_TOKENS')) define('USERS_AUTH_TOKENS', 'users_auth_tokens');
@@ -1319,15 +1320,10 @@ defineOnce('CODE_REVIEW_ADMINS', 'joanneci,kordero,birarda');
 require_once('vendor/autoload.php');
 require_once('functions.php');
 
-//Sanitize::filterInput();
-
 function shutdown() {
-    foreach (get_declared_classes() as $class) {
-        if ($class == 'Dispatcher') {
-            $controller = new $class();
-            $controller->run();
-            break;
-        }
+    if (!in_array('Dispatcher', get_declared_classes())) {
+        return;
     }
+    Dispatcher::dispatch();
 }
 register_shutdown_function('shutdown');

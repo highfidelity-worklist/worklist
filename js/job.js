@@ -18,7 +18,6 @@ var Job = {
         if (status_error) {
             openNotifyOverlay(status_error, false);
         }
-        applyPopupBehavior();
 
         Job.showUniquePageViews();
 
@@ -108,8 +107,8 @@ var Job = {
             Job.update('internal');
         });
 
-        $('ul.job-skills-editable li input').click(function() {
-            Job.update('skills');
+        $('ul.job-labels-editable li input').click(function() {
+            Job.update('labels');
         });
 
         $('select[name="assigned"]').change(Job.checkAssignedUserAndUpdate);
@@ -363,7 +362,13 @@ var Job = {
 
         Job.setCodeReviewEvents();
         Job.initFileUpload();
-    },
+
+        // parse query string and then run specific actions from params if requested
+        var queryString = Utils.queryString();
+        if (queryString.hasOwnProperty('placeBid')) {
+            $('input[value="Add my bid"]').click();
+        }
+     },
 
     initFileUpload: function() {
         var options = {iframe: {url: './file/add/' + workitem_id}};
@@ -509,7 +514,7 @@ var Job = {
                         depth = 0;
                     }
                     var newcomment =
-                        '<li id="comment-' + data.id + '" class="imOdd depth-' + depth + '">' +
+                        '<li id="comment-' + data.id + '" class="depth-' + depth + '">' +
                             '<div class="comment">' +
                                 '<a href="./user/' + data.userid + '" >' +
                                     '<img class="picture profile-link" src="' + data.avatar + '" title="Profile Picture - ' + data.nickname + '" />' +
@@ -519,9 +524,9 @@ var Job = {
                                         '<a class="author profile-link" href="./user/' + data.userid +'" >' +
                                             data.nickname +
                                         '</a> ' +
-                                        '<span class="date">' +
+                                        '<a class="date" href="./' + workitem_id + '#comment-' + data.id + '">' +
                                             data.date +
-                                        '</span>' +
+                                        '</a>' +
                                     '</div>' +
                                     '<div class="comment-text">' +
                                          data.comment +
@@ -1077,13 +1082,13 @@ var Job = {
 
     update: function(mode) {
         var data = {};
-        var skills = '';
+        var labels = '';
         $('#labels li input[name^="label"]').each(function() {
             if ($(this).is(':checked')) {
-                skills += (skills.length ? ', ' : '') + $(this).val();
+                labels += (labels.length ? ', ' : '') + $(this).val();
             }
         });
-        data.skills = skills;
+        data.labels = labels;
         if (mode == 'assignee') {
             data.assigned = $('select[name="assigned"]').val();
         }
