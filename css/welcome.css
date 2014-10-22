@@ -18,66 +18,69 @@ body > nav.navbar + .container-fluid > .row {
     }
 }
 
-h2 {
+#welcome h2 {
     font-size: 170%;
     width: 1020px;
 }
 
-h3 {
+#welcome h3 {
     font-size: 80%;
     font-weight: bold;
     margin-bottom: 20px
 }
 
-h2 > strong {
+#welcome h2 > strong {
     display: block;
 }
 
-p {
+#welcome p {
     margin: 15px 0 30px;
 }
 
-table th,
-table td {
+#welcome table th,
+#welcome table td {
     font-size: 80%;
 }
 
 /* columns width settings */
-table tr > td:nth-child(n+1) {
+#welcome table tr > td:nth-child(n+1) {
     width: 56%;
 }
-table tr > td:nth-child(n+2) {
+#welcome table tr > td:nth-child(n+2) {
     width: 33%;
 }
 
 @media (max-width: 480px) {
-
-    table tr > th,
-    table tr > td:nth-child(n+2) {
+    #welcome table tr > th,
+    #welcome table tr > td:nth-child(n+2) {
         display: none;
     }
 }
 
 /* table headers styling */
-table th {
+#welcome table th {
     color: #afaca3;
     font-weight: normal;
 }
 
-table tr + tr {
+#welcome table tr + tr {
     border-top: 1px solid #e0e0e0;
 }
 
-h2, 
-h3,
-table td,
-table td > a {
+#welcome h2,
+#welcome h3,
+#welcome table td,
+#welcome table td > a {
     color: #007F7C;
 }
 
-table td {
+#welcome table td {
     color: #007F7C;
     padding: 3px 0;
+}
+
+#welcome table tr td:nth-child(2) a:not(:last-child):after {
+    content: ', ';
 }
 
 #github {
