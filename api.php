@@ -1366,15 +1366,6 @@ function getProjects($public_only = true) {
     } else {
         // Get listing of active projects
         $projectsOnPage = $projectHandler->getProjects(true,array(), false,false,$public_only);
-        usort($projectsOnPage, function($a, $b) {
-            if ( $b["bCount"] < $a["bCount"] ) return -1;
-            if ( $b["bCount"] > $a["bCount"] ) return 1;
-            if ( $b["cCount"] < $a["cCount"] ) return -1;
-            if ( $b["cCount"] > $a["cCount"] ) return 1;
-            if ( $b["feesCount"] > $a["feesCount"] ) return -1;
-            if ( $b["feesCount"] < $a["feesCount"] ) return 1;
-            return 0;
-        });
     }
 
     // Prepare data for printing in projects
