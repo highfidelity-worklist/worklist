@@ -185,16 +185,30 @@ var Job = {
                                     var budgets = json.budget.active;
                                     for(var i = 0; i < budgets.length; i++) {
                                         var budget = budgets[i],
-                                            link = $('<a>').attr({
+                                            budgetNote = '',
+                                            linkDisabled = false;
+
+                                        var notEnoughFounds = budget.remaining < bidData.amount;
+                                        if (notEnoughFounds) {
+                                            budgetNote = ' - not enough funds';
+                                            linkDisabled = true;
+                                        }
+
+                                        var link = $('<a>').attr({
                                                 budget: budget.id,
                                                 reason: budget.reason,
-                                                remaining: budget.remaining
+                                                remaining: budget.remaining,
+                                                disabled: linkDisabled
                                             });
-                                        link.text(budget.reason + ' ($' + budget.remaining + ')');
-                                        var item = $('<li>').append(link);
+                                        link.text(budget.reason + ' ($' + budget.remaining + budgetNote + ')');
+                                        var item = $('<li>').toggleClass('disabled', linkDisabled).append(link);
                                         $('.modal-footer .dropup ul', modal).append(item);
                                     }
                                     $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                        if ($(this).attr('disabled')) {
+                                            return false;
+                                        }
+
                                         var budget = $(this).attr('budget');
                                         $('input[name="budget_id"]', modal).val(budget);
                                         $('button[name="accept"]', modal).html(
