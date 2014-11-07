@@ -19,8 +19,6 @@ var Job = {
             openNotifyOverlay(status_error, false);
         }
 
-        Job.showUniquePageViews();
-
         $("#tweet-link").click(function() {
             var jobid = $(this).data('jobid');
             var jobsummary = $(this).data('jobsummary');
@@ -1065,16 +1063,6 @@ var Job = {
             }
         });
         return false;
-    },
-
-    showUniquePageViews: function() {
-        $.ajax({
-            url: 'api.php?action=visitQuery&jobid=' + workitem_id,
-            dataType: 'json',
-            success: function (json) {
-                $('.visits').text(json.visits);
-            }
-        });
     },
 
     reviewUrlModal: function(fAfter) {

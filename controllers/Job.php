@@ -857,7 +857,10 @@ class JobController extends Controller {
         $this->write('promptForReviewUrl', $promptForReviewUrl);
         $this->write('status_error', $status_error);
         $this->write('{{userinfotoshow}}', (isset($_REQUEST['userinfotoshow']) && isset($_SESSION['userid'])) ? $_REQUEST['userinfotoshow'] : 0);
-
+        $job_analytics = VisitQueryTools::visitQuery($worklist_id);
+        $this->write('viewCount', $job_analytics['views']);
+        $job_views = ($job_analytics['views'] > 1 ? " views" : " view");
+        $this->write('views', $job_views);
         parent::run();
     }
 
