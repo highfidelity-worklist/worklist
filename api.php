@@ -216,7 +216,7 @@ if(validateAction()) {
                 userNotes();
                 break;
             case 'visitQuery':
-                json_encode(VisitQueryTools::visitQuery((int) $_GET['jobid']));
+                echo json_encode(VisitQueryTools::visitQuery((int) $_GET['jobid']));
                 break;
             case 'wdFee':
                 wdFee();
