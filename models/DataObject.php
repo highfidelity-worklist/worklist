@@ -6,16 +6,6 @@
  * http://highfidelity.io
  */
 
- /* will be moved in config.php as soon as the commit config.php will be available
- */
-if (!defined('SKILLS'))         define('SKILLS', 'skills');
-if (!defined('REVIEWS'))        define('REVIEWS', 'reviews');
-if (!defined('TRANSACTIONS'))   define('TRANSACTIONS', 'transactions');
-if (!defined('MISSIONS_SKILLS'))   define('MISSIONS_SKILLS', 'rel_missions_skills');
-if (!defined('MISSIONS_TRANSACTIONS'))   define('MISSIONS_TRANSACTIONS', 'rel_missions_transactions');
-
-
-
 class DataObject {
     public $link;
     private $lastID;

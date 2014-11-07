@@ -244,67 +244,6 @@ var autocompleteUserSource = function(request, response) {
         getNicknameOnly: true
         }, response );
 };
-/**
- * 
- * @param status
- * @param datasource - pass null if unused.
- * @returns object autocomplete arguments
- */
-function autocompleteMultiple(status, datasource, fAfter) {
-    var autocompleteArguments;
-    autocompleteArguments = {
-        bind: function( event ) {
-            if (event.keyCode === $.ui.keyCode.TAB && 
-                $(this).data("ui-autocomplete") && 
-                $(this).data("ui-autocomplete").menu.active
-            ) {
-                event.preventDefault();
-            }
-   
-        },
-        minLength: 0,
-        focus: function(event, ui) {
-            return false;
-        },
-        select: function( event, ui ) {
-            var terms = autocompleteSplit( this.value );
-            // remove the current input
-            terms.pop();
-            // add the selected item
-            terms.push( ui.item.value );
-            // add placeholder to get the comma-and-space at the end
-            terms.push( "" );
-            this.value = terms.join( ", " );
-
-            if (typeof fAfter == 'function') {
-                fAfter();
-            }
-
-            return false;
-        }
-        
-    };
-    
-    if (status == 'getuserslist') {       
-            autocompleteArguments.source = autocompleteUserSource;
-            autocompleteArguments.search = function() {
-                // custom minLength
-                var term = autocompleteExtractLast(this.value);
-                if ( term.length < 1 ) {
-                  return false;
-                }
-            };
-            
-    } else if (status == 'getskills') {
-        autocompleteArguments.source = function( request, response ) {
-         // delegate back to autocomplete, but extract the last term
-            response( $.ui.autocomplete.filter(
-                    datasource, autocompleteExtractLast( request.term ) ) );
-            };
-    }
-    return autocompleteArguments;
-    
-}
 
 //Code for Add Project
 $(document).ready(function() {

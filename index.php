@@ -1,5 +1,14 @@
 <?php
 /**
+ * Dispatcher class
+ *
+ * Takes care of dispatching the flow of the request/server thread to its
+ * corresponding controller object and method. Also handles arguments sending
+ * too in case they are expected/present.
+ *
+ * This is just a wrapper class that handles a proper running and parsing of
+ * the real dispatcher (Pux), for more information see https://github.com/c9s/Pux
+ *
  * Copyright 2014 - High Fidelity, Inc.
  */
 
@@ -7,147 +16,172 @@ require_once("config.php");
 
 class Dispatcher {
     static public $url = '';
+    static public $dispatcher = null;
 
-    public function run() {
-        self::$url = isset($_GET['url']) ? $_GET['url'] : '';
+    /**
+     * Loads routes used by the app to be used by the dispatcher
+     */
+    static public function loadRoutes() {
+        // root url path routes to Home controller, that will take
+        // the user to /jobs or /welcome if not authenticated
+        self::$dispatcher->any('/', array('Home'));
 
-        $dispatcher = new Pux\Mux;
+        // static routes
+        self::$dispatcher->any('/confirmation', array('Confirmation'));
+        self::$dispatcher->get('/feedlist', array('FeedList'));
+        self::$dispatcher->get('/feeds', array('Feeds'));
+        self::$dispatcher->get('/help', array('Help'));
+        self::$dispatcher->any('/payments', array('Payments'));
+        self::$dispatcher->get('/privacy', array('Privacy'));
+        self::$dispatcher->any('/reports', array('Reports'));
+        self::$dispatcher->any('/resend', array('Resend'));
+        self::$dispatcher->get('/status', array('Status', 'getView'));
+        self::$dispatcher->any('/settings', array('Settings'));
+        self::$dispatcher->get('/team', array('Team'));
+        self::$dispatcher->get('/timeline', array('Timeline'));
+        self::$dispatcher->get('/welcome', array('Welcome'));
+        self::$dispatcher->any('/login', array('Github', 'federated'));
+        self::$dispatcher->any('/signup', array('Github', 'federated'));
 
-        $dispatcher->any('/budget/:method(/:param)', array('Budget'), array(
+        // the /jobs url is actually an alias of /job/listView
+        self::$dispatcher->any('/jobs(/:args)', array('Job', 'listView'), array(
+            'require' => array('args' => '.*'),
+            'default' => array('args' => array())
+        ));
+
+        // as well as /projects is an alias of /project/listView
+        self::$dispatcher->get('/projects', array('Project', 'listView'));
+
+        // uploads is another special case
+        self::$dispatcher->get('/uploads/:args', array('Upload'), array(
+            'require' => array('args' => '.+')
+        ));
+
+        // enable /job_number requests, alias of /job/view/job_number
+        self::$dispatcher->any('/:args', null, array(
+            'require' => array('args' => '\d+'),
+            'default' => array(
+                'controller' => 'job',
+                'method' => 'view',
+                'args' => array()
+            )
+        ));
+
+        // enable /project_name requests, alias of /project/view/project_name
+        self::$dispatcher->any('/:args', null, array(
             'require' => array(
-                'method' => '[a-zA-Z0-9]+',
-                'param' => '.*'
+                'args' => '\w[a-zA-Z0-9-]+'
             ),
-            'default' => array('method' => 'info')
+            'default' => array(
+                'controller' => 'project',
+                'method' => 'view',
+                'args' => array()
+            )
         ));
 
-        $dispatcher->any('/fee/:method(/:param)', array('Fee'), array(
+        // generic route
+        self::$dispatcher->any('/:controller(/:method(/:args))', null, array(
             'require' => array(
-                'method' => '[a-zA-Z0-9]+',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'info')
-        ));
-
-        $dispatcher->any('/jobs/:method(/:param)', array('Jobs'), array(
-            'require' => array(
-                'method' => '.*',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'index')
-        ));
-
-        $dispatcher->get('/confirmation', array('Confirmation'));
-        $dispatcher->post('/confirmation', array('Confirmation'));
-        $dispatcher->get('/feedlist', array('FeedList'));
-        $dispatcher->get('/feeds', array('Feeds'));
-        $dispatcher->get('/forgot', array('Forgot'));
-        $dispatcher->post('/forgot', array('Forgot'));
-
-        $dispatcher->any('/github(/:method)', array('Github'), array(
-            'require' => array('method' => '\w+'),
-            'default' => array('method' => 'index')
-        ));
-        $dispatcher->get('/github/:method(/:param)', array('Github'), array(
-            'require' => array(
+                'controller' => '\w+',
                 'method' => '\w+',
-                'param' => '.*'
+                'args' => '.*'
             ),
-            'default' => array('method' => 'index')
+            'default' => array(
+                'controller' => 'job',
+                'method' => 'listView',
+                'args' => array()
+            )
         ));
+    }
 
-        $dispatcher->any('/file(/:method)', array('File'), array(
-            'require' => array('method' => '\w+'),
-            'default' => array('method' => 'index')
-        ));
-        $dispatcher->any('/file/:method(/:param)', array('File'), array(
-            'require' => array(
-                'method' => '\w+',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'index')
-        ));
-
-        $dispatcher->get('/help', array('Help'));
-        $dispatcher->get('/jobs', array('Jobs'));
-
-        $dispatcher->get('/password', array('Password'));
-        $dispatcher->post('/password', array('Password'));
-        $dispatcher->get('/payments', array('Payments'));
-        $dispatcher->post('/payments', array('Payments'));
-        $dispatcher->get('/privacy', array('Privacy'));
-        $dispatcher->get('/projects', array('Projects'));
-        $dispatcher->get('/reports', array('Reports'));
-        $dispatcher->post('/reports', array('Reports'));
-        $dispatcher->get('/resend', array('Resend'));
-        $dispatcher->post('/resend', array('Resend'));
-        $dispatcher->get('/resetpass', array('ResetPass'));
-        $dispatcher->post('/resetpass', array('ResetPass'));
-        $dispatcher->get('/status', array('Status'));
-        $dispatcher->post('/status', array('Status', 'api'));
-        $dispatcher->get('/settings', array('Settings'));
-        $dispatcher->post('/settings', array('Settings'));
-        $dispatcher->get('/team', array('Team'));
-        $dispatcher->get('/timeline', array('Timeline'));
-        $dispatcher->get('/uploads/:filename', array('Upload'), array('require' => array('filename' => '.+')));
-
-        $dispatcher->any('/user/:method(/:param)', array('User'), array(
-            'require' => array(
-                'method' => '[a-zA-Z0-9][a-zA-Z0-9-]+',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'index')
-        ));
-        $dispatcher->post('/user/:id', array('User'));
-
-        $dispatcher->get('/welcome', array('Welcome'));
-
-        $dispatcher->get('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
-        $dispatcher->post('/:id', array('Job', 'view'), array('require' => array('id' => '\d+')));
-        $dispatcher->get('/:id/edit', array('Job', 'edit'), array('require' => array('id' => '\d+')));
-        $dispatcher->any('/job/:method(/:param)', array('Job'), array(
-            'require' => array(
-                'method' => '[a-zA-Z0-9]+',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'index')
-        ));
-
-        $dispatcher->any('/:id', array('Project', 'view'));
-        $dispatcher->any('/project/:method(/:param)', array('Project'), array(
-            'require' => array(
-                'method' => '[a-zA-Z0-9]+',
-                'param' => '.*'
-            ),
-            'default' => array('method' => 'run')
-        ));
-
-        $dispatcher->any('/login', array('Github', 'federated'));
-        $dispatcher->any('/signup', array('Github', 'federated'));
-
+    /**
+     * Call route loads, process requested url and dispatchs to controllers
+     */
+    static public function dispatch() {
         try {
-            $route = $dispatcher->dispatch('/' . self::$url);
-            $controller = isset($route[2][0]) ? $route[2][0] : DEFAULT_CONTROLLER_NAME;
+            self::$url = isset($_GET['url']) ? $_GET['url'] : '';
+            self::$dispatcher = new Pux\Mux;
+            self::loadRoutes();
 
+            // real dispatcher (Pux) call
+            $route = self::$dispatcher->dispatch('/' . self::$url);
+
+            // shorthand pointers to processed route variables
+            $vars = array_key_exists(3 , $route) && array_key_exists('vars', $route[3])
+                ? $route[3]['vars']
+                : array();
+            $default = array_key_exists(3 , $route) && array_key_exists('default', $route[3])
+                ? $route[3]['default']
+                : array();
+
+            // parse controller name from the processed route
+            $controller = ucfirst(!is_null($route[2]) && array_key_exists(0, $route[2])
+                // search for controller name at static params
+                ? $route[2][0]
+                : (array_key_exists('controller', $vars)
+                    // if not present, look at values returned by route variables
+                    ? $vars['controller']
+                    : (array_key_exists('controller', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['controller']
+                        // non of the attempts worked (worst case)
+                        // let's use a hardcoded one
+                        : DEFAULT_CONTROLLER_NAME
+                    )
+                )
+            );
+
+            // all controller must have the Controller suffix
             if (strlen($controller) < 10 || substr($controller, -10) != 'Controller') {
                 $controller .= 'Controller';
             }
 
-            $method = isset($route[2][1]) ? $route[2][1] : DEFAULT_CONTROLLER_METHOD;
-
-            $variables = isset($route[3]['variables']) ? $route[3]['variables'] :  array();
-            $values = isset($route[3]['vars']) ? $route[3]['vars'] : array();
-            $params = array();
-            foreach($variables as $variable) {
-                if (isset($values[$variable])) {
-                    $params[$variable] = $values[$variable];
-                }
-            }
-
+            // let's instantiate the controller so if it not exists, should fire
+            // an exception and the rest of the code in this method won't run
             $Controller = new $controller();
-            call_user_func_array(array($Controller, $method), $params);
-        } catch(Exception $e) {
 
+            // parse method name from the processed route
+            $method = (!is_null($route[2]) && array_key_exists(1, $route[2])
+                // search for method name at static params
+                ? $route[2][1]
+                : (array_key_exists('method', $vars)
+                    // if not present, look at values returned by route variables
+                    ? $vars['method']
+                    : (array_key_exists('method', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['method']
+                        // non of the attempts worked (worst case)
+                        // let's use a hardcoded one
+                        : DEFAULT_CONTROLLER_METHOD
+                    )
+                )
+            );
+
+            // parse arguments to be sent to the controller method from the processed route
+            $args = (!is_null($route[2]) && array_key_exists(2, $route[2])
+                // search for static arguments
+                ? $route[2][3]
+                : (!is_null($route[3]) && array_key_exists('args', $vars)
+                    // if not present, look at values returned by route variables
+                    ? preg_split('/\//', $vars['args'])
+                    : (!is_null($default) && array_key_exists('args', $default)
+                        // on failure, take the default route variable if set
+                        ? $default['args']
+                        // non of the attempts worked (worst case)
+                        // let's not send arguments at all
+                        : array()
+                    )
+                )
+            );
+
+            // there we go
+            call_user_func_array(array($Controller, $method), $args);
+        } catch(Exception $e) {
+            // TO-DO:
+            // probably we couldn't dispatch the request because of
+            // an unreachable controller method so we should show a
+            // 404 page or handle the exception in a proper way
+            error_log('Dispatcher::dispatch: ' . $e->getMessage());
         }
     }
 }

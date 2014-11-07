@@ -21,7 +21,7 @@ class WelcomeView extends View {
             $ret[] = array(
                 'id' => $workitem->getId(),
                 'summary' => $workitem->getSummary(),
-                'skills' => implode(', ', $workitem->getSkills()),
+                'labels' => $workitem->getLabels(),
                 'project' => $project->getName()
             );
         }

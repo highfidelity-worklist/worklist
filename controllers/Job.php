@@ -8,35 +8,17 @@ require_once('models/Budget.php');
 require_once('models/Users_Favorite.php');
 
 class JobController extends Controller {
-
     public $is_runner = 0;
     public $is_internal = 0;
-    public function run($action, $param = '') {
-        $method = '';
-        switch($action) {
-            case 'view':
-            case 'add':
-            case 'toggleInternal':
-            case 'toggleFollowing':
-            case 'startCodeReview':
-            case 'cancelCodeReview':
-            case 'endCodeReview':
-            case 'updateSandboxUrl':
-            case 'search':
-            case 'edit':
-                $method = $action;
-                break;
-            default:
-                if (is_numeric($action)) {
-                    $method = 'view';
-                    $param = (int) $action;
-                } else {
-                    Utils::redirect('./');
-                }
-                break;
-        }
-        $params = preg_split('/\//', $param);
-        call_user_func_array(array($this, $method), $params);
+
+    /**
+     * Non existing method call will fall to run this method, so here
+     * we guess that the requestor is trying to reach a specific job.
+     * Let's take it's arguments and route to the right process path.
+     */
+    public function __call($id, $arguments) {
+        $arguments = array_merge(array($id), $arguments);
+        call_user_func_array(array($this, 'view'), $arguments);
     }
 
     public function view($job_id) {
@@ -919,7 +901,7 @@ class JobController extends Controller {
         $itemid = $_REQUEST['itemid'];
         $summary = $_REQUEST['summary'];
         $project_id = $_REQUEST['project_id'];
-        $skills = $_REQUEST['skills'];
+        $labels = $_REQUEST['labels'];
         $status = (Project::isAllowedRunnerForProject($user->getId(), $_REQUEST['project_id'])
                    || ($user->getIs_admin() == 1 && $user->getIs_runner())) ? $_REQUEST['status'] : 'Suggestion';
         $notes = $_REQUEST['notes'];
@@ -943,12 +925,12 @@ class JobController extends Controller {
             $workitem_added = true;
         }
         $workitem->setSummary($summary);
-        $skillsArr = explode(',', $skills);
+        $labelsArr = explode(',', $labels);
         $workitem->setRunnerId($runner_id);
         $workitem->setProjectId($project_id);
         $workitem->setStatus($status);
         $workitem->setNotes($notes);
-        $workitem->setWorkitemSkills($skillsArr);
+        $workitem->setWorkitemLabels($labelsArr);
         $workitem->setIs_internal($is_internal);
         $workitem->setAssigned_id($assigned_id);
         $workitem->save();
@@ -1498,6 +1480,7 @@ class JobController extends Controller {
         $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
         $filter->setParticipated($_REQUEST['participated']);
         $filter->setFollowing(empty($_REQUEST["following"]) ? 0 : $_REQUEST["following"]);
+        $filter->setLabels(empty($_REQUEST["labels"]) ? '' : $_REQUEST["labels"]);
         echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$user->is_runner, !$user->isInternal()));
     }
 
@@ -1600,29 +1583,29 @@ class JobController extends Controller {
                 }
             }
 
-            if (isset($_REQUEST['skills']) && !empty($_REQUEST['skills'])) {
-                $skillsArr = explode(',', $_REQUEST['skills']);
+            if (isset($_REQUEST['labels']) && !empty($_REQUEST['labels'])) {
+                $labelsArr = explode(',', $_REQUEST['labels']);
                 // remove empty values
-                foreach ($skillsArr as $key => $value) {
-                    $skillsArr[$key] = trim($value);
+                foreach ($labelsArr as $key => $value) {
+                    $labelsArr[$key] = trim($value);
                     if (empty($value)) {
-                        unset($skillsArr[$key]);
+                        unset($labelsArr[$key]);
                     }
                 }
-                // get current skills
-                $skillsCur = $workitem->getSkills();
-                // have skills been updated?
-                $skillsDiff = array_diff($skillsArr, $skillsCur);
-                if (is_array($skillsDiff) && !empty($skillsDiff)) {
+                // get current labels
+                $labelsCur = $workitem->getLabels();
+                // have labels been updated?
+                $labelsDiff = array_diff($labelsArr, $labelsCur);
+                if (is_array($labelsDiff) && !empty($labelsDiff)) {
                     if ($workitem->getStatus() != 'Draft') {
-                        $new_update_message .= 'Skills updated: ' . implode(', ', $skillsArr);
+                        $new_update_message .= 'Labels updated: ' . implode(', ', $labelsArr);
                     }
                     // remove nasty end comma
                     $new_update_message = rtrim($new_update_message, ', ') . '. ';
-                    $job_changes[] = '-skills';
+                    $job_changes[] = '-labels';
                 }
 
-                $workitem->setWorkitemSkills($skillsArr);
+                $workitem->setWorkitemLabels($labelsArr);
                 $workitem->save();
             }
 
@@ -1823,5 +1806,82 @@ class JobController extends Controller {
             $statusList = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass", "Suggestion");
         }
         return $statusList;
+    }
+
+    public function listView($projectName = null, $filterName = null) {
+        $this->view = new JobsView();
+        // $nick is setup above.. and then overwritten here -- lithium
+        $nick = '';
+        $userId = getSessionUserId();
+        if ($userId > 0) {
+            initUserById($userId);
+            $user = new User();
+            $user->findUserById($userId);
+            // @TODO: this is overwritten below..  -- lithium
+            $nick = $user->getNickname();
+            $userbudget =$user->getBudget();
+            $budget = number_format($userbudget);
+            $this->is_internal = $user->isInternal();
+        }
+
+        $this->is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
+        $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
+        $is_admin = !empty($_SESSION['is_admin']) ? 1 : 0;
+
+        $workitem = new WorkItem();
+
+        $filter = new Agency_Worklist_Filter();
+
+        // krumch 20110418 Set to open Worklist from Journal
+        $filter->initFilter();
+        $filter->setName('.worklist');
+
+        if (! empty($_REQUEST['status'])) {
+            $filter->setStatus($_REQUEST['status']);
+        } else {
+            $filter->setStatus('ALL');
+        }
+
+        if ($projectName != null && $projectName != "all") {
+            $project = Project::find($projectName);
+            if ($project) {
+                $filter->setProjectId($project->getProjectId());
+            } else {
+                $filter->setProjectId(0);
+            }
+        } else {
+            $filter->setProjectId(0);
+        }
+
+        if (! empty($_REQUEST['user'])) {
+            $filter->setUser($_REQUEST['user']);
+        } else {
+           $filter->setUser(0);
+        }
+
+        if (! empty($_REQUEST['query'])) {
+            $filter->setQuery($_REQUEST['query']);
+        } else {
+            $filter->setQuery("");
+        }
+
+        $filter->setFollowing(($filterName != null && $filterName == "following") ? true : false);
+        $filter->setStatus(($filterName != null && $filterName != "following") ? $filterName : "Draft,Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
+        $filter->setLabels(array_slice(func_get_args(), 2));
+
+        // Prevent reposts on refresh
+        if (! empty($_POST)) {
+            unset($_POST);
+            $this->view = null;
+            Utils::redirect('./jobs');
+            exit();
+        }
+
+        $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
+
+        $this->write('filter', $filter);
+        $this->write('req_status', isset($_GET['status']) ? $_GET['status'] : '');
+        $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
+        parent::run();
     }
 }

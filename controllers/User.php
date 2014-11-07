@@ -6,40 +6,14 @@ require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
 
 class UserController extends Controller {
-    public function run($action, $param = '') {
-        $method = '';
-        switch($action) {
-            case 'exists':
-            case 'index':
-            case 'budget':
-            case 'countries':
-            case 'avatar':
-            case 'following':
-            case 'workingJobs':
-            case 'reviewJobs':
-            case 'completedJobs':
-            case 'doneJobs':
-            case 'totalJobs':
-            case 'designerJobs':
-            case 'activeJobs':
-            case 'love':
-            case 'latestEarnings':
-            case 'projectHistory':
-            case 'counts':
-            case 'suggestMentions':
-            case 'review':
-            case 'payBonus':
-            case 'setW9Status':
-            case 'budgetHistory':
-                $method = $action;
-                break;
-            default:
-                $method = 'info';
-                $param = $action;
-                break;
-        }
-        $params = preg_split('/\//', $param);
-        call_user_func_array(array($this, $method), $params);
+    /**
+     * Non existing method call will fall to run this method, so here
+     * we guess that the requestor is trying to get a user profile.
+     * Let's take it's arguments and route to the right process path.
+     */
+    public function __call($id, $arguments) {
+        $arguments = array_merge(array($id), $arguments);
+        call_user_func_array(array($this, 'info'), $arguments);
     }
 
     public function exists($id) {
@@ -610,5 +584,4 @@ class UserController extends Controller {
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
         echo json_encode($user->budgetHistory($giver_id, $page, $itemsPerPage));
     }
-
 }
