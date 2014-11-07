@@ -1151,7 +1151,7 @@ class JobController extends Controller {
             $workitem->setCRStarted(0);
             $workitem->setCReviewerId(0);
             $workitem->save();
-            $journal_message = '@' . $user->getNickname() . ' has canceled their code review for #' . $workitem_id;
+            $journal_message = '@' . $user->getNickname() . ' has canceled their code review for #' . $id. ' ';
             sendJournalNotification($journal_message);
             Notification::workitemNotifyHipchat(array(
                 'type' => 'code-review-canceled',
