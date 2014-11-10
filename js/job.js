@@ -186,7 +186,7 @@ var Job = {
                                             budgetNote = '',
                                             linkDisabled = false;
 
-                                        var notEnoughFounds = budget.remaining < bidData.amount;
+                                        var notEnoughFounds = parseFloat(budget.remaining) < parseFloat(bidData.amount);
                                         if (notEnoughFounds) {
                                             budgetNote = ' - not enough funds';
                                             linkDisabled = true;
@@ -849,7 +849,7 @@ var Job = {
                                             budgetNote = '',
                                             linkDisabled = false;
 
-                                        var notEnoughFounds = budget.remaining < totalSelectdBidsAmount;
+                                        var notEnoughFounds = parseFloat(budget.remaining) < parseFloat(totalSelectdBidsAmount);
                                         if (notEnoughFounds) {
                                             budgetNote = ' - not enough funds';
                                             linkDisabled = true;
