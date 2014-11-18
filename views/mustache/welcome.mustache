@@ -3,37 +3,40 @@
         <strong>Worklist is High Fidelity's exoskeleton</strong>
         for rapid software development.
     </h2>
-    <iframe width="804" height="452" src="//www.youtube.com/embed/_oDs_FkWBwY" frameborder="0" allowfullscreen></iframe>
-    <p>
-        High Fidelity is an open source virtual world platform. We are
-        building the software with a mix of full-time developers, part
-        time developers who are paid here on the worklist, and open
-        source collaborators. As use of the virtual world grows, Worklist
-        will also host paid projects run by other teams.
-    </p>
-    {{#areBiddingJobs}}
-    <h3>Here are some of the jobs you can bid on now:</h3>
-    <table>
-        <tr>
-            <th>Description</th>
-            <th>Labels</th>
-            <th>Project</th>
-        </tr>
-        {{#biddingJobs}}
-        <tr>
-            <td><a href="./{{id}}">{{summary}}</a></td>
-            <td>
-                {{#labels}}
-                  {{#checked}}
-                    <a href="./jobs/0/0/{{label}}">{{label}}</a>
-                  {{/checked}}
-                {{/labels}}
-            </td>
-            <td><a href="./{{project}}">{{project}}</a></td>
-        </tr>
-        {{/biddingJobs}}
-    </table>
-    {{/areBiddingJobs}}
+    <div class="col-sm-12 col-md-12 dd-max-width welcome-introduction">
+        <div class="col-sm-6 col-md-6 dd-max-width">
+            <h3>An introduction to Worklist</h3>
+            <iframe  src="//www.youtube.com/embed/_oDs_FkWBwY" frameborder="0" allowfullscreen></iframe>
+            <h3>The Worklist workflow</h3>
+            <a href="assets/worklist-workflow.pdf" class="worklist-workflow"><img src="images/worklist-workflow.svg"></img></a>
+            <p>
+                Worklist uses a developer-focused
+                workflow that, after a few jobs, will
+                feel natural, quick, and prowerful.
+                <a href="assets/worklist-workflow.pdf">View the activity diagram</a> to fully
+                understand it.
+            </p>
+        </div>
+        <div class="col-sm-6 col-md-6 dd-max-width">
+            <h3>What is High Fidelity ?</h3>
+            <p>
+                High Fidelity is an open source virtual world platform. We are
+                building the software with a mix of full-time developers, part
+                time developers who are paid here on the worklist, and open
+                source collaborators. As use of the virtual world grows, Worklist
+                will also host paid projects run by other teams.
+            </p>
+            {{#areBiddingJobs}}
+                <h3>You can bid on these jobs now</h3>
+                <h4>Description</h4>
+                <ul>
+                    {{#biddingJobs}}
+                        <li><a href="./{{id}}">{{summary}}</a></li>
+                    {{/biddingJobs}}
+                </ul>
+            {{/areBiddingJobs}}
+        </div>
+    </div>
 </div>
 <section id="github">
     <a href="./github/login">Log in with GitHub</a>

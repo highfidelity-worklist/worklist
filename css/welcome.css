@@ -3,7 +3,7 @@ body > nav.navbar + .container-fluid {
 }
 
 body > nav.navbar + .container-fluid > .row {
-    margin: 0 5%;
+    margin: 0 auto;
 }
 
 @media (max-width: 1024px) {
@@ -20,67 +20,157 @@ body > nav.navbar + .container-fluid > .row {
 
 #welcome h2 {
     font-size: 170%;
-    width: 1020px;
 }
 
 #welcome h3 {
-    font-size: 80%;
     font-weight: bold;
-    margin-bottom: 20px
+    margin-bottom: 12px;
+    margin-top: 35px;
 }
 
 #welcome h2 > strong {
     display: block;
 }
 
-#welcome p {
-    margin: 15px 0 30px;
+#welcome h2,
+#welcome h3 {
+    color: #007F7C;
 }
 
-#welcome table th,
-#welcome table td {
-    font-size: 80%;
+div.welcome-introduction,
+div.welcome-introduction > div {
+    padding: 0px;
 }
 
-/* columns width settings */
-#welcome table tr > td:nth-child(n+1) {
-    width: 56%;
-}
-#welcome table tr > td:nth-child(n+2) {
-    width: 33%;
+div.welcome-introduction div:nth-child(1) iframe {
+    width: 375px;
+    height: 210px;
+    margin-bottom: 10px;
 }
 
-@media (max-width: 480px) {
-    #welcome table tr > th,
-    #welcome table tr > td:nth-child(n+2) {
-        display: none;
+a.worklist-workflow {
+    display: block;
+    width: 375px;
+    margin-bottom: 20px;
+}
+
+div.welcome-introduction div:nth-child(2) h3:nth-child(3) {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 17px;
+}
+
+div.welcome-introduction div:nth-child(2) h4 {
+    font-size: 16px;
+    padding-top: 6px;
+    color: #666;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 6px;
+}
+
+div.welcome-introduction div:nth-child(2) ul {
+    padding: 0px;
+    list-style: none;
+}
+
+div.welcome-introduction div:nth-child(2) ul li {
+    font-size: 20px;
+    padding-top: 0px;
+    border-bottom: 1px solid #ccc;
+    color: #017f7c;
+    margin-bottom: 5px;
+    overflow: hidden;
+    position: relative;
+    height: 25px;
+}
+
+div.welcome-introduction div:nth-child(2) ul li a {
+    display: block;
+    color: #017f7c;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+div.welcome-introduction div:nth-child(1) p {
+    font-size: 24px;
+    width: 375px;
+}
+
+div.welcome-introduction div:nth-child(2) p {
+    font-size: 24px;
+    width: 358px;
+}
+
+div.welcome-introduction div:nth-child(1) p a {
+    color: #017f7c;
+    text-decoration: underline;
+}
+
+div.welcome-introduction div:nth-child(2) {
+    width: 360px;
+}
+
+div.welcome-introduction div:nth-child(2) ul li:after {
+    content: "";
+    width: 80px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 56%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(56%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    background: linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 56%,rgba(255,255,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );
+}
+
+div.welcome-introduction div:nth-child(2) h3:nth-child(1) {
+    margin-bottom: 3px !important;
+}
+
+@media (max-width: 960px) {
+    body > .container-fluid {
+        max-width: 848px;
+        margin: 0px auto;
     }
 }
 
-/* table headers styling */
-#welcome table th {
-    color: #afaca3;
-    font-weight: normal;
+@media (max-width: 848px) {
+    body > nav.navbar + .container-fluid {
+        font-size: 1.4em;
+    }
+
+    div.welcome-introduction div:nth-child(1) iframe {
+        width: 335px;
+        height: 195px;
+    }
+
+    a.worklist-workflow {
+        width: 335px;
+    }
 }
 
-#welcome table tr + tr {
-    border-top: 1px solid #e0e0e0;
-}
+@media (max-width: 768px) {
+    div.welcome-introduction div:nth-child(1) iframe {
+        width: 100%;
+        height: 260px;
+    }
 
-#welcome h2,
-#welcome h3,
-#welcome table td,
-#welcome table td > a {
-    color: #007F7C;
-}
+    body > nav.navbar + .container-fluid {
+        font-size: 1em;
+    }
 
-#welcome table td {
-    color: #007F7C;
-    padding: 3px 0;
-}
+    a.worklist-workflow,
+    div.welcome-introduction div:nth-child(2),
+    div.welcome-introduction p {
+        width: auto !important;
+    }
 
-#welcome table tr td:nth-child(2) a:not(:last-child):after {
-    content: ', ';
+    div.welcome-introduction h3 {
+        font-size: 20px;
+    }
 }
 
 #github {
