@@ -1001,7 +1001,7 @@ class Project {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
             $members = $client->api('organizations')->teams()->members($team_id);
             return $members;
         } catch(Exception $e) {
@@ -1016,7 +1016,7 @@ class Project {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
             foreach ($teams as $team) {
@@ -1042,7 +1042,7 @@ class Project {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
                 'name' => $repo_info['name'] . 'CodeReviewers',
@@ -1085,7 +1085,7 @@ class Project {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
             $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
             return true;
         } catch(Exception $e) {
@@ -1105,7 +1105,7 @@ class Project {
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
             $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
             return true;
         } catch(Exception $e) {
