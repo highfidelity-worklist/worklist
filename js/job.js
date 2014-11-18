@@ -19,8 +19,6 @@ var Job = {
             openNotifyOverlay(status_error, false);
         }
 
-        Job.showUniquePageViews();
-
         $("#tweet-link").click(function() {
             var jobid = $(this).data('jobid');
             var jobsummary = $(this).data('jobsummary');
@@ -185,16 +183,30 @@ var Job = {
                                     var budgets = json.budget.active;
                                     for(var i = 0; i < budgets.length; i++) {
                                         var budget = budgets[i],
-                                            link = $('<a>').attr({
+                                            budgetNote = '',
+                                            linkDisabled = false;
+
+                                        var notEnoughFounds = parseFloat(budget.remaining) < parseFloat(bidData.amount);
+                                        if (notEnoughFounds) {
+                                            budgetNote = ' - not enough funds';
+                                            linkDisabled = true;
+                                        }
+
+                                        var link = $('<a>').attr({
                                                 budget: budget.id,
                                                 reason: budget.reason,
-                                                remaining: budget.remaining
+                                                remaining: budget.remaining,
+                                                disabled: linkDisabled
                                             });
-                                        link.text(budget.reason + ' ($' + budget.remaining + ')');
-                                        var item = $('<li>').append(link);
+                                        link.text(budget.reason + ' ($' + budget.remaining + budgetNote + ')');
+                                        var item = $('<li>').toggleClass('disabled', linkDisabled).append(link);
                                         $('.modal-footer .dropup ul', modal).append(item);
                                     }
                                     $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                        if ($(this).attr('disabled')) {
+                                            return false;
+                                        }
+
                                         var budget = $(this).attr('budget');
                                         $('input[name="budget_id"]', modal).val(budget);
                                         $('button[name="accept"]', modal).html(
@@ -806,6 +818,7 @@ var Job = {
                     job_id: workitem_id,
                     bids: json.bids,
                     open: function(modal) {
+                        var bids = json.bids;
                         $.ajax({
                             url: './user/budget/' + userId,
                             dataType: 'json',
@@ -814,36 +827,71 @@ var Job = {
                                     return;
                                 }
                                 var budgets = json.budget.active;
-                                for(var i = 0; i < budgets.length; i++) {
-                                    var budget = budgets[i],
-                                        link = $('<a>').attr({
+
+                                $('input[id^="multiple_accept_"]').click(function(event) {
+                                    $('button[name="accept_multiple_bid"]', modal).remove();
+                                    $('input[name="budget_id"]', modal).val('');
+                                    $('button[name="accept"]', modal).html('Accept <span class="caret"></span>');
+                                    $('.modal-footer .dropup ul li:not(.dropdown-header)', modal).remove();
+                                    updateBudgetsList();
+                                });
+
+                                var updateBudgetsList = function() {
+                                    var totalSelectdBidsAmount = 0;
+                                    for (var i = 0; i < bids.length; i++) {
+                                        var bid = bids[i];
+                                        if ($('input[id="multiple_accept_' + bid.id + '"]').is(':checked')) {
+                                            totalSelectdBidsAmount += parseFloat(bid.bid_amount);
+                                        }
+                                    }
+                                    for(var i = 0; i < budgets.length; i++) {
+                                        var budget = budgets[i],
+                                            budgetNote = '',
+                                            linkDisabled = false;
+
+                                        var notEnoughFounds = parseFloat(budget.remaining) < parseFloat(totalSelectdBidsAmount);
+                                        if (notEnoughFounds) {
+                                            budgetNote = ' - not enough funds';
+                                            linkDisabled = true;
+                                        }
+
+                                        var link = $('<a>').attr({
                                             budget: budget.id,
                                             reason: budget.reason,
-                                            remaining: budget.remaining
+                                            remaining: budget.remaining,
+                                            disabled: linkDisabled
                                         });
-                                    link.text(budget.reason + ' ($' + budget.remaining + ')');
-                                    var item = $('<li>').append(link);
-                                    $('.modal-footer .dropup ul', modal).append(item);
-                                }
-                                $('.modal-footer .dropup ul a', modal).click(function(event) {
-                                    var budget = $(this).attr('budget');
-                                    $('input[name="budget_id"]', modal).val(budget);
-                                    $('button[name="accept"]', modal).html(
-                                        '<span>' + $(this).attr('reason') + '</span> ' +
-                                        '($' + $(this).attr('remaining') + ') ' +
-                                        '<span class="caret"></span>'
-                                    );
-                                    if (!$('button[name="accept_bid"]', modal).length) {
-                                        var confirm = $('<button>')
-                                            .attr({
-                                                type: 'submit',
-                                                name: 'accept_multiple_bid'
-                                            })
-                                            .addClass('btn btn-primary')
-                                            .text('Confirm Accept');
-                                        $('.modal-footer', modal).append(confirm);
+                                        link.text(budget.reason + ' ($' + budget.remaining + budgetNote + ')');
+
+                                        var item = $('<li>').toggleClass('disabled', linkDisabled).append(link);
+                                        $('.modal-footer .dropup ul', modal).append(item);
                                     }
-                                })
+
+                                    $('.modal-footer .dropup ul a', modal).click(function(event) {
+                                        if ($(this).attr('disabled')) {
+                                            return false;
+                                        }
+                                        var budget = $(this).attr('budget');
+                                        $('input[name="budget_id"]', modal).val(budget);
+                                        $('button[name="accept"]', modal).html(
+                                            '<span>' + $(this).attr('reason') + '</span> ' +
+                                            '($' + $(this).attr('remaining') + ') ' +
+                                            '<span class="caret"></span>'
+                                        );
+                                        if (!$('button[name="accept_multiple_bid"]', modal).length) {
+                                            var confirm = $('<button>')
+                                                .attr({
+                                                    type: 'submit',
+                                                    name: 'accept_multiple_bid'
+                                                })
+                                                .addClass('btn btn-primary')
+                                                .text('Confirm Accept');
+                                            $('.modal-footer', modal).append(confirm);
+                                        }
+                                    });
+                                }
+
+                                updateBudgetsList();
                             }
                         });
                         $('button[name="accept_bid"]', modal).click(function(event) {
@@ -1015,16 +1063,6 @@ var Job = {
             }
         });
         return false;
-    },
-
-    showUniquePageViews: function() {
-        $.ajax({
-            url: 'api.php?action=visitQuery&jobid=' + workitem_id,
-            dataType: 'json',
-            success: function (json) {
-                $('.visits').text(json.visits);
-            }
-        });
     },
 
     reviewUrlModal: function(fAfter) {

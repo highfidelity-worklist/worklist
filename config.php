@@ -1317,6 +1317,8 @@ defineOnce('PAYPAL_ENVIRONMENT', 'sandbox'); // 'sandbox' or 'beta-sandbox' or '
 
 defineOnce('CODE_REVIEW_ADMINS', 'joanneci,kordero,birarda');
 
+defineOnce('PROJECT_LISTING_PRIORITY', 'hifi,stack-manager,hifi-docs,hifi-website,worklist,data,base8,baseios,DSDNS,love');
+
 require_once('vendor/autoload.php');
 require_once('functions.php');
 

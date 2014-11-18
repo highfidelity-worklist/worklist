@@ -110,4 +110,37 @@ class VisitQueryTools {
         return($data);
 
     }
+
+    function visitQuery($jobid = 0) {
+        /*
+        * Google Analytics API Token
+        * New tokens can be created by calling auth.php in the subdir resources
+        */
+        $token = GOOGLE_ANALYTICS_TOKEN;
+        /* site ids can be obtained from analytics
+        * by logging into the profile, it's currently
+        * called Profile ID on screen
+        */
+        $ids = GOOGLE_ANALYTICS_PROFILE_ID;
+
+        if ($jobid > 0) {
+            $results = VisitQueryTools::getJobResults($jobid, $token, $ids);
+        } elseif ($jobid === 0) {
+            $results = VisitQueryTools::getAllJobResults($token, $ids);
+        }
+        if (!isset($results)) {
+            $data = array("visits" => 0, "views" => 0);
+        } else {
+            if(!isset($results['error'])) {
+                if ($jobid === 0) {
+                    $data = VisitQueryTools::parseItems($results['result']);
+                } else {
+                    $data = VisitQueryTools::parseItem($results['result']);
+                }
+            } else {
+                $data = array("visits" => 0, "views" => 0);
+            }
+        }
+        return $data;
+    }
 }
