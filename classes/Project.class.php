@@ -678,61 +678,53 @@ class Project {
         Return an array of all projects containing all fields
     **/
     public function getProjects($active = true, $selections = array(), $onlyInactive = false, $namesOnly = false, $public_only = true) {
-        $query = "
-            SELECT
-                " . ((count($selections) > 0) ? implode(",", $selections) : "*") . "
-            FROM
-                `" . PROJECTS . "`" ."
-            WHERE
-                `" . PROJECTS . "`.internal = 1  AND `" . PROJECTS . "`.active = 1
-            ORDER BY name ASC";
+         $priorityOrder = '0';
+         $priorityProjects = preg_split('/,/', PROJECT_LISTING_PRIORITY);
+         if (count($priorityProjects)) {
+              $priorityOrder = ' CASE ';
+              for($i = 0; $i < count($priorityProjects); $i++) {
+                   $projectName = mysql_real_escape_string($priorityProjects[$i]);
+                   $priorityOrder .= " WHEN `p`.name = '" . $projectName . "' THEN " . $i;
+              }
+              $priorityOrder .= ' ELSE 9999 END';
+         }
+         $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
+         $query = "
+             SELECT " . ((count($selections) > 0) ? implode(",", $selections) : "*") . ",
+             (
+                 SELECT SUM(w1.status IN ('Done', 'Merged'))
+                 FROM " . WORKLIST . " w1
+                 WHERE w1.project_id = p.project_id " . $internalCond . "
+             ) AS cCount,
+             (
+                 SELECT SUM(w2.status IN ('In Progress', 'Review', 'QA Ready'))
+                  FROM " . WORKLIST . " w2
+                  WHERE w2.project_id = p.project_id " . $internalCond . "
+             ) AS uCount,
+             (
+                 SELECT SUM(status='Bidding')
+                 FROM " . WORKLIST . " w3
+                 WHERE w3.project_id = p.project_id " . $internalCond . "
+             ) AS bCount,
+             (
+                 SELECT SUM(f.amount)
+                 FROM " . FEES . " f
+                 JOIN " . WORKLIST . " w4
+                   ON f.worklist_id = w4.id
+                 WHERE f.withdrawn = 0
+                 AND w4.project_id = p.`project_id`
+                 AND w4.status IN ('Merged', 'Done')
+             ) AS feesCount
+             FROM
+              `" . PROJECTS . "` `p`
+             WHERE
+                 `p`.internal = 1  AND `p`.active = 1
+             ORDER BY " . $priorityOrder . " ASC, name ASC";
 
         $result = mysql_query($query);
-
-        if (mysql_num_rows($result)) {
+        if ($result && mysql_num_rows($result)) {
             while ($project = mysql_fetch_assoc($result)) {
-                if (!$namesOnly) {
-                    $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
-                    $query = "SELECT
-                                SUM(status IN ('Done', 'Merged')) AS completed,
-                                SUM(status IN ('In Progress', 'Review', 'QA Ready')) AS underway,
-                                SUM(status='Bidding') AS bidding
-                              FROM
-                                " . WORKLIST . "
-                              WHERE
-                                project_id = " . $project['project_id']
-                                .$internalCond;
-                    $resultCount = mysql_query($query);
-                    $resultCount = mysql_fetch_object($resultCount);
-
-                    $feesCount = 0;
-                    $bCount = $resultCount->bidding === NULL ? 0 : $resultCount->bidding;
-                    $uCount = $resultCount->underway === NULL ? 0 : $resultCount->underway;
-                    $cCount = $resultCount->completed === NULL ? 0 : $resultCount->completed;
-
-                    if($cCount) {
-                        $feesQuery = "SELECT SUM(F.amount) as fees_sum
-                                FROM " . FEES . " F,
-                                " . WORKLIST . " W
-                                WHERE F.worklist_id = W.id
-                                AND F.withdrawn = 0
-                                AND W.project_id = " . $project['project_id'] . "
-                                AND W.status IN ('Merged', 'Done')";
-                        $feesQueryResult = mysql_query($feesQuery);
-                        if (mysql_num_rows($feesQueryResult)) {
-                            $feesCountArray = mysql_fetch_array($feesQueryResult);
-                            if($feesCountArray['fees_sum']) {
-                                $feesCount = number_format($feesCountArray['fees_sum'],0,'',',');
-                            }
-                        }
-                    }
-
-                    $project['bCount'] = $bCount;
-                    $project['uCount'] = $uCount;
-                    $project['cCount'] = $cCount;
-                    $project['feesCount'] = $feesCount;
-                }
-                $projects[$project['project_id']] = $project;
+                $projects[] = $project;
             }
             return $projects;
         }
@@ -1003,13 +995,14 @@ class Project {
             if (!$team_id) {
                 return array();
             }
-
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $members = $client->api('organizations')->teams()->members($team_id);
             return $members;
         } catch(Exception $e) {
@@ -1019,12 +1012,14 @@ class Project {
 
     public function codeReviewersGitHubTeamId() {
         try {
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
             foreach ($teams as $team) {
@@ -1044,13 +1039,14 @@ class Project {
             if ($team_id) {
                 return null;
             }
-
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
                 'name' => $repo_info['name'] . 'CodeReviewers',
@@ -1065,13 +1061,30 @@ class Project {
 
     public function isCodeReviewer($user_id = false) {
         $user = User::find($user_id);
-        $reviewers = $this->getCodeReviewers();
-        foreach ($reviewers as $reviewer) {
-            if ($reviewer['login'] == $user->getNickname()) {
-                return true;
-            }
-        }
-        return false;
+        $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+        $repodata = $this->extractOwnerAndNameFromRepoURL();
+        $repo = $client->api('repo')->show($repodata['owner'], $repodata['name']);
+        return (bool) $repo['permissions']['push'];
+    }
+
+    public function isCodeReviewAdmin($user_id = false) {
+        $user = User::find($user_id);
+        $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+        $repodata = $this->extractOwnerAndNameFromRepoURL();
+        $repo = $client->api('repo')->show($repodata['owner'], $repodata['name']);
+        return (bool) $repo['permissions']['admin'];
     }
 
     /**
@@ -1087,14 +1100,18 @@ class Project {
                     return false;
                 }
             }
-            $user = User::find($codeReviewer_id);
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
-            $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+            $user = User::find($codeReviewer_id);
+            $gh_user = $user->getGitHubUserDetails($this);
+            $nickname = $gh_user['data']['login'];
+            $ret = $client->getHttpClient()->put('teams/' . $team_id . '/memberships/' . $nickname);
             return true;
         } catch(Exception $e) {
             return false;
@@ -1107,14 +1124,18 @@ class Project {
             if (!$team_id) {
                 return false;
             }
-            $user = User::find($codeReviewer_id);
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_OAUTH2_CLIENT_ID, GITHUB_OAUTH2_CLIENT_SECRET, Github\Client::AUTH_URL_CLIENT_ID);
-            $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+            $user = User::find($codeReviewer_id);
+            $gh_user = $user->getGitHubUserDetails($this);
+            $nickname = $gh_user['data']['login'];
+            $ret = $client->api('organizations')->teams()->removeMember($team_id, $nickname);
             return true;
         } catch(Exception $e) {
             return false;

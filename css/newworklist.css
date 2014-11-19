@@ -329,6 +329,7 @@ body .chosen-container-single .chosen-single div {
 
 body .chosen-container-single .chosen-single div b {
     background: none transparent;
+    background-image: none !important;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio:2), only screen and (min-resolution:144dpi) {
