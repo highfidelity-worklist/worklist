@@ -216,7 +216,7 @@ if(validateAction()) {
                 userNotes();
                 break;
             case 'visitQuery':
-                visitQuery();
+                echo json_encode(VisitQueryTools::visitQuery((int) $_GET['jobid']));
                 break;
             case 'wdFee':
                 wdFee();
@@ -1366,15 +1366,6 @@ function getProjects($public_only = true) {
     } else {
         // Get listing of active projects
         $projectsOnPage = $projectHandler->getProjects(true,array(), false,false,$public_only);
-        usort($projectsOnPage, function($a, $b) {
-            if ( $b["bCount"] < $a["bCount"] ) return -1;
-            if ( $b["bCount"] > $a["bCount"] ) return 1;
-            if ( $b["cCount"] < $a["cCount"] ) return -1;
-            if ( $b["cCount"] > $a["cCount"] ) return 1;
-            if ( $b["feesCount"] > $a["feesCount"] ) return -1;
-            if ( $b["feesCount"] < $a["feesCount"] ) return 1;
-            return 0;
-        });
     }
 
     // Prepare data for printing in projects
@@ -1688,39 +1679,6 @@ function userNotes() {
     $usernotes->$method();
 }
 
-function visitQuery() {
-    /*
-     * Google Analytics API Token
-     * New tokens can be created by calling auth.php in the subdir resources
-     */
-    $token = GOOGLE_ANALYTICS_TOKEN;
-    /* site ids can be obtained from analytics
-     * by logging into the profile, it's currently
-     * called Profile ID on screen
-     */
-    $ids = GOOGLE_ANALYTICS_PROFILE_ID;
-
-    $jobid = (int) $_GET['jobid'];
-    if ($jobid > 0) {
-        $results = VisitQueryTools::getJobResults($jobid, $token, $ids);
-    } elseif ($jobid === 0) {
-        $results = VisitQueryTools::getAllJobResults($token, $ids);
-    }
-    if (!isset($results)) {
-        echo "{error: 'invalid job id supplied'}";
-    } else {
-        if(!isset($results['error'])) {
-            if ($jobid === 0) {
-                $data = VisitQueryTools::parseItems($results['result']);
-            } else {
-                $data = VisitQueryTools::parseItem($results['result']);
-            }
-            echo json_encode($data);
-        } else {
-            echo "{error: '" . $results['error'] . "' }";
-        }
-    }
-}
 
 function wdFee() {
     checkLogin();

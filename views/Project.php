@@ -97,7 +97,6 @@ class ProjectView extends View {
 
     public function codeReviewAdmin() {
         $user = User::find($this->currentUser['id']);
-        $crAdmins = preg_split('/,/', CODE_REVIEW_ADMINS);
-        return $this->adminOrOwner() || in_array($user->getNickname(), $crAdmins);
+        return $this->project->isCodeReviewAdmin($user);
     }
 }

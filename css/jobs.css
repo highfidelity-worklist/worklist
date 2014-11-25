@@ -241,7 +241,7 @@ ul.project-jobs li:nth-child(4):after {
 }
 .project-jobs-status span {
     font-weight: bold;
-    font-size: 1.4em;
+    font-size: 20px;
 }
 
 .project-jobs-status span {
@@ -385,7 +385,7 @@ ul.project-jobs:hover li:nth-child(4) a {
 ul.project-jobs a {
     text-decoration: none;
     color: #666666;
-    padding: 2px 7px 2px;
+    padding: 1px 7px 1px;
 }
 
 ul.project-jobs li.project-jobs-comment-count {
@@ -451,7 +451,7 @@ ul.project-jobs li:nth-child(4),
 ul.project-jobs li:nth-child(5) {
     overflow: hidden;
     position: relative;
-    height: 25px;
+    height: 22px;
 }
 
 ul.project-jobs li:nth-child(2) {
@@ -475,7 +475,7 @@ ul.project-jobs {
         margin-bottom: 0px;
         margin-left: 6px;
         overflow: hidden;
-        height: 59px;
+        height: 50px;
     }
 
     div.project-header {
@@ -489,12 +489,14 @@ ul.project-jobs {
 
     ul.project-jobs li:nth-child(1) {
         clear: left;
-        height: 24px;
+        height: 19px;
     }
 
     ul.project-jobs li:nth-child(2) a {
         color: #333333;
         font-weight: bold;
+        font-size: 14px;
+        padding: 0px 7px 0px;
     }
 
     ul.project-jobs li:nth-child(1),
@@ -503,29 +505,19 @@ ul.project-jobs {
     }
 
     ul.project-jobs li:nth-child(2) {
-        width: calc(100% - 100px);
-        padding-left: 5px;
-        height: 24px;
+        width: calc(100% - 80px);
+        height: 19px;
     }
 
-    ul.project-jobs li:nth-child(3) {
-        clear: left;
-        padding-left: 65px;
-        height:24px;
-    }
-
-    ul.project-jobs li:nth-child(4) {
-        display: inline-block;
-        margin-left: 5px;
-    }
-
+    ul.project-jobs li:nth-child(4),
     ul.project-jobs li:nth-child(5) {
         display: inline-block;
-        width: 25%;
+        margin-right: 5px;
         margin-left: 5px;
     }
 
-    .project-jobs-status {
+    .project-jobs-status,
+    ul.project-jobs li:nth-child(3) {
         clear: left;
     }
 
@@ -579,6 +571,7 @@ ul.project-jobs {
 
     ul.project-jobs li.project-jobs-label a {
         margin-left: 5px;
+        padding: 0px 7px 0px;
     }
 
     div.project-jobs-status i {
@@ -589,4 +582,31 @@ ul.project-jobs {
     div.project-jobs-status {
        font-size: 13px;
     }
+
+    .project-header h2 {
+        font-size: 20px;
+        margin-bottom: 0px;
+        margin-left: 10px;
+    }
+
+    .project-jobs-status span {
+        font-size: 16px;
+    }
+
+    ul.project-jobs .project-jobs-comment-count a {
+        padding: 1px 7px 1px;
+    }
+
+    li.project-jobs-participants a {
+        padding: 0px;
+    }
+
+    ul.project-jobs li:nth-child(3) {
+        padding-left: 59px;
+    }
+
+    ul.project-jobs li:nth-child(4) {
+        line-height: 14px;
+    }
+
 }
