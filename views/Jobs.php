@@ -20,10 +20,6 @@ class JobsView extends View {
         return $this->filter->getProjectSelectbox('All projects', true);
     }
 
-    public function userSelect() {
-        return $this->filter->getUserSelectbox(false, 'All users');
-    }
-
     public function statusSelect() {
         $filter = $this->read('filter');
         $allDisplay = "All Status";

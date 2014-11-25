@@ -89,7 +89,6 @@ class UserController extends Controller {
         $this->write('reqUser', $reqUser);
         $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
         $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
-        $this->write('filter', new Agency_Worklist_Filter($_REQUEST));
 
         // admin posting data
         if (!empty($_POST) && ($is_runner || $is_payer) && !$action) {
@@ -190,18 +189,8 @@ class UserController extends Controller {
         }
 
         $user = new User();
-        if ($id) {
-            if (is_numeric($id)) {
-                $userId = (int) $id;
-                $user->findUserById($userId);
-            } else {
-                $user->findUserByNickname($id);
-                $userId = $user->getId();
-            }
-        } else {
-            $userId = getSessionUserId(); 
-            $user->findUserById($userId);
-        }
+        $user = User::find($id ? $id : getSessionUserId());
+        $userId = $user->getId();
 
         /**
          * If we couldn't find a valid User, return an ErrorView

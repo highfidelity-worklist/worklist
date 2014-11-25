@@ -255,11 +255,25 @@
                         {{/currentUser.is_payer}}
                         <h3>Manager</h3>
                         <p>
-                            {{& managerUserSelectbox}}
+                            <select id="manager" name="manager">
+                                {{#activeUsers}}
+                                    <option value="{{id}}"
+                                      {{#selected}}selected="selected"{{/selected}}>
+                                        {{nickname}}
+                                    </option>
+                                {{/activeUsers}}
+                            </select>
                         </p>
                         <h3>Referred By</h3>
                         <p>
-                            {{& referrerUserSelectbox}}
+                            <select id="referer" name="referer">
+                                {{#activeUsers}}
+                                    <option value="{{id}}"
+                                      {{#selected}}selected="selected"{{/selected}}>
+                                        {{nickname}}
+                                    </option>
+                                {{/activeUsers}}
+                            </select>
                         </p>
                         <h3>Status</h3>
                         <select id="isactive" name="isactive" style="width: auto;">

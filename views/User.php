@@ -27,7 +27,6 @@ class UserView extends View {
         $this->reqUserId = $this->read('reqUserId');
         $this->favorite_count = $this->read('favorite_count');
         $this->Annual_Salary = $this->read('Annual_Salary');
-        $this->filter = $this->read('filter');
         $this->has_sandbox = $this->read('has_sandbox');
         $this->projects = $this->read('projects');
 
@@ -200,12 +199,22 @@ class UserView extends View {
         return $this->profileUser->getW9_status() == 'not-applicable';
     }
 
-    public function managerUserSelectbox () {
-        return $this->filter->getManagerUserSelectboxS("width:180px;");
-    }
-
-    public function referrerUserSelectbox () {
-        return $this->filter->getReferrerUserSelectboxS("width:180px;");
+    public function activeUsers() {
+        $users = User::getUserList(getSessionUserId(), 1, 0, true);
+        $ret = array();
+        $ret[] = array(
+            'id' => 0,
+            'nickname' => 'None',
+            'selected' => true
+        );
+        foreach ($users as $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'selected' => false
+            );
+        }
+        return $ret;
     }
 
     public function userIsInactive() {

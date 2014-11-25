@@ -1618,7 +1618,7 @@ class Project {
                     ";
                 }
                 if ($val == 'Bidding' && $mobileFilter) {
-                    $where .= $severalStatus . "( $status_cond 1)";
+                    $where .= $severalStatus . "(`status` = 'Bidding')";
                 }
                 else if ($isRunner && $val == 'Bidding') {
                     $where .= "
@@ -1799,14 +1799,14 @@ class Project {
             `proj`.`name` AS `project_name`,
             `worklist`.`project_id` AS `project_id`,
             TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
-            `creator_id`, `runner_id`, `mechanic_id`,
-            (SELECT COUNT(`".COMMENTS."`.`id`) FROM `".COMMENTS."`
-            WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`) AS `comments`";
-        if (getSessionUserId()) {
-            $sql .= ", (SELECT `".BIDS."`.`id` FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id` AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0  AND `".WORKLIST."`.`status`='Bidding' ORDER BY `".BIDS."`.`id` DESC LIMIT 1) AS `current_bid`";
-            $sql .= ", (SELECT `".BIDS."`.`bid_expires` FROM `".BIDS."` WHERE `".BIDS."`.`id` = `current_bid`) AS `current_expire`";
-            $sql .= ", (SELECT COUNT(`".BIDS."`.`id`) FROM `".BIDS."` WHERE `".BIDS."`.`worklist_id` = `".WORKLIST."`.`id`  AND `".WORKLIST."`.`status`='Bidding' AND `".BIDS."`.`bidder_id` = ".getSessionUserId()." AND `withdrawn` = 0 AND (`bid_expires` > NOW() OR `bid_expires`='0000-00-00 00:00:00')) AS `bid_on`";
-        }
+            `creator_id`,
+            `runner_id`,
+            `mechanic_id`,
+            (
+                SELECT COUNT(`".COMMENTS."`.`id`)
+                FROM `".COMMENTS."`
+                WHERE `".COMMENTS."`.`worklist_id` = `".WORKLIST."`.`id`
+            ) AS `comments`";
 
         $followingSql = "";
         if ($filter->getFollowing()) {
@@ -1828,7 +1828,8 @@ class Project {
 
         $searchResultTotalHitCount = Project::getTotalHitCount(mysql_query("$totalHitCountSql $innerSql $where"));
         $results = array();
-        $resultQuery = mysql_query("{$sql} {$labelSql} {$innerSql} {$where} {$orderBy}") or error_log('getworklist mysql error: '. mysql_error());
+        $finalSql = "{$sql} {$labelSql} {$innerSql} {$where} {$orderBy}";
+        $resultQuery = mysql_query($finalSql) or error_log('getworklist mysql error: '. mysql_error());
         $jobsCount = array();
         while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
             $doneJobSql = " WHERE `status` = 'done' AND `proj`.project_id = ".$row['project_id'];

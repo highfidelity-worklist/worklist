@@ -339,13 +339,6 @@ class JobView extends View {
         );
     }
 
-    public function editableProjectSelect() {
-        $worklist = $this->worklist;
-        $filter = new Agency_Worklist_Filter();
-        $filter->setProjectId($worklist['project_id']);
-        return $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
-    }
-
     public function projectUrl() {
         $worklist = $this->worklist;
         return Project::getProjectUrl($worklist['project_id']);
@@ -690,16 +683,6 @@ class JobView extends View {
 
     public function canFeeOthers() {
         return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
-    }
-
-    public function userFeeSelectBox() {
-        $filter = new Agency_Worklist_Filter();
-        return $filter->getUserSelectbox(1, false, 'mechanicFee', 'mechanicFee');
-    }
-
-    public function userTipSelectBox() {
-        $filter = new Agency_Worklist_Filter();
-        echo $filter->getUserSelectbox(1, false, 'mechanicTip', 'mechanicTip');
     }
 
     public function showBidderStatistics() {
