@@ -12,7 +12,7 @@ var UserStats = {
         designerTotalJobs: 1,
         designerActiveJobs: 1,
         activeJobs: 1,
-        LoveForUser: 1
+        loveForUser: 1
     },
 
     init: function() {
@@ -235,7 +235,7 @@ var UserStats = {
     showLoveForUser: function(page, user, modal) {
         UserStats.page.loveForUser = page = (page ? page : 1);
         $.ajax({
-            url: './user/loveForUser/' + user + '/' + page,
+            url: './user/loveForUser/' + user + /'1/99999,
             dataType: 'json',
             success: function(json) {
                 var title = "love";

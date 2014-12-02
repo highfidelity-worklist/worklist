@@ -302,7 +302,7 @@ class UserView extends View {
     }
 
     public function loveForUser() {
-        return $this->profileUser->loves(1,5);
+        $ret = $this->profileUser->loveForUser(1,5);
         return $ret['loves'];
     }
 }

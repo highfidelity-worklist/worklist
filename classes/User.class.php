@@ -2616,8 +2616,7 @@ class User {
         }
         return false;
     }
-    public function loveForUser($to_id, $page = 1, $itemsPerPage = 5) {
-    //$itemsPerPage = 5;
+    public function loveForUser($page = 1, $itemsPerPage = 9999) {
         $ret = array();
         $count = $this->loveForUserCount();
         $userId = $this->getId();
@@ -2633,26 +2632,11 @@ class User {
               LEFT JOIN `" . USERS . "` AS `tn` ON `l`.`to_id` = `tn`.`id`
               WHERE `l`.`to_id` = {$userId}
             ORDER BY `l`.`date_sent` DESC
-            LIMIT " . ($page-1) * $itemsPerPage . ", {$itemsPerPage}";
-        $result = mysql_query($sql);
-        if($result) {
-            $loves = array();
-            if (mysql_num_rows($result) > 0) {
-                while ($row = mysql_fetch_assoc($result)) {
-                    $loves[] = $row;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return $loves;
-    }
-    /*if ($result = mysql_query($sql)) {
-    $loves = array();
-            while ($row = mysql_fetch_assoc($res)) {
-                $loves[] = $row;
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
             }
             return array(
                 'count' => $count,
@@ -2662,13 +2646,16 @@ class User {
             );
         }
         return false;
-    }*/
+    }
    public function loveForUserCount() {
         $ret = array();
+        $userId = $this->getId();
         $sql = "
             SELECT COUNT(*)
-            FROM `" . USERS_LOVE . "` `f`
-            WHERE `l`.`to_id` = " . $this->getId() ;
+            FROM `" . USERS_LOVE . "` `l`
+              LEFT JOIN `" . USERS . "` AS `fn` ON `l`.`from_id` = `fn`.`id`
+              LEFT JOIN `" . USERS . "` AS `tn` ON `l`.`to_id` = `tn`.`id`
+            WHERE `l`.`to_id` = {$userId}";
         if ($res = mysql_query($sql)) {
             $row = mysql_fetch_row($res);
             return $row[0];

@@ -591,7 +591,7 @@ class UserController extends Controller {
         $user = User::find($id);
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 5);
-        echo json_encode($user->loves($page, $itemsPerPage));
+        echo json_encode($user->loveForUser($page, $itemsPerPage));
     }
 
     public function sendLove($to) {

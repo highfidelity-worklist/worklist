@@ -85,13 +85,13 @@
                 <div id="user-loves">
                     <table class="loves-table">
                         <tbody>
-                            {{#profileUser.loveForUser}}
+                            {{#loveForUser}}
                             <tr>
                                 <td class="love_message">"{{message}}"</td>
                                 <td class ="from_nick">&nbsp;from <a href="./user/{{from_nickname}}">{{from_nickname}}</a>&nbsp;</td>
                                 <td class="date_sent"> {{sent}}</td>
                             </tr>
-                            {{/profileUser.loveForUser}}
+                            {{/loveForUser}}
                         </tbody>
                     </table>
                 </div>
