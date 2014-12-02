@@ -373,14 +373,6 @@ class UserController extends Controller {
         echo json_encode($user->jobs(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done'), $page, $itemsPerPage));
     }
 
-    //old function
-    /*public function love($id, $page = 1) {
-        $this->view = null;
-        $user = User::find($id);
-        $page = (is_numeric($page) ? $page : 1);
-        echo json_encode($user->getTotalLove($page));
-    }
-*/
     public function latestEarnings($id) {
         $this->view = null;
         $user = User::find($id);
