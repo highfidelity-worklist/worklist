@@ -80,7 +80,7 @@ var jobs = {
             var windowHeight = ($(document).height() - $(window).height());
             var totalJobsRender = $('ul.project-jobs').length;
             if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
-                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.labels);
+                jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
             }
         });
     },
