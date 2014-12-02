@@ -132,6 +132,45 @@ body > .container-fluid h3 {
     background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
+#loves-table {
+    border-top: 2px solid #E1E8EA;
+}
+
+#loves-table tr > td {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.love_message {
+    color: #6E6E6E;
+    font-weight: normal;
+    height: .5em;
+    width: 13em;
+    line-height: 120%;
+    position: relative;
+    right: 0;
+    padding-bottom: 4px;
+    padding-top: 7px;
+}
+
+.from_nick, .from_nick a {
+    color: #8B8B8B;
+    font-weight: normal;
+    vertical-align: top;
+    padding-top: 6px;
+}
+
+.from_nick a {
+    text-decoration: underline;
+}
+
+.date_sent {
+    color: #B6B6B6;
+    font-weight: normal;
+    vertical-align: top;
+    padding-top: 7px;
+}
+
 #BudgetHistory {
     border: 1px solid #d6d6d6;
     display: table;
@@ -267,11 +306,43 @@ p.bottom {
     top: 6em;
 }
 
+#love input {
+    background: none;
+    padding-left: 160px;
+    padding-right: 0;
+    width: auto;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    color: #88AAB0 !important;
+    border: 0 none;
+    position: relative;
+    top: 2px;
+}
+
+.loveTitle {
+    border-bottom: 2px solid #E1E8EA;
+    padding-bottom: 6px;
+    width: 415px !important;
+}
+
+.loveTitle a {
+    padding-left: 26px;
+}
+
+.more a {
+    font-size: 12px !important;
+    font-weight: normal !important;
+    top: 10px;
+    padding-bottom: 20px;
+    position: relative;
+    color: #88AAB0 !important;
+}
+
 .reviewTitle {
     font-weight: normal !important;
     padding-left: 0 !important;
     width: 415px !important;
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 .reviewAddLink,
@@ -651,7 +722,7 @@ form#roles ul li {
         margin: 0;
     }
 
-    #jobs-table tr > td:first-child {
+    #jobs-table tr > td:first-child, #loves-table tr > td:first-child  {
         max-width: 125px;
     }
 

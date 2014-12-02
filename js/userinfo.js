@@ -178,6 +178,8 @@ var UserInfo = {
         });
         
         $('.reviewAddLink').click(UserInfo.reviewDialog);
+
+        //$('.loveAddLink').click(UserInfo.loveDialog);
        
         $('#give').click(function(){
             Utils.modal('budget-give', {

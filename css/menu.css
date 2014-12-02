@@ -111,6 +111,25 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     line-height: 2.6em;
 }
 
+#sendLoveButton {
+    background-color: #007F7c;
+    background-image: url('../images/wl-icons/fa-heart.svg');
+    color: #fff;
+    font-size: 1em;
+    border: 0;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 13px;
+    width: 40px;
+    height: 35px;
+    line-height: 2.6em;
+    margin-left: 5px;
+}
+
 #buttons {
     padding-left: 0;
 }
@@ -126,7 +145,7 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
 }
 
 .navbar-nav-md {
-    max-width: 455px;
+    max-width: 600px;
 }
 
 .navbar-nav-md > li {

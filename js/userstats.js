@@ -11,7 +11,8 @@ var UserStats = {
         doneJobs: 1,
         designerTotalJobs: 1,
         designerActiveJobs: 1,
-        activeJobs: 1
+        activeJobs: 1,
+        LoveForUser: 1
     },
 
     init: function() {
@@ -19,10 +20,10 @@ var UserStats = {
             UserStats.showFollowingJobs(1, userId);
             return false;
         });
-        $('#love').click(function(){
+        /*old$('#love').click(function(){
             UserStats.showLove();
             return false;
-        });
+        });*/
     },
 
     modal: function(name, page, json, user, title, pagination, fAfter) {
@@ -231,13 +232,18 @@ var UserStats = {
             }
         });
     },
-
-    showLove: function(page) {
+    showLoveForUser: function(page, user, modal) {
+        UserStats.page.loveForUser = page = (page ? page : 1);
         $.ajax({
-            url: './user/love/' + user + '/' + page,
+            url: './user/loveForUser/' + user + '/' + page,
             dataType: 'json',
             success: function(json) {
-                UserStats.modal('love', page, json, user);
+                var title = "love";
+                if (typeof modal == 'undefined') {
+                    UserStats.modal('loves', page, json, user, title, UserStats.showLoveForUser);
+                } else {
+                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showLoveForUser);
+                }
             }
         });
     },

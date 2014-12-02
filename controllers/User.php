@@ -257,6 +257,9 @@ class UserController extends Controller {
             die();
         }
 
+//        $love = new sendLove();
+//        $to_id = (int) $userId;
+//        $this->write('lovesList', $love->getLoveForUser($from_id, $to_id));
         $reviewee_id = (int) $userId;
         $review = new Review();
         $this->write('reviewsList', $review->getReviews($reviewee_id,$reqUserId));
@@ -373,13 +376,14 @@ class UserController extends Controller {
         echo json_encode($user->jobs(array('In Progress', 'QA Ready', 'Review', 'Merged', 'Done'), $page, $itemsPerPage));
     }
 
-    public function love($id, $page = 1) {
+    //old function
+    /*public function love($id, $page = 1) {
         $this->view = null;
         $user = User::find($id);
         $page = (is_numeric($page) ? $page : 1);
         echo json_encode($user->getTotalLove($page));
     }
-
+*/
     public function latestEarnings($id) {
         $this->view = null;
         $user = User::find($id);
@@ -583,5 +587,45 @@ class UserController extends Controller {
         $page = (is_numeric($page) ? $page : 1);
         $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 10);
         echo json_encode($user->budgetHistory($giver_id, $page, $itemsPerPage));
+    }
+
+    public function loveForUser($id, $page = 1, $itemsPerPage = 5) {
+        $this->view = null;
+        $user = User::find($id);
+        $page = (is_numeric($page) ? $page : 1);
+        $itemsPerPage = (is_numeric($itemsPerPage) ? $itemsPerPage : 5);
+        echo json_encode($user->loves($page, $itemsPerPage));
+    }
+
+    public function sendLove($to) {
+        $this->view = null;
+        try {
+            $to = User::find($to);
+            $love_message = $_POST['love_message'];
+            $from = User::find(getSessionUserId());
+            if (!getSessionUserId()) {
+                throw new Exception('Must be logged in to Send Love!');
+            }
+            if (!$to->getId()) {
+                throw new Exception('Not a valid user');
+            }
+            if (empty($love_message)) {
+                throw new Exception('Message field is mandatory');
+            }
+            $from->sendLove($to, $love_message);
+            echo json_encode(array(
+                'success' => true,
+                'message' => 'Love sent'
+            ));
+        } catch (Exception $e) {
+            return $this->setOutput(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+        $from_nickname = $from->getNickname();
+        $message = $_POST['love_message'];
+        sendTemplateEmail($to->getUsername(), 'love-received', array('from_nickname'=> $from_nickname, 'message' => $message));
+
     }
 }

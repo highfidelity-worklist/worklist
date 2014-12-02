@@ -71,7 +71,33 @@
                         </div>
                     </div>
                 </div>
-
+                <div class='loveTitle title-label-big'>
+                <i class="fa fa-heart"> </i>
+                    Love received
+                        <span id="love">
+                        {{#reqUserId}}{{^ownProfile}}
+                        <a href = "#" data-toggle="modal" data-target="#sendLove">
+                        <input type="submit" title="Send Love" class="send_love" value="Send Love" user="{{profileUser.getNickname}}" />
+                        {{/ownProfile}}{{/reqUserId}}
+                        </a>
+                        </span>
+                </div>
+                <div id="user-loves">
+                    <table class="loves-table">
+                        <tbody>
+                            {{#profileUser.loveForUser}}
+                            <tr>
+                                <td class="love_message">"{{message}}"</td>
+                                <td class ="from_nick">&nbsp;from <a href="./user/{{from_nickname}}">{{from_nickname}}</a>&nbsp;</td>
+                                <td class="date_sent"> {{sent}}</td>
+                            </tr>
+                            {{/profileUser.loveForUser}}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="more<?php echo $love_id; ?>" class="more" id="morebutton">
+                    <a id="<?php echo $love_id; ?>" class="more" href="#" >View more </a>
+                </div>
                 <div class='reviewTitle title-label-big'>
                     Reviews
                     {{^ownProfile}}

@@ -30,6 +30,7 @@ class UserView extends View {
         $this->filter = $this->read('filter');
         $this->has_sandbox = $this->read('has_sandbox');
         $this->projects = $this->read('projects');
+        $this->activeUsers = $this->read('activeUsers');
 
         // Google Maps search Base URL
         $this->gMapSearch = "http://maps.google.com/maps?q=";
@@ -208,6 +209,12 @@ class UserView extends View {
         return $this->filter->getReferrerUserSelectboxS("width:180px;");
     }
 
+    public function userSelectBox() {
+        $filter = $this->read('filter');
+        $activeUsers = $this->read('activeUsers');
+        return $filter->getUserSelectbox($activeUsers, 'ALL');
+    }
+
     public function userIsInactive() {
         return $this->profileUser->getIs_active() == 0;
     }
@@ -292,5 +299,10 @@ class UserView extends View {
 
     public function avgJobRunTime() {
         return $this->profileUser->avgJobRunTime();
+    }
+
+    public function loveForUser() {
+        return $this->profileUser->loves(1,5);
+        return $ret['loves'];
     }
 }

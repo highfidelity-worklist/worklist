@@ -30,6 +30,37 @@ var NewWorklist = {
         UserStats.init();
         NewWorklist.initJobSearch();
         NewWorklist.initAutocomplete();
+
+        $('.send_love').click(function(modal) {
+            var to_user = $(this).attr('user') ? $(this).attr('user') : 0;
+            Utils.modal('send-love', {
+                open: function(modal) {
+                    $('input[name="to"]', modal).autocomplete({source: autocompleteUserSource});
+                    if (to_user) {
+                        $('input[name="to"]', modal).val(to_user);
+                    }
+                    //$('input[name="to"]', modal).autocomplete({source: autocompleteUserSource});
+                    $('form', modal).submit(function() {
+                        $.ajax({
+                            url: './user/sendLove/' + $('input[name="to"]', modal).val(),
+                            data: {
+                                love_message: $('textarea[name="love_message"]', modal).val()
+                            },
+                            dataType: 'json',
+                            type: "POST",
+                            cache: false,
+                            success: function(json) {
+                                if (json.success) {
+                                    $(modal).modal('hide');
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                }
+            });
+            return false;
+        });
     },
 
     loginClick: function(event) {
