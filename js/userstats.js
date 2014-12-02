@@ -20,10 +20,6 @@ var UserStats = {
             UserStats.showFollowingJobs(1, userId);
             return false;
         });
-        /*old$('#love').click(function(){
-            UserStats.showLove();
-            return false;
-        });*/
     },
 
     modal: function(name, page, json, user, title, pagination, fAfter) {
