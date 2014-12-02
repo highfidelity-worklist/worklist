@@ -995,13 +995,14 @@ class Project {
             if (!$team_id) {
                 return array();
             }
-
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $members = $client->api('organizations')->teams()->members($team_id);
             return $members;
         } catch(Exception $e) {
@@ -1011,12 +1012,14 @@ class Project {
 
     public function codeReviewersGitHubTeamId() {
         try {
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $teams = $client->api('organizations')->teams()->all($repo_info['owner']);
             foreach ($teams as $team) {
@@ -1036,13 +1039,14 @@ class Project {
             if ($team_id) {
                 return null;
             }
-
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
             $repo_info = $this->extractOwnerAndNameFromRepoURL();
             $ret = $client->api('organizations')->teams()->create($repo_info['owner'], array(
                 'name' => $repo_info['name'] . 'CodeReviewers',
@@ -1057,13 +1061,30 @@ class Project {
 
     public function isCodeReviewer($user_id = false) {
         $user = User::find($user_id);
-        $reviewers = $this->getCodeReviewers();
-        foreach ($reviewers as $reviewer) {
-            if ($reviewer['login'] == $user->getNickname()) {
-                return true;
-            }
-        }
-        return false;
+        $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+        $repodata = $this->extractOwnerAndNameFromRepoURL();
+        $repo = $client->api('repo')->show($repodata['owner'], $repodata['name']);
+        return (bool) $repo['permissions']['push'];
+    }
+
+    public function isCodeReviewAdmin($user_id = false) {
+        $user = User::find($user_id);
+        $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
+        $client = new Github\Client(
+            new Github\HttpClient\CachedHttpClient(array(
+                'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
+            ))
+        );
+        $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+        $repodata = $this->extractOwnerAndNameFromRepoURL();
+        $repo = $client->api('repo')->show($repodata['owner'], $repodata['name']);
+        return (bool) $repo['permissions']['admin'];
     }
 
     /**
@@ -1079,14 +1100,18 @@ class Project {
                     return false;
                 }
             }
-            $user = User::find($codeReviewer_id);
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-            $ret = $client->api('organizations')->teams()->addMember($team_id, $user->getNickname());
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+            $user = User::find($codeReviewer_id);
+            $gh_user = $user->getGitHubUserDetails($this);
+            $nickname = $gh_user['data']['login'];
+            $ret = $client->getHttpClient()->put('teams/' . $team_id . '/memberships/' . $nickname);
             return true;
         } catch(Exception $e) {
             return false;
@@ -1099,14 +1124,18 @@ class Project {
             if (!$team_id) {
                 return false;
             }
-            $user = User::find($codeReviewer_id);
+            $user = User::find(getSessionUserId());
+            $token = $user->authTokenForGitHubId(GITHUB_OAUTH2_CLIENT_ID);
             $client = new Github\Client(
                 new Github\HttpClient\CachedHttpClient(array(
                     'cache_dir' => TEMP_DIR . DIRECTORY_SEPARATOR . 'github'
                 ))
             );
-            $client->authenticate(GITHUB_API_TOKEN, '', Github\Client::AUTH_HTTP_TOKEN);
-            $ret = $client->api('organizations')->teams()->removeMember($team_id, $user->getNickname());
+            $client->authenticate($token, '', Github\Client::AUTH_URL_TOKEN);
+            $user = User::find($codeReviewer_id);
+            $gh_user = $user->getGitHubUserDetails($this);
+            $nickname = $gh_user['data']['login'];
+            $ret = $client->api('organizations')->teams()->removeMember($team_id, $nickname);
             return true;
         } catch(Exception $e) {
             return false;

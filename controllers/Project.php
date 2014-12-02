@@ -227,18 +227,17 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            $crAdmins = preg_split('/,/', CODE_REVIEW_ADMINS);
-            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId()) && !in_array($request_user->getNickname(), $crAdmins)) {
-                throw new Exception('Not enough rights');
-            }
             if (!$user->getId()) {
                 throw new Exception('Not a user in our system');
+            }
+            if (!$project->isCodeReviewAdmin($request_user)) {
+                throw new Exception('Not enough rights');
             }
             if ($project->isCodeReviewer($user->getId())) {
                 throw new Exception('Entered user is already a Code Reviewer for this project');
             }
             if (! $project->addCodeReviewer($user->getId())) {
-                throw new Exception('Could not add the user as a designer for this project');
+                throw new Exception('Could not add the user as a Code Reviewer for this project');
             }
             $founder = User::find($project->getOwnerId());
             $founderUrl = SECURE_SERVER_URL . 'user/' . $founder->getId();
@@ -513,8 +512,7 @@ class ProjectController extends Controller {
                 throw new Exception('Not a project in our system');
             }
             $request_user = User::find(getSessionUserId());
-            $crAdmins = preg_split('/,/', CODE_REVIEW_ADMINS);
-            if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId()) && !in_array($request_user->getNickname(), $crAdmins)) {
+            if (!$project->isCodeReviewAdmin($request_user)) {
                 throw new Exception('Not enough rights');
             }
             $codeReviewers = array_slice(func_get_args(), 1);

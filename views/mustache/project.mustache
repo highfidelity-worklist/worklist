@@ -164,26 +164,26 @@
                     </div>
                 {{/adminOrOwner}}
             </li>
-            <li id="projectCodeReviewRights">
-                <h3>Code Reviews <span>are allowed from</span></h3>
-                <table class="table table-striped" id="projectCodeReviewers">
-                    <thead>
-                        <tr>
-                            <th>Who</th>
-                            <th># of Jobs</th>
-                            <th>Last Activity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                {{#codeReviewAdmin}}
+            {{#codeReviewAdmin}}
+                <li id="projectCodeReviewRights">
+                    <h3>Code Reviews <span>are allowed from</span></h3>
+                    <table class="table table-striped" id="projectCodeReviewers">
+                        <thead>
+                            <tr>
+                                <th>Who</th>
+                                <th># of Jobs</th>
+                                <th>Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                     <div class="buttonContainer">
                         <input type="button" id="addcodereviewer" value="Add" />
                         <input type="button" id="removecodereviewer" value="Remove" />
                     </div>
-                {{/codeReviewAdmin}}
-            </li>
+                </li>
+            {{/codeReviewAdmin}}
             <li id="hipchat">
                 <h3>HipChat</h3>
                 <div>
