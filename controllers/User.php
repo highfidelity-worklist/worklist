@@ -257,9 +257,6 @@ class UserController extends Controller {
             die();
         }
 
-//        $love = new sendLove();
-//        $to_id = (int) $userId;
-//        $this->write('lovesList', $love->getLoveForUser($from_id, $to_id));
         $reviewee_id = (int) $userId;
         $review = new Review();
         $this->write('reviewsList', $review->getReviews($reviewee_id,$reqUserId));

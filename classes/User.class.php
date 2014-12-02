@@ -2640,7 +2640,6 @@ class User {
             if (mysql_num_rows($result) > 0) {
                 while ($row = mysql_fetch_assoc($result)) {
                     $loves[] = $row;
-                    //$love_id=$row['love_id'];
                 }
             } else {
                 return false;

@@ -49,6 +49,12 @@ class View extends AppObject {
         ),
         'can' => array(
             'addProject' => false
+        ),
+        'loves' => array(
+            'love_message' => '',
+            'from_id' => '',
+            'to_id' => '',
+            'date_sent' => ''
         )
     );
 
