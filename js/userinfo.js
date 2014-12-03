@@ -179,9 +179,7 @@ var UserInfo = {
         
         $('.reviewAddLink').click(UserInfo.reviewDialog);
 
-        //$('.loveAddLink').click(UserInfo.loveDialog);
-       
-        $('#give').click(function(){
+            $('#give').click(function(){
             Utils.modal('budget-give', {
                 receiver_id: userInfo.user_id,
                 budgetAuthorized: budgetAuthorized,

@@ -231,7 +231,7 @@ var UserStats = {
     showLoveForUser: function(page, user, modal) {
         UserStats.page.loveForUser = page = (page ? page : 1);
         $.ajax({
-            url: './user/loveForUser/' + user + /'1/99999,
+            url: './user/loveForUser/' + user + '/' + 1/99999,
             dataType: 'json',
             success: function(json) {
                 var title = "love";
