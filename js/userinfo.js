@@ -489,6 +489,8 @@ var UserInfo = {
         $(".userNotes").live('blur', function() {
             userInfo.saveUserNotes();
         });
+
+        $('#morelove').click(UserInfo.displayAllLove);
     },
 
     setW9Status: function(status, reason, fAfter) {
@@ -653,6 +655,20 @@ var UserInfo = {
                 }
             }
         });
-    }
+    },
 
+    displayAllLove: function() {
+        $.ajax({
+            type: 'GET',
+            url: './user/loves/' + userInfo.nickName + '/1/99999',
+            dataType: 'json',
+            success: function(json) {
+                Utils.parseMustache('partials/user/loves', json, function(parsed) {
+                    $('#user-loves').replaceWith(parsed);
+                    $('#morelove').remove();
+                });
+            }
+        });
+        return false;
+    }
  };

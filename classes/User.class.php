@@ -2616,9 +2616,9 @@ class User {
         }
         return false;
     }
-    public function loveForUser($page = 1, $itemsPerPage = 9999) {
-        $ret = array();
-        $count = $this->loveForUserCount();
+
+    public function loves($page = 1, $itemsPerPage = 9999) {
+        $count = $this->lovesCount();
         $userId = $this->getId();
         $sql = "
             SELECT
@@ -2633,7 +2633,7 @@ class User {
               WHERE `l`.`to_id` = {$userId}
             ORDER BY `l`.`date_sent` DESC
             LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
-
+        $ret = array();
         if ($res = mysql_query($sql)) {
             while($row = mysql_fetch_assoc($res)) {
                 $ret[] = $row;
@@ -2647,8 +2647,8 @@ class User {
         }
         return false;
     }
-   public function loveForUserCount() {
-        $ret = array();
+
+    public function lovesCount() {
         $userId = $this->getId();
         $sql = "
             SELECT COUNT(*)
@@ -2662,6 +2662,7 @@ class User {
         }
         return false;
     }
+
     public function sendLove($to, $love_message) {
         $from_id = $this->getId();
         $to_id = $to->getId();

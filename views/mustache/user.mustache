@@ -82,22 +82,8 @@
                         </a>
                         </span>
                 </div>
-                <div id="user-loves">
-                    <table class="loves-table">
-                        <tbody>
-                            {{#loveForUser}}
-                            <tr>
-                                <td class="love_message">"{{message}}"</td>
-                                <td class ="from_nick">&nbsp;from <a href="./user/{{from_nickname}}">{{from_nickname}}</a>&nbsp;</td>
-                                <td class="date_sent"> {{sent}}</td>
-                            </tr>
-                            {{/loveForUser}}
-                        </tbody>
-                    </table>
-                </div>
-                <div id="more<?php echo $love_id; ?>" class="more" id="morebutton">
-                    <a id="<?php echo $love_id; ?>" class="more" href="#" >View more </a>
-                </div>
+                {{> user/loves }}
+                <a id="morelove" href="#" >View more</a>
                 <div class='reviewTitle title-label-big'>
                     Reviews
                     {{^ownProfile}}

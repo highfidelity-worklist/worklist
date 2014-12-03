@@ -12,7 +12,6 @@ var UserStats = {
         designerTotalJobs: 1,
         designerActiveJobs: 1,
         activeJobs: 1,
-        loveForUser: 1
     },
 
     init: function() {
@@ -224,21 +223,6 @@ var UserStats = {
                     UserStats.modal('latest-earnings', page, json, user, '', UserStats.showLatestEarnings);
                 } else {
                     UserStats.modalRefresh(modal, page, json, user, '', UserStats.showLatestEarnings);
-                }
-            }
-        });
-    },
-    showLoveForUser: function(page, user, modal) {
-        UserStats.page.loveForUser = page = (page ? page : 1);
-        $.ajax({
-            url: './user/loveForUser/' + user + '/' + 1/99999,
-            dataType: 'json',
-            success: function(json) {
-                var title = "love";
-                if (typeof modal == 'undefined') {
-                    UserStats.modal('loves', page, json, user, title, UserStats.showLoveForUser);
-                } else {
-                    UserStats.modalRefresh(modal, page, json, user, title, UserStats.showLoveForUser);
                 }
             }
         });

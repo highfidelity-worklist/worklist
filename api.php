@@ -11,7 +11,6 @@ require_once ("models/DataObject.php");
 require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
-require_once ("models/Love.php");
 
 Session::check();
 
@@ -232,9 +231,6 @@ if(validateAction()) {
             case 'sendJobReport':
                 validateAPIKey();
                 sendJobReport();
-                break;
-            case 'sendLove':
-                sendLove();
                 break;
             default:
                 die("Invalid action.");

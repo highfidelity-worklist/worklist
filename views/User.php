@@ -294,8 +294,8 @@ class UserView extends View {
         return $this->profileUser->avgJobRunTime();
     }
 
-    public function loveForUser() {
-        $ret = $this->profileUser->loveForUser(1,9999);
+    public function loves() {
+        $ret = $this->profileUser->loves(1,5);
         return $ret['loves'];
     }
 }
