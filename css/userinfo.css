@@ -329,23 +329,45 @@ p.bottom {
     padding-left: 26px;
 }
 
+#user-loves {
+    padding: .5em 0;
+}
+
+#user-loves > * {
+    display: inline;
+    line-height: 1.8em;
+    font-size: 1em;
+}
+
+#user-loves cite:before {
+    content: '\201c';
+}
+
+#user-loves cite:after {
+    content: '\201d';
+}
+
 #user-loves h6 {
     margin-top: .4em;
     margin-bottom: .2em;
+}
+
+#user-loves h6,
+#user-loves h6 a {
+    color: #666;
+}
+
+#user-loves h6 span {
     color: #999;
 }
 
-#user-loves cite {
-    padding: .2em .5em .8em;
-    margin-bottom: 1em;
-    font-style: italic;
+#user-loves h6 a {
+    text-decoration: underline;
 }
 
-#user-loves cite:before,
-#user-loves cite:after {
-    content: '"';
-    color: #999;
-    font-size: 1.5em;
+#user-loves h6:after {
+    content: '';
+    display: block;
 }
 
 #user-loves + a {
