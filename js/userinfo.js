@@ -490,7 +490,7 @@ var UserInfo = {
             userInfo.saveUserNotes();
         });
 
-        $('#morelove').click(UserInfo.displayAllLove);
+        $('#user-loves + a').click(UserInfo.displayAllLove);
     },
 
     setW9Status: function(status, reason, fAfter) {
@@ -658,14 +658,18 @@ var UserInfo = {
     },
 
     displayAllLove: function() {
+        var itemsPerPage = 5;
+        var nextPage = $('#user-loves cite').length / itemsPerPage + 1;
         $.ajax({
             type: 'GET',
-            url: './user/loves/' + userInfo.nickName + '/1/99999',
+            url: './user/loves/' + userInfo.nickName + '/' + nextPage + '/' + itemsPerPage,
             dataType: 'json',
             success: function(json) {
                 Utils.parseMustache('partials/user/loves', json, function(parsed) {
-                    $('#user-loves').replaceWith(parsed);
-                    $('#morelove').remove();
+                    $('#user-loves').append(parsed);
+                    if (json.page == json.pages) {
+                        $('#user-loves + a').remove();
+                    }
                 });
             }
         });

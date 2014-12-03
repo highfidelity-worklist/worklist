@@ -1,19 +1,8 @@
-<div id="user-loves">
-    <table class="loves-table">
-        <tbody>
-            {{#loves}}
-            <tr>
-                <td class="love_message">
-                    "{{message}}"
-                </td>
-                <td class ="from_nick">
-                    from <a href="./user/{{from_nickname}}">{{from_nickname}}</a>
-                </td>
-                <td class="date_sent">
-                    {{sent}}
-                </td>
-            </tr>
-            {{/loves}}
-        </tbody>
-    </table>
-</div>
+{{#loves}}
+  <h6>
+    From <a href="./user/{{from_nickname}}">{{from_nickname}}</a> on {{sent}}
+  </h6>
+  <cite>
+    {{message}}
+  </cite>
+{{/loves}}

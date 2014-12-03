@@ -82,8 +82,12 @@
                         </a>
                         </span>
                 </div>
-                {{> user/loves }}
-                <a id="morelove" href="#" >View more</a>
+                <section id="user-loves">
+                    {{> user/loves }}
+                </section>
+                {{#showMoreLoveButton}}
+                    <a href="#" >View more</a>
+                {{/showMoreLoveButton}}
                 <div class='reviewTitle title-label-big'>
                     Reviews
                     {{^ownProfile}}
