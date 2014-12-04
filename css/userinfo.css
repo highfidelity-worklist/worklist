@@ -132,45 +132,6 @@ body > .container-fluid h3 {
     background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%);
 }
 
-#loves-table {
-    border-top: 2px solid #E1E8EA;
-}
-
-#loves-table tr > td {
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.love_message {
-    color: #6E6E6E;
-    font-weight: normal;
-    height: .5em;
-    width: 13em;
-    line-height: 120%;
-    position: relative;
-    right: 0;
-    padding-bottom: 4px;
-    padding-top: 7px;
-}
-
-.from_nick, .from_nick a {
-    color: #8B8B8B;
-    font-weight: normal;
-    vertical-align: top;
-    padding-top: 6px;
-}
-
-.from_nick a {
-    text-decoration: underline;
-}
-
-.date_sent {
-    color: #B6B6B6;
-    font-weight: normal;
-    vertical-align: top;
-    padding-top: 7px;
-}
-
 #BudgetHistory {
     border: 1px solid #d6d6d6;
     display: table;
@@ -330,12 +291,13 @@ p.bottom {
 }
 
 #user-loves {
-    padding: .5em 0;
+    padding: .5em 0 .5em;
+    color: #6E6E6E;
 }
 
 #user-loves > * {
     display: inline;
-    line-height: 1.8em;
+    line-height: 110%;
     font-size: 1em;
 }
 
@@ -354,7 +316,7 @@ p.bottom {
 
 #user-loves h6,
 #user-loves h6 a {
-    color: #666;
+    color: #8B8B8B;
 }
 
 #user-loves h6 span {
@@ -368,15 +330,19 @@ p.bottom {
 #user-loves h6:after {
     content: '';
     display: block;
+    padding-bottom: 10px;
 }
 
+#user-loves h6:before {
+    padding-right: 60px;
+}
 #user-loves + a {
     font-size: 12px;
     font-weight: normal;
     top: 10px;
     padding-bottom: 20px;
     position: relative;
-    color: #88AAB0;
+    color: #8B8B8B;
 }
 
 .reviewTitle {
