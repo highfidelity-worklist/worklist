@@ -71,7 +71,23 @@
                         </div>
                     </div>
                 </div>
-
+                <div class='loveTitle title-label-big'>
+                <i class="fa fa-heart"> </i>
+                    Love received
+                        <span id="love">
+                        {{#reqUserId}}{{^ownProfile}}
+                        <a href = "#" data-toggle="modal" data-target="#sendLove">
+                        <input type="submit" title="Send Love" class="send_love" value="Send Love" user="{{profileUser.getNickname}}" />
+                        {{/ownProfile}}{{/reqUserId}}
+                        </a>
+                        </span>
+                </div>
+                <section id="user-loves">
+                    {{> user/loves }}
+                </section>
+                {{#showMoreLoveButton}}
+                    <a href="#" >View more</a>
+                {{/showMoreLoveButton}}
                 <div class='reviewTitle title-label-big'>
                     Reviews
                     {{^ownProfile}}

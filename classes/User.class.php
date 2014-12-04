@@ -2320,51 +2320,6 @@ class User {
         return false;
     }
 
-    // get total love received by user using sendlove api
-    public function totalLove($page = 1) {
-        $data = $this->sendloveApiRequest('getlove', $page);
-        if($data){
-            return $data;
-        }
-        return false;
-    }
-
-    // get number of total love received by user using sendlove api
-    public function loveCount() {
-        $data = $this->sendloveApiRequest('getcount');
-        if ($data){
-            return (int) $data['count'];
-        }
-        return false;
-    }
-
-    public function uniqueLoveCount() {
-        $data = $this->sendloveApiRequest('getuniquecount');
-        if ($data){
-            return (int) $data['count'];
-        }
-        return false;
-    }
-
-    // sends a request to sendlove api and returns data in case of success
-    // false - if something went wrong
-    private function sendloveApiRequest($action, $page = 1, $itemsPerPage = 10) {
-        $params = array (
-            'action' => $action,
-            'api_key' => SENDLOVE_API_KEY,
-            'page' => $page,
-            'perpage' => $itemsPerPage,
-            'username' => $this->getUsername());
-        $referer = (empty($_SERVER['HTTPS'])?'http://':'https://').$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-        $sendlove_rsp = postRequest (SENDLOVE_API_URL, $params, array(CURLOPT_REFERER => $referer));
-        $rsp = json_decode ($sendlove_rsp, true);
-        if ($rsp['status'] == SL_OK){
-            return $rsp['data'];
-        } else {
-            return false;
-        }
-    }
-
     public function jobsForProject($status, $project, $page = 1, $itemsPerPage = 10) {
         $ret = array();
         if (!$status) {
@@ -2660,5 +2615,73 @@ class User {
             return strtotime($row[0]);
         }
         return false;
+    }
+
+    public function loves($page = 1, $itemsPerPage = 9999) {
+        $count = $this->lovesCount();
+        $userId = $this->getId();
+        $sql = "
+            SELECT
+              `l`.`love_id`,
+              `fn`.`nickname` AS `from_nickname`,
+              `tn`.`nickname` AS `to_nickname`,
+              `l`.`message`,
+              DATE_FORMAT(`l`.`date_sent`, '%b %d, %Y') AS sent
+            FROM `" . USERS_LOVE . "` `l`
+              LEFT JOIN `" . USERS . "` AS `fn` ON `l`.`from_id` = `fn`.`id`
+              LEFT JOIN `" . USERS . "` AS `tn` ON `l`.`to_id` = `tn`.`id`
+              WHERE `l`.`to_id` = {$userId}
+            ORDER BY `l`.`date_sent` DESC
+            LIMIT " . ($page-1)*$itemsPerPage . ", {$itemsPerPage}";
+        $ret = array();
+        if ($res = mysql_query($sql)) {
+            while($row = mysql_fetch_assoc($res)) {
+                $ret[] = $row;
+            }
+            return array(
+                'count' => $count,
+                'pages' => ceil($count/$itemsPerPage),
+                'page' => $page,
+                'loves' => $ret
+            );
+        }
+        return false;
+    }
+
+    public function lovesCount() {
+        $userId = $this->getId();
+        $sql = "
+            SELECT COUNT(*)
+            FROM `" . USERS_LOVE . "` `l`
+              LEFT JOIN `" . USERS . "` AS `fn` ON `l`.`from_id` = `fn`.`id`
+              LEFT JOIN `" . USERS . "` AS `tn` ON `l`.`to_id` = `tn`.`id`
+            WHERE `l`.`to_id` = {$userId}";
+        if ($res = mysql_query($sql)) {
+            $row = mysql_fetch_row($res);
+            return $row[0];
+        }
+        return false;
+    }
+
+    public function sendLove($to, $love_message) {
+        $from_id = $this->getId();
+        $to_id = $to->getId();
+        $love_message = mysql_real_escape_string($love_message);
+        $query = "
+            INSERT INTO `" . USERS_LOVE . "` (
+                `from_id`,
+                `to_id`,
+                `message`,
+                `date_sent`
+            ) VALUES (
+                '$from_id',
+                '$to_id',
+                '$love_message',
+                NOW()
+           )";
+        if (!mysql_query($query)) {
+            throw new Exception('User::sendLove: ' . mysql_error());
+        }
+        return mysql_insert_id();
     }
 }
