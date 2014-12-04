@@ -19,21 +19,25 @@
                 <li><a class="wl-icon-help" href="./help">Help</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-nav-md col-sm-5 col-md-5 dd-max-width">
-              <li class="col-sm-9">
-                <div id="search-query" class="col-sm-12 col-md-12">
+              <li>
+                <div id="search-query">
                      <input type="text" name="query" placeholder="Search" value="{{getQuery}}" />
                      <a  id="query-search-button" title="Search"></a>
                 </div>
               </li>
               {{#currentUser.id}}
-                    <li class="col-sm-3">
-                        <div id="buttons">
-                            <a href="./job/add" id="addJobButton" title="Suggest a Feature or Report a Bug">Add job</a>
-                            <a class="send_love" href="#" id="sendLoveButton" title="Send Love" data-toggle="modal" data-target="#send_love">
-                                <i class="fa fa-heart"></i>
-                            </a>
-                        </div>
-                    </li>
+                <li>
+                  <div id="buttons">
+                    <a href="./job/add" id="addJobButton"
+                      title="Suggest a Feature or Report a Bug">
+                      Add job
+                    </a>
+                    <a class="send_love" href="#" id="sendLoveButton" title="Send Love"
+                     data-toggle="modal" data-target="#send_love">
+                      <i class="fa fa-heart"></i>
+                    </a>
+                  </div>
+                </li>
                 {{/currentUser.id}}
             </ul>
             <ul class="nav navbar-nav navbar-right  col-sm-3 dd-max-width">
