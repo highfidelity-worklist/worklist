@@ -1474,14 +1474,158 @@ class JobController extends Controller {
 
     public function search() {
         $this->view = null;
-        $filter = new Agency_Worklist_Filter();
+
         $user = User::find(getSessionUserId());
-        $filter->setStatus(!empty($_REQUEST['status']) ? $_REQUEST['status'] : "Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
-        $filter->setProjectId(!empty($_REQUEST['project_id']) ? $_REQUEST['project_id'] : $filter->getProjectId());
-        $filter->setParticipated($_REQUEST['participated']);
-        $filter->setFollowing(empty($_REQUEST["following"]) ? 0 : $_REQUEST["following"]);
-        $filter->setLabels(empty($_REQUEST["labels"]) ? '' : $_REQUEST["labels"]);
-        echo json_encode(Project::getSearch($filter, $_REQUEST['query'], $_REQUEST['offset'], $_REQUEST['limit'],$user->is_runner, !$user->isInternal()));
+        $isRunner = $user->is_runner;
+        $publicOnly = !$user->isInternal();
+
+        $query = isset($_REQUEST['query']) ? $_REQUEST['query'] : null;
+        if ($query != null) {
+            if (preg_match("/^\#?\d+$/", $query)) {
+                $id = ltrim($query, '#');
+                if (Project::isJobId($id)) {
+                    echo json_encode(array('redirect' => $id));
+                    return;
+                }
+            }
+        }
+
+        $conds = array();
+        $groupConds = array();
+
+        $projectFilter = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : '';
+        if (!empty($projectFilter) && $projectFilter != 'All') {
+            $projectId = (int) $projectFilter;
+            $conds[] = "`w`.`project_id` = '{$projectId}'";
+        }
+
+        $statusFilter = isset($_REQUEST['status']) && !empty($_REQUEST['status'])
+            ? preg_split('/,/', $_REQUEST['status'])
+            :
+                empty($query)
+                    ? array('Active')
+                    : array();
+        if ($statusFilter) {
+            $statusCond = '';
+            foreach ($statusFilter as $status) {
+                if (empty($status)) {
+                    continue;
+                }
+                switch($status) {
+                    case 'Draft':
+                    case 'Suggestion':
+                    case 'Bidding':
+                    case 'In Progress':
+                    case 'QA Ready':
+                    case 'Review':
+                    case 'Merged':
+                    case 'Done':
+                    case 'Pass':
+                        $statusCond .= (empty($statusCond) ? '' : ' OR ') .
+                            "`w`.`status` = '{$status}'";
+                        break;
+
+                    // Pseudo status filters
+                    case 'Code Review':
+                        $statusCond .= (empty($statusCond) ? '' : ' OR ') .
+                            "`w`.`status` = 'Review'";
+                        break;
+                    case 'Needs-Review':
+                        $statusCond .= (empty($statusCond) ? '' : ' OR ') . "
+                                `w`.`status` = 'Review'
+                            AND `w`.`code_review_started` = 0";
+                        break;
+                    case 'Active':
+                        $statusCond .= (empty($statusCond) ? '' : ' OR ') . "
+                               `w`.`status` = 'Suggestion'
+                            OR `w`.`status` = 'Bidding'
+                            OR `w`.`status` = 'In Progress'
+                            OR `w`.`status` = 'QA Ready'
+                            OR `w`.`status` = 'Review'
+                            OR `w`.`status` = 'Merged'";
+                        break;
+                }
+            }
+            if (!empty($statusCond)) {
+                $conds[] = "({$statusCond})";
+            }
+        }
+
+        $participants = array();
+        if (isset($_REQUEST['participated']) && !empty($_REQUEST['participated'])) {
+            $participants = preg_split('/,/', $_REQUEST['participated']);
+        }
+        if ($query && preg_match("/^[a-zA-Z][a-zA-Z0-9-_]+$/", $query)) {
+            $finder = User::find($query);
+            if ($finder) {
+                $participants[] = $finder->getId();
+            }
+            $query = null;
+        }
+        if (count($participants) > 0) {
+            $participantsCond = '';
+            foreach($participants as $participant) {
+                $participant_user = User::find($participant);
+                if (!$participantId = $participant_user->getId()) {
+                    continue;
+                }
+                $participantsCond .= (empty($participantsCond) ? '' : ' OR ') . "
+                       `w`.`mechanic_id` = '{$participantId}'
+                    OR `w`.`runner_id` = '{$participantId}'
+                    OR `w`.`creator_id` = '{$participantId}'
+                    OR `commentators` REGEXP '(^|\:){$participantId}($|\:))'
+                    OR `payees` REGEXP '(^|\:){$participantId}($|\:))'
+                    OR `bidders` REGEXP '(^|\:){$participantId}($|\:))'
+                ";
+                if ($isRunner || $user->getId() == $participantId) {
+                    $participantsCond .= " OR `bidders` REGEXP '(^|\:){$participantId}($|\:))'";
+                }
+            }
+            $groupConds[] = $participantsCond;
+        }
+
+        if ($publicOnly) {
+            $conds[] .= "`w`.is_internal = 0";
+        }
+
+        if (isset($_REQUEST['following']) && !empty($_REQUEST["following"])) {
+            $conds[] = "`fol`.`user_id` IS NOT NULL";
+        }
+
+        /* text search */
+        if ($query != null) {
+            $array = preg_split('/\s+/', $query);
+            $textMatchCond = '';
+            foreach ($array as $item) {
+                $item = mysql_real_escape_string(rawurldecode($item));
+                $textMatchCond .= (empty($textMatchCond) ? '' : ' AND ') . "(
+                    MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$item') OR
+                    MATCH(`f`.notes) AGAINST ('$item')
+                )";
+            }
+            $conds[] = $textMatchCond;
+        }
+
+        /* labels filter */
+        if (isset($_REQUEST["labels"]) && !empty($_REQUEST["labels"])) {
+            $labels = preg_split('/,/', $_REQUEST["labels"]);
+            if ($labels) {
+                $labelsCond = '';
+                foreach($labels as $label) {
+                    if (!strlen(trim($label))) {
+                        continue;
+                    }
+                    $label = mysql_real_escape_string($label);
+                    $labelsCond .= (strlen($labelsCond) ? ' AND ' : '') .
+                        "labels LIKE '%:{$label}:%'";
+                }
+                if ($labelsCond) {
+                    $groupConds[] = "({$labelsCond})";
+                }
+            }
+        }
+
+        echo json_encode(WorkItem::search($query, $conds, $groupConds, $_REQUEST['offset'], $_REQUEST['limit']));
     }
 
     public function edit($worklist_id = 0) {
@@ -1830,44 +1974,24 @@ class JobController extends Controller {
 
         $workitem = new WorkItem();
 
-        $filter = new Agency_Worklist_Filter();
-
-        // krumch 20110418 Set to open Worklist from Journal
-        $filter->initFilter();
-        $filter->setName('.worklist');
-
-        if (! empty($_REQUEST['status'])) {
-            $filter->setStatus($_REQUEST['status']);
-        } else {
-            $filter->setStatus('ALL');
-        }
+        $queryFilter = empty($_REQUEST['query']) ? '' : $_REQUEST['query'];
+        $this->write('queryFilter', $queryFilter);
+        $this->write('followingFilter', ($filterName != null && $filterName == "following") ? true : false);
 
         if ($projectName != null && $projectName != "all") {
             $project = Project::find($projectName);
-            if ($project) {
-                $filter->setProjectId($project->getProjectId());
-            } else {
-                $filter->setProjectId(0);
-            }
+            $this->write('projectFilter', $project ? $project->getProjectId() : 0);
         } else {
-            $filter->setProjectId(0);
+            $this->write('projectFilter', 0);
         }
 
-        if (! empty($_REQUEST['user'])) {
-            $filter->setUser($_REQUEST['user']);
+        if ($filterName != null && $filterName != "following") {
+            $this->write('statusFilter', $filterName);
         } else {
-           $filter->setUser(0);
+            $this->write('statusFilter', empty($queryFilter) ? 'Active' : 'All');
         }
 
-        if (! empty($_REQUEST['query'])) {
-            $filter->setQuery($_REQUEST['query']);
-        } else {
-            $filter->setQuery("");
-        }
-
-        $filter->setFollowing(($filterName != null && $filterName == "following") ? true : false);
-        $filter->setStatus(($filterName != null && $filterName != "following") ? $filterName : "Draft,Bidding,In Progress,QA Ready,Review,Merged,Suggestion");
-        $filter->setLabels(array_slice(func_get_args(), 2));
+        $this->write('labelsFilter', array_slice(func_get_args(), 2));
 
         // Prevent reposts on refresh
         if (! empty($_POST)) {
@@ -1879,7 +2003,6 @@ class JobController extends Controller {
 
         $worklist_id = isset($_REQUEST['job_id']) ? intval($_REQUEST['job_id']) : 0;
 
-        $this->write('filter', $filter);
         $this->write('req_status', isset($_GET['status']) ? $_GET['status'] : '');
         $this->write('review_only', (isset($_GET['status']) &&  $_GET['status'] == 'needs-review') ? 'true' : 'false');
         parent::run();

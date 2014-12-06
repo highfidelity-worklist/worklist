@@ -27,10 +27,10 @@ var jobs = {
                 offset: offset,
                 limit: limit,
                 project_id: project_id,
-                status: status,
+                status: query.length ? '' : status,
                 query: query,
                 following: following,
-                participated: $('#only-jobs-i-participated input').is(':checked') ? 1 : 0,
+                participated: $('#only-jobs-i-participated input').is(':checked') ? userId : 0,
                 labels: labels.join(',')
             },
             dataType: 'json',
@@ -62,11 +62,13 @@ var jobs = {
                 $('#jobs-sections').append(jobs.renderJobStatus(data[index].project_id, data[index].status));
             }
             $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].labels, data[index].comments, data[index].participants));
+            /*
             var totalJobsRender = $('ul.project-jobs').length;
             var totalHitCount = $('body').data("jobs-total-hit-count");
             if (totalHitCount == totalJobsRender) {
                 $('#jobs-sections').append(jobs.renderPassedJobsLink(data[index].project_name, data[index].done_job_count, data[index].pass_job_count));
             }
+            */
         }
     },
     renderProjectHeader: function(id, project_name, project_short_description, done_job_count, pass_job_count) {
@@ -78,8 +80,8 @@ var jobs = {
         $(window).scroll(function() {
             var scrollTop = $(window).scrollTop() + 300;
             var windowHeight = ($(document).height() - $(window).height());
-            var totalJobsRender = $('ul.project-jobs').length;
-            if  (scrollTop >= windowHeight  && totalJobsRender < $('body').data("jobs-total-hit-count")) {
+            //var totalJobsRender = $('ul.project-jobs').length;
+            if  (scrollTop >= windowHeight  /*&& totalJobsRender < $('body').data("jobs-total-hit-count")*/) {
                 jobs.fetchJobs((jobs.offset = jobs.offset + jobs.limit), jobs.limit, search_project_id, search_status, jobs.query, jobs.following, jobs.labels);
             }
         });
@@ -95,8 +97,8 @@ var jobs = {
         if($.trim(labels).length > 0) {
             var labels = labels.split(",");
             for(labelIndex in labels) {
-                var label = labels[labelIndex].split("~~");
-                html += "<a class=" + (label[2] == '1' ? 'active' : '') + ">" + label[0] + "</a>";
+                var label = labels[labelIndex].split(':');
+                html += "<a class=" + (label[2] == '1' ? 'active' : '') + ">" + label[1] + "</a>";
             }
         }
         html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
@@ -127,7 +129,7 @@ var jobs = {
     filterChangeEventTrigger: function() {
         var query = $('#search-query input[type="text"]').val();
         $("select[name=project]").change(function() {
-            var project_name = $(this).find("option:selected").val() != 0 ? $(this).find("option:selected").text() : "";
+            var project_name = $(this).find("option:selected").val() != 0 ? $(this).find("option:selected").text().trim() : "";
             window.location.href = "./jobs/" + project_name + ($.trim(jobs.query).length > 0 ? '?query=' + jobs.query : '');
         });
         $('#search-query input[type="text"]').keypress(function(event) {

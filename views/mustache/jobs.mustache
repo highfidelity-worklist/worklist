@@ -1,15 +1,22 @@
 <script type="text/javascript">
-    var search_query = '{{filter.getQuery}}';
-    var search_project_id = '{{filter.getProjectId}}';
-    var search_status = '{{filter.getStatus}}';
-    var search_labels = '{{filter.getLabels}}';
+    var search_query = '{{queryFilter}}';
+    var search_project_id = '{{projectFilter}}';
+    var search_status = '{{statusFilter}}';
+    var search_labels = '{{labelsFilter}}';
 </script>
 <form class="row" id="search-filter">
     <div class="col-sm-12 col-md-12 dd-max-width">
         <div class="col-sm-6 col-md-6" id="search-filter-status">
             <div>Project:</div>
             <div class="filter">
-            {{& projectSelect}}
+                <select id="projectCombo" name="project" data-placeholder="Select project">
+                    {{#projects}}
+                        <option value="{{project_id}}"
+                          {{#selected}}selected="selected"{{/selected}}>
+                            {{name}}
+                        </option>
+                    {{/projects}}
+                </select>
             </div>
         </div>
         {{#currentUser.id}}
@@ -17,7 +24,7 @@
             <label><input type="checkbox" name="only-jobs-i-participated"/>Only jobs I've participated in</label>
         </div>
         <div class="col-sm-3 col-md-3 dd-max-width">
-            <label><input type="checkbox" id="jobs-im-following" name="jobs-im-following" {{#filter.getFollowing}} checked {{/filter.getFollowing}}  />Jobs I'm following</label>
+            <label><input type="checkbox" id="jobs-im-following" name="jobs-im-following" {{#followingFilter}}checked{{/followingFilter}}  />Jobs I'm following</label>
         </div>
         {{/currentUser.id}}
     </div>

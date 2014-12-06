@@ -1445,7 +1445,8 @@ class WorkItem {
             }
         }
     }
-    function flagAll0FeesAsPaid() {
+
+    public function flagAll0FeesAsPaid() {
         $query = "UPDATE " . FEES . " SET paid = 1, paid_date=NOW(), user_paid =" . $this->getRunnerId()
             . " WHERE worklist_id = " . $this->id . " AND amount = 0 AND withdrawn = 0";
         if (! $result = mysql_query($query)) {
@@ -1454,8 +1455,128 @@ class WorkItem {
         return true;
     }
 
-    public function getProjectName()
-    {
+    public function getProjectName() {
         return $this->project_name;
     }
-}// end of the class
+
+    public static function search($query = null, $conds = array(), $groupConds = array(), $offset = 0, $limit = 30) {
+        $userId = getSessionUserId();
+        $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
+        $havingConds = count($groupConds) ? implode(' AND ', $groupConds) : '1';
+        $sql  = "
+            SELECT
+              `w`.`id`,
+              `w`.`summary`,
+              `short_description`,
+              (
+                CASE
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_started` = 0 THEN 'Needs Review'
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_started` = 1
+                    AND `w`.`code_review_completed` = 0 THEN 'In Review'
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_completed` = 1 THEN 'Reviewed'
+                  WHEN `w`.`status` != 'Review' THEN `w`.`status`
+                END
+              ) `status`,
+              `cu`.`nickname` AS `creator_nickname`,
+              `ru`.`nickname` AS `runner_nickname`,
+              `mu`.`nickname` AS `mechanic_nickname`,
+              `proj`.`name` AS `project_name`,
+              `w`.`project_id` AS `project_id`,
+              TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
+              `creator_id`,
+              `runner_id`,
+              `mechanic_id`,
+              COUNT(DISTINCT `com`.`id`) AS `comments`,
+              GROUP_CONCAT(
+                DISTINCT IF(`l`.`id` IS NULL,
+                  '',
+                  CONCAT_WS(
+                    ':',
+                    `l`.`id`,
+                    `l`.`label`,
+                    IF(`pl`.`active`, '1', '0')
+                  )
+                )
+              ) AS `labels`,
+              GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `commentators`,
+              GROUP_CONCAT(DISTINCT `b`.`bidder_id`) AS `bidders`,
+              GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `payees`
+            FROM `" . WORKLIST . "` AS `w`
+              INNER JOIN `" . PROJECTS . "` AS `proj`
+                ON `w`.`project_id` = `proj`.`project_id`
+                  AND `proj`.`internal` = 1
+                  AND `proj`.`active` = 1
+              LEFT JOIN `" . USERS . "` AS cu
+                ON `w`.`creator_id` = `cu`.`id`
+              LEFT JOIN `" . USERS . "` AS ru
+                ON `w`.`runner_id` = `ru`.`id`
+              LEFT JOIN `" . USERS . "` AS mu
+                ON `w`.`mechanic_id` = `mu`.`id`
+              LEFT JOIN `" . FEES . "` AS `f`
+                ON `w`.`id` = `f`.`worklist_id`
+                  AND `f`.`withdrawn` = 0
+              LEFT JOIN `" . BIDS . "` `b`
+                ON `w`.`id` = `b`.`worklist_id`
+              LEFT JOIN `" . COMMENTS . "` AS `com`
+                ON `w`.`id` = `com`.`worklist_id`
+              LEFT JOIN `" . TASK_FOLLOWERS . "` AS `fol`
+                ON `fol`.`workitem_id` = `w`.`id`
+                  AND `fol`.`user_id` = {$userId}
+              LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
+                ON `wl`.`workitem_id` = `w`.`id`
+              LEFT JOIN `" . PROJECT_LABELS . "` `pl`
+                ON `pl`.`project_id` = `w`.`project_id`
+                  AND `pl`.`label_id` = `wl`.`label_id`
+              LEFT JOIN `" . LABELS . "` `l`
+                ON `l`.`id` = `wl`.`label_id`
+            WHERE {$whereConds}
+            GROUP BY
+              `w`.`id`,
+              `w`.`summary`
+            HAVING {$havingConds}
+            ORDER BY
+              `w`.`project_id` DESC,
+              (
+                CASE
+                  WHEN `w`.`status` = 'Bidding' THEN 1
+                  WHEN `w`.`status` = 'In Progress' THEN 2
+                  WHEN `w`.`status` = 'QA Ready' THEN 3
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_started` = 0 THEN 4
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_started` = 1
+                    AND `w`.`code_review_completed` = 0 THEN 5
+                  WHEN `w`.`status` = 'Review'
+                    AND `w`.`code_review_completed` = 1 THEN 6
+                  WHEN `w`.`status` = 'Merged' THEN 7
+                  WHEN `w`.`status` = 'Suggestion' THEN 8
+                  WHEN `w`.`status` = 'Done' THEN 9
+                  WHEN `w`.`status` = 'Pass' THEN 10
+                END
+              ),
+              `w`.`id` DESC
+            LIMIT {$offset}, {$limit}";
+
+        $results = array();
+        $resultQuery = mysql_query($sql) or error_log('getworklist mysql error: '. mysql_error());
+        while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
+            $id = $row['id'];
+            $result = array("id" => $id,
+                "summary" => $row['summary'],
+                "status" => $row['status'],
+                "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
+                "comments" => $row['comments'],
+                "project_id" => $row['project_id'],
+                "project_name" => $row['project_name'],
+                "labels" => $row['labels'] != null ? $row['labels']: "",
+                "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
+             );
+            array_push($results, $result);
+        }
+        $searchResult = array("search_result" => $results);
+        return $searchResult;
+    }
+}
