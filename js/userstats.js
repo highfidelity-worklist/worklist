@@ -11,16 +11,12 @@ var UserStats = {
         doneJobs: 1,
         designerTotalJobs: 1,
         designerActiveJobs: 1,
-        activeJobs: 1
+        activeJobs: 1,
     },
 
     init: function() {
         $("nav.navbar .following").click(function(){
             UserStats.showFollowingJobs(1, userId);
-            return false;
-        });
-        $('#love').click(function(){
-            UserStats.showLove();
             return false;
         });
     },
@@ -228,16 +224,6 @@ var UserStats = {
                 } else {
                     UserStats.modalRefresh(modal, page, json, user, '', UserStats.showLatestEarnings);
                 }
-            }
-        });
-    },
-
-    showLove: function(page) {
-        $.ajax({
-            url: './user/love/' + user + '/' + page,
-            dataType: 'json',
-            success: function(json) {
-                UserStats.modal('love', page, json, user);
             }
         });
     },

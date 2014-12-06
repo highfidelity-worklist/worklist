@@ -106,9 +106,29 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     font-weight: bold;
     text-align: center;
     margin-top: 13px;
-    width: 100px;
+    width: 85px;
     height: 35px;
     line-height: 2.6em;
+    margin-left: 10px;
+}
+
+#sendLoveButton {
+    background-color: #007F7c;
+    background-image: url('../images/wl-icons/fa-heart.svg');
+    color: #fff;
+    font-size: 1em;
+    border: 0;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 13px;
+    width: 40px;
+    height: 35px;
+    line-height: 2.6em;
+    margin-left: 5px;
 }
 
 #buttons {
@@ -126,7 +146,7 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
 }
 
 .navbar-nav-md {
-    max-width: 455px;
+    max-width: 600px;
 }
 
 .navbar-nav-md > li {
@@ -134,7 +154,7 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
 }
 
 #search-query input {
-    width: 80%;
+    width: 180px;
     border-radius: 5px 0px 0px 5px;
     border: 1px solid #666666;
     background-color: #666666;
@@ -146,6 +166,28 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1em;
     line-height: 1.45em;
+    margin-left: 15px;
+}
+
+@media (max-width: 1280px) and (min-width: 768px) {
+    #search-query input {
+        width: 120px;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 960px) and (min-width: 768px) {
+    #search-query input {
+        width: 75px;
+    }
+}
+
+@media (max-width: 860px) and (min-width: 768px) {
+    #search-query input {
+        font-size: .7em;
+        width: 45px;
+        margin-left: 5px;
+    }
 }
 
 #search-query input:focus {
@@ -187,10 +229,6 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
    .navbar-nav-md {
         max-width: 335px;
     }
-
-    #search-query input {
-        width: 75%;
-    }
 }
 
 @media (max-width: 960px) {
@@ -201,10 +239,6 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
 
    .navbar-nav-md {
         max-width: 298px;
-    }
-
-    #search-query input {
-        width: 75%;
     }
 
     #addJobButton {
@@ -245,7 +279,7 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     }
 }
 
-@media  (max-width: 767px) and (max-width : 768px) {
+@media (max-width : 768px) {
     body > nav.navbar ul.nav:first-child li a,
     body > nav.navbar a.navbar-brand.wl-icon-worklist {
        width: calc(100% - 125px);
@@ -267,6 +301,6 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     }
 
     #search-query input {
-        width: calc(100% - 35px);
+        width: calc(100% - 50px);
     }
 }

@@ -36,6 +36,12 @@ class UserView extends View {
         // CIA.gov Base URL
         $this->ciaGovBase = "https://www.cia.gov/library/publications/the-world-factbook/geos/";
 
+
+        $loves = $this->profileUser->loves(1,5);
+        error_log(print_r($loves,true));
+        $this->showMoreLoveButton = $loves['pages'] != 0 && $loves['page'] != $loves['pages'];
+        $this->loves = $loves['loves'];
+
         return parent::render();
     }
 

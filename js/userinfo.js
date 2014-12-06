@@ -178,7 +178,7 @@ var UserInfo = {
         });
         
         $('.reviewAddLink').click(UserInfo.reviewDialog);
-       
+
         $('#give').click(function(){
             Utils.modal('budget-give', {
                 receiver_id: userInfo.user_id,
@@ -489,6 +489,8 @@ var UserInfo = {
         $(".userNotes").live('blur', function() {
             userInfo.saveUserNotes();
         });
+
+        $('#user-loves + a').click(UserInfo.displayAllLove);
     },
 
     setW9Status: function(status, reason, fAfter) {
@@ -653,6 +655,24 @@ var UserInfo = {
                 }
             }
         });
-    }
+    },
 
+    displayAllLove: function() {
+        var itemsPerPage = 5;
+        var nextPage = $('#user-loves cite').length / itemsPerPage + 1;
+        $.ajax({
+            type: 'GET',
+            url: './user/loves/' + userInfo.nickName + '/' + nextPage + '/' + itemsPerPage,
+            dataType: 'json',
+            success: function(json) {
+                Utils.parseMustache('partials/user/loves', json, function(parsed) {
+                    $('#user-loves').append(parsed);
+                    if (json.page == json.pages) {
+                        $('#user-loves + a').remove();
+                    }
+                });
+            }
+        });
+        return false;
+    }
  };

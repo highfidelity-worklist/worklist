@@ -380,5 +380,9 @@ replacement data:
       <p>
       Do the work, delegate the work, or wait for some bids.
       </p>'
+),
+'love-received' => array(
+    'subject' => '{from_nickname} just sent you love',
+    'body' => '"{message}" - <a href="' . SERVER_URL .'user/' . '{from_nickname} ">{from_nickname}</a>'
 )
 );
