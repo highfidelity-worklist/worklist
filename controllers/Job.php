@@ -1559,8 +1559,8 @@ class JobController extends Controller {
             $finder = User::find($query);
             if ($finder) {
                 $participants[] = $finder->getId();
+                $query = null;
             }
-            $query = null;
         }
         if (count($participants) > 0) {
             $participantsCond = '';
