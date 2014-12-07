@@ -1557,7 +1557,7 @@ class JobController extends Controller {
         }
         if ($query && preg_match("/^[a-zA-Z][a-zA-Z0-9-_]+$/", $query)) {
             $finder = User::find($query);
-            if ($finder) {
+            if ($finder->getId()) {
                 $participants[] = $finder->getId();
                 $query = null;
             }
