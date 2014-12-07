@@ -1599,8 +1599,9 @@ class JobController extends Controller {
             foreach ($array as $item) {
                 $item = mysql_real_escape_string(rawurldecode($item));
                 $textMatchCond .= (empty($textMatchCond) ? '' : ' AND ') . "(
-                    MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$item') OR
-                    MATCH(`f`.notes) AGAINST ('$item')
+                       MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$item')
+                    OR MATCH(`f`.notes) AGAINST ('$item')
+                    OR MATCH (`com`.`comment`) AGAINST ('$item')
                 )";
             }
             $conds[] = $textMatchCond;
