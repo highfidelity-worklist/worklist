@@ -1492,6 +1492,7 @@ class JobController extends Controller {
 
         $conds = array();
         $groupConds = array();
+        $extraFields = array();
 
         $projectFilter = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : '';
         if (!empty($projectFilter) && $projectFilter != 'All') {
@@ -1555,33 +1556,66 @@ class JobController extends Controller {
         if (isset($_REQUEST['participated']) && !empty($_REQUEST['participated'])) {
             $participants = preg_split('/,/', $_REQUEST['participated']);
         }
-        if ($query && preg_match("/^[a-zA-Z][a-zA-Z0-9-_]+$/", $query)) {
-            $finder = User::find($query);
-            if ($finder->getId()) {
-                $participants[] = $finder->getId();
-                $query = null;
+
+        $mentions = array();
+        $groupedMentions = '';
+        if (preg_match_all(
+            '/@(\w+)/',
+            $query,
+            $mentions,
+            PREG_SET_ORDER
+        )) {
+            $mentionUsersFound = array();
+            foreach ($mentions as $mention) {
+                $mentionUser = User::find($mention[1]);
+                if ($mentionId = $mentionUser->getId()) {
+                    $mentionUsersFound[] = $mentionUser->getNickname();
+                    $participants[] = $mentionId;
+                    $query = trim(preg_replace('/@' . $mentionUser->getNickname() . '/', '', $query));
+                }
             }
+            $groupedMentions = '(' . implode(' ', $mentionUsersFound) . ')';
         }
+
         if (count($participants) > 0) {
-            $participantsCond = '';
+            $extraFields[] = "GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `commentators`";
+            $extraFields[] = "GROUP_CONCAT(DISTINCT `f`.`user_id`) AS `payees`";
+            if ($isRunner || in_array($user->getId(), $participants)) {
+                $extraFields[] = "GROUP_CONCAT(DISTINCT `b`.`bidder_id`) AS `bidders`";
+            }
+
             foreach($participants as $participant) {
-                $participant_user = User::find($participant);
-                if (!$participantId = $participant_user->getId()) {
+                $participantUser = User::find($participant);
+                if (!$participantId = $participantUser->getId()) {
                     continue;
                 }
-                $participantsCond .= (empty($participantsCond) ? '' : ' OR ') . "
-                       `w`.`mechanic_id` = '{$participantId}'
+                $participantNickname = $participantUser->getNickname();
+                $fieldName = "{$participantNickname}Mentioned";
+                $extraFields[] = "SUM(
+                    CASE WHEN
+                          MATCH(`w`.`summary`, `w`.`notes`)
+                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
+                      OR  MATCH(`f`.`notes`)
+                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
+                      OR  MATCH (`com`.`comment`)
+                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
+                    THEN 1 ELSE 0 END
+                ) AS `{$fieldName}`";
+
+                $groupConds[] = "(
+                    `{$fieldName}` > 0
+                    OR `w`.`mechanic_id` = '{$participantId}'
                     OR `w`.`runner_id` = '{$participantId}'
                     OR `w`.`creator_id` = '{$participantId}'
-                    OR `commentators` REGEXP '(^|\:){$participantId}($|\:))'
-                    OR `payees` REGEXP '(^|\:){$participantId}($|\:))'
-                    OR `bidders` REGEXP '(^|\:){$participantId}($|\:))'
-                ";
-                if ($isRunner || $user->getId() == $participantId) {
-                    $participantsCond .= " OR `bidders` REGEXP '(^|\:){$participantId}($|\:))'";
-                }
+                    OR `commentators` REGEXP '(^|\:){$participantId}($|\:)'
+                    OR `payees` REGEXP '(^|\:){$participantId}($|\:)'
+                    " . (
+                        ($isRunner || $user->getId() == $participantId)
+                            ? "OR `bidders` REGEXP '(^|\:){$participantId}($|\:)'"
+                            : ''
+                    ) . "
+                )";
             }
-            $groupConds[] = $participantsCond;
         }
 
         if ($publicOnly) {
@@ -1594,17 +1628,15 @@ class JobController extends Controller {
 
         /* text search */
         if ($query != null) {
-            $array = preg_split('/\s+/', $query);
-            $textMatchCond = '';
-            foreach ($array as $item) {
-                $item = mysql_real_escape_string(rawurldecode($item));
-                $textMatchCond .= (empty($textMatchCond) ? '' : ' AND ') . "(
-                       MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$item')
-                    OR MATCH(`f`.notes) AGAINST ('$item')
-                    OR MATCH (`com`.`comment`) AGAINST ('$item')
-                )";
-            }
-            $conds[] = $textMatchCond;
+            $safeQuery = str_replace('\'', '\\\'', rawurldecode($query));
+            $conds[] = "(
+                   MATCH(`w`.`summary`, `w`.`notes`)
+                     AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                OR MATCH(`f`.`notes`)
+                  AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                OR MATCH (`com`.`comment`)
+                  AGAINST ('$safeQuery' IN BOOLEAN MODE)
+            )";
         }
 
         /* labels filter */
@@ -1626,7 +1658,7 @@ class JobController extends Controller {
             }
         }
 
-        echo json_encode(WorkItem::search($query, $conds, $groupConds, $_REQUEST['offset'], $_REQUEST['limit']));
+        echo json_encode(WorkItem::search($query, $conds, $groupConds, $extraFields, $_REQUEST['offset'], $_REQUEST['limit']));
     }
 
     public function edit($worklist_id = 0) {

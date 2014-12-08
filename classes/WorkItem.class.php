@@ -1459,10 +1459,11 @@ class WorkItem {
         return $this->project_name;
     }
 
-    public static function search($query = null, $conds = array(), $groupConds = array(), $offset = 0, $limit = 30) {
+    public static function search($query = null, $conds = array(), $groupConds = array(), $extraFields = array(), $offset = 0, $limit = 30) {
         $userId = getSessionUserId();
         $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
         $havingConds = count($groupConds) ? implode(' AND ', $groupConds) : '1';
+        $extraFields = count($extraFields) ? ', ' . implode(', ', $extraFields) : '';
         $sql  = "
             SELECT
               `w`.`id`,
@@ -1500,13 +1501,11 @@ class WorkItem {
                     IF(`pl`.`active`, '1', '0')
                   )
                 )
-              ) AS `labels`,
-              GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `commentators`,
-              GROUP_CONCAT(DISTINCT `b`.`bidder_id`) AS `bidders`,
-              GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `payees`
+              ) AS `labels`
+              {$extraFields}
             FROM `" . WORKLIST . "` AS `w`
               INNER JOIN `" . PROJECTS . "` AS `proj`
-                ON `w`.`project_id` = `proj`.`project_id`
+                ON    `w`.`project_id` = `proj`.`project_id`
                   AND `proj`.`internal` = 1
                   AND `proj`.`active` = 1
               LEFT JOIN `" . USERS . "` AS cu
@@ -1516,19 +1515,19 @@ class WorkItem {
               LEFT JOIN `" . USERS . "` AS mu
                 ON `w`.`mechanic_id` = `mu`.`id`
               LEFT JOIN `" . FEES . "` AS `f`
-                ON `w`.`id` = `f`.`worklist_id`
+                ON    `w`.`id` = `f`.`worklist_id`
                   AND `f`.`withdrawn` = 0
               LEFT JOIN `" . BIDS . "` `b`
                 ON `w`.`id` = `b`.`worklist_id`
               LEFT JOIN `" . COMMENTS . "` AS `com`
                 ON `w`.`id` = `com`.`worklist_id`
               LEFT JOIN `" . TASK_FOLLOWERS . "` AS `fol`
-                ON `fol`.`workitem_id` = `w`.`id`
+                ON    `fol`.`workitem_id` = `w`.`id`
                   AND `fol`.`user_id` = {$userId}
               LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
                 ON `wl`.`workitem_id` = `w`.`id`
               LEFT JOIN `" . PROJECT_LABELS . "` `pl`
-                ON `pl`.`project_id` = `w`.`project_id`
+                ON    `pl`.`project_id` = `w`.`project_id`
                   AND `pl`.`label_id` = `wl`.`label_id`
               LEFT JOIN `" . LABELS . "` `l`
                 ON `l`.`id` = `wl`.`label_id`
@@ -1562,6 +1561,7 @@ class WorkItem {
 
         $results = array();
         $resultQuery = mysql_query($sql) or error_log('getworklist mysql error: '. mysql_error());
+
         while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
             $id = $row['id'];
             $result = array("id" => $id,
