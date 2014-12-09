@@ -1465,6 +1465,11 @@ class WorkItem {
             $subQuery = ' `w`.`id` IN (
                 SELECT `sub_w`.`id`
                 FROM `' . WORKLIST . '` `sub_w`
+                  LEFT JOIN `' . COMMENTS . '` AS `sub_com`
+                    ON `sub_w`.`id` = `sub_com`.`worklist_id`
+                  LEFT JOIN `'. FEES . '` AS `sub_f`
+                    ON `sub_w`.`id` = `sub_f`.`worklist_id`
+                      AND `sub_f`.`withdrawn` = 0
                 WHERE ' . implode(' AND ', $subConds) . '
             )';
             $conds[] = $subQuery;
