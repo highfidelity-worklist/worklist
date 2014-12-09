@@ -1459,11 +1459,22 @@ class WorkItem {
         return $this->project_name;
     }
 
-    public static function search($query = null, $conds = array(), $groupConds = array(), $extraFields = array(), $offset = 0, $limit = 30) {
+    public static function search($query = null, $conds = array(), $subQueryConds = array(), $offset = 0, $limit = 30) {
         $userId = getSessionUserId();
+
+        if (count($subQueryConds)) {
+            $subQuery = '`w`.`id` IN (
+                SELECT `sub_w`.`id`
+                FROM `' . WORKLIST . '` `sub_w`
+                WHERE ' . implode(' AND ', $subQueryConds) . '
+            )';
+            $conds[] = $subQuery;
+        }
+
         $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
         $havingConds = count($groupConds) ? implode(' AND ', $groupConds) : '1';
         $extraFields = count($extraFields) ? ', ' . implode(', ', $extraFields) : '';
+
         $sql  = "
             SELECT
               `w`.`id`,
