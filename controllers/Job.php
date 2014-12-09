@@ -1491,6 +1491,8 @@ class JobController extends Controller {
         }
 
         $conds = array();
+        $subConds = array();
+
         $projectFilter = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : '';
         if (!empty($projectFilter) && $projectFilter != 'All') {
             $projectId = (int) $projectFilter;
@@ -1590,21 +1592,19 @@ class JobController extends Controller {
             preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $query, $matches);
             foreach($matches[0] as $match) {
                 $safeQuery = str_replace('\'', '\\\'', rawurldecode($match));
-                $conds[] = "(
-                     MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$safeQuery')
-                  OR EXISTS (
-                    SELECT 1
+                $subConds[] = "(
+                     MATCH(`sub_w`.`summary`, `sub_w`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                  OR `w`.`id` IN (
+                    SELECT `query_f`.`worklist_id` `id`
                     FROM `" . FEES . "` AS `query_f`
-                    WHERE `query_f`.`worklist_id` = `w`.`id`
+                    WHERE MATCH(`query_f`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
                       AND `query_f`.`withdrawn` = 0
-                      AND MATCH(`query_f`.`notes`) AGAINST ('$safeQuery')
 
                     UNION DISTINCT
 
-                    SELECT 1
+                    SELECT `query_com`.`worklist_id` `id`
                     FROM `" . COMMENTS . "` AS `query_com`
-                    WHERE `query_com`.`worklist_id` = `w`.`id`
-                      AND MATCH (`query_com`.`comment`) AGAINST ('$safeQuery')
+                    WHERE MATCH (`query_com`.`comment`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
                   )
                 )";
             }
@@ -1677,7 +1677,7 @@ class JobController extends Controller {
             }
         }
 
-        echo json_encode(WorkItem::search($query, $conds, $_REQUEST['offset'], $_REQUEST['limit']));
+        echo json_encode(WorkItem::search($query, $conds, $subConds, $_REQUEST['offset'], $_REQUEST['limit']));
     }
 
     public function edit($worklist_id = 0) {
