@@ -1593,18 +1593,19 @@ class JobController extends Controller {
             foreach($matches[0] as $match) {
                 $safeQuery = str_replace('\'', '\\\'', rawurldecode($match));
                 $subConds[] = "(
-                     MATCH(`sub_w`.`summary`, `sub_w`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                     MATCH(`sub_w`.`summary`, `sub_w`.`notes`) AGAINST ('{$safeQuery}')
+
                   OR `w`.`id` IN (
                     SELECT `query_f`.`worklist_id` `id`
-                    FROM `" . FEES . "` AS `query_f`
-                    WHERE MATCH(`query_f`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                    FROM `fees` AS `query_f`
+                    WHERE MATCH(`query_f`.`notes`) AGAINST ('{$safeQuery}')
                       AND `query_f`.`withdrawn` = 0
 
                     UNION DISTINCT
 
                     SELECT `query_com`.`worklist_id` `id`
-                    FROM `" . COMMENTS . "` AS `query_com`
-                    WHERE MATCH (`query_com`.`comment`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                    FROM `comments` AS `query_com`
+                    WHERE MATCH (`query_com`.`comment`) AGAINST ('{$safeQuery}')
                   )
                 )";
             }
