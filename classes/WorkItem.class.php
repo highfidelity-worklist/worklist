@@ -1465,7 +1465,7 @@ class WorkItem {
             $subQuery = '`w`.`id` IN (
                 SELECT `sub_w`.`id`
                 FROM `' . WORKLIST . '` `sub_w`
-                WHERE ' . implode(' AND ', $subQueryConds) . '
+                WHERE ' . implode(' AND ', $subConds) . '
             )';
             $conds[] = $subQuery;
         }
