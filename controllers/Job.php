@@ -1491,8 +1491,6 @@ class JobController extends Controller {
         }
 
         $conds = array();
-        $subConds = array();
-
         $projectFilter = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : '';
         if (!empty($projectFilter) && $projectFilter != 'All') {
             $projectId = (int) $projectFilter;
@@ -1592,19 +1590,21 @@ class JobController extends Controller {
             preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $query, $matches);
             foreach($matches[0] as $match) {
                 $safeQuery = str_replace('\'', '\\\'', rawurldecode($match));
-                $subConds[] = "(
-                     MATCH(`sub_w`.`summary`, `sub_w`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
-                  OR `w`.`id` IN (
-                    SELECT `query_f`.`worklist_id` `id`
+                $conds[] = "(
+                     MATCH(`w`.`summary`, `w`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                  OR EXISTS (
+                    SELECT 1
                     FROM `" . FEES . "` AS `query_f`
                     WHERE MATCH(`query_f`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
                       AND `query_f`.`withdrawn` = 0
+                      AND `query_f`.`worklist_id` = `w`.`id`
 
                     UNION DISTINCT
 
-                    SELECT `query_com`.`worklist_id` `id`
+                    SELECT 1
                     FROM `" . COMMENTS . "` AS `query_com`
                     WHERE MATCH (`query_com`.`comment`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                      AND `query_com`.`worklist_id` = `w`.`id`
                   )
                 )";
             }
@@ -1617,41 +1617,43 @@ class JobController extends Controller {
                     continue;
                 }
                 $participantNickname = $participantUser->getNickname();
-                $subConds[] = "(
-                    `sub_w`.`mechanic_id` = '{$participantId}'
-                    OR `sub_w`.`runner_id` = '{$participantId}'
-                    OR `sub_w`.`creator_id` = '{$participantId}'
-                    OR `sub_w`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
-                    OR (
-                      (
-                        SELECT COUNT(*)
-                        FROM `" . FEES . "` AS `involved_f`
-                        WHERE `involved_f`.`worklist_id` = `sub_w`.`id`
-                          AND `involved_f`.`withdrawn` = 0
-                          AND (
-                               `involved_f`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
-                            OR `involved_f`.`user_id` = {$participantId}
-                          )
-                      ) + (
-                        SELECT COUNT(*)
-                        FROM `" . COMMENTS . "` AS `involved_com`
-                        WHERE `involved_com`.`worklist_id` = `sub_w`.`id`
-                          AND (
-                               `involved_com`.`user_id` = {$participantId}
-                            OR `involved_com`.`comment` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
-                          )
-                      )" . (
-                        ($isRunner || $user->getId() == $participantId)
-                            ? "
-                              + (
-                                SELECT COUNT(*)
-                                FROM `" . BIDS . "` AS `involved_b`
-                                WHERE `involved_b`.`worklist_id` = `sub_w`.`id`
-                                  AND `involved_b`.`bidder_id` = {$participantId}
-                              )"
-                            : ''
-                      ) . "
-                    ) > 0
+                $conds[] = "(
+                    `w`.`mechanic_id` = '{$participantId}'
+                    OR `w`.`runner_id` = '{$participantId}'
+                    OR `w`.`creator_id` = '{$participantId}'
+                    OR `w`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                    OR EXISTS (
+                      SELECT 1
+                      FROM `" . FEES . "` AS `involved_f`
+                      WHERE `involved_f`.`worklist_id` = `w`.`id`
+                        AND `involved_f`.`withdrawn` = 0
+                        AND (
+                             `involved_f`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                          OR `involved_f`.`user_id` = {$participantId}
+                        )
+                      LIMIT 1
+                    )
+                    OR EXISTS (
+                      SELECT 1
+                      FROM `" . COMMENTS . "` AS `involved_com`
+                      WHERE `involved_com`.`worklist_id` = `w`.`id`
+                        AND (
+                             `involved_com`.`user_id` = {$participantId}
+                          OR `involved_com`.`comment` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                        )
+                      LIMIT 1
+                    )" . (
+                      ($isRunner || $user->getId() == $participantId)
+                          ? "
+                            OR EXISTS (
+                              SELECT 1
+                              FROM `" . BIDS . "` AS `involved_b`
+                              WHERE `involved_b`.`worklist_id` = `w`.`id`
+                                AND `involved_b`.`bidder_id` = {$participantId}
+                              LIMIT 1
+                            )"
+                          : ''
+                    ) . "
                 )";
             }
         }
@@ -1675,7 +1677,7 @@ class JobController extends Controller {
             }
         }
 
-        echo json_encode(WorkItem::search($query, $conds, $subConds, $_REQUEST['offset'], $_REQUEST['limit']));
+        echo json_encode(WorkItem::search($query, $conds, $_REQUEST['offset'], $_REQUEST['limit']));
     }
 
     public function edit($worklist_id = 0) {
