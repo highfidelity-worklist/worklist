@@ -1472,8 +1472,6 @@ class WorkItem {
         }
 
         $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
-        $havingConds = count($groupConds) ? implode(' AND ', $groupConds) : '1';
-        $extraFields = count($extraFields) ? ', ' . implode(', ', $extraFields) : '';
 
         $sql  = "
             SELECT
@@ -1500,20 +1498,7 @@ class WorkItem {
               TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
               `creator_id`,
               `runner_id`,
-              `mechanic_id`,
-              COUNT(DISTINCT `com`.`id`) AS `comments`,
-              GROUP_CONCAT(
-                DISTINCT IF(`l`.`id` IS NULL,
-                  '',
-                  CONCAT_WS(
-                    ':',
-                    `l`.`id`,
-                    `l`.`label`,
-                    IF(`pl`.`active`, '1', '0')
-                  )
-                )
-              ) AS `labels`
-              {$extraFields}
+              `mechanic_id`
             FROM `" . WORKLIST . "` AS `w`
               INNER JOIN `" . PROJECTS . "` AS `proj`
                 ON    `w`.`project_id` = `proj`.`project_id`
@@ -1525,20 +1510,7 @@ class WorkItem {
                 ON `w`.`runner_id` = `ru`.`id`
               LEFT JOIN `" . USERS . "` AS mu
                 ON `w`.`mechanic_id` = `mu`.`id`
-              LEFT JOIN `" . COMMENTS . "` AS `com`
-                ON `w`.`id` = `com`.`worklist_id`
-              LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
-                ON `wl`.`workitem_id` = `w`.`id`
-              LEFT JOIN `" . PROJECT_LABELS . "` `pl`
-                ON    `pl`.`project_id` = `w`.`project_id`
-                  AND `pl`.`label_id` = `wl`.`label_id`
-              LEFT JOIN `" . LABELS . "` `l`
-                ON `l`.`id` = `wl`.`label_id`
             WHERE {$whereConds}
-            GROUP BY
-              `w`.`id`,
-              `w`.`summary`
-            HAVING {$havingConds}
             ORDER BY
               `w`.`project_id` DESC,
               (
@@ -1570,10 +1542,10 @@ class WorkItem {
                 "summary" => $row['summary'],
                 "status" => $row['status'],
                 "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
-                "comments" => $row['comments'],
+                "comments" => 0,
                 "project_id" => $row['project_id'],
                 "project_name" => $row['project_name'],
-                "labels" => $row['labels'] != null ? $row['labels']: "",
+                "labels" => '',
                 "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
              );
             array_push($results, $result);
