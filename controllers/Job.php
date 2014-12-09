@@ -1595,16 +1595,16 @@ class JobController extends Controller {
                   OR EXISTS (
                     SELECT 1
                     FROM `" . FEES . "` AS `query_f`
-                    WHERE MATCH(`query_f`.`notes`) AGAINST ('$safeQuery')
+                    WHERE `query_f`.`worklist_id` = `w`.`id`
                       AND `query_f`.`withdrawn` = 0
-                      AND `query_f`.`worklist_id` = `w`.`id`
+                      AND MATCH(`query_f`.`notes`) AGAINST ('$safeQuery')
 
                     UNION DISTINCT
 
                     SELECT 1
                     FROM `" . COMMENTS . "` AS `query_com`
-                    WHERE MATCH (`query_com`.`comment`) AGAINST ('$safeQuery')
-                      AND `query_com`.`worklist_id` = `w`.`id`
+                    WHERE `query_com`.`worklist_id` = `w`.`id`
+                      AND MATCH (`query_com`.`comment`) AGAINST ('$safeQuery')
                   )
                 )";
             }
