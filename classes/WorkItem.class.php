@@ -1514,16 +1514,8 @@ class WorkItem {
                 ON `w`.`runner_id` = `ru`.`id`
               LEFT JOIN `" . USERS . "` AS mu
                 ON `w`.`mechanic_id` = `mu`.`id`
-              LEFT JOIN `" . FEES . "` AS `f`
-                ON    `w`.`id` = `f`.`worklist_id`
-                  AND `f`.`withdrawn` = 0
-              LEFT JOIN `" . BIDS . "` `b`
-                ON `w`.`id` = `b`.`worklist_id`
               LEFT JOIN `" . COMMENTS . "` AS `com`
                 ON `w`.`id` = `com`.`worklist_id`
-              LEFT JOIN `" . TASK_FOLLOWERS . "` AS `fol`
-                ON    `fol`.`workitem_id` = `w`.`id`
-                  AND `fol`.`user_id` = {$userId}
               LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
                 ON `wl`.`workitem_id` = `w`.`id`
               LEFT JOIN `" . PROJECT_LABELS . "` `pl`
@@ -1561,7 +1553,6 @@ class WorkItem {
 
         $results = array();
         $resultQuery = mysql_query($sql) or error_log('getworklist mysql error: '. mysql_error());
-
         while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
             $id = $row['id'];
             $result = array("id" => $id,

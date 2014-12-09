@@ -1578,42 +1578,51 @@ class JobController extends Controller {
         }
 
         if (count($participants) > 0) {
-            $extraFields[] = "GROUP_CONCAT(DISTINCT `com`.`user_id`) AS `commentators`";
-            $extraFields[] = "GROUP_CONCAT(DISTINCT `f`.`user_id`) AS `payees`";
-            if ($isRunner || in_array($user->getId(), $participants)) {
-                $extraFields[] = "GROUP_CONCAT(DISTINCT `b`.`bidder_id`) AS `bidders`";
-            }
-
             foreach($participants as $participant) {
                 $participantUser = User::find($participant);
                 if (!$participantId = $participantUser->getId()) {
                     continue;
                 }
                 $participantNickname = $participantUser->getNickname();
-                $fieldName = "{$participantNickname}Mentioned";
-                $extraFields[] = "SUM(
-                    CASE WHEN
-                          MATCH(`w`.`summary`, `w`.`notes`)
-                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
-                      OR  MATCH(`f`.`notes`)
-                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
-                      OR  MATCH (`com`.`comment`)
-                            AGAINST ('$participantNickname @$participantNickname' IN BOOLEAN MODE)
-                    THEN 1 ELSE 0 END
-                ) AS `{$fieldName}`";
-
                 $groupConds[] = "(
-                    `{$fieldName}` > 0
-                    OR `w`.`mechanic_id` = '{$participantId}'
+                    `w`.`mechanic_id` = '{$participantId}'
                     OR `w`.`runner_id` = '{$participantId}'
                     OR `w`.`creator_id` = '{$participantId}'
-                    OR `commentators` REGEXP '(^|\:){$participantId}($|\:)'
-                    OR `payees` REGEXP '(^|\:){$participantId}($|\:)'
-                    " . (
+                    OR (
+                      (
+                        SELECT COUNT(*)
+                        FROM `" . WORKLIST . "` AS `involved_w`
+                        WHERE `involved_w`.`id` = `w`.`id`
+                          AND `involved_w`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                      ) + (
+                        SELECT COUNT(*)
+                        FROM `" . FEES . "` AS `involved_f`
+                        WHERE `involved_f`.`worklist_id` = `w`.`id`
+                          AND `involved_f`.`withdrawn` = 0
+                          AND (
+                               `involved_f`.`notes` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                            OR `involved_f`.`user_id` = {$participantId}
+                          )
+                      ) + (
+                        SELECT COUNT(*)
+                        FROM `" . COMMENTS . "` AS `involved_com`
+                        WHERE `involved_com`.`worklist_id` = `w`.`id`
+                          AND (
+                               `involved_com`.`user_id` = {$participantId}
+                            OR `involved_com`.`comment` REGEXP '([[:space:]]|^)@?{$participantNickname}([[:space:]]|$)'
+                          )
+                      )" . (
                         ($isRunner || $user->getId() == $participantId)
-                            ? "OR `bidders` REGEXP '(^|\:){$participantId}($|\:)'"
+                            ? "
+                              + (
+                                SELECT COUNT(*)
+                                FROM `" . BIDS . "` AS `involved_b`
+                                WHERE `involved_b`.`worklist_id` = `w`.`id`
+                                  AND `involved_b`.`bidder_id` = {$participantId}
+                              )"
                             : ''
-                    ) . "
+                      ) . "
+                    ) > 0
                 )";
             }
         }
@@ -1623,19 +1632,36 @@ class JobController extends Controller {
         }
 
         if (isset($_REQUEST['following']) && !empty($_REQUEST["following"])) {
-            $conds[] = "`fol`.`user_id` IS NOT NULL";
+            $conds[] = "(
+                SELECT COUNT(*)
+                FROM `" . TASK_FOLLOWERS . "` `fol`
+                WHERE `fol`.`workitem_id` = `w`.`id`
+                  AND `fol`.`user_id` = {$user->getId()}
+            ) > 0";
         }
 
         /* text search */
         if ($query != null) {
             $safeQuery = str_replace('\'', '\\\'', rawurldecode($query));
-            $conds[] = "(
-                   MATCH(`w`.`summary`, `w`.`notes`)
-                     AGAINST ('$safeQuery' IN BOOLEAN MODE)
-                OR MATCH(`f`.`notes`)
-                  AGAINST ('$safeQuery' IN BOOLEAN MODE)
-                OR MATCH (`com`.`comment`)
-                  AGAINST ('$safeQuery' IN BOOLEAN MODE)
+            $conds[] = "`w`.`id` IN (
+                SELECT `query_w`.`id` `id`
+                FROM `" . WORKLIST . "` AS `query_w`
+                WHERE
+                   MATCH(`query_w`.`summary`, `query_w`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+
+                UNION DISTINCT
+
+                SELECT `query_f`.`worklist_id` `id`
+                FROM `" . FEES . "` AS `query_f`
+                WHERE MATCH(`query_f`.`notes`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
+                  AND `query_f`.`withdrawn` = 0
+
+
+                UNION DISTINCT
+
+                SELECT `query_com`.`worklist_id` `id`
+                FROM `" . COMMENTS . "` AS `query_com`
+                WHERE MATCH (`query_com`.`comment`) AGAINST ('$safeQuery' IN BOOLEAN MODE)
             )";
         }
 
