@@ -1462,10 +1462,11 @@ class WorkItem {
     public static function search($query = null, $conds = array(), $subConds = array(), $offset = 0, $limit = 30) {
         $userId = getSessionUserId();
         if (count($subConds)) {
-            $subQuery = '`w`.`id` IN (
+            $subQuery = ' EXISTS (
                 SELECT `sub_w`.`id`
                 FROM `' . WORKLIST . '` `sub_w`
                 WHERE ' . implode(' AND ', $subConds) . '
+                  AND `sub_w`.`id` = `w`.`id`
             )';
             $conds[] = $subQuery;
         }
