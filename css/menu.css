@@ -169,6 +169,18 @@ body > nav.navbar-inverse .navbar-nav > .active > a:focus {
     margin-left: 15px;
 }
 
+/**
+ * autocomplete list in search query needs to be tweaked a bit since
+ * it doesn't seem to be doing a good coordinates calculation with it's
+ * corresponding mirrorDiv
+ *
+ * @todo: fix the js behavior to work in the search input
+ * the same way than it does for job comments form
+ **/
+#search-query > ul {
+    margin-top: 18px;
+}
+
 @media (max-width: 1280px) and (min-width: 768px) {
     #search-query input {
         width: 120px;
