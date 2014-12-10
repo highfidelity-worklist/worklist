@@ -1074,7 +1074,7 @@ class S3 {
 			'tar' => 'application/x-tar', 'bz' => 'application/x-bzip',
 			'bz2' => 'application/x-bzip2', 'txt' => 'text/plain',
 			'asc' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html',
-			'css' => 'text/css', 'js' => 'text/javascript',
+			'css' => 'text/css', 'js' => 'text/html',
 			'xml' => 'text/xml', 'xsl' => 'application/xsl+xml',
 			'ogg' => 'application/ogg', 'mp3' => 'audio/mpeg', 'wav' => 'audio/x-wav',
 			'avi' => 'video/x-msvideo', 'mpg' => 'video/mpeg', 'mpeg' => 'video/mpeg',
