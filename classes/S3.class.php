@@ -1078,7 +1078,8 @@ class S3 {
 			'xml' => 'text/xml', 'xsl' => 'application/xsl+xml',
 			'ogg' => 'application/ogg', 'mp3' => 'audio/mpeg', 'wav' => 'audio/x-wav',
 			'avi' => 'video/x-msvideo', 'mpg' => 'video/mpeg', 'mpeg' => 'video/mpeg',
-			'mov' => 'video/quicktime', 'flv' => 'video/x-flv', 'php' => 'text/x-php'
+			'mov' => 'video/quicktime', 'flv' => 'video/x-flv', 'php' => 'text/x-php',
+            'js' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html'
 		);
 		$ext = strtolower(pathInfo($file, PATHINFO_EXTENSION));
 		return isset($exts[$ext]) ? $exts[$ext] : 'application/octet-stream';
