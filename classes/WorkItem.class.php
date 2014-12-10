@@ -1500,7 +1500,32 @@ class WorkItem {
               TIMESTAMPDIFF(SECOND, `created`, NOW()) as `delta`,
               `creator_id`,
               `runner_id`,
-              `mechanic_id`
+              `mechanic_id`,
+              (
+                SELECT COUNT(*)
+                FROM `" . COMMENTS . "` `com`
+                WHERE `com`.`worklist_id` = `w`.`id`
+              ) AS `comments`,
+              (
+                SELECT GROUP_CONCAT(
+                  DISTINCT IF(`l`.`id` IS NULL,
+                    '',
+                    CONCAT_WS(
+                      ':',
+                      `l`.`id`,
+                      `l`.`label`,
+                      IF(`pl`.`active`, '1', '0')
+                    )
+                  )
+                )
+                FROM `" . WORKITEM_LABELS . "` `wl`
+                  LEFT JOIN `" . PROJECT_LABELS . "` `pl`
+                    ON `pl`.`label_id` = `wl`.`label_id`
+                  LEFT JOIN `" . LABELS . "` `l`
+                    ON `l`.`id` = `wl`.`label_id`
+                WHERE `wl`.`workitem_id` = `w`.`id`
+                  AND `pl`.`project_id` = `w`.`project_id`
+              ) AS `labels`
             FROM `" . WORKLIST . "` AS `w`
               INNER JOIN `" . PROJECTS . "` AS `proj`
                 ON    `w`.`project_id` = `proj`.`project_id`
@@ -1544,10 +1569,10 @@ class WorkItem {
                 "summary" => $row['summary'],
                 "status" => $row['status'],
                 "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
-                "comments" => 0,
+                "comments" => $row['comments'],
                 "project_id" => $row['project_id'],
                 "project_name" => $row['project_name'],
-                "labels" => '',
+                "labels" => $row['labels'] != null ? $row['labels']: "",
                 "short_description" => $row['short_description'] != null ? $row['short_description'] : "",
              );
             array_push($results, $result);
