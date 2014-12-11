@@ -955,7 +955,7 @@ function pingTask() {
 
     // Get sender Nickname
     $id = Session::uid();
-    $user = new User::find($id)
+    $user = User::find($id);
     $nickname = $user->getNickname();
     $email = $user->getUsername();
     $msg = $_REQUEST['msg'];
