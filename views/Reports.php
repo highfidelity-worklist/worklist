@@ -25,7 +25,7 @@ class ReportsView extends View {
     }
 
     public function users() {
-        $users = User::getUserList(getSessionUserId(), false, 0, true);
+        $users = User::getUserList(Session::uid(), false, 0, true);
         $ret = array();
         $default = isset($_REQUEST['user']) ? $_REQUEST['user'] : null;
         $ret[] = array(
@@ -70,7 +70,7 @@ class ReportsView extends View {
 
     public function runners() {
         $active = $this->read('activeUsers');
-        $runners = User::getUserList(getSessionUserId(), $active, 1, true);
+        $runners = User::getUserList(Session::uid(), $active, 1, true);
         $ret = array();
         $default = isset($_REQUEST['runner']) ? $_REQUEST['runner'] : null;
         foreach($runners as $runner) {

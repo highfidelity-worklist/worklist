@@ -18,7 +18,7 @@ class StatusView extends View {
     }
 
     public function biddingJobsCount() {
-        $stats = getStats('currentlink');
+        $stats = Utils::getStats('currentlink');
         return $stats['count_b'];
     }
 
@@ -51,7 +51,7 @@ class StatusView extends View {
 
             $ret .= 
                   '<li entryid="' . $id . '" date="' . $date . '" type="' . $type . '">'
-                .     '<h4>' . relativeTime($date - $now) . '</h4>'
+                .     '<h4>' . Utils::relativeTime($date - $now) . '</h4>'
                 .     $content
                 . '</li>';
         }

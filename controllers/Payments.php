@@ -23,7 +23,7 @@ class PaymentsController extends Controller {
 
         $is_runner = !empty($_SESSION['is_runner']) ? 1 : 0;
         $is_payer = !empty($_SESSION['is_payer']) ? 1 : 0;
-        $userId = getSessionUserId();
+        $userId = Session::uid();
 
         $payer_id = $userId;
         // set default fund to worklist
@@ -140,7 +140,7 @@ class PaymentsController extends Controller {
             case 'pay':
                 //collect confirmed payees and run paypal transaction
                 //include_once("../paypal-password.php");
-                if (checkAdmin($_POST['password']) == '1') { 
+                if ($this->checkAdmin($_POST['password']) == '1') {
                     error_log("Made it Admin!");
                     if(empty($_POST['pp_api_username']) || empty($_POST['pp_api_password']) || empty($_POST['pp_api_signature'])){
                         $alert_msg = "You need to provide all credentials!";
@@ -233,10 +233,11 @@ class PaymentsController extends Controller {
                     }
 
                     // Execute the API operation; see the PPHttpPost function
-                    $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr, $_POST);
+                    $httpParsedResponseAr = $this->PPHttpPost($nvpStr, $_POST);
                     #$httpParsedResponseAr = array("ACK" => "SUCCESS");
 
                     if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
+                        error_log('masspay success!');
                         $pp_message = '<p>MassPay Completed Successfully! - $'.$totalFees.' Paid.</p>';
                         if (isset($_GET["debug"])) {
                             $pp_message .= '<p><pre>'.print_r($httpParsedResponseAr, true).'</pre></p>';
@@ -252,8 +253,8 @@ class PaymentsController extends Controller {
                     } else  {
                         $alert_msg = "MassPay Failure"; 
                         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
-                        if(!send_email('finance@lovemachineinc.com', 'Masspay Fail', $pp_message)) {
-                            error_log("view-payments:MassPayFailure: send_email failed");
+                        if(!Utils::send_email('kordero@gmail.com', 'Masspay Fail', $pp_message)) {
+                            error_log("view-payments:MassPayFailure: Utils::send_email failed");
                         }
                     }
 
@@ -261,8 +262,8 @@ class PaymentsController extends Controller {
                     $error_msg = 'Invalid MassPay Authentication<br />';
                     $error_msg .= 'IP: '. $_SERVER['REMOTE_ADDR'].'<br />';
                     $error_msg .= 'UserID: '.$userId;
-                    if (!send_email("finance@lovemachineinc.com", "Masspay Invalid Auth Attempt", $error_msg)) {
-                        error_log("view-payments:MassPayAuth: send_email failed");
+                    if (!Utils::send_email("kordero@gmail.com", "Masspay Invalid Auth Attempt", $error_msg)) {
+                        error_log("view-payments:MassPayAuth: Utils::send_email failed");
                     }
                     $alert_msg = "Invalid Authentication"; 
                 }
@@ -355,8 +356,8 @@ class PaymentsController extends Controller {
         $dateRangeFilter = '';
 
         if (isset($from_date) || isset($to_date)) {
-            $mysqlFromDate = GetTimeStamp($from_date);
-            $mysqlToDate = GetTimeStamp($to_date);
+            $mysqlFromDate = $this->GetTimeStamp($from_date);
+            $mysqlToDate = $this->GetTimeStamp($to_date);
             $dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
         }
 
@@ -657,5 +658,87 @@ class PaymentsController extends Controller {
         }
 
         return $totals_array;
+    }
+
+    /*******************************************************
+        PPHttpPost: NVP post function for masspay.
+        Author: Jason (jkofoed@gmail.com)
+        Date: 2010-04-01 [Happy April Fool's!]
+    ********************************************************/
+    private function PPHttpPost($nvpStr_, $credentials) {
+        $environment = PAYPAL_ENVIRONMENT;
+        $pp_user = $credentials['pp_api_username'];
+        $pp_pass = $credentials['pp_api_password'];
+        $pp_signature = $credentials['pp_api_signature'];
+
+        $API_Endpoint = "https://api-3t.paypal.com/nvp";
+        if("sandbox" === $environment || "beta-sandbox" === $environment) {
+            $API_Endpoint = "https://api.$environment.paypal.com/nvp";
+        }
+        $version = urlencode('51.0');
+
+        // Set the curl parameters.
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $API_Endpoint);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+
+        // Turn off the server and peer verification (TrustManager Concept).
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        // Set the API operation, version, and API signature in the request.
+        $nvpreq = 'METHOD=MassPay&VERSION='.$version.'&PWD='.$pp_pass.'&USER='.$pp_user.'&SIGNATURE='.$pp_signature.''.$nvpStr_;
+
+        // Set the request as a POST FIELD for curl.
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+
+        // Get response from the server.
+        error_log('requesting paypal payment');
+        $httpResponse = curl_exec($ch);
+        error_log($httpResponse);
+
+        if(!$httpResponse) {
+            exit("MassPay failed: ".curl_error($ch).'('.curl_errno($ch).')');
+        }
+
+        // Extract the response details.
+        $httpResponseAr = explode("&", $httpResponse);
+        $httpParsedResponseAr = array();
+        foreach ($httpResponseAr as $i => $value) {
+            $tmpAr = explode("=", $value);
+            if(sizeof($tmpAr) > 1) {
+                $httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+            }
+        }
+        $httpParsedResponseAr["nvpEndpoint"] = $API_Endpoint;
+        $httpParsedResponseAr["nvpString"] = $nvpreq;
+        if((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {
+            exit("Invalid HTTP Response for POST request($nvpreq) to $API_Endpoint.");
+        }
+
+        return $httpParsedResponseAr;
+    }
+
+    private function checkAdmin($pass) {
+        //checks admin login.
+        $sql = "SELECT * FROM ".PAYPAL_ADMINS." WHERE `password` = '".md5($pass)."'";
+        $result = mysql_query($sql);
+        //if successful, this will be 1, otherwise 0
+        return mysql_num_rows($result);
+    }
+
+    private function GetTimeStamp($MySqlDate, $i='') {
+        if (empty($MySqlDate)) $MySqlDate = date('Y/m/d');
+        $date_array = explode("/",$MySqlDate); // split the array
+
+        $var_year = $date_array[0];
+        $var_month = $date_array[1];
+        $var_day = $date_array[2];
+        $var_timestamp=$date_array[2]."-".$date_array[0]."-".$date_array[1];
+        //$var_timestamp=$var_month ."/".$var_day ."-".$var_year;
+        return($var_timestamp); // return it to the user
     }
 }

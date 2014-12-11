@@ -32,13 +32,13 @@ class UserController extends Controller {
 
     public function index() {
         $this->view = null;
-        $users = User::getUserList(getSessionUserId(), true);
+        $users = User::getUserList(Session::uid(), true);
         $ret = array();
         foreach ($users as $user) {
             $ret[] = array(
                 'id' => $user->getId(),
                 'nickname' => $user->getNickname(),
-                'current' => ($user->getId() == getSessionUserId())
+                'current' => ($user->getId() == Session::uid())
             );
         }
         echo json_encode(array('users' => $ret));
@@ -55,7 +55,7 @@ class UserController extends Controller {
         $ret = array(
             'active' => $user->getActiveBudgets()
         );
-        if ($user->getId() == getSessionUserId()) {
+        if ($user->getId() == Session::uid()) {
             $ret = array_merge($ret, array(
                 'feeSums' => Fee::getSums(),
                 'totalManaged' => money_format('%i', $user->getTotalManaged()),
@@ -79,7 +79,7 @@ class UserController extends Controller {
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : false;
         $this->write('tab', isset($_REQUEST['tab']) ? $_REQUEST['tab'] : "");
 
-        $reqUserId = getSessionUserId();
+        $reqUserId = Session::uid();
         $this->write('reqUserId', $reqUserId);
         $reqUser = new User();
         if ($reqUserId > 0) {
@@ -109,7 +109,7 @@ class UserController extends Controller {
                 switch ($field) {
                     case 'salary':
                         $updateUser->setAnnual_salary($value);
-                        sendJournalNotification("A new salary has been set for @" . $updateUser->getNickname());
+                        Utils::systemNotification("A new salary has been set for @" . $updateUser->getNickname());
                         break;
 
                     case 'ispayer':
@@ -145,9 +145,9 @@ class UserController extends Controller {
                             $manager = new User();
                             $manager->findUserById($value);
                             // Send journal notification
-                            sendJournalNotification("The manager for @" . $updateUser->getNickname() . " is now set to @" . $manager->getNickname());
+                            Utils::systemNotification("The manager for @" . $updateUser->getNickname() . " is now set to @" . $manager->getNickname());
                         } else {
-                            sendJournalNotification("The manager for @" . $updateUser->getNickname() . " has been removed");
+                            Utils::systemNotification("The manager for @" . $updateUser->getNickname() . " has been removed");
                         }
                         break;
 
@@ -158,9 +158,9 @@ class UserController extends Controller {
                             $referrer->findUserById($value);
 
                             // Send journal notification
-                            sendJournalNotification("The referrer for @" . $updateUser->getNickname() . " is now set to @" . $referrer->getNickname());
+                            Utils::systemNotification("The referrer for @" . $updateUser->getNickname() . " is now set to @" . $referrer->getNickname());
                         } else {
-                            sendJournalNotification("The referrer for @" . $updateUser->getNickname() . " has been removed");
+                            Utils::systemNotification("The referrer for @" . $updateUser->getNickname() . " has been removed");
                         }
                         break;
 
@@ -189,7 +189,7 @@ class UserController extends Controller {
         }
 
         $user = new User();
-        $user = User::find($id ? $id : getSessionUserId());
+        $user = User::find($id ? $id : Session::uid());
         $userId = $user->getId();
 
         /**
@@ -249,7 +249,7 @@ class UserController extends Controller {
         $reviewee_id = (int) $userId;
         $review = new Review();
         $this->write('reviewsList', $review->getReviews($reviewee_id,$reqUserId));
-        $this->write('projects', getProjectList());
+        $this->write('projects', $this->getProjectList());
         $user_projects = $user->getProjects_checkedout();
         $this->write('has_sandbox', count($user_projects) > 0);
         $users_favorite = new Users_Favorite();
@@ -396,16 +396,16 @@ class UserController extends Controller {
 
     public function suggestMentions($startsWith = '_', $maxLimit = 10) {
         $this->view = null;
-        $user = User::find(getSessionUserId());
+        $user = User::find(Session::uid());
         echo json_encode(User::suggestMentions($user, $startsWith, $maxLimit));
     }
 
     public function review($id) {
         $this->view = null;
         try {
-            checkLogin();
+            Utils::checkLogin();
             $user = User::find($id);
-            $currentUser = User::find(getSessionUserId());
+            $currentUser = User::find(Session::uid());
             if (!$user->getId() || $user->getId() == $currentUser->getId()) {
                 throw new Exception('Invalid user id');
             }
@@ -419,7 +419,7 @@ class UserController extends Controller {
                         if (!$review->removeRow($cond)) {
                             throw new Exception('Cannot delete review! Please retry later');
                         }
-                        sendReviewNotification($user->getId(), "delete", $oReview);
+                        Utils::sendReviewNotification($user->getId(), "delete", $oReview);
                         $message = 'Review deleted';
                     } else {
                         if (!strcmp($review->review, $userReview)) {
@@ -477,10 +477,10 @@ class UserController extends Controller {
             $is_runner = isset($_SESSION['is_runner']) ? $_SESSION['is_runner'] : 0;
             $is_payer = isset($_SESSION['is_payer']) ? $_SESSION['is_payer'] : 0;
             // user must be logged in
-            if (!getSessionUserId() || (!$is_runner && !$is_payer)) {
+            if (!Session::uid() || (!$is_runner && !$is_payer)) {
                 throw new Exception('error: unauthorized');
             }
-            $giver = User::find(getSessionUserId());
+            $giver = User::find(Session::uid());
             $budget = $giver->getBudget();
             // validate required fields
             if (empty($_POST['budget']) || empty($_POST['amount'])) {
@@ -499,13 +499,13 @@ class UserController extends Controller {
             if (!($amount <= $budget && $amount <= $remainingFunds)) {
                 throw new Exception('You do not have enough budget available to pay this bonus.');
             }
-            if (!payBonusToUser($receiver->getId(), $amount, $reason, $budget_source_combo)) {
+            if (!$this->payBonusToUser($receiver->getId(), $amount, $reason, $budget_source_combo)) {
                 throw new Exception('There was a problem while processing the payment.');
             }
             // deduct amount from balance
             $giver->updateBudget(-$amount, $budget_source_combo);
-            sendTemplateEmail($receiver->getUsername(), 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
-            sendJournalNotification('@' . $receiver->getNickname() . ' received a bonus of $' . $stringAmount);
+            Utils::sendTemplateEmail($receiver->getUsername(), 'bonus_received', array('amount' => $stringAmount, 'reason' => $reason));
+            Utils::systemNotification('@' . $receiver->getNickname() . ' received a bonus of $' . $stringAmount);
             echo json_encode(array(
                 'success' => true,
                 'message' => 'Paid ' . $receiver->getNickname() . ' a bonus of $' . $stringAmount
@@ -522,7 +522,7 @@ class UserController extends Controller {
         $this->view = null;
         try {
             $user = User::find($id);
-            $currentUser = User::find(getSessionUserId());
+            $currentUser = User::find(Session::uid());
             if (!$currentUser->getIs_runner() && !$getIs_runner->getIs_admin() && !$getIs_runner->getIs_payer()) {
                 throw new Exception('Not enough rights');
             }
@@ -536,8 +536,8 @@ class UserController extends Controller {
                 $data['reason'] = strip_tags($_POST['reason']);
             }
 
-            if (! sendTemplateEmail($user->getUsername(), 'w9-' . $status, $data)) {
-                error_log("UserController::setW9Status: send_email failed on w9 notification");
+            if (! Utils::sendTemplateEmail($user->getUsername(), 'w9-' . $status, $data)) {
+                error_log("UserController::setW9Status: Utils::send_email failed on w9 notification");
             }
             $user->setW9_status($status);
             $user->save();
@@ -578,10 +578,10 @@ class UserController extends Controller {
     public function sendLove($to) {
         $this->view = null;
         try {
-            if (!getSessionUserId()) {
+            if (!Session::uid()) {
                 throw new Exception('Must be logged in to Send Love!');
             }
-            $from = User::find(getSessionUserId());
+            $from = User::find(Session::uid());
 
             $to = User::find($to);
             if (!$to->getId()) {
@@ -599,7 +599,7 @@ class UserController extends Controller {
 
             $from_nickname = $from->getNickname();
             $message = $_POST['love_message'];
-            sendTemplateEmail($to->getUsername(), 'love-received', array(
+            Utils::sendTemplateEmail($to->getUsername(), 'love-received', array(
                 'from_nickname'=> $from_nickname,
                 'message' => $message
             ));
@@ -609,10 +609,56 @@ class UserController extends Controller {
                 'message' => 'Love sent'
             ));
         } catch (Exception $e) {
-            return $this->setOutput(array(
+            echo json_encode(array(
                 'success' => false,
                 'message' => $e->getMessage()
             ));
         }
     }
+
+    public function isUSCitizen($id) {
+        $this->view = null;
+        try {
+            $user = User::find($id);
+            if (!$user->getId()) {
+                throw new Exception('Invalid or non existent user');
+            }
+            echo json_encode(array(
+                'success' => true,
+                'isuscitizen' => $user->isUsCitizen()
+            ));
+        } catch (Exception $e) {
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
+        }
+    }
+
+    private function getProjectList() {
+        $query = "SELECT * FROM `".PROJECTS."` WHERE active=1";
+        $query = mysql_query($query);
+        $projects = array();
+        $i = 0;
+        while ($project = mysql_fetch_array($query)) {
+            $projects[$i]['name'] = $project['name'];
+            $projects[$i]['id']   = $project['project_id'];
+            $projects[$i]['repo'] = $project['repository'];
+            $i++;
+        }
+        return $projects;
+    }
+
+    private function payBonusToUser($user_id, $amount, $notes, $budget_id) {
+        $query = "INSERT INTO `".FEES."` (`id`, `worklist_id`, `budget_id`, `payer_id`, `user_id`, `amount`, `notes`, `desc`, `date`, `bonus`,`paid`,`category`)".
+                 "VALUES ".
+                 "(NULL, 0, '" . (int)$budget_id . "', '" . (int)$_SESSION['userid'] . "', '" . (int)$user_id . "', '" . (float)$amount . "', 'BONUS','" . mysql_real_escape_string($notes) . "', NOW(), 1, 0,0)";
+        $result = mysql_unbuffered_query($query);
+        if (mysql_insert_id()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

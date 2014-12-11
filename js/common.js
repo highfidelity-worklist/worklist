@@ -75,27 +75,6 @@ function RelativeTime(x, shortMode) {
     return (negative ? '-' : '') + x + ' ' + dformat + plural;
 }
 
-// Code for stats
-$(function() {
-    if (('#stats-text').length > 0) {
-        $.ajax({
-            type: "POST",
-            url: 'api.php',
-            data: {
-                action: 'getStats',
-                req: 'currentlink'
-            },
-            dataType: 'json',
-            success: function(json) {
-                if (!json || json === null) return;
-                $("#count_b").text(json.count_b);
-                $("#count_w").text(json.count_w);
-                $('#stats-text').show();
-            }
-        });
-    }
-});
-
 /* When applied to a textfield or textarea provides default text which is displayed, and once clicked on it goes away
  Example:  $("#name").DefaultValue("Your fullname.");
 */
@@ -159,64 +138,6 @@ function openNotifyOverlay(html, autohide, button, displayRedBorder) {
         content: html
     });
     return;
-}
-
-function makeWorkitemTooltip(className){
-    $(className).tooltip({
-        delay: 500,
-        extraClass: "white-theme content",
-        showURL: false,
-        bodyHandler: function() {
-            var msg = "Loading...";
-            var worklist_id = $(this).attr('id').substr(9);
-            $.ajax({
-                type: "POST",
-                async: false,
-                url: 'api.php',
-                data: {
-                    'action': 'getWorkitem',
-                    'item' : worklist_id
-                },
-                dataType: 'json',
-                bgcolor:"#ffffff",
-                success: function(json) {
-                    msg = json.summary ? '<div class = "head">' + json.summary + '</div>' : '';
-                    msg += json.notes ? '<div class = "tip-entry no-border">' + json.notes + '</div>' : '';
-                    msg += json.project ? '<div class = "tip-entry">Project: ' + json.project + '</div>' : '';
-                    msg += '<div class="tip-entry">';
-
-                    if (json.runner) {
-                        msg += '<div class = "tip-entry FL no-border">Designer: ' + json.runner + '</div>';
-                    }
-
-                    if (json.creator) {
-                        msg += '<div class = "tip-entry FL no-border">Creator: ' + json.creator + '</div>';
-                    }
-
-                    if (json.mechanic) {
-                        msg += '<div class="tip-entry FL no-border">Developer: ' + json.mechanic + '</div>';
-                    }
-
-                    msg += '</div>';
-                    msg += '<div class="clear"></div>';
-
-                    msg += json.job_status ? '<div class = "tip-entry">Status: ' + json.job_status + '</div>' : '';
-                    if (json.comment) {
-                        msg += '<div class = "tip-entry">Last Comment by <i>' + json.commentAuthor + '</i>: ' + json.comment + '</div>';
-                    } else {
-                        msg += '<div class = "tip-entry">No comments yet.</div>';
-                    }
-                    if (msg == '') {
-                        msg = 'No data available';
-                    }
-                },
-                error: function(xhdr, status, err) {
-                    msg = 'Data loading error.<br />Please try again.';
-                }
-            });
-            return $('<div>').html(msg);
-        }
-    });
 }
 
 function validateUploadImage(file, extension) {

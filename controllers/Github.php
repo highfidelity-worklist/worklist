@@ -81,7 +81,7 @@ class GithubController extends Controller {
                         Utils::redirect('./');
                     }
 
-                    $userId = getSessionUserId();
+                    $userId = Session::uid();
                     $user = new User($userId);
                     $testUser = new User();
                     if ($user->getId()) {
@@ -179,7 +179,7 @@ class GithubController extends Controller {
      * Code moved from the old /GitHub.php file
      */
     public function connect() {
-        $GitHub = new User(getSessionUserId());
+        $GitHub = new User(Session::uid());
         $workitem = new WorkItem();
         $workitem->loadById((int) $_GET['job']);
         $projectId = $workitem->getProjectId();
@@ -191,7 +191,7 @@ class GithubController extends Controller {
                 $journal_message = sprintf("%s has been validated for project ##%s##" ,
                     $GitHub->getNickname(),
                     $project->getName());
-                sendJournalNotification($journal_message);
+                Utils::systemNotification($journal_message);
 
                 Utils::redirect('./' . $workitem->getId());
             } else {
@@ -364,8 +364,8 @@ class GithubController extends Controller {
                 "An email containing a confirmation link was sent to your email address. " . 
                 "Please click on that link to verify your email address and activate your account.";
 
-            if (!send_email($user->getUsername(), $subject, $body, $plain)) {
-                error_log("SignupController: send_email failed");
+            if (!Utils::send_email($user->getUsername(), $subject, $body, $plain)) {
+                error_log("SignupController: Utils::send_email failed");
                 $msg = 'There was an issue sending email. Please try again or notify admin@lovemachineinc.com';
             }
         } catch (Exception $e) {

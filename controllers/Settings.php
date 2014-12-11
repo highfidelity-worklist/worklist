@@ -2,9 +2,9 @@
 
 class SettingsController extends Controller {
     public function run() {
-        checkLogin();
+        Utils::checkLogin();
 
-        $userId = getSessionUserId();
+        $userId = Session::uid();
         $user = new User();
         if ($userId) {
             $user->findUserById($userId);
@@ -115,8 +115,8 @@ class SettingsController extends Controller {
                 $plain .= $link . "\n\n";
 
                 $confirm_txt = "An email containing a confirmation link was sent to your payment email address. Please click on that link to verify your payment email address and activate your account.";
-                if (! send_email($paypal_email, $subject, $body, $plain)) {
-                    error_log("SettingsController: send_email failed");
+                if (! Utils::send_email($paypal_email, $subject, $body, $plain)) {
+                    error_log("SettingsController: Utils::send_email failed");
                     $confirm_txt = 'There was an issue sending email. Please try again or notify ' . SUPPORT_EMAIL ;
                 }
 
@@ -167,7 +167,7 @@ class SettingsController extends Controller {
                         '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>' .
                         '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
 
-                    if(!send_email($to, $subject, $body)) { error_log("SettingsController: send_email failed"); }
+                    if(!Utils::send_email($to, $subject, $body)) { error_log("SettingsController: Utils::send_email failed"); }
 
                     $msg="Account updated successfully!";
                 }

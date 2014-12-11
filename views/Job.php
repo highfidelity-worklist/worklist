@@ -269,12 +269,12 @@ class JobView extends View {
 
     public function notesHtml() {
         $worklist = $this->worklist;
-        return replaceEncodedNewLinesWithBr($worklist['notes']);
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', $worklist['notes']);
     }
 
     public function notesHtmlWithLinks() {
         $worklist = $this->worklist;
-        return replaceEncodedNewLinesWithBr(linkify($worklist['notes']));
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', Utils::linkify($worklist['notes']));
     }
 
     public function canSeeBudgetArea() {
@@ -461,9 +461,9 @@ class JobView extends View {
                 $now = strtotime(Model::now());
             }
 
-            $created = relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
-            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, true, false) : '';
-            $expires = $bid['expires'] ? relativeTime($bid['expires'], true, true, true, false) : 'Never';
+            $created = Utils::relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
+            $accepted = $bid['bid_accepted'] ? Utils::relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, true, false) : '';
+            $expires = $bid['expires'] ? Utils::relativeTime($bid['expires'], true, true, true, false) : 'Never';
 
             if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                 continue;
@@ -505,7 +505,7 @@ class JobView extends View {
                         "time_to_complete: '{$bid['time_to_complete']}', " .
                         "done_in: '{$bid['done_in']}', " .
                         "bidder_id: {$bid['bidder_id']}, " .
-                        "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
+                        "notes: '" .  str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', $notes) . "'}" .
                     "</script>";
             }
             $ret .= 
@@ -742,7 +742,7 @@ class JobView extends View {
 
                 $ret .= 
                       '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
-                    .     '<h4>' . relativeTime($date - $now) . '</h4>'
+                    .     '<h4>' . Utils::relativeTime($date - $now) . '</h4>'
                     .     $content
                     . '</li>';
             } else {

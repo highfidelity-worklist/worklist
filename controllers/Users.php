@@ -18,7 +18,7 @@ class UsersController extends Controller {
 
     // default method
     public function index($format) {
-        $users = User::getUserList(getSessionUserId(), true);
+        $users = User::getUserList(Session::uid(), true);
         $ret = array();
         foreach ($users as $user) {
             $ret[] = array(

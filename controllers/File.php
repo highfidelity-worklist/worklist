@@ -29,7 +29,7 @@ class FileController extends JsonController {
 
     public function add($reference = '', $isW9 = false) {
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId()) {
                 return $this->setOutput(array(
                     'success' => false,
@@ -95,7 +95,7 @@ class FileController extends JsonController {
                 $journal_message =
                     '@' . $user->getNickname() . ' uploaded an [attachment](' .
                     $file->getUrl() . ') to #' . $workitem;
-                sendJournalNotification($journal_message);
+                Utils::systemNotification($journal_message);
             }
 
             $isW9 = (bool) $isW9;
@@ -169,7 +169,7 @@ class FileController extends JsonController {
 
     public function remove($id) {
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId()) {
                 throw new Exception('Not enough rights');
             }
@@ -202,7 +202,7 @@ class FileController extends JsonController {
     public function listForJob($job_id) {
         try {
             $files = File::fetchAllFilesForWorkitem($job_id);
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId()) {
                 throw new Exception('Not enough rights');
             }

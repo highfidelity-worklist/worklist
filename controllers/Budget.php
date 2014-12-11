@@ -43,7 +43,7 @@ class BudgetController extends JsonController {
 
     public function info($id) {
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId()) {
                 throw new Exception('You have to be logged in to access user info!');
             }
@@ -248,7 +248,7 @@ class BudgetController extends JsonController {
         }
 
         if ($budget_id == 0) {
-            $where = "b.`active` = 1 AND bs.`giver_id` = " . getSessionUserId();
+            $where = "b.`active` = 1 AND bs.`giver_id` = " . Session::uid();
         } else {
             $where = "bs.`source_budget_id`={$budget_id}";
         }
@@ -281,7 +281,7 @@ class BudgetController extends JsonController {
 
     public function addFunds($id) {
         try {
-            if (!getSessionUserId()) {
+            if (!Session::uid()) {
                 throw new Exception('Not enough rights');
             }
 
@@ -318,7 +318,7 @@ class BudgetController extends JsonController {
 
             $giver = new User();
             $receiver = new User();
-            if (!$giver->findUserById(getSessionUserId()) || !$receiver->findUserById($receiver_id)) {
+            if (!$giver->findUserById(Session::uid()) || !$receiver->findUserById($receiver_id)) {
                 throw new Exception('Invalid user');
             }
 
@@ -330,8 +330,8 @@ class BudgetController extends JsonController {
                     throw new Exception('Invalid budget!');
                 }
                 // Check if user is owner of source budget
-                if ($budget->receiver_id != getSessionUserId()) {
-                    error_log('Possible Hacking attempt: User ' . getSessionUserId() . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
+                if ($budget->receiver_id != Session::uid()) {
+                    error_log('Possible Hacking attempt: User ' . Session::uid() . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
                     throw new Exception('You\'re not the owner of this budget!');
                 }
                 $remainingFunds = $budget->getRemainingFunds();
@@ -395,15 +395,15 @@ class BudgetController extends JsonController {
                 throw new Exception('Error in query.');
             }
 
-            sendJournalNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
+            Utils::systemNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
             Notification::notifyBudgetAddFunds($amount, $giver, $receiver, $grantor, $receiver_budget);
             if ($budget_seed == 1) {
                 Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
             }
-            $receiver = getUserById($receiver_id);
+            $receiver = User::find($receiver_id);
             return $this->setOutput(array(
                 'success' => true,
-                'message' => 'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname
+                'message' => 'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->getNickname()
             ));
         } catch (Exception $e) {
             return $this->setOutput(array(
@@ -415,7 +415,7 @@ class BudgetController extends JsonController {
 
     public function give() {
         try {
-            if (!getSessionUserId()) {
+            if (!Session::uid()) {
                 throw new Exception('Not enough rights');
             }
 
@@ -455,7 +455,7 @@ class BudgetController extends JsonController {
 
             $giver = new User();
             $receiver = new User();
-            if (!$giver->findUserById(getSessionUserId()) || !$receiver->findUserById($receiver_id)) {
+            if (!$giver->findUserById(Session::uid()) || !$receiver->findUserById($receiver_id)) {
                 throw new Exception('Invalid user');
             }
 
@@ -467,8 +467,8 @@ class BudgetController extends JsonController {
                     throw new Exception('Invalid budget!');
                 }
                 // Check if user is owner of source budget
-                if ($budget->receiver_id != getSessionUserId()) {
-                    error_log('Possible Hacking attempt: User ' . getSessionUserId() . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
+                if ($budget->receiver_id != Session::uid()) {
+                    error_log('Possible Hacking attempt: User ' . Session::uid() . ' attempted to budget ' . $amount . ' to ' . $receiver_id . ' from budget ' . $budget->id);
                     throw new Exception('You\'re not the owner of this budget!');
                 }
                 $remainingFunds = $budget->getRemainingFunds();
@@ -542,15 +542,15 @@ class BudgetController extends JsonController {
                 throw new Exception('Error in query.');
             }
 
-            sendJournalNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
+            Utils::systemNotification('@' . $giver->getNickname() . ' budgeted @' . $receiver->getNickname() . " $" . number_format($amount, 2) . " for " . $reason . ".");
             Notification::notifyBudget($amount, $reason, $giver, $receiver);
             if ($budget_seed == 1) {
                 Notification::notifySeedBudget($amount, $reason, $source, $giver, $receiver);
             }
-            $receiver = getUserById($receiver_id);
+            $receiver = User::find($receiver_id);
             return $this->setOutput(array(
                 'success' => true,
-                'message' => 'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->nickname
+                'message' => 'You gave ' . '$' . $stringAmount . ' budget to ' . $receiver->getNickname()
             ));
         } catch (Exception $e) {
             return $this->setOutput(array(
@@ -562,7 +562,7 @@ class BudgetController extends JsonController {
 
     public function update($id) {
         try {
-            if (!getSessionUserId()) {
+            if (!Session::uid()) {
                 throw new Exception('Not enough rights');
             }
 
@@ -592,7 +592,7 @@ class BudgetController extends JsonController {
 
     public function close($id) {
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId()) {
                 throw new Exception('You have to be logged in to access user info!');
             }
@@ -801,12 +801,12 @@ class BudgetController extends JsonController {
         $plain .= 'Click ' . $link . ' to see this budget.\n\n';
         $plain .= '- Worklist.net\n\n';
 
-        if (!send_email($options["receiver_email"], $subject, $body, $plain)) {
-            error_log("BudgetInfo: send_email failed on closed out budget");
+        if (!Utils::send_email($options["receiver_email"], $subject, $body, $plain)) {
+            error_log("BudgetInfo: Utils::send_email failed on closed out budget");
         }
         if ($options["remainingFunds"] < 0 || $options["seed"] == 1) {
-            if (!send_email($options["giver_email"], $subject, $body, $plain)) {
-                error_log("BudgetInfo: send_email failed on closed out budget");
+            if (!Utils::send_email($options["giver_email"], $subject, $body, $plain)) {
+                error_log("BudgetInfo: Utils::send_email failed on closed out budget");
             }
         }
     }

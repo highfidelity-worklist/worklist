@@ -59,6 +59,8 @@ if (!defined('APP_LOCATION'))   define('APP_LOCATION',substr($_SERVER['SCRIPT_NA
 if (!defined('APP_BASE'))       define('APP_BASE',substr(APP_LOCATION, 0, strrpos(APP_LOCATION, '/', -2)));
 if (!defined('APP_PATH'))       define('APP_PATH', realpath(dirname(__FILE__)));
 if (!defined('UPLOAD_PATH'))    define('UPLOAD_PATH', realpath(APP_PATH . '/uploads'));
+if (!defined('LIB_PATH'))       define('LIB_PATH', realpath(APP_PATH . '/lib'));
+if (!defined('CLASSES_PATH'))   define('CLASSES_PATH', realpath(LIB_PATH . '/classes'));
 
 if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 
@@ -337,8 +339,6 @@ mysql_select_db(DB_NAME);
 // time constants
 if (! defined('BID_EXPIRE_WARNING')) define('BID_EXPIRE_WARNING', 7200);
 
-/** Journal Attachments **/
-if (!defined("ATTACHMENT_URL")) define("ATTACHMENT_URL",SERVER_URL . "helper/get_attachment.php");
 /** Journal Timer **/
 if (!defined("RELOAD_WINDOW_TIMER")) define("RELOAD_WINDOW_TIMER", 7200 ); // 2 hours in s = 10800 = 2 * 60 * 60
 /** File uploads / S3 settings **/
@@ -1319,12 +1319,4 @@ defineOnce('PAYPAL_ENVIRONMENT', 'sandbox'); // 'sandbox' or 'beta-sandbox' or '
 defineOnce('PROJECT_LISTING_PRIORITY', 'hifi,stack-manager,hifi-docs,hifi-website,worklist,data,base8,baseios,DSDNS,love');
 
 require_once('vendor/autoload.php');
-require_once('functions.php');
-
-function shutdown() {
-    if (!in_array('Dispatcher', get_declared_classes())) {
-        return;
-    }
-    Dispatcher::dispatch();
-}
-register_shutdown_function('shutdown');
+require_once('lib/Core.php');

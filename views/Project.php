@@ -41,11 +41,11 @@ class ProjectView extends View {
     }
 
     public function projectDescription () {
-        return replaceEncodedNewLinesWithBr(linkify($this->project->getDescription()));
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', Utils::linkify($this->project->getDescription()));
     }
 
     public function projectShortDescription () {
-        return replaceEncodedNewLinesWithBr(linkify($this->project->getShortDescription()));
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', Utils::linkify($this->project->getShortDescription()));
     }
 
     public function projectTotalFees() {
