@@ -12,6 +12,7 @@ require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
 
+Core::bootstrap();
 Session::check();
 
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
