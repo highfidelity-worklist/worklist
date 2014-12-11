@@ -86,7 +86,7 @@ var jobs = {
             }
             var scrollPos = $(window).scrollTop() + $(window).height();
             var docHeight = $(document).outerHeight();
-            var threshold = 300;
+            var threshold = 800;
             var reset_callback = function() {
                 jobs.renderingNewPage = false;
             }
