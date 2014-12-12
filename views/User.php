@@ -27,7 +27,6 @@ class UserView extends View {
         $this->reqUserId = $this->read('reqUserId');
         $this->favorite_count = $this->read('favorite_count');
         $this->Annual_Salary = $this->read('Annual_Salary');
-        $this->filter = $this->read('filter');
         $this->has_sandbox = $this->read('has_sandbox');
         $this->projects = $this->read('projects');
 
@@ -118,11 +117,35 @@ class UserView extends View {
     }
 
     public function joined() {
-        return formatableRelativeTime(strtotime($this->profileUser->getAdded(), 2));
+        return Utils::formatableRelativeTime(strtotime($this->profileUser->getAdded(), 2));
     }
 
     public function localTime() {
-        return convertTimeZoneToLocalTime($this->profileUser->getTimezone(), 1);
+        $timeoffset = $this->profileUser->getTimezone();
+        $DefZone = Utils::getTimeZoneDateTime($timeoffset);
+        date_default_timezone_set($DefZone);
+        if (strlen($timeoffset) == 5) {
+            $formatedTime = str_split($timeoffset);
+            $Symbol = $formatedTime[0];
+            $First = $formatedTime[1];
+            $Second = $formatedTime[2];
+            $Third = $formatedTime[3];
+            $Fourth = $formatedTime[4];
+            if ($Third=="3") {
+                $Third =5;
+            }
+            $timezone_local = $Symbol.$First.$Second.".".$Third.$Fourth;
+        } else {
+            $timezone_local = 0;
+        }
+
+        $time = time();
+        $timezone_offset = date("Z");
+        $timezone_add = round($timezone_local*60*60);
+        $ar = localtime($time,true);
+        if ($ar['tm_isdst']) { $time += 3600; }
+        $time = round($time-$timezone_offset+$timezone_add);
+        return date("g:i A", $time);
     }
 
     public function timezone() {
@@ -206,12 +229,22 @@ class UserView extends View {
         return $this->profileUser->getW9_status() == 'not-applicable';
     }
 
-    public function managerUserSelectbox () {
-        return $this->filter->getManagerUserSelectboxS("width:180px;");
-    }
-
-    public function referrerUserSelectbox () {
-        return $this->filter->getReferrerUserSelectboxS("width:180px;");
+    public function activeUsers() {
+        $users = User::getUserList(Session::uid(), 1, 0, true);
+        $ret = array();
+        $ret[] = array(
+            'id' => 0,
+            'nickname' => 'None',
+            'selected' => true
+        );
+        foreach ($users as $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'selected' => false
+            );
+        }
+        return $ret;
     }
 
     public function userIsInactive() {
@@ -227,7 +260,7 @@ class UserView extends View {
     }
 
     public function lastSeen() {
-        return relativeTime($this->profileUser->getTimeLastSeen(), false);
+        return Utils::relativeTime($this->profileUser->getTimeLastSeen(), false);
     }
 
     public function projectsList() {

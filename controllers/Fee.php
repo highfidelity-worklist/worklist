@@ -34,7 +34,7 @@ class FeeController extends JsonController {
 
     public function setPaid($id, $paid) {
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
 
             // Check if we have a payer
             if (!$user->isPayer()) {
@@ -57,7 +57,8 @@ class FeeController extends JsonController {
             /* Only send the email when marking as paid. */
             if ($paid) {
                 $fee = Fee::getFee($fee_id);
-                $summary = getWorkItemSummary($fee['worklist_id']);
+                $workitem = new WorkItem($fee['worklist_id']);
+                $summary = $workitem->getSummary();
                 $fee_user = User::find($fee['user_id']);
                 $subject = "Worklist.net paid you " . $fee['amount'] ." for ". $summary;
                 $body =
@@ -66,8 +67,8 @@ class FeeController extends JsonController {
                     "Fee Description : " . nl2br($fee['desc']) . "<br/>" .
                     "Paid Notes : " . nl2br($notes) . "<br/><br/>" .
                     "Contact the job Designer with any questions<br/><br/>Worklist.net<br/>";
-                if(!send_email($fee_user->getUsername(), $subject, $body)) {
-                    error_log("FeeController::setPaid: send_email failed");
+                if(!Utils::send_email($fee_user->getUsername(), $subject, $body)) {
+                    error_log("FeeController::setPaid: Utils::send_email failed");
                 }
             }
             return $this->setOutput(array(

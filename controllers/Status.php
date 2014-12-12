@@ -70,7 +70,7 @@ class StatusController extends Controller {
                             $now = strtotime(Model::now());
                         }
                         $date = strtotime($entry->date);
-                        $relativeDate = relativeTime($date - $now);
+                        $relativeDate = Utils::relativeTime($date - $now);
 
                         $mention_regex = '/(^|\s)@([a-zA-Z0-9][a-zA-Z0-9-]+)/';
                         $task_regex = '/(^|\s)\*\*#(\d+)\*\*/';

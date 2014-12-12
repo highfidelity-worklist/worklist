@@ -43,14 +43,6 @@ class JsonController extends Controller {
     }
 
     /**
-     * @return the $action
-     */
-    protected function getAction()
-    {
-        return $this->getRequest()->getActionName();
-    }
-
-    /**
      * @return the $user
      */
     protected function getUser()
@@ -62,17 +54,6 @@ class JsonController extends Controller {
     }
 
     /**
-     * @return the $request
-     */
-    protected function getRequest()
-    {
-        if (null === $this->request) {
-            $this->setRequest();
-        }
-        return $this->request;
-    }
-
-    /**
      * This method gets the active user
      */
     protected function setUser()
@@ -80,13 +61,5 @@ class JsonController extends Controller {
         $user = new User();
         $user->findUserById($_SESSION['userid']);
         $this->user = $user;
-    }
-
-    /**
-     * Here we set the JsonServer_Request
-     */
-    protected function setRequest()
-    {
-        $this->request = new JsonServer_Request();
     }
 }

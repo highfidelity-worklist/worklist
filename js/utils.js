@@ -267,6 +267,7 @@ var Utils = {
             'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
 
             'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+            'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
 
             // https://developer.mozilla.org/en-US/docs/Web/CSS/font
             'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize', 'lineHeight', 'fontFamily',

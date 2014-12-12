@@ -15,7 +15,7 @@ class ResetPassController extends Controller {
                              ->setForgot_hash(md5(uniqid()))
                              ->save();
 
-                        sendTemplateEmail($_POST['username'], 'changed_pass', array(
+                        Utils::sendTemplateEmail($_POST['username'], 'changed_pass', array(
                             'app_name' => APP_NAME
                         ));
 

@@ -269,12 +269,12 @@ class JobView extends View {
 
     public function notesHtml() {
         $worklist = $this->worklist;
-        return replaceEncodedNewLinesWithBr($worklist['notes']);
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', $worklist['notes']);
     }
 
     public function notesHtmlWithLinks() {
         $worklist = $this->worklist;
-        return replaceEncodedNewLinesWithBr(linkify($worklist['notes']));
+        return str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', Utils::linkify($worklist['notes']));
     }
 
     public function canSeeBudgetArea() {
@@ -339,13 +339,6 @@ class JobView extends View {
              ($is_project_runner || $worklist['creator_id'] == $this->currentUser['id'] || ($this->currentUser['is_admin'] && $this->currentUser['is_runner'])) 
           && ($worklist['status'] != 'Done')
         );
-    }
-
-    public function editableProjectSelect() {
-        $worklist = $this->worklist;
-        $filter = new Agency_Worklist_Filter();
-        $filter->setProjectId($worklist['project_id']);
-        return $filter->getProjectSelectbox('Select Project', 0, 'project_id', 'project_id');
     }
 
     public function projectUrl() {
@@ -468,9 +461,9 @@ class JobView extends View {
                 $now = strtotime(Model::now());
             }
 
-            $created = relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
-            $accepted = $bid['bid_accepted'] ? relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, true, false) : '';
-            $expires = $bid['expires'] ? relativeTime($bid['expires'], true, true, true, false) : 'Never';
+            $created = Utils::relativeTime(strtotime($bid['bid_created']) - $now, true, true, true, false);
+            $accepted = $bid['bid_accepted'] ? Utils::relativeTime(strtotime($bid['bid_accepted']) - $now, true, true, true, false) : '';
+            $expires = $bid['expires'] ? Utils::relativeTime($bid['expires'], true, true, true, false) : 'Never';
 
             if ($user->getId() != $bid['bidder_id'] && $bid['expires'] < 0) {
                 continue;
@@ -512,7 +505,7 @@ class JobView extends View {
                         "time_to_complete: '{$bid['time_to_complete']}', " .
                         "done_in: '{$bid['done_in']}', " .
                         "bidder_id: {$bid['bidder_id']}, " .
-                        "notes: '" .  replaceEncodedNewLinesWithBr($notes) . "'}" .
+                        "notes: '" .  str_replace(array('\n\r','\r\n','\n','\r'), '<br/>', $notes) . "'}" .
                     "</script>";
             }
             $ret .= 
@@ -694,16 +687,6 @@ class JobView extends View {
         return ($this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
     }
 
-    public function userFeeSelectBox() {
-        $filter = new Agency_Worklist_Filter();
-        return $filter->getUserSelectbox(1, false, 'mechanicFee', 'mechanicFee');
-    }
-
-    public function userTipSelectBox() {
-        $filter = new Agency_Worklist_Filter();
-        echo $filter->getUserSelectbox(1, false, 'mechanicTip', 'mechanicTip');
-    }
-
     public function showBidderStatistics() {
         return ($this->user->getIs_admin() == 1 && $this->currentUser['is_runner'] || $this->is_project_founder || $this->is_project_runner);
     }
@@ -759,7 +742,7 @@ class JobView extends View {
 
                 $ret .= 
                       '<li entryid="' . $id . '" date="' . $date  . '" type="' . $type .  '">'
-                    .     '<h4>' . relativeTime($date - $now) . '</h4>'
+                    .     '<h4>' . Utils::relativeTime($date - $now) . '</h4>'
                     .     $content
                     . '</li>';
             } else {

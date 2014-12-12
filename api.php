@@ -12,14 +12,13 @@ require_once ("models/Review.php");
 require_once ("models/Users_Favorite.php");
 require_once ("models/Budget.php");
 
+Core::bootstrap(false);
 Session::check();
 
 if (!defined("ALL_ASSETS"))      define("ALL_ASSETS", "all_assets");
 
 // TODO: add API keys to these function calls
-// uploadProfilePicture
 // getSystemDrawerJobs
-// getTimezone
 
 if(validateAction()) {
     if(!empty($_REQUEST['action'])){
@@ -27,147 +26,72 @@ if(validateAction()) {
         mysql_select_db (DB_NAME);
         switch($_REQUEST['action']){
             case 'updateuser':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 updateuser();
                 break;
             case 'pushVerifyUser':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 pushVerifyUser();
                 break;
             case 'login':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 loginUserIntoSession();
                 break;
-            case 'getTaskPosts':
-                getTaskPosts();
-                break;
-            case 'uploadProfilePicture':
-                uploadProfilePicture();
-                break;
             case 'updateProjectList':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 updateProjectList();
                 break;
             case 'getSystemDrawerJobs':
                 getSystemDrawerJobs();
                 break;
             case 'bidNotification':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 sendBidNotification();
                 break;
             case 'processW2Masspay':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 processW2Masspay();
                 break;
             case 'doScanAssets':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 doScanAssets();
                 break;
-            case 'version':
-                validateAPIKey();
-                exec('svnversion > ver');
-                break;
-            case 'sendContactEmail':
-                // @TODO: why do we require an API key for this?
-                // I don't get it. The request is sent via JS, so if we included the API key it would
-                // then become visible to all who want to see it, leaving the form open for abuse... - lithium
-                // validateAPIKey();
-                sendContactEmail();
-                break;
-            case 'getTimezone':
-                getTimezone();
-                break;
-            case 'updateLastSeen':
-                updateLastSeen();
-                break;
             case 'sendTestNotifications':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 sendTestNotifications();
                 break;
             case 'autoPass':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 autoPassSuggestedJobs();
                 break;
             case 'processPendingReviewsNotifications':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 processPendingReviewsNotifications();
-                break;
-            case 'pruneJournalEntries' :
-                validateAPIKey();
-                pruneJournalEntries();
-                break;
-            case 'createRepo':
-                createRepo();
-                break;
-            case 'createSandbox':
-                createSandbox();
-                break;
-            case 'createDatabaseNewProject':
-                createDatabaseNewProject();
-                break;
-            case 'sendNewProjectEmails':
-                sendNewProjectEmails();
-                break;
-            case 'modifyConfigFile':
-                modifyConfigFile();
-                break;
-            case 'addPostCommitHook':
-                addPostCommitHook();
-                break;
-            case 'deployStagingSite':
-                deployStagingSite();
                 break;
             case 'getFavoriteUsers':
                 getFavoriteUsers();
                 break;
-            case 'getTwilioCountries':
-                getTwilioCountries();
-                break;
             case 'deployErrorNotification':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 deployErrorNotification();
                 break;
-            case 'saveSoundSettings':
-                saveSoundSettings();
-                break;
             case 'sendNotifications':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 sendNotifications();
                 break;
             case 'checkInactiveProjects':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 checkInactiveProjects();
                 break;
             case 'checkRemovableProjects':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 checkRemovableProjects();
-                break;
-            case 'addProject':
-                addProject();
-                break;
-            case 'addWorkitem':
-                addWorkitem();
                 break;
             case 'setFavorite':
                 setFavorite();
                 break;
-            case 'getBidItem':
-                getBidItem();
-                break;
             case 'getBonusHistory':
                 getBonusHistory();
-                break;
-            case 'getFeeItem':
-                getFeeItem();
-                break;
-            case 'getCodeReviewStatus':
-                getCodeReviewStatus();
-                break;
-            case 'getFeeSums':
-                getFeeSums();
-                break;
-            case 'getJobInformation':
-                getJobInformation();
                 break;
             case 'getMultipleBidList':
                 getMultipleBidList();
@@ -177,43 +101,20 @@ if(validateAction()) {
                 $currentUser = User::find($userId);
                 getProjects(!$currentUser->isInternal());
                 break;
-            case 'getReport':
-                getReport();
-                break;
-            case 'getStats':
-                $req =  isset($_REQUEST['req'])? $_REQUEST['req'] : 'table';
-                $interval =  isset($_REQUEST['req'])? $_REQUEST['req'] : 30;
-                echo json_encode(getStats($req, $interval));
-                break;
             case 'getUserList':
                 getUserList();
                 break;
             case 'getUsersList':
                 getUsersList();
                 break;
-            case 'getWorkitem':
-                getWorkitem();
-                break;
             case 'payBonus':
                 payBonus();
-                break;
-            case 'payCheck':
-                payCheck();
                 break;
             case 'pingTask':
                 pingTask();
                 break;
-            case 'refreshFilter':
-                refreshFilter();
-                break;
             case 'userReview':
                 userReview();
-                break;
-            case 'workitemSandbox':
-                workitemSandbox();
-                break;
-            case 'userNotes':
-                userNotes();
                 break;
             case 'visitQuery':
                 echo json_encode(VisitQueryTools::visitQuery((int) $_GET['jobid']));
@@ -225,11 +126,11 @@ if(validateAction()) {
                 timeline();
                 break;
             case 'newUserNotification':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 sendNewUserNotification();
                 break;
             case 'sendJobReport':
-                validateAPIKey();
+                Utils::validateAPIKey();
                 sendJobReport();
                 break;
             default:
@@ -291,64 +192,6 @@ function loginUserIntoSession(){
             array("%s","%d","%s")
         );
     }
-}
-
-function uploadProfilePicture() {
-    // check if we have a file
-    if (empty($_FILES)) {
-        respond(array(
-            'success' => false,
-            'message' => 'No file uploaded!'
-        ));
-    }
-
-    if (empty($_REQUEST['userid'])) {
-        respond(array(
-            'success' => false,
-            'message' => 'No user ID set!'
-        ));
-    }
-
-    $ext = end(explode(".", $_FILES['profile']['name']));
-    $tempFile = $_FILES['profile']['tmp_name'];
-    $imgName = strtolower($_REQUEST['userid'] . '.' . $ext);
-    $path = APP_IMAGE_PATH . $imgName;
-
-    try {
-        File::s3Upload($tempFile, $path);
-
-        $query = "
-            UPDATE `" . USERS . "`
-            SET `picture` = '" . mysql_real_escape_string($imgName) . "' ,
-            `s3bucket` = '" . S3_BUCKET ."'
-            WHERE `id` = " . (int) $_REQUEST['userid'] . "
-            LIMIT 1";
-
-        if (! mysql_query($query)) {
-            error_log("s3upload mysql: ".mysql_error());
-            respond(array(
-                'success' => false,
-                'message' => SL_DB_FAILURE
-            ));
-        }
-
-        respond(array(
-            'success' => true,
-            'picture' => $imgName
-        ));
-
-    } catch (Exception $e) {
-        $success = false;
-        $error = 'There was a problem uploading your file';
-        error_log(__FILE__.": Error uploading images to S3:\n$e");
-
-        return $this->setOutput(array(
-            'success' => false,
-            'message' => 'An error occured while uploading the file, please try again!'
-        ));
-    }
-
-
 }
 
 function updateuser(){
@@ -423,7 +266,6 @@ function getSystemDrawerJobs(){
 }
 
 function sendBidNotification() {
-    require_once('./classes/Notification.class.php');
     $notify = new Notification();
     $notify->emailExpiredBids();
 }
@@ -489,25 +331,6 @@ function respond($val){
     exit(json_encode($val));
 }
 
-function sendContactEmail(){
-    $name = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
-    $email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
-    $phone = isset($_REQUEST['phone']) ? $_REQUEST['phone'] : '';
-    $proj_name = isset($_REQUEST['project']) ? $_REQUEST['project'] : '';
-    $proj_desc = isset($_REQUEST['proj_desc']) ? $_REQUEST['proj_desc'] : '';
-    $website = isset($_REQUEST['website']) ? $_REQUEST['website'] : '';
-    if (empty($phone) || empty($email) || empty($phone) || empty($proj_name) || empty($proj_desc)) {
-        exit(json_encode(array('error' => 'All Fields are required!')));
-    }
-    require_once('./classes/Notification.class.php');
-    $notify = new Notification();
-    if ($notify->emailContactForm($name, $email, $phone, $proj_name, $proj_desc, $website)) {
-        exit(json_encode(array('success' => true)));
-    } else {
-        exit(json_encode(array('error' => 'There was an error sending your message, please try again later.')));
-    }
-}// end sendContactEmail
-
 function autoPassSuggestedJobs() {
     $con = mysql_connect(DB_SERVER, DB_USER, DB_PASSWORD);
     if (!$con) {
@@ -550,9 +373,8 @@ function autoPassSuggestedJobs() {
                 $data
             );
 
-            //sendJournalnotification
             $journal_message =  "\\\\#" . $workitem->getId() . " updated by @Otto. Status set to " . $status;
-            sendJournalNotification(stripslashes($journal_message));
+            Utils::systemNotification(stripslashes($journal_message));
         } else {
             error_log("Otto failed to update the status of workitem #" . $workitem->getId() . " to " . $status);
         }
@@ -560,35 +382,6 @@ function autoPassSuggestedJobs() {
     }
     mysql_free_result($result);
     mysql_close($con);
-}
-
-function getTimezone() {
-    if (isset($_REQUEST['username'])) {
-        $username = $_REQUEST['username'];
-    } else {
-        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
-    }
-
-    $user = new User();
-    if ($user->findUserByUsername($username)) {
-        respond(array('succeeded' => true, 'message' => $user->getTimezone()));
-    } else {
-        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
-    }
-}
-
-function updateLastSeen() {
-    if (isset($_REQUEST['username'])) {
-        $username = $_REQUEST['username'];
-    } else {
-        respond(array('succeeded' => false, 'message' => 'Error: Could not determine the user'));
-    }
-    $qry = "UPDATE ". USERS ." SET last_seen = NOW() WHERE username='". $username ."'";
-    if ($res = mysql_query($qry)) {
-        respond(array('succeeded' => true, 'message' => 'Last seen time updated!'));
-    } else {
-        respond(array('succeeded' => false, 'message' => mysql_error()));
-    }
 }
 
 function processPendingReviewsNotifications() {
@@ -605,10 +398,10 @@ function processPendingReviewsNotifications() {
             $tReview = new Review();
             $tReview->loadById($review['reviewer_id'], $review['reviewee_id']);
             if ($tReview->journal_notified == 0) {
-                sendReviewNotification($tReview->reviewee_id, 'update',
+                Utils::sendReviewNotification($tReview->reviewee_id, 'update',
                     $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
             } else {
-                sendReviewNotification($tReview->reviewee_id, 'new',
+                Utils::sendReviewNotification($tReview->reviewee_id, 'new',
                     $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
             }
             $tReview->journal_notified = 1;
@@ -654,159 +447,6 @@ function resetCronFile() {
     chmod (REVIEW_NOTIFICATIONS_CRON_FILE, 0755);
 }
 
-
-// Prune Journal entries by deleting all entries except the latest 100
-function pruneJournalEntries() {
-    $sql = " SELECT MAX(id) AS maxId FROM " . ENTRIES;
-    $result = mysql_query($sql);
-    if ($result) {
-        $row = mysql_fetch_assoc($result);
-    } else {
-        die( 'Failed to get all entries');
-    }
-    $total = (int) $row['maxId'] - 100;
-
-    $sql = " DELETE FROM " . ENTRIES . " WHERE id <= {$total};";
-    echo $sql;
-    $result = mysql_unbuffered_query($sql);
-    echo "<br/> # of deleted entries: " . mysql_affected_rows();
-
-}
-
-function createDatabaseNewProject() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('project', $_REQUEST)) {
-        try {
-            if ($sandBoxUtil->createDatabaseNewProject($_REQUEST['project'], $_REQUEST['username'])) {
-                echo json_encode(array('success'=>true, 'message'=>'Database created succesfully'));
-            } else {
-                echo json_encode(array('success'=>false, 'message'=>'Database creation failed'));
-            }
-        } catch (Exception $e) {
-            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing Parameters'));
-    }
-}
-
-function createRepo() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('project', $_REQUEST)) {
-        try {
-            if ($sandBoxUtil->createRepo($_REQUEST['project'])) {
-                echo json_encode(array('success'=>true, 'message'=>'Repository created succesfully'));
-            } else {
-                echo json_encode(array('success'=>false, 'message'=>'Repository not created'));
-            }
-        } catch (Exception $e) {
-            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
-function createSandbox() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
-        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
-        try {
-            if ($sandBoxUtil->createSandbox($_REQUEST['username'],
-                                        $_REQUEST['nickname'],
-                                        $_REQUEST['unixusername'],
-                                        $_REQUEST['projectname'],
-                                        null,
-                                        $_REQUEST['newuser'])) {
-                $user = new User();
-                $user->findUserByNickname($_REQUEST['nickname']);
-                $user->setHas_sandbox(1);
-                $user->setUnixusername($_REQUEST['unixusername']);
-                $user->setProjects_checkedout($_REQUEST['projectname']);
-                $user->save();
-                echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
-            } else {
-                echo json_encode(array('success'=>false, 'message'=>'Sandbox creation and project checkout failed'));
-            }
-        } catch (Exception $e) {
-            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
-function sendNewProjectEmails() {
-    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
-        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
-        $data = array();
-        $data['project_name'] = $_REQUEST['projectname'];
-        $data['nickname'] = $_REQUEST['unixusername'];
-        $data['database_user'] = $_REQUEST['dbuser'];
-        $data['repo_type'] = $_REQUEST['repo_type'];
-        $data['github_repo_url'] = $_REQUEST['github_repo_url'];
-        $user = new User();
-        sendTemplateEmail(SUPPORT_EMAIL, 'ops-project-created', $data);
-        if (!sendTemplateEmail($_REQUEST['username'], $_REQUEST['template'], $data)) {
-            echo json_encode(array('success'=>false, 'message'=>'Emails not sent'));
-        } else {
-            echo json_encode(array('success'=>true, 'message'=>'Emails sent out'));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
-function modifyConfigFile() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('username', $_REQUEST) && array_key_exists('nickname', $_REQUEST)
-        && array_key_exists('unixusername', $_REQUEST) && array_key_exists('projectname', $_REQUEST)) {
-        if ($sandBoxUtil->modifyConfigFile($_REQUEST['unixusername'],
-                                           $_REQUEST['projectname'],
-                                           $_REQUEST['dbuser'])) {
-            echo json_encode(array('success'=>true, 'message'=>'Sandbox created'));
-        } else {
-            echo json_encode(array('success'=>false, 'message'=>'Sandbox creation and project checkout failed'));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
-function addPostCommitHook() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('repo', $_REQUEST)) {
-        try {
-            if ($sandBoxUtil->addPostCommitHook($_REQUEST['repo'])) {
-                echo json_encode(array('success'=>true, 'message'=>'Post commit hook added'));
-            } else {
-                echo json_encode(array('success'=>false, 'message'=>'Failed adding post commit hook'));
-            }
-        } catch (Exception $e) {
-            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
-function deployStagingSite() {
-    $sandBoxUtil = new SandBoxUtil();
-    if (array_key_exists('repo', $_REQUEST)) {
-        try {
-            if ($sandBoxUtil->deployStagingSite($_REQUEST['repo'])) {
-                echo json_encode(array('success'=>true, 'message'=>'Post commit hook added'));
-            } else {
-                echo json_encode(array('success'=>false, 'message'=>'Failed adding post commit hook'));
-            }
-        } catch (Exception $e) {
-            echo json_encode(array('success'=>false, 'message'=>$e->getMessage()));
-        }
-    } else {
-        echo json_encode(array('success'=>false, 'message'=>'Missing parameters'));
-    }
-}
-
 function getFavoriteUsers() {
     if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
     echo json_encode(array('favorite_users' => array()));
@@ -817,78 +457,13 @@ function getFavoriteUsers() {
     echo json_encode($data);
 }
 
-/**
- * Returns a list of all the countries supported by Twilio
- */
-function getTwilioCountries() {
-    $sql = 'SELECT `country_code`, `country_phone_prefix` FROM `' . COUNTRIES . '` WHERE `country_twilio_enabled` = 1';
-
-    $result = mysql_query($sql);
-    if(!is_resource($result)) {
-        echo json_encode(array(
-            'success' => false,
-            'message' => 'Could not retrieve the list of twilio supported countries'
-        ));
-        return;
-    }
-
-    $list = array();
-    while ($row = mysql_fetch_assoc($result)) {
-        $list[$row['country_code']] = $row['country_phone_prefix'];
-    }
-
-    echo json_encode(array(
-        'success' => true,
-        'list' => $list
-    ));
-    return;
-}
-
 function deployErrorNotification() {
-
     $work_item_id = isset($_REQUEST['workitem']) ? $_REQUEST['workitem'] : 0;
     $error_msg = isset($_REQUEST['error']) ? base64_decode($_REQUEST['error']) : '';
     $commit_rev = isset($_REQUEST['rev']) ? $_REQUEST['rev'] : '';
-    require_once('classes/Notification.class.php');
-
     $notify = new Notification();
     $notify->deployErrorNotification($work_item_id, $error_msg, $commit_rev);
     exit(json_encode(array('success' => true)));
-}
-
-function saveSoundSettings() {
-    if (!$userid = (isset($_SESSION['userid']) ? $_SESSION['userid'] : 0)) {
-        echo json_encode(array('success'=>false, 'message'=>'Not logged-in user'));
-        return;
-    }
-    try {
-        $settings = 0;
-        $settings_arr = preg_split('/:/', $_REQUEST['settings'], 5);
-
-        if ((int) $settings_arr[0]) {
-            $settings = $settings | JOURNAL_CHAT_SOUND;
-        }
-        if ((int) $settings_arr[1]) {
-            $settings = $settings | JOURNAL_SYSTEM_SOUND;
-        }
-        if ((int) $settings_arr[2]) {
-            $settings = $settings | JOURNAL_BOT_SOUND;
-        }
-        if ((int) $settings_arr[3]) {
-            $settings = $settings | JOURNAL_PING_SOUND;
-        }
-        if ((int) $settings_arr[4]) {
-            $settings = $settings | JOURNAL_EMERGENCY_ALERT;
-        }
-
-        $user = new User();
-        $user->findUserById($userid);
-        $user->setSound_settings($settings);
-        $user->save();
-        echo json_encode(array('success'=>true, 'message'=>'Settings saved'));
-    } catch(Exception $e) {
-        echo json_encode(array('success'=>false, 'message'=>'Settings saving failed'));
-    }
 }
 
 function sendNotifications() {
@@ -937,7 +512,7 @@ function checkInactiveProjects() {
             'projectUrl' => Project::getProjectUrl($row['project_id']),
             'projectName' => $row['name']
         );
-        if (! sendTemplateEmail($row['contact_info'], 'project-inactive', $data)) {
+        if (! Utils::sendTemplateEmail($row['contact_info'], 'project-inactive', $data)) {
             $report_message .= ' <p> Ok ---';
         } else {
             $report_message .= ' <p> Fail -';
@@ -951,7 +526,7 @@ function checkInactiveProjects() {
         $headers['From'] = DEFAULT_SENDER;
         $subject = "Inactive Projects Report";
         $body = $report_message;
-        if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
+        if (!Utils::send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
             error_log ('checkActiveProjects cron: Failed to send email report');
         }
     }
@@ -978,7 +553,7 @@ function checkRemovableProjects() {
             'projectName' => $row['name'],
             'creation_date' => date('Y-m-d', strtotime($row['creation_date']))
         );
-        if (sendTemplateEmail($row['contact_info'], 'project-removed', $data)) {
+        if (Utils::sendTemplateEmail($row['contact_info'], 'project-removed', $data)) {
             $report_message .= ' <p> Ok email---';
         } else {
             $report_message .= ' <p> Failed email -';
@@ -1041,7 +616,7 @@ function checkRemovableProjects() {
         $headers['From'] = DEFAULT_SENDER;
         $subject = "Removed Projects Report";
         $body = $report_message;
-        if (!send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
+        if (!Utils::send_email(OPS_EMAIL, $subject, $body, null, $headers )) {
             error_log ('checkActiveProjects cron: Failed to send email report');
         }
     }
@@ -1061,9 +636,9 @@ function setFavorite() {
          !isset($_REQUEST['newVal']) ) {
         echo json_encode(array( 'error' => "Invalid parameters!"));
     }
-    $userId = getSessionUserId();
+    $userId = Session::uid();
     if ($userId > 0) {
-        initUserById($userId);
+        Utils::initUserById($userId);
         $user = new User();
         $user->findUserById( $userId );
 
@@ -1082,8 +657,8 @@ function setFavorite() {
                 $data = array();
                 $data['link'] = $resetUrl;
                 $nick = $favorite_user->getNickname();
-                if (! sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) {
-                    error_log("setFavorite: send_email failed on favorite notification");
+                if (! Utils::sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) {
+                    error_log("setFavorite: Utils::send_email failed on favorite notification");
                 }
 
                 // get favourite count
@@ -1096,7 +671,7 @@ function setFavorite() {
                     }
                     $journal_message = '@' . $nick . ' is now trusted by ' . $message . '!';
                     //sending journal notification
-                    sendJournalNotification(stripslashes($journal_message));
+                    Utils::systemNotification(stripslashes($journal_message));
                 }
             }
             echo json_encode(array( 'return' => "Trusted saved."));
@@ -1105,55 +680,6 @@ function setFavorite() {
         }
     } else {
         echo json_encode(array( 'error' => "You must be logged in!"));
-    }
-}
-
-function getBidItem() {
-    $blankbid = array(
-        'id' => 0,
-        'bidder_id' => 0,
-        'worklist_id' => 0,
-        'email' => '*name hidden*',
-        'bid_amount' => '0',
-        'done_in' => '',
-        'notes' => '',
-    );
-    $blankjson = json_encode($blankbid);
-
-    $item = isset($_REQUEST['item']) ? (int)$_REQUEST['item'] : 0;
-    if ($item == 0) {
-        echo $blankjson;
-        return;
-    }
-
-    $userId = getSessionUserId();
-    $user = new User();
-    if ($userId > 0) {
-        $user = $user->findUserById($userId);
-    } else {
-        $user->setId(0);
-    }
-    // Guest or hacking
-    if ($user->getId() == 0) {
-        echo $blankjson;
-        return;
-    }
-
-    $bid = new Bid($item);
-
-    if ($bid->id) {
-        $workItem = new WorkItem();
-        $workItem->conditionalLoadByBidId($item);
-        // Runner, item creator, or bidder can see item.
-        if ($user->isRunner() || ($user->getId() == $workItem->getCreatorId()) || ($user->getId() == $bid->bidder_id)) {
-            $bid->setAnyAccepted($workItem->hasAcceptedBids());
-            $row = $bid->toArray();
-            $row['notes'] = html_entity_decode($row['notes'], ENT_QUOTES);
-            $json = json_encode($row);
-            echo $json;
-        } else {
-            echo $blankjson;
-        }
     }
 }
 
@@ -1210,83 +736,6 @@ function getBonusHistory() {
     echo $json;
 }
 
-function getCodeReviewStatus() {
-    $id = (int) $_REQUEST['workitemid'];
-    $query = "
-        SELECT id, code_reviewer_id, code_review_started, code_review_completed
-        FROM " . WORKLIST . "
-        WHERE id = '" . $id . "'";
-    $result = mysql_query($query);
-    $data = array();
-    while ($result && $row=mysql_fetch_assoc($result)) {
-        $data[] = $row;
-    }
-    echo json_encode($data);
-}
-
-function getFeeItem() {
-    $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
-    if (empty($item))
-        return;
-
-    $query = "SELECT id, paid, notes FROM ".FEES." WHERE ".FEES.".id='{$item}'";
-
-    $rt = mysql_query($query);
-    $row = mysql_fetch_assoc($rt);
-
-    $json = json_encode(array($row['id'], $row['paid'], $row['notes']));
-    echo $json;
-}
-
-function getFeeSums() {
-    $sum = Fee::getSums(isset($_GET["type"]) ? $_GET["type"] : '');
-    echo json_encode($sum);
-}
-
-function getJobInformation() {
-    $page=isset($_REQUEST["page"]) ? intval($_REQUEST["page"]) : 1; //Get the page number to show, set default to 1
-
-    $workitem = new WorkItem();
-
-    $userId = getSessionUserId();
-
-    if( $userId > 0 )   {
-        initUserById($userId);
-        $user = new User();
-        $user->findUserById( $userId );
-    }
-
-    if ($user->getId() > 0 ) {
-        $args = array( 'itemid');
-        foreach ($args as $arg) {
-            if(!empty($_POST[$arg])) {
-                $$arg=$_POST[$arg];
-            } else {
-                $$arg='';
-            }
-        }
-        if (!empty($itemid)) {
-            try {
-                $workitem->loadById($itemid);
-                $summary= "#". $workitem->getId()." - ". $workitem->getSummary();
-            } catch(Exception $e) {
-                //Item id doesnt exist
-                $summary="";
-            }
-        } else {
-            $summary='';
-        }
-
-        $returnString=$summary;
-
-    } else {
-        echo json_encode(array('error' => "Invalid parameters !"));
-        return;
-    }
-
-    echo json_encode(array('returnString' => $returnString));
-}
-
 function getMultipleBidList() {
     $job_id = isset($_REQUEST['job_id']) ? (int) $_REQUEST['job_id'] : 0;
     if ($job_id == 0) {
@@ -1299,7 +748,7 @@ function getMultipleBidList() {
     $ret = array();
     foreach($bids as $bid) {
         $bid['expired'] = $bid['expires'] <= BID_EXPIRE_WARNING;
-        $bid['expires_text'] = relativeTime($bid['expires'] , false, false, false, false);
+        $bid['expires_text'] = Utils::relativeTime($bid['expires'] , false, false, false, false);
         $ret[] = $bid;
     }
 
@@ -1371,283 +820,6 @@ function getProjects($public_only = true) {
     // Prepare data for printing in projects
     $json = json_encode($projectsOnPage);
     echo $json;
-}
-
-function getReport() {
-    $limit = 30;
-
-    $_REQUEST['name'] = '.reports';
-    $filter = new Agency_Worklist_Filter($_REQUEST);
-    $from_date = mysql_real_escape_string($filter->getStart());
-    $to_date = mysql_real_escape_string($filter->getEnd());
-    $paidStatus = $filter->getPaidstatus();
-    $page = $filter->getPage();
-    $w2_only = (int) $_REQUEST['w2_only'];
-    $dateRangeFilter = '';
-
-    if (isset($from_date) || isset($to_date)) {
-        $mysqlFromDate = GetTimeStamp($from_date);
-        $mysqlToDate = GetTimeStamp($to_date);
-        $dateRangeFilter = " AND DATE(`date`) BETWEEN '".$mysqlFromDate."' AND '".$mysqlToDate."'" ;
-    }
-
-    $w2Filter = '';
-    if ($w2_only) {
-        $w2Filter = " AND " . USERS . ".`has_w2` = 1";
-    }
-
-    $paidStatusFilter = '';
-    if (isset($paidStatus) && ($paidStatus) !="ALL") {
-        $paidStatus= mysql_real_escape_string($paidStatus);
-        $paidStatusFilter = " AND `".FEES."`.`paid` = ".$paidStatus."";
-    }
-
-    $sfilter = $filter->getStatus();
-    $pfilter = $filter->getProjectId();
-    $fundFilter = $filter->getFund_id();
-    $ufilter = $filter->getUser();
-    $rfilter = $filter->getRunner();
-    $order = $filter->getOrder();
-    $dir = $filter->getDir();
-    $type = $filter->getType();
-
-    $queryType = isset( $_REQUEST['qType'] ) ? $_REQUEST['qType'] :'detail';
-
-    $where = '';
-    if ($ufilter) {
-        $where = " AND `".FEES."`.`user_id` = $ufilter ";
-    }
-
-    if ($rfilter) {
-        $where = " AND `".FEES."`.`user_id` = $rfilter AND `" . WORKLIST . "`.runner_id = $rfilter ";
-    }
-
-    if ($sfilter){
-        if($sfilter != 'ALL') {
-            $where .= " AND `" . WORKLIST . "`.status = '$sfilter' ";
-        }
-    }
-    if ($pfilter) {
-        // ignore the fund filter?
-        if($pfilter != 'ALL') {
-          $where .= " AND `" . WORKLIST . "`.project_id = '$pfilter' ";
-        } elseif ($fundFilter) {
-            $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
-        }
-    } elseif (isset($fundFilter) && $fundFilter != -1) {
-        if ($fundFilter == 0) {
-            $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter . " || `".PROJECTS."`.`fund_id` IS NULL";
-        } else {
-            $where .= " AND `".PROJECTS."`.`fund_id` = " . $fundFilter;
-        }
-    }
-
-
-
-    if ($type == 'Fee') {
-        $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0 AND `".FEES. "`.bonus = 0";
-    } else if ($type == 'Expense') {
-        $where .= " AND `".FEES."`.expense = 1 AND `".FEES."`.rewarder = 0 AND `".FEES. "`.bonus = 0";
-    } else if ($type == 'Bonus') {
-        $where .= " AND (rewarder = 1 OR bonus = 1)";
-    } else if ($type == 'ALL') {
-        $where .= " AND `".FEES."`.expense = 0 AND `".FEES."`.rewarder = 0";
-    }
-
-    // Add option for order results
-    $orderby = "ORDER BY ";
-    switch ($order) {
-        case 'date':
-            $orderby .= "`".FEES."`.`date`";
-            break;
-
-        case 'name':
-        case 'payee':
-            $orderby .= "`".USERS."`.`nickname`";
-            break;
-
-        case 'desc':
-            $orderby .= "`".FEES."`.`desc`";
-            break;
-
-        case 'summary':
-            $orderby .= "`".WORKLIST."`.`summary`";
-            break;
-
-        case 'paid_date':
-            $orderby .= "`".FEES."`.`paid_date`";
-            break;
-
-        case 'id':
-            $orderby .= "`".FEES."`.`worklist_id`";
-            break;
-
-        case 'fee':
-            $orderby .= "`".FEES."`.`amount`";
-            break;
-
-        case 'jobs':
-            $orderby .= "`jobs`";
-            break;
-
-        case 'avg_job':
-            $orderby .= "`average`";
-            break;
-
-        case 'total_fees':
-            $orderby .= "`total`";
-            break;
-    }
-
-    if ($dateRangeFilter) {
-        $where .= $dateRangeFilter;
-    }
-
-    if (! empty($w2Filter)) {
-        $where .= $w2Filter;
-    }
-
-    if ($paidStatusFilter) {
-      $where .= $paidStatusFilter;
-    }
-
-    if($queryType == "detail") {
-
-        $qcnt = "SELECT count(*)";
-        $qsel = "SELECT `".FEES."`.id AS fee_id, DATE_FORMAT(`paid_date`, '%m-%d-%Y') AS paid_date,`worklist_id`,`".WORKLIST."`.`summary` AS `summary`,`desc`,`status`,`".USERS."`.`nickname` AS `payee`,`".FEES."`.`amount`, `".USERS."`.`paypal` AS `paypal`, `expense` AS `expense`,`rewarder` AS `rewarder`,`bonus` AS `bonus`, `" . USERS . "`.`has_W2` AS `has_W2`";
-        $qsum = "SELECT SUM(`amount`) as page_sum FROM (SELECT `amount` ";
-        $qbody = " FROM `".FEES."`
-                   LEFT JOIN `".WORKLIST."` ON `".WORKLIST."`.`id` = `".FEES."`.`worklist_id`
-                   LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
-                   LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
-                   WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
-        $qorder = "$orderby $dir, `status` ASC, `worklist_id` ASC LIMIT " . ($page - 1) * $limit . ",$limit";
-
-        $rtCount = mysql_query("$qcnt $qbody");
-        if ($rtCount) {
-            $row = mysql_fetch_row($rtCount);
-            $items = intval($row[0]);
-        } else {
-            $items = 0;
-            die(json_encode(array()));
-        }
-        $cPages = ceil($items/$limit);
-
-        $qPageSumClose = "$orderby $dir, `status` ASC, `worklist_id` ASC LIMIT " . ($page - 1) * $limit . ", $limit ) fee_sum ";
-
-        $sumResult = mysql_query("$qsum $qbody $qPageSumClose");
-        if ($sumResult) {
-            $get_row = mysql_fetch_row($sumResult);
-            $pageSum = $get_row[0];
-        } else {
-            $pageSum = 0;
-        }
-        $qGrandSumClose = "ORDER BY `".USERS."`.`nickname` ASC, `status` ASC, `worklist_id` ASC ) fee_sum ";
-        $grandSumResult = mysql_query("$qsum $qbody $qGrandSumClose");
-        if ($grandSumResult) {
-            $get_row = mysql_fetch_row($grandSumResult);
-            $grandSum = $get_row[0];
-        } else {
-            $grandSum = 0;
-        }
-        $report = array(array($items, $page, $cPages, $pageSum, $grandSum));
-
-
-        // Construct json for history
-        $rtQuery = mysql_query("$qsel $qbody $qorder");
-        for ($i = 1; $rtQuery && $row = mysql_fetch_assoc($rtQuery); $i++) {
-            $report[$i] = array($row['worklist_id'], $row['fee_id'], $row['summary'], $row['desc'], $row['payee'], $row['amount'], $row['paid_date'], $row['paypal'],$row['expense'],$row['rewarder'],$row['bonus'],$row['has_W2']);
-        }
-
-        $concatR = '';
-        if ($row['rewarder'] ==1) {
-            $concatR = "R";
-        }
-
-        $json = json_encode($report);
-        echo $json;
-    } else if ($queryType == "chart" ) {
-        $fees = array();
-        $uniquePeople = array();
-        $feeCount = array();
-        if(isset($from_date)) {
-          $fromDate = ReportTools::getMySQLDate($from_date);
-        }
-        if(isset($to_date)) {
-          $toDate = ReportTools::getMySQLDate($to_date);
-        }
-        $fromDateTime = mktime(0,0,0,substr($fromDate,5,2),  substr($fromDate,8,2), substr($fromDate,0,4));
-        $toDateTime = mktime(0,0,0,substr($toDate,5,2),  substr($toDate,8,2), substr($toDate,0,4));
-
-        $daysInRange = round( abs($toDateTime-$fromDateTime) / 86400, 0 );
-        $rollupColumn = ReportTools::getRollupColumn('`date`', $daysInRange);
-        $dateRangeType = $rollupColumn['rollupRangeType'];
-
-        $qbody = " FROM `".FEES."`
-              LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
-              LEFT JOIN `".USERS."` ON `".USERS."`.`id` = `".FEES."`.`user_id`
-              LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
-
-              WHERE `amount` != 0 AND `".FEES."`.`withdrawn` = 0 $where ";
-        $qgroup = " GROUP BY fee_date";
-
-        $qcols = "SELECT " . $rollupColumn['rollupQuery'] . " as fee_date, count(1) as fee_count,sum(amount) as total_fees, count(distinct user_id) as unique_people ";
-
-        $res = mysql_query("$qcols $qbody $qgroup");
-        if($res && mysql_num_rows($res) > 0) {
-            while ($row = mysql_fetch_array($res, MYSQL_ASSOC)) {
-          if ($row['fee_count'] >=1 ) {
-                $feeCount[$row['fee_date']] = $row['fee_count'];
-                $fees[$row['fee_date']] = $row['total_fees'];
-                $uniquePeople[$row['fee_date']] = $row['unique_people'];
-               }
-            }
-        }
-        $json_data = array('fees' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $fees, false, $dateRangeType),
-            'uniquePeople' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $uniquePeople, false, $dateRangeType),
-            'feeCount' => ReportTools::fillAndRollupSeries($fromDate, $toDate, $feeCount, false, $dateRangeType),
-            'labels' => ReportTools::fillAndRollupSeries($fromDate, $toDate, null, true, $dateRangeType),
-            'fromDate' => $fromDate, 'toDate' => $toDate);
-        $json = json_encode($json_data);
-        echo $json;
-    } else if($queryType == "payee") {
-        $payee_report = array();
-        $page = $filter->getPage();
-        $count_query = " SELECT count(1) FROM ";
-        $query = " SELECT   `nickname` AS payee_name, count(1) AS jobs, sum(`amount`) / count(1) AS average, sum(`amount`) AS total  FROM `".FEES."`
-                   LEFT JOIN `".USERS."` ON `".FEES."`.`user_id` = `".USERS."`.`id`
-                   LEFT JOIN `".WORKLIST."` ON `worklist`.`id` = `".FEES."`.`worklist_id`
-                   LEFT JOIN ".PROJECTS." ON `".WORKLIST."`.`project_id` = `".PROJECTS."`.`project_id`
-                   WHERE  `".FEES."`.`paid` = 1  ".$where." GROUP BY  `user_id` ";
-        $result_count = mysql_query($count_query."(".$query.") AS payee_name");
-        if ($result_count) {
-            $count_row = mysql_fetch_row($result_count);
-            $items = intval($count_row[0]);
-        } else {
-            $items = 0;
-            die(json_encode(array()));
-        }
-        $countPages = ceil($items/$limit);
-        $payee_report[] = array($items, $page, $countPages);
-        if(!empty($_REQUEST['defaultSort']) && $_REQUEST['defaultSort'] == 'total_fees') {
-            $query .= " ORDER BY total DESC";
-        } else {
-            $query .= $orderby." ".$dir;
-        }
-        $query .= "  LIMIT " . ($page - 1) * $limit . ",$limit";
-        $result = mysql_query($query);
-        if($result && mysql_num_rows($result) > 0) {
-          while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-             $payee_name = $row['payee_name'];
-             $jobs = $row['jobs'];
-             $total = number_format($row['total'], 2, '.', '');
-             $average =  number_format($row['average'], 2, '.', '');
-             $payee_report[] = array($payee_name, $jobs, $average, $total);
-          }
-        }
-        echo json_encode($payee_report);
-    }
-
 }
 
 function getUserList() {
@@ -1739,7 +911,7 @@ function getUserList() {
         }
         $row['earnings'] = $user->totalEarnings();
         $diffseconds = strtotime($row['joined']);
-        $row['joined'] = formatableRelativeTime($diffseconds,2);
+        $row['joined'] = Utils::formatableRelativeTime($diffseconds,2);
         $userlist[] = $row;
     }
 
@@ -1776,63 +948,14 @@ function getUsersList() {
     echo json_encode($data);
 }
 
-function getWorkitem() {
-    $userId = isset($_SESSION['userid'])? $_SESSION['userid'] : 0;
-
-    $item = isset($_REQUEST["item"]) ? intval($_REQUEST["item"]) : 0;
-    if (empty($item))
-        return;
-
-    $query = "SELECT
-            w.id,
-            w.summary,
-            c.nickname creator,
-            w.status job_status,
-            w.notes,
-            p.name project,
-            r.nickname runner,
-            m.nickname mechanic
-        FROM ".WORKLIST." w
-        LEFT JOIN " . USERS . " c ON w.creator_id = c.id
-        LEFT JOIN " . USERS . " r ON w.runner_id = r.id
-        LEFT JOIN " . USERS . " m ON w.mechanic_id = m.id
-        LEFT JOIN ".PROJECTS." p ON w.project_id = p.project_id
-        WHERE w.id = '$item'
-            AND (w.status <> 'Draft' OR (w.status = 'Draft' AND w.creator_id = '$userId'))";
-    $rt = mysql_query($query);
-    if ($rt) {
-        $row = mysql_fetch_assoc($rt);
-        $row['notes'] = truncateText($row['notes']);
-        $query1 = ' SELECT c.comment, u.nickname '
-                . ' FROM ' . COMMENTS . ' AS c '
-                . ' INNER JOIN ' . USERS . ' AS u ON c.user_id = u.id '
-                . ' WHERE c.worklist_id = ' . $row['id']
-                . ' ORDER BY c.id DESC '
-                . ' LIMIT 1';
-
-        $rtc = mysql_query($query1);
-        if ($rt) {
-            $rowc = mysql_fetch_assoc($rtc);
-            $row['comment'] = truncateText($rowc['comment']);
-            $row['commentAuthor'] = $rowc['nickname'];
-        } else {
-            $row['comment'] = 'No comments yet.';
-        }
-        $json = json_encode($row);
-    } else {
-        $json = json_encode(array('error' => "No data available"));
-    }
-    echo $json;
-}
-
 function pingTask() {
     checkLogin();
 
     // Get sender Nickname
-    $id = getSessionUserId();
-    $user = getUserById($id);
-    $nickname = $user->nickname;
-    $email = $user->username;
+    $id = Session::uid();
+    $user = User::find($id);
+    $nickname = $user->getNickname();
+    $email = $user->getUsername();
     $msg = $_REQUEST['msg'];
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
 
@@ -1841,26 +964,26 @@ function pingTask() {
         $item_id = intval($_REQUEST['id']);
         $who = $_REQUEST['who'];
         // Get item
-        $item = getWorklistById( $item_id );
+        $item = new WorkItem($item_id);
 
         if( $who == 'mechanic' ) {
             // Get mechanic Nickname & email
-            $receiver_id = $item['mechanic_id'];
-            $receiver = getUserById( $receiver_id );
-            $receiver_nick = $receiver->nickname;
-            $receiver_email = $receiver->username;
+            $receiver_id = $item->getMechanicId();
+            $receiver = User::find($receiver_id);
+            $receiver_nick = $receiver->getNickname();
+            $receiver_email = $receiver->getUsername();
         } else if( $who == 'runner' ) {
             // Get runner Nickname & email
-            $receiver_id = $item['runner_id'];
-            $receiver = getUserById( $receiver_id );
-            $receiver_nick = $receiver->nickname;
-            $receiver_email = $receiver->username;
+            $receiver_id = $item->getRunnerId();
+            $receiver = User::find($receiver_id);
+            $receiver_nick = $receiver->getNickname();
+            $receiver_email = $receiver->getUsername();
         } else if($who == 'creator' ) {
             // Get runner Nickname & email
-            $receiver_id = $item['creator_id'];
-            $receiver = getUserById( $receiver_id );
-            $receiver_nick = $receiver->nickname;
-            $receiver_email = $receiver->username;
+            $receiver_id = $item->getCreatorId();
+            $receiver = User::find($receiver_id);
+            $receiver_nick = $receiver->getNickname();
+            $receiver_email = $receiver->getUsername();
         } else if ($who == 'bidder') {
             // Get bidder Nickname & email
             if (isset($_REQUEST['bid_id'])) {
@@ -1873,9 +996,9 @@ function pingTask() {
             $bid->findBidById($bid_id);
             $bid_info = $bid->toArray();
             $receiver_id = $bid_info['bidder_id'];
-            $receiver = getUserById( $receiver_id );
-            $receiver_nick = $receiver->nickname;
-            $receiver_email = $receiver->username;
+            $receiver = User::find($receiver_id);
+            $receiver_nick = $receiver->getNickname();
+            $receiver_email = $receiver->getUsername();
         }
         // Send mail
         if ($who != 'bidder') {
@@ -1888,15 +1011,15 @@ function pingTask() {
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
             }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-                error_log('pingtask.php:id: send_email failed');
+            if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
+                error_log('pingtask.php:id: Utils::send_email failed');
             }
 
         } else if ($who == 'bidder') {
             $project = new Project();
-            $project->loadById($item['project_id']);
+            $project->loadById($item->getProjectId());
             $project_name = $project->getName();
-            $mail_subject = "#" . $item_id . " - " . $item['summary'];
+            $mail_subject = "#" . $item_id . " - " . $item->getSummary();
             $mail_msg = "<p>The Designer for #" . $item_id . " sent a reply to your bid.</p>";
             $mail_msg .= "<p>Message from " . $nickname . ":<br/>" . $msg . "</p>";
             $mail_msg .= "<p>Your bid info:</p>";
@@ -1911,8 +1034,8 @@ function pingTask() {
             if ($send_cc) {
                 $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
             }
-            if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-                error_log('pingtask.php:id: send_email failed');
+            if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
+                error_log('pingtask.php:id: Utils::send_email failed');
             }
 
         }
@@ -1921,9 +1044,9 @@ function pingTask() {
 
         // just send general ping to user
 
-        $receiver = getUserById(intval($_REQUEST['userid']));
-        $receiver_nick = $receiver->nickname;
-        $receiver_email = $receiver->username;
+        $receiver = User::find(intval($_REQUEST['userid']));
+        $receiver_nick = $receiver->getNickname();
+        $receiver_email = $receiver->getUsername;
 
         $mail_subject = $nickname." sent you a message on Worklist";
         $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
@@ -1934,87 +1057,12 @@ function pingTask() {
         if ($send_cc) {
             $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
         }
-        if (!send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-            error_log("pingtask.php:!id: send_email failed");
+        if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
+            error_log("pingtask.php:!id: Utils::send_email failed");
         }
     }
     echo json_encode(array());
 }
-
-function refreshFilter() {
-    checkLogin();
-
-    // If no action is passed exit
-    if (!isset($_REQUEST['name']) || !isset($_REQUEST['active'])) {
-        return;
-    }
-
-    $name = $_REQUEST['name'];
-    $active = intval($_REQUEST['active']);
-    $type = $_REQUEST['filter'];
-
-    $filter = new Agency_Worklist_Filter();
-    $filter->setName($name)
-           ->initFilter();
-
-    $json = array();
-
-    switch ($type) {
-        case 'projects':
-            $projects = Project::getProjects($active);
-
-           $json[] = array(
-                'value' => 0,
-                'text' => 'All projects',
-                'selected' => false
-            );
-
-            foreach ($projects as $project) {
-                $json[] = array(
-                    'value' => $project['project_id'],
-                    'text' => $project['name'],
-                    'selected' => false
-                );
-            }
-
-            break;
-
-        case 'users':
-            $users = User::getUserList(getSessionUserId(), $active);
-            $json[] = array(
-                'value' => 0,
-                'text' => 'All users',
-                'selected' => (($filter->getUser() == 0) ? true : false)
-            );
-            foreach ($users as $user) {
-                $json[] = array(
-                    'value' => $user->getId(),
-                    'text' => $user->getNickname(),
-                    'selected' => (($filter->getUser() == $user->getId()) ? true : false)
-                );
-            }
-
-            break;
-    }
-
-    echo(json_encode($json));
-}
-
-function workitemSandbox() {
-    $workitemSandbox = new WorkitemSandbox();
-    $workitemSandbox->validateRequest(array('method'));
-    $method = $_REQUEST['method'];
-    $workitemSandbox->$method();
-}
-
-function userNotes() {
-    $usernotes = new UserNotes();
-    $usernotes->validateRequest(array('method'));
-
-    $method = $_REQUEST['method'];
-    $usernotes->$method();
-}
-
 
 function wdFee() {
     checkLogin();
@@ -2108,7 +1156,7 @@ function sendNewUserNotification() {
         'hours' => $interval * 25
     );
 
-    if (! sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
+    if (! Utils::sendTemplateEmail($recipient, 'user-signups', $mergeData)) {
         error_log('sendNewUserNotification cron: Failed to send email report');
     }
 }
@@ -2230,7 +1278,7 @@ function sendJobReport() {
         'text' => $text
     );
 
-    if (! sendTemplateEmail($emails, 'jobs-weekly-report', $email_content, 'contact@highfidelity.io')) {
+    if (! Utils::sendTemplateEmail($emails, 'jobs-weekly-report', $email_content, 'contact@highfidelity.io')) {
         error_log('sendJobReport cron: Emails could not be sent.');
     }
 }

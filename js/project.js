@@ -31,8 +31,6 @@ var Project = {
         $('#removecodereviewer').click(Project.removeCodeReviewer);
         $('#addcodereviewer').click(Project.addCodeReviewerModal);
 
-        makeWorkitemTooltip(".payment-joblink, .joblink");
-
         //derived from bids to show edit dialog when project owner clicks on a role <mikewasmike 16-jun-2011>
         $('tr.role').click(Project.showRoleInfoModal);
 

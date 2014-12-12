@@ -25,7 +25,7 @@ class ConfirmationController extends Controller {
                 mysql_query($sql);
 
                 // send welcome email
-                sendTemplateEmail($user->getUsername(), 'welcome', array('nickname' => $user->getNickname()), 'Worklist <contact@worklist.net>');
+                Utils::sendTemplateEmail($user->getUsername(), 'welcome', array('nickname' => $user->getNickname()), 'Worklist <contact@worklist.net>');
                 User::login($user, false); //Optionally can login with confirm URL
                 $jumbotron = "
                     <h2>Welcome to Worklist!</h2>

@@ -7,7 +7,6 @@
  */
 
 require_once('models/DataObject.php');
-require_once('classes/User.class.php');
 
 class Users_Favorite extends DataObject {
     public $user_id;

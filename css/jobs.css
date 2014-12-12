@@ -397,8 +397,7 @@ ul.project-jobs:hover li:nth-child(1) a {
     background: #007F7c;
 }
 
-div.project-jobs-pass i,
-div.project-jobs-done i {
+div.project-jobs-stats i {
     content: ' ';
     display: inline-block;
     width: 13px;
@@ -406,42 +405,91 @@ div.project-jobs-done i {
     border-radius: 10px;
     margin: -1px 2px 0 0;
     vertical-align: middle;
-    background-color: #cccccc;
 }
 
-div.project-jobs-pass a,
-div.project-jobs-done a {
-    color: #ccc;
+div.project-jobs-stats a {
     text-decoration: none;
     padding-left: 5px;
     font-size: 13px;
 }
 
-div.project-jobs-pass a:hover,
-div.project-jobs-done a:hover {
+div.project-jobs-stats a:hover {
     text-decoration: underline;
 }
 
-div.project-jobs-done a {
-    color: #333333;
+
+div.project-jobs-stats > span {
+    margin-bottom: 25px;
+    display: inline-block;
+    margin-right: 1.5em;
+}
+
+.project-jobs-Draft > i {
+    background-color: #EDDFB4;
+}
+.project-jobs-Draft > a {
+    color: #EDDFB4;
+}
+
+.project-jobs-Suggestion > i {
+    background-color: #FFCC66;
+}
+.project-jobs-Suggestion > a {
+    color: #FFCC66;
+}
+
+.project-jobs-Bidding > i {
+    background-color: #FF9900;
+}
+.project-jobs-Bidding > a {
+    color: #FF9900;
+}
+
+.project-jobs-InProgress > i {
+    background-color: #22BC7A;
+}
+.project-jobs-InProgress > a {
+    color: #22BC7A;
+}
+
+.project-jobs-QAReady > i {
+    background-color: #1C658E;
+}
+.project-jobs-QAReady > a {
+    color: #1C658E;
+}
+
+.project-jobs-Review > i {
+    background-color: #FF5582;
+}
+.project-jobs-Review > a {
+    color: #FF5582;
+}
+
+.project-jobs-Merged > i {
+    background-color: #999999;
+}
+.project-jobs-Merged > a {
+    color: #999999;
+}
+
+.project-jobs-Done > i {
+    background-color: #000000;
+}
+.project-jobs-Done > a {
+    color: #000000;
     font-weight: bold;
 }
 
-div.project-jobs-done {
-    max-width: 137px;
+.project-jobs-Pass > i {
+    background-color: #CCCCCC;
+}
+.project-jobs-Pass > a {
+    color: #CCCCCC;
 }
 
-div.project-jobs-done i {
-    background-color: #333333;
-}
 
-div.project-jobs-pass,
-div.project-jobs-done {
-    margin-bottom: 25px;
-    display: inline-block;
-}
-
-div.project-jobs-done-pass {
+div.project-jobs-stats {
     margin-left: 11px;
 }
 

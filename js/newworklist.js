@@ -120,9 +120,11 @@ var NewWorklist = {
         });
     },
 
-    autocompleteInput: undefined,
     initAutocomplete: function() {
-        NewWorklist.autocompleteInput = $('.autocomplete > textarea')[0];
+        var inputs = $('.autocomplete > textarea, .autocomplete > input');
+        if (!inputs.length) {
+            return;
+        }
         NewWorklist.suggestionsEngine = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nickname'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -131,10 +133,11 @@ var NewWorklist = {
             }
         });
         NewWorklist.suggestionsEngine.initialize();
-        if (!NewWorklist.autocompleteSuggestionList) {
-            NewWorklist.autocompleteSuggestionList = $('<ul>').insertAfter(NewWorklist.autocompleteInput)[0];
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            $('<ul>').insertAfter(input);
+            $(input).on('keydown keypress cut paste', NewWorklist.autocomplete);
         }
-        $(NewWorklist.autocompleteInput).on('keydown keypress cut paste', NewWorklist.autocomplete);
     },
 
     typingStr: '',
@@ -143,9 +146,11 @@ var NewWorklist = {
      * Autocomplete manager, handles most of the input events related to text changes
      */
     autocomplete: function(e) {
+        var input = this;
+
         // if the dropdown is visible, gotta check pressed keys
-        if ($(NewWorklist.autocompleteSuggestionList).is(':visible')) {
-            if (!NewWorklist.checkAutocompleteKeys(e)) {
+        if ($('ul', $(input).parents('.autocomplete')).is(':visible')) {
+            if (!NewWorklist.checkAutocompleteKeys(e, input)) {
                 return false;
             }
         }
@@ -158,18 +163,23 @@ var NewWorklist = {
         // let's run the rest of the code as an asynchronous thread
         // in order to return the input control/flow to the UI
         setTimeout(function() {
-            var input = NewWorklist.autocompleteInput;
-            if (input.selectionStart != input.selectionEnd) {
-                return; // let's ignore autocompleter when the user is selecting text
-            }
-            var mentionDetected = NewWorklist.mentionDetector();
-            if (mentionDetected) {
-                NewWorklist.typingStr = mentionDetected[1];
-                NewWorklist.suggestionsEngine.get(NewWorklist.typingStr.replace(/^@/, ''), NewWorklist.updateSuggestionsList);
-            } else {
-                NewWorklist.hideSuggestionList();
-            }
+            NewWorklist.autocompleteAsync(input);
         }, 3);
+    },
+
+    autocompleteAsync: function(input) {
+        if (input.selectionStart != input.selectionEnd) {
+            return; // let's ignore autocompleter when the user is selecting text
+        }
+        var mentionDetected = NewWorklist.mentionDetector(input);
+        if (mentionDetected) {
+            NewWorklist.typingStr = mentionDetected[1];
+            NewWorklist.suggestionsEngine.get(NewWorklist.typingStr.replace(/^@/, ''), function(suggestions) {
+                NewWorklist.updateSuggestionsList(suggestions, input);
+            });
+        } else {
+            NewWorklist.hideSuggestionList(input);
+        }
     },
 
     /**
@@ -179,9 +189,9 @@ var NewWorklist = {
      *
      * @return bool whether to cancel the input or not
      */
-    checkAutocompleteKeys: function(e) {
+    checkAutocompleteKeys: function(e, input) {
         // let's not do this when no suggestions items exists in the list
-        if ($('li', NewWorklist.autocompleteSuggestionList).length == 0) {
+        if ($('ul > li', $(input).parents('.autocomplete')).length == 0) {
             return true;
         }
 
@@ -190,7 +200,7 @@ var NewWorklist = {
 
         // esc key will inmediatly close the suggestions dropdown
         if (keyPressed && key == 27) {
-            NewWorklist.hideSuggestionList();
+            NewWorklist.hideSuggestionList(input);
             return false;
         }
 
@@ -206,26 +216,26 @@ var NewWorklist = {
         if (arrowPressed) {
             // up/down pressed, let's do the maths inc/decrement and toggle active items
             var activeItem = NewWorklist.activeSuggestionItem += (key == 38 ? -1 : 1);
-            var itemsCount = $('li', NewWorklist.autocompleteSuggestionList).length;
+            var itemsCount = $('ul > li', $(input).parents('.autocomplete')).length;
             if (activeItem < 0) {
                 activeItem = NewWorklist.activeSuggestionItem = itemsCount -1;
             } else if (activeItem >= itemsCount) {
                 activeItem = NewWorklist.activeSuggestionItem = 0;
             }
-            $('li.active', NewWorklist.autocompleteSuggestionList).removeClass('active');
-            $('li:eq(' + activeItem + ')', NewWorklist.autocompleteSuggestionList).addClass('active');
+            $('ul > li.active', $(input).parents('.autocomplete')).removeClass('active');
+            $('ul > li:eq(' + activeItem + ')', $(input).parents('.autocomplete')).addClass('active');
             return false;
         } else if (enterPressed) {
             // enter/tab pressed, will choose the active item
             var activeItem = NewWorklist.activeSuggestionItem;
-            NewWorklist.chooseAutocompleteItem(activeItem);
-            NewWorklist.hideSuggestionList();
+            NewWorklist.chooseAutocompleteItem(activeItem, null, input);
+            NewWorklist.hideSuggestionList(input);
             return false;
         } else if (e.type == 'keypress' && e.charCode >= 32 && e.charCode <= 128 && !charTyped.match(/^[a-zA-Z0-9-]$/)) {
             // non-word char typed, choose active item and append the typed char
             var activeItem = NewWorklist.activeSuggestionItem;
-            NewWorklist.chooseAutocompleteItem(activeItem, charTyped);
-            NewWorklist.hideSuggestionList();
+            NewWorklist.chooseAutocompleteItem(activeItem, charTyped, input);
+            NewWorklist.hideSuggestionList(input);
             return false;
         }
         return true;
@@ -235,10 +245,9 @@ var NewWorklist = {
      * Handler caled on nicknames suggestions/autocomplete list
      * item selection (whether mouse clicks and/or by keys)
      */
-    chooseAutocompleteItem: function(item, appendChar) {
-        var nickname = $('li:eq(' + item + ')', NewWorklist.autocompleteSuggestionList).attr('nickname');
-        var input = NewWorklist.autocompleteInput;
-        var mention = NewWorklist.mentionDetector()[1].replace(/^@/, '');
+    chooseAutocompleteItem: function(item, appendChar, input) {
+        var nickname = $('ul > li:eq(' + item + ')', $(input).parents('.autocomplete')).attr('nickname');
+        var mention = NewWorklist.mentionDetector(input)[1].replace(/^@/, '');
         var textBefore = input.value.substring(0, input.selectionEnd).replace(/@[a-zA-Z0-9][a-zA-Z0-9-]+$/, '@');
         var textAfter = input.value.substring(input.selectionEnd, input.value.length);
         appendChar = typeof appendChar == 'string' ? appendChar : ' ';
@@ -249,10 +258,10 @@ var NewWorklist = {
     activeSuggestionItem: 0,
 
     /**
-     * Callback to Bloodhoud#get. Recreates the nicknames autocomplete/suggestions
+     * Callback to Bloodhoud#get. Recreates nicknames autocomplete/suggestions
      * dropdown items according to query results made to the Bloodhound engine
      */
-    updateSuggestionsList: function(suggestions) {
+    updateSuggestionsList: function(suggestions, input) {
         NewWorklist.activeSuggestionItem = 0;
         var html = '';
         for(var i = 0; i < suggestions.length; i++) {
@@ -275,23 +284,23 @@ var NewWorklist = {
             html += li_html;
         }
         if (html) {
-            $(NewWorklist.autocompleteSuggestionList)[0].innerHTML = html;
-            NewWorklist.showAutocomplete(NewWorklist.typingStr.length);
-            $('li', NewWorklist.autocompleteSuggestionList).on({
+            $('ul', $(input).parents('.autocomplete'))[0].innerHTML = html;
+            NewWorklist.showAutocomplete(NewWorklist.typingStr.length, input);
+            $('ul > li', $(input).parents('.autocomplete')).on({
                 hover: function() {
                     var index = $(this).prevAll().length;
-                    $('li.active', NewWorklist.autocompleteSuggestionList).removeClass('active');
-                    $('li:eq(' + index + ')', NewWorklist.autocompleteSuggestionList).addClass('active');
+                    $('ul > li.active', $(input).parents('.autocomplete')).removeClass('active');
+                    $('ul > li:eq(' + index + ')', $(input).parents('.autocomplete')).addClass('active');
                 },
                 click: function() {
                     var index = $(this).prevAll().length;
-                    NewWorklist.chooseAutocompleteItem(index);
-                    NewWorklist.hideSuggestionList();
-                    $(NewWorklist.autocompleteInput).focus();
+                    NewWorklist.chooseAutocompleteItem(index, null, input);
+                    input.focus();
+                    NewWorklist.hideSuggestionList(input);
                 }
             });
         } else {
-            NewWorklist.hideSuggestionList();
+            NewWorklist.hideSuggestionList(input);
         }
     },
 
@@ -299,16 +308,15 @@ var NewWorklist = {
      * shows the nicknames autocomplete/suggestions dropdown
      * at current cursor coordinates
      */
-    showAutocomplete: function(typingStrLength) {
-        var input = NewWorklist.autocompleteInput;
+    showAutocomplete: function(typingStrLength, input) {
         var position = Utils.getCursorCoordinates(input, input.selectionEnd -typingStrLength);
         var positionEnd = Utils.getCursorCoordinates(input, input.selectionEnd);
-        var listElement = NewWorklist.autocompleteSuggestionList;
+        var listElement = $('ul', $(input).parents('.autocomplete'))[0];
         $(listElement).css({
             display: 'block',
-            top: (position.top + 20) + 'px',
-            left: position.left + 'px',
-            width: (positionEnd.left - position.left) + 'px'
+            top: (position.top + 22) + 'px',
+            left: (position.left - $(input).scrollLeft()) + 'px',
+            width: (positionEnd.left - (position.left - $(input).scrollLeft())) + 'px'
         })
     },
 
@@ -316,9 +324,9 @@ var NewWorklist = {
      * removes child items and hides the nicknames
      * autocomplete/suggestions dropdown
      */
-    hideSuggestionList: function() {
-        $('li', NewWorklist.autocompleteSuggestionList).remove();
-        var listElement = NewWorklist.autocompleteSuggestionList;
+    hideSuggestionList: function(input) {
+        var listElement = $('ul', $(input).parents('.autocomplete'))[0];
+        $('li', listElement).remove();
         $(listElement).css({
             display: 'none'
         });
@@ -328,8 +336,7 @@ var NewWorklist = {
      * Detects whether the current cursor is at a probable
      * mention, used to guess whether the user is mentionig
      */
-    mentionDetector: function() {
-        var input = NewWorklist.autocompleteInput;
+    mentionDetector: function(input) {
         var text = input.value.substring(0, input.selectionEnd);
         return text.match(/(?:^|\s)(@[a-zA-Z0-9][a-zA-Z0-9-]+)$/);
     },

@@ -19,98 +19,148 @@ class ReportsView extends View {
     public function render() {
         $this->activeUsers = $this->read('activeUsers');
         $this->activeRunners = $this->read('activeRunners');
-        $this->activeProjects = $this->read('activeProjects');
         $this->w2_only = $this->read('w2_only');
         $this->showTab = $this->read('showTab');
-
         return parent::render();
     }
 
-    public function userSelectBox() {
-        $filter = $this->read('filter');
-        $activeUsers = $this->read('activeUsers');
-        return $filter->getUserSelectbox($activeUsers, 'ALL');
+    public function users() {
+        $users = User::getUserList(Session::uid(), false, 0, true);
+        $ret = array();
+        $default = isset($_REQUEST['user']) ? $_REQUEST['user'] : null;
+        $ret[] = array(
+            'id' => 0,
+            'nickname' => 'ALL',
+            'selected' => is_null($default)
+        );
+        foreach($users as $user) {
+            $ret[] = array(
+                'id' => $user->getId(),
+                'nickname' => $user->getNickname(),
+                'selected' => ($default === $user->getId())
+            );
+        }
+        return $ret;
     }
 
-    public function projectSelectBox() {
-        $filter = $this->read('filter');
-        $activeProjects = $this->read('activeProjects');
-        return $filter->getProjectSelectbox($activeProjects, 'ALL');
+    public function projects() {
+        $projects = Project::getProjects();
+        $ret = array();
+        $default = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : null;
+        foreach($projects as $project) {
+            $ret[] = array_merge($project, array(
+                'selected' => ($project['project_id'] === $default)
+            ));
+        }
+        return $ret;
     }
 
-    public function statusSelectBox() {
-        $filter = $this->read('filter');
-        return $filter->getStatusSelectbox(true);
+    public function status() {
+        $statuses = WorkItem::getStates();
+        $ret = array();
+        $default = isset($_REQUEST['status']) ? $_REQUEST['status'] : 'Done';
+        foreach ($statuses as $status) {
+            $ret[] = array(
+                'status' => $status,
+                'selected' => ($default == $status)
+            );
+        }
+        return $ret;
     }
 
-    public function runnerSelectBox() {
-        $filter = $this->read('filter');
-        $activeRunners = $this->read('activeRunners');
-        return $filter->getRunnerSelectbox($activeRunners, 'ALL');
+    public function runners() {
+        $active = $this->read('activeUsers');
+        $runners = User::getUserList(Session::uid(), $active, 1, true);
+        $ret = array();
+        $default = isset($_REQUEST['runner']) ? $_REQUEST['runner'] : null;
+        foreach($runners as $runner) {
+            $ret[] = array(
+                'id' => $runner->getId(),
+                'nickname' => $runner->getNickname(),
+                'selected' => ($default === $runner->getId())
+            );
+        }
+        return $ret;
     }
 
-    public function fundSelectBox() {
-        $filter = $this->read('filter');
-        return $filter->getFundSelectbox(true);
+    public function funds() {
+        $funds = Fund::getFunds();
+        $ret = array();
+        $default = isset($_REQUEST['fund_id']) ? $_REQUEST['fund_id'] : -1;
+        $ret[] = array(
+            'id' => -1,
+            'name' => 'ALL',
+            'selected' => ($default == -1)
+        );
+        foreach ($funds as $fund) {
+            $fund['selected'] = ($default == $fund['id']);
+            $ret[] = $fund;
+        }
+        $ret[] = array(
+            'id' => 0,
+            'name' => 'Not Funded',
+            'selected' => ($default == 0)
+        );
+        return $ret;
     }
 
     public function filterPaidStatusAll() {
-        $filter = $this->read('filter');
-        return $filter->getPaidstatus() == 'ALL';
+        return !isset($_REQUEST['paidstatus']) || $_REQUEST['paidstatus'] == 'ALL';
     }
 
     public function filterPaidStatusPaid() {
-        $filter = $this->read('filter');
-        return $filter->getPaidstatus() == '1';
+        return isset($_REQUEST['paidstatus']) && $_REQUEST['paidstatus'] == '1';
     }
 
     public function filterPaidStatusUnpaid() {
-        $filter = $this->read('filter');
-        return $filter->getPaidstatus() == '0';
+        return isset($_REQUEST['paidstatus']) && $_REQUEST['paidstatus'] == '0';
     }
 
     public function filterTypeAll() {
-        $filter = $this->read('filter');
-        return $filter->getType() == 'ALL';
+        return !isset($_REQUEST['type']) || $_REQUEST['type'] == 'ALL';
     }
 
     public function filterTypeFee() {
-        $filter = $this->read('filter');
-        return $filter->getType() == 'Fee';
+        return isset($_REQUEST['type']) && $_REQUEST['type'] == 'Fee';
     }
 
     public function filterTypeBonus() {
-        $filter = $this->read('filter');
-        return $filter->getType() == 'Bonus';
+        return isset($_REQUEST['type']) && $_REQUEST['type'] == 'Bonus';
     }
 
     public function filterTypeExpense() {
-        $filter = $this->read('filter');
-        return $filter->getType() == 'Expense';        
+        return isset($_REQUEST['type']) && $_REQUEST['type'] == 'Expense';
     }
 
     public function filterOrderedByName() {
-        $filter = $this->read('filter');
-        return $filter->getOrder() == 'name';
+        return !isset($_REQUEST['order']) || $_REQUEST['order'] == 'name';
     }
 
     public function filterOrderedByDate() {
-        $filter = $this->read('filter');
-        return $filter->getOrder() == 'date';
+        return isset($_REQUEST['order']) && $_REQUEST['order'] == 'date';
     }
 
     public function filterStartDate() {
-        $filter = $this->read('filter');
-        return $filter->getStart();
+        return (
+            isset($_REQUEST['start']) && $_REQUEST['start']
+                ? $_REQUEST['start']
+                : date("m/d/Y",strtotime('-90 days', time()))
+        );
     }
 
     public function filterEndDate() {
-        $filter = $this->read('filter');
-        return $filter->getEnd();
+        return (
+            isset($_REQUEST['end']) && $_REQUEST['end']
+                ? $_REQUEST['end']
+                : date("m/d/Y",time())
+        );
     }
 
     public function filterDirAsc() {
-        $filter = $this->read('filter');
-        return $filter->getDir() == 'ASC' ? 'true' : 'false';
+        return (
+            (isset($_REQUEST['dir']) && $_REQUEST['dir']) == 'DESC'
+                ? 'false'
+                : 'true'
+        );
     }
 }

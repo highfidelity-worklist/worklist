@@ -13,12 +13,8 @@ var Settings = {
         $('#systems-forms').on('click', '.system-remove', Settings.removeSystemForm);
 
         $.ajax({
-            type: "POST",
-            url: 'jsonserver.php',
-            data: {
-                action: 'isUSCitizen',
-                userid: user_id
-            },
+            type: "GET",
+            url: './user/isISCitizen/' + user_id,
             dataType: 'json',
             success: function(data) {
                 if ((data.success === true) && (data.isuscitizen === true)) {

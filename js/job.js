@@ -49,8 +49,6 @@ var Job = {
             return false;
         });
 
-        makeWorkitemTooltip(".worklist-item");
-
         $('#workitem-form').submit(function() {
             return Job.saveWorkitem();
         });

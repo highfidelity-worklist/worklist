@@ -465,30 +465,11 @@ var UserInfo = {
         $('#profile-nav a').click(function (event) {
             event.preventDefault();
             $(this).tab('show');
-            if ($(this).attr('href') == '#mynotes') {
-                $.ajax({
-                    type: 'post',
-                    url: 'api.php',
-                    dataType: 'html',
-                    data: {
-                        action: 'userNotes',
-                        method: 'getNote',
-                        userId: userInfo.user_id
-                    },
-                    success: function(data) {
-                        $('#mynotes').html(data);
-                    }
-                });
-            }
         });
         var tab = document.URL.split('#').pop();
         if ($('#profile-nav a[href="#' + tab + '"]').length) {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
-
-        $(".userNotes").live('blur', function() {
-            userInfo.saveUserNotes();
-        });
 
         $('#user-loves + a').click(UserInfo.displayAllLove);
     },
@@ -625,36 +606,6 @@ var UserInfo = {
             }
         });
         return false;
-    },
-
-    saveUserNotes: function(fAfter) {
-        $.ajax({
-            type: 'POST',
-            url: 'api.php',
-            data: {
-                action: 'userNotes',
-                method: 'saveUserNotes',
-                userNotes: $(".userNotes").val(),
-                userId: userInfo.user_id
-            },
-            dataType: 'json',
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("Error in saveUserNotes. "+textStatus);
-            },
-            success: function(json) {
-                if ((json === null) || (json.succeeded !== true)  ) {
-                    var message="Error returned. ";
-                    if (json !== null) {
-                        message = message + json.message;
-                    }
-                    alert(message);
-                    return;
-                }
-                if (fAfter) {
-                    fAfter(true);
-                }
-            }
-        });
     },
 
     displayAllLove: function() {

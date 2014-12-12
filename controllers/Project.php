@@ -28,9 +28,9 @@ class ProjectController extends Controller {
         $project_user->findUserById($project->getOwnerId());
         $this->write('project_user', $project_user);
 
-        $userId = getSessionUserId();
+        $userId = Session::uid();
         if ($userId > 0) {
-            initUserById($userId);
+            Utils::initUserById($userId);
             $user = new User();
             $user->findUserById($userId);
             // @TODO: this is overwritten below..  -- lithium
@@ -160,7 +160,7 @@ class ProjectController extends Controller {
     public function add($name) {
         $this->view = null;
         try {
-            $user = User::find(getSessionUserId());
+            $user = User::find(Session::uid());
             if (!$user->getId() || !$user->getIs_admin()) {
                 throw new Exception('Action not allowed.');
             }
@@ -204,7 +204,7 @@ class ProjectController extends Controller {
             }
 
             $journal_message = '@' . $user->getNickname() . ' added project *' . $name . '*';
-            sendJournalNotification($journal_message);
+            Utils::systemNotification($journal_message);
             echo json_encode(array(
                 'success' => true,
                 'message' => $journal_message
@@ -223,7 +223,7 @@ class ProjectController extends Controller {
         try {
             $project = Project::find($id);
             $user = User::find($user_id);
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
@@ -248,12 +248,12 @@ class ProjectController extends Controller {
                 'projectFounder' => $founder->getNickname(),
                 'projectFounderUrl' => $founderUrl
             );
-            if (! sendTemplateEmail($user->getUsername(), 'project-codereviewer-added', $data)) {
+            if (! Utils::sendTemplateEmail($user->getUsername(), 'project-codereviewer-added', $data)) {
                 error_log("ProjectController:addCodeReviewer: send email to user failed");
             }
             // Add a journal notification
             $journal_message = '@' . $user->getNickname() . ' has been granted *Review* rights for project **' . $project->getName() . '**';
-            sendJournalNotification($journal_message);
+            Utils::systemNotification($journal_message);
             echo json_encode(array(
                 'success' => true,
                 'data' => 'Code Reviewer added successfully'
@@ -272,7 +272,7 @@ class ProjectController extends Controller {
         try {
             $project = Project::find($id);
             $user = User::find($user_id);
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
@@ -297,12 +297,12 @@ class ProjectController extends Controller {
                 'projectFounder' => $founder->getNickname(),
                 'projectFounderUrl' => $founderUrl
             );
-            if (! sendTemplateEmail($user->getUsername(), 'project-runner-added', $data)) {
+            if (! Utils::sendTemplateEmail($user->getUsername(), 'project-runner-added', $data)) {
                 error_log("ProjectController:addRunner: send email to user failed");
             }
             // Add a journal notification
             $journal_message = '@' . $user->getNickname() . ' has been granted Designer rights for project **' . $project->getName() . '**';
-            sendJournalNotification($journal_message);
+            Utils::systemNotification($journal_message);
             echo json_encode(array(
                 'success' => true,
                 'data' => 'Designer added successfully'
@@ -353,7 +353,7 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
                 throw new Exception('Not enough rights');
             }
@@ -372,8 +372,8 @@ class ProjectController extends Controller {
                         'projectFounder' => $founder->getNickname(),
                         'projectFounderUrl' => $founderUrl
                     );
-                    if (! sendTemplateEmail($user->getUsername(), 'project-runner-removed', $data)) {
-                        error_log("ProjectController::removeDesigner: send_email to user failed");
+                    if (! Utils::sendTemplateEmail($user->getUsername(), 'project-runner-removed', $data)) {
+                        error_log("ProjectController::removeDesigner: Utils::send_email to user failed");
                     }
                 }
             }
@@ -397,7 +397,7 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
                 throw new Exception('Not enough rights');
             }
@@ -448,7 +448,7 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (!$request_user->getIs_admin() && !$project->isOwner($request_user->getId())) {
                 throw new Exception('Not enough rights');
             }
@@ -485,7 +485,7 @@ class ProjectController extends Controller {
                     $jobsCount = $codeReviewerUser->jobsForProjectCount(array('Bidding', 'In Progress', 'QA Ready', 'Review', 'Merged', 'Done'), $projectId, true);
                     $data[] = array(
                         'nickname' => $codeReviewerUser->getNickname(),
-                        'lastActivity' => $lastActivity ? formatableRelativeTime($lastActivity, 2) . ' ago' : '',
+                        'lastActivity' => $lastActivity ? Utils::formatableRelativeTime($lastActivity, 2) . ' ago' : '',
                         'totalJobCount' => $jobsCount
                     );
                 }
@@ -511,7 +511,7 @@ class ProjectController extends Controller {
             if (! $project->getProjectId()) {
                 throw new Exception('Not a project in our system');
             }
-            $request_user = User::find(getSessionUserId());
+            $request_user = User::find(Session::uid());
             if (!$project->isCodeReviewAdmin($request_user)) {
                 throw new Exception('Not enough rights');
             }
@@ -530,8 +530,8 @@ class ProjectController extends Controller {
                         'projectFounder' => $founder->getNickname(),
                         'projectFounderUrl' => $founderUrl
                     );
-                    if (! sendTemplateEmail($user->getUsername(), 'project-codereview-removed', $data)) {
-                        error_log("ProjectController::removeCodeReviewer: send_email to user failed");
+                    if (! Utils::sendTemplateEmail($user->getUsername(), 'project-codereview-removed', $data)) {
+                        error_log("ProjectController::removeCodeReviewer: Utils::send_email to user failed");
                     }
                 }
             }

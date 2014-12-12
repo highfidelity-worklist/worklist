@@ -2,7 +2,13 @@
     <div class="row">
         <div class="col-md-2">
             <label>Fund:</label>
-            {{& fundSelectBox}}
+            <select id="fundCombo" name="fund">
+                {{#funds}}
+                    <option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>
+                        {{name}}
+                    </option>'
+                {{/funds}}
+            </select>
         </div>
         <div class="col-md-4">
             <label for="start-date">Fee between</label>
@@ -32,7 +38,13 @@
         <div class="col-md-4">
             <fieldset>            
                 <label>Payee</label>
-                {{& userSelectbox}}
+                <select name="user" id="userCombo" data-placeholder="Select user">
+                {{#users}}
+                    <option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>
+                        {{nickname}}
+                    </option>
+                {{/users}}
+                </select>
             </fieldset>            
             <fieldset>            
                 <label>Paid Status:</label>
@@ -44,7 +56,13 @@
             </fieldset>
             <fieldset>            
                 <label>Item Status:</label>
-                {{& statusSelectBox}}
+                <select id="status" name="status" data-placeholder="Pick statuses">
+                    {{#status}}
+                        <option value="{{status}}" {{#selected}}selected="selected"{{/selected}}>
+                            {{status}}
+                        </option>
+                    {{/status}}
+                </select>
             </fieldset>
             <fieldset>            
                 <label>Type:</label>
@@ -57,11 +75,25 @@
             </fieldset>
             <fieldset>            
                 <label>Project:</label>
-                {{& projectSelectbox}}
+                <select id="projectCombo" name="project" data-placeholder="Select project">
+                    {{#projects}}
+                        <option value="{{project_id}}"
+                          {{#selected}}selected="selected"{{/selected}}>
+                            {{name}}
+                        </option>
+                    {{/projects}}
+                </select>
             </fieldset>
             <fieldset>            
                 <label>Designer:</label>
-                {{& runnerSelectBox}}
+                <select name="runner" id="runnerCombo">
+                    <option value="0"> ALL</option>
+                    {{#runners}}
+                        <option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>
+                            {{nickname}}
+                        </option>
+                    {{/runners}}
+                </select>
             </fieldset>
             <fieldset>            
                 <input id="w2_only" name="w2_only" type="checkbox" class="wlcheckbox" 
@@ -127,11 +159,23 @@
     </div>
 </section>
 <script type="text/javascript">
-    var currentTab = {{showTab}}; // 0 for details and 1 for chart
-    var current_order = {{filterDirAsc}};
-    var current_sortkey = '{{filter.getOrder}}';
-    var page = {{#filter.getPage}}{{filter.getPage}}{{/filter.getPage}}{{^filter.getPage}}1{{/filter.getPage}};
-    var activeUsers = {{activeUsers}};
-    var activeRunners = {{activeRunners}};
-    var activeProjects = {{activeProjects}};
+    $(function() {
+        Reports.currentTab = {{showTab}}; // 0 for details and 1 for chart
+        Reports.current_order = {{filterDirAsc}};
+        {{#filterOrderedByName}}
+            Reports.current_sortkey = 'name';
+        {{/filterOrderedByName}}
+        {{#filterOrderedByDate}}
+            Reports.current_sortkey = 'date';
+        {{/filterOrderedByDate}}
+        {{#filter.getPage}}
+            Reports.page = {{filter.getPage}};
+        {{/filter.getPage}}
+        {{^filter.getPage}}
+            Reports.page = 1;
+        {{/filter.getPage}};
+
+
+        Reports.init();
+    });
 </script>
