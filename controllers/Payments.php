@@ -253,7 +253,7 @@ class PaymentsController extends Controller {
                     } else  {
                         $alert_msg = "MassPay Failure"; 
                         $pp_message = '<p>MassPay failed:</p><p><pre>' . print_r($httpParsedResponseAr, true).'</pre></p>';
-                        if(!Utils::send_email('kordero@gmail.com', 'Masspay Fail', $pp_message)) {
+                        if(!Utils::send_email(FINANCE_EMAIL, 'Masspay Fail', $pp_message)) {
                             error_log("view-payments:MassPayFailure: Utils::send_email failed");
                         }
                     }
@@ -262,7 +262,7 @@ class PaymentsController extends Controller {
                     $error_msg = 'Invalid MassPay Authentication<br />';
                     $error_msg .= 'IP: '. $_SERVER['REMOTE_ADDR'].'<br />';
                     $error_msg .= 'UserID: '.$userId;
-                    if (!Utils::send_email("kordero@gmail.com", "Masspay Invalid Auth Attempt", $error_msg)) {
+                    if (!Utils::send_email(FINANCE_EMAIL, "Masspay Invalid Auth Attempt", $error_msg)) {
                         error_log("view-payments:MassPayAuth: Utils::send_email failed");
                     }
                     $alert_msg = "Invalid Authentication"; 
