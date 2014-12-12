@@ -134,7 +134,7 @@ var jobs = {
                 html +=
                     '<span class="project-jobs-' + status.replace(' ', '') + '">' +
                       '<i></i>' +
-                      '<a href="./jobs/' + project_name + '/' + status + '">View ' + status + ' Jobs</a>' +
+                      '<a href="./jobs/' + project_name + '/' + status + '">' + status + ' Jobs</a>' +
                     '</span>';
             }
         }
