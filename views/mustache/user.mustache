@@ -6,16 +6,12 @@
         {{#profileUser.getIs_runner}}
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
         {{/profileUser.getIs_runner}}
-        <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
     {{/currentUser.is_runner}}
     {{^currentUser.is_runner}}
         <li class="active"><a href="#profile" data-toggle="tab">User Info</a></li>
         {{#profileUser.getIs_runner}}
             <li><a href="#runner" data-toggle="tab">Designer</a></li>
         {{/profileUser.getIs_runner}}
-        {{#reqUserId}}
-            <li><a href="#mynotes" data-toggle="tab">My notes</a></li>
-        {{/reqUserId}}
 
     {{/currentUser.is_runner}}
     </ul>
@@ -378,8 +374,6 @@
                     </div>                                                          
                 </div>
             </div>
-        </div>
-        <div class="tab-pane" id="mynotes">
         </div>
     </div>
 </section>

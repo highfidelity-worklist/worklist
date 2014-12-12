@@ -116,9 +116,6 @@ if(validateAction()) {
             case 'userReview':
                 userReview();
                 break;
-            case 'userNotes':
-                userNotes();
-                break;
             case 'visitQuery':
                 echo json_encode(VisitQueryTools::visitQuery((int) $_GET['jobid']));
                 break;
@@ -1066,15 +1063,6 @@ function pingTask() {
     }
     echo json_encode(array());
 }
-
-function userNotes() {
-    $usernotes = new UserNotes();
-    $usernotes->validateRequest(array('method'));
-
-    $method = $_REQUEST['method'];
-    $usernotes->$method();
-}
-
 
 function wdFee() {
     checkLogin();
