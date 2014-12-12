@@ -3,9 +3,11 @@
 require_once('Dispatcher.php');
 
 class Core {
-    public static function bootstrap() {
+    public static function bootstrap($dispatch = true) {
         spl_autoload_register(array('Core', 'autoload'));
-        register_shutdown_function(array('Core', 'shutdown'));
+        if ($dispatch) {
+            register_shutdown_function(array('Core', 'shutdown'));
+        }
     }
 
     public static function autoload($class) {
