@@ -409,7 +409,7 @@ class Utils{
         $recipients = is_array($to) ? $to : array($to);
 
         $replacedTemplate = !empty($data) ?
-                            templateReplace($emailTemplates[$template], $data) :
+                            Utils::templateReplace($emailTemplates[$template], $data) :
                             $emailTemplates[$template];
 
         $subject = $replacedTemplate['subject'];
@@ -828,5 +828,26 @@ class Utils{
         } else {
             return date_default_timezone_get();
         }
+    }
+
+    /**
+     * Replaces all occurencies of {key} with value from $replacements array
+     * for example: if $replacements is array('nickname' => 'John')
+     * function will replace {nickname} in $templateData array with 'John'
+     */
+    public static function templateReplace($templateData, $replacements){
+
+        foreach($templateData as &$templateIndice){
+            foreach($replacements as $find => $replacement){
+
+                $pattern = array(
+                            '/\{' . preg_quote($find) . '\}/',
+                            '/\{' . preg_quote(strtoupper($find)) . '\}/',
+                                );
+                $templateIndice = preg_replace($pattern, nl2br($replacement), $templateIndice);
+            }
+        }
+
+        return $templateData;
     }
 }

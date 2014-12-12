@@ -240,7 +240,7 @@ class Notification {
                     include(dirname(__FILE__) . "/../email/en.php");
 
                     $replacedTemplate = !empty($data) ?
-                        $this->templateReplace($emailTemplates[$template], $data) :
+                        Utils::templateReplace($emailTemplates[$template], $data) :
                         $emailTemplates[$template];
 
                     $body .= $replacedTemplate['body'];
@@ -840,26 +840,5 @@ class Notification {
         if(! Utils::send_email($user->getUsername(), $subject, $body)) {
             error_log("Notification:sendW9Request: Utils::send_email to user failed");
         }
-    }
-
-    /**
-     * Replaces all occurencies of {key} with value from $replacements array
-     * for example: if $replacements is array('nickname' => 'John')
-     * function will replace {nickname} in $templateData array with 'John'
-     */
-    private function templateReplace($templateData, $replacements){
-
-        foreach($templateData as &$templateIndice){
-            foreach($replacements as $find => $replacement){
-
-                $pattern = array(
-                            '/\{' . preg_quote($find) . '\}/',
-                            '/\{' . preg_quote(strtoupper($find)) . '\}/',
-                                );
-                $templateIndice = preg_replace($pattern, nl2br($replacement), $templateIndice);
-            }
-        }
-
-        return $templateData;
     }
 }
