@@ -1565,13 +1565,13 @@ class JobController extends Controller {
                 $invertedStatusConds[] = "false";
             }
         } else {
-            $conds[] = "
+            $conds[] = "(
                    `w`.`status` != 'Draft'
                 OR (
                       `w`.`status` = 'Draft'
                   AND `w`.`creator_id` = '{$user->getId()}'
                 )
-            ";
+            )";
             $invertedStatusConds[] = "false";
         }
 
