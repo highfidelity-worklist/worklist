@@ -14,7 +14,7 @@ var Settings = {
 
         $.ajax({
             type: "GET",
-            url: './user/isISCitizen/user_id' + ,
+            url: './user/isISCitizen/' + user_id,
             dataType: 'json',
             success: function(data) {
                 if ((data.success === true) && (data.isuscitizen === true)) {
