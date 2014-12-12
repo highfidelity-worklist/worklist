@@ -1577,7 +1577,45 @@ class WorkItem {
              );
             array_push($results, $result);
         }
-        $searchResult = array("search_result" => $results);
-        return $searchResult;
+        return array("search_result" => $results);
+    }
+
+
+    public static function searchStats($query = null, $conds = array(), $subConds = array()) {
+        $userId = Session::uid();
+        if (count($subConds)) {
+            $subQuery = ' `w`.`id` IN (
+                SELECT `sub_w`.`id`
+                FROM `' . WORKLIST . '` `sub_w`
+                  LEFT JOIN `' . COMMENTS . '` AS `sub_com`
+                    ON `sub_w`.`id` = `sub_com`.`worklist_id`
+                  LEFT JOIN `'. FEES . '` AS `sub_f`
+                    ON `sub_w`.`id` = `sub_f`.`worklist_id`
+                      AND `sub_f`.`withdrawn` = 0
+                WHERE ' . implode(' AND ', $subConds) . '
+            )';
+            $conds[] = $subQuery;
+        }
+        $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
+        $sql  = "
+            SELECT
+              `proj`.`name` AS `project`,
+              `status`,
+              COUNT(*) AS `jobsCount`
+            FROM `" . WORKLIST . "` AS `w`
+              INNER JOIN `" . PROJECTS . "` AS `proj`
+                ON    `w`.`project_id` = `proj`.`project_id`
+                  AND `proj`.`internal` = 1
+                  AND `proj`.`active` = 1
+            WHERE {$whereConds}
+            GROUP BY `w`.`project_id`, `w`.`status`
+            ORDER BY `w`.`project_id` DESC";
+
+        $results = array();
+        $resultQuery = mysql_query($sql) or error_log('getworklist mysql error: '. mysql_error());
+        while ($resultQuery && $row=mysql_fetch_assoc($resultQuery)) {
+            array_push($results, $row);
+        }
+        return array("search_stats" => $results);
     }
 }

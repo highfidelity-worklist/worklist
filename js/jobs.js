@@ -42,7 +42,7 @@ var jobs = {
                     $('#jobs-sections').empty();
                     $('body').data("jobs-total-hit-count", data.total_Hit_count);
                 }
-                jobs.renderJobs(data.search_result, fAfter);
+                jobs.renderJobs(data, fAfter);
             },
             error: function(xhdr, status, err) {
 
@@ -51,32 +51,33 @@ var jobs = {
     },
 
     renderJobs: function(data, fAfter) {
-        for(index in data) {
-            if (!$('.project-header').hasClass('project-header-' + data[index].project_id)) {
-                if ($('.project-header').length > 0) {
-                    $('#jobs-sections').append(jobs.renderPassedJobsLink($('.project-header').last().find("h2").text(), $('.project-header').last().data('done-job-count'), $('.project-header').last().data('done-job-count')));
-                }
-                $('#jobs-sections').append(jobs.renderProjectHeader(data[index].project_id, data[index].project_name, data[index].short_description,data[index].done_job_count, data[index].pass_job_count));
+        for(index in data.search_result) {
+            var result = data.search_result[index];
+            if (!$('.project-header.project-header-' + result.project_id).length) {
+                jobs.renderProjectHeader(result.project_id, result.project_name, result.short_description);
+                $('<section>')
+                  .attr('id', 'jobs-for-project-' + result.project_id)
+                  .appendTo('#jobs-sections');
+                jobs.renderProjectStats(result.project_name, data.search_stats);
             }
-            if (!$('.project-jobs-status').hasClass("project-"+ data[index].project_id + "-jobs-status-" + data[index].status.toLowerCase().replace(/ /g, '-'))) {
-                $('#jobs-sections').append(jobs.renderJobStatus(data[index].project_id, data[index].status));
+            if (!$('.project-jobs-status').hasClass("project-"+ result.project_id + "-jobs-status-" + result.status.toLowerCase().replace(/ /g, '-'))) {
+                jobs.renderJobStatus(result.project_id, result.status);
+
             }
-            $('#jobs-sections').append(jobs.renderJob(data[index].id, data[index].project_id, data[index].summary, data[index].labels, data[index].comments, data[index].participants));
-            /*
-            var totalJobsRender = $('ul.project-jobs').length;
-            var totalHitCount = $('body').data("jobs-total-hit-count");
-            if (totalHitCount == totalJobsRender) {
-                $('#jobs-sections').append(jobs.renderPassedJobsLink(data[index].project_name, data[index].done_job_count, data[index].pass_job_count));
-            }
-            */
+            jobs.renderJob(result.id, result.project_id, result.summary, result.labels, result.comments, result.participants);
         }
         if (fAfter) {
             fAfter();
         }
     },
     renderProjectHeader: function(id, project_name, project_short_description, done_job_count, pass_job_count) {
-        var html = "<div data-done-job-count=\"" + pass_job_count+ "\" data-pass-job-count=\"" + pass_job_count + "\" class=\"project-header project-header-" + id + " col-sm-12 col-md-12 dd-max-width\"><h2>"+ project_name + "</h2><p>"+ project_short_description +"</p><hr/></div>";
-        return html;
+        var html =
+            "<div class=\"project-header project-header-" + id + " col-sm-12 col-md-12 dd-max-width\">" +
+            "  <h2>"+ project_name + "</h2>" +
+            "  <p>"+ project_short_description +"</p>" +
+            "  <hr/>" +
+            "</div>";
+        $('#jobs-sections').append(html);
     },
 
     renderDataOnScroll: function() {
@@ -99,7 +100,7 @@ var jobs = {
 
     renderJobStatus: function(id, status) {
         var html = "<div class=\"project-jobs-status project-jobs-status-" + status.toLowerCase().replace(/ /g, '-') + "  project-" + id + "-jobs-status-" + status.toLowerCase().replace(/ /g, '-') + " col-sm-12 col-md-12 dd-max-width\"><i></i><span>" + status + "</span></div>";
-        return html;
+        $('#jobs-for-project-' + id).append(html);
     },
 
     renderJob: function(id, project_id, summary, labels, comments, participants) {
@@ -121,19 +122,24 @@ var jobs = {
         if (comments != "0") {
             html += "<li class=\"col-sm-2 col-md-2 project-jobs-comment-count\"><a>" + comments +" comments</a></li></ul>";
         }
-        return html;
+        $('#jobs-for-project-' + project_id).append(html);
     },
 
-    renderPassedJobsLink: function(project_name, done_job_count, pass_job_count) {
-        var html = "<div class=\"project-jobs-done-pass\">";
-        if (search_status != "done" && done_job_count > 0) {
-            html += "<div class=\"project-jobs-done col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/done\">View Done Jobs</a></div>";
-        }
-        if (search_status != "pass" && pass_job_count > 0) {
-            html += "<div class=\"project-jobs-pass col-sm-6 col-md-6 dd-max-width\"><i></i><a href=\"./jobs/"+project_name+"/pass\">View Passed Jobs</a></div>";
+    renderProjectStats: function(project_name, stats_data) {
+        var html = '<div class="project-jobs-stats">';
+        for(var i = 0; i < stats_data.length; i++) {
+            var data = stats_data[i];
+            if (data.project == project_name) {
+                var status = data.status;
+                html +=
+                    '<span class="project-jobs-' + status.replace(' ', '') + '">' +
+                      '<i></i>' +
+                      '<a href="./jobs/' + project_name + '/' + status + '">View ' + status + ' Jobs</a>' +
+                    '</span>';
+            }
         }
         html += "</div>";
-        return html;
+        $('#jobs-sections').append(html);
     },
 
     filterChangeEventTrigger: function() {

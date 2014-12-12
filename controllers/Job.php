@@ -1492,20 +1492,19 @@ class JobController extends Controller {
         }
 
         $conds = array();
+        $invertedStatusConds = array();
         $subConds = array();
 
         $projectFilter = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : '';
         if (!empty($projectFilter) && $projectFilter != 'All') {
             $projectId = (int) $projectFilter;
             $conds[] = "`w`.`project_id` = '{$projectId}'";
+            $invertedStatusConds[] = "`w`.`project_id` = '{$projectId}'";
         }
 
         $statusFilter = isset($_REQUEST['status']) && !empty($_REQUEST['status'])
             ? preg_split('/,/', $_REQUEST['status'])
-            :
-                empty($query)
-                    ? array('Active')
-                    : array();
+            : (empty($query) ? array('Active') : array());
         if ($statusFilter) {
             $statusCond = '';
             foreach ($statusFilter as $status) {
@@ -1514,6 +1513,10 @@ class JobController extends Controller {
                 }
                 switch($status) {
                     case 'Draft':
+                        $statusCond .= (empty($statusCond) ? '' : ' OR ') .
+                            "`w`.`status` = '{$status}' AND `w`.`creator_id` = '{$user->getId()}'";
+                        break;
+
                     case 'Suggestion':
                     case 'Bidding':
                     case 'In Progress':
@@ -1549,7 +1552,27 @@ class JobController extends Controller {
             }
             if (!empty($statusCond)) {
                 $conds[] = "({$statusCond})";
+                $invertedStatusConds[] = "(
+                       !({$statusCond})
+                    AND
+                      CASE
+                        WHEN(`w`.`status` = 'Draft')
+                          THEN `w`.`creator_id` = '{$user->getId()}'
+                        ELSE true
+                      END
+                    )";
+            } else {
+                $invertedStatusConds[] = "false";
             }
+        } else {
+            $conds[] = "
+                   `w`.`status` != 'Draft'
+                OR (
+                      `w`.`status` = 'Draft'
+                  AND `w`.`creator_id` = '{$user->getId()}'
+                )
+            ";
+            $invertedStatusConds[] = "false";
         }
 
         $participants = array();
@@ -1576,16 +1599,19 @@ class JobController extends Controller {
         }
 
         if ($publicOnly) {
-            $conds[] .= "`w`.is_internal = 0";
+            $conds[] = "`w`.is_internal = 0";
+            $invertedStatusConds[] = "`w`.is_internal = 0";
         }
 
         if (isset($_REQUEST['following']) && !empty($_REQUEST["following"])) {
-            $conds[] = "(
+            $followingCond = "(
                 SELECT COUNT(*)
                 FROM `" . TASK_FOLLOWERS . "` `fol`
                 WHERE `fol`.`workitem_id` = `w`.`id`
                   AND `fol`.`user_id` = {$user->getId()}
             ) > 0";
+            $conds[] = $followingCond;
+            $invertedStatusConds[] = $followingCond;
         }
 
         /* text search */
@@ -1608,7 +1634,7 @@ class JobController extends Controller {
                     continue;
                 }
                 $participantNickname = $participantUser->getNickname();
-                $conds[] = "(
+                $participantsCond = "(
                     `w`.`mechanic_id` = '{$participantId}'
                     OR `w`.`runner_id` = '{$participantId}'
                     OR `w`.`creator_id` = '{$participantId}'
@@ -1646,6 +1672,8 @@ class JobController extends Controller {
                           : ''
                     ) . "
                 )";
+                $conds[] = $participantsCond;
+                $invertedStatusConds[] = $participantsCond;
             }
         }
 
@@ -1663,12 +1691,15 @@ class JobController extends Controller {
                         "labels LIKE '%:{$label}:%'";
                 }
                 if ($labelsCond) {
-                    $groupConds[] = "({$labelsCond})";
+                    $conds[] = "({$labelsCond})";
+                    $invertedStatusConds[] = "({$labelsCond})";
                 }
             }
         }
 
-        echo json_encode(WorkItem::search($query, $conds, $subConds, $_REQUEST['offset'], $_REQUEST['limit']));
+        $ret = WorkItem::search($query, $conds, $subConds, $_REQUEST['offset'], $_REQUEST['limit']);
+        $invertedStatusRet = WorkItem::searchStats($query, $invertedStatusConds, $subConds);
+        echo json_encode(array_merge($ret, $invertedStatusRet));
     }
 
     public function edit($worklist_id = 0) {
