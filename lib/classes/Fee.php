@@ -1,7 +1,7 @@
 <?php
 //  vim:ts=4:et
 
-//  Copyright (c) 2010, LoveMachine Inc.
+//  Copyright (c) 2014, High Fidelity Inc.
 //  All Rights Reserved.
 //  http://www.lovemachineinc.com
 
@@ -11,9 +11,7 @@ class Fee
 
         $summaryData = array();
         foreach ($fee_ids as $fee_id) {
-
             $summary = self::markPaidById($fee_id, $user_paid, $paid_notes, $paid, true, $fund_id);
-
             if ($summary[0] != 0) {
                 if (isset($summaryData[$summary[0]])) {
                     $summaryData[$summary[0]][0] += $summary[1];
@@ -36,8 +34,9 @@ class Fee
         $paid = (int) $paid;
         $update_fund_id = "";
         //If no fund passed, do not update fund_id in fee or update budget. (alternate version. bail with failure if fund_id is required
-        if ($fund_id) { $update_fund_id = " , `fund_id` = " . (int) $fund_id; }
-
+        if ($fund_id) {
+            $update_fund_id = " , `fund_id` = " . (int) $fund_id;
+        }
         $user_id = 0;
         $amount = 0;
         $points = 0;
@@ -45,7 +44,6 @@ class Fee
         //Wired REWARDER out of process while API is being rebuilt (and we are using a different process for determining rewarder now)
         $query = "SELECT `user_id`, `worklist_id`, `amount`, `paid`, `expense`, '0' as `rewarder` FROM `".FEES."` WHERE `id`=$fee_id AND `bonus` = 0";
         $rt = mysql_query($query) or error_log("failed to select fees: $query : " . mysql_error());
-
 
         if ($rt && ($row = mysql_fetch_assoc($rt))) {
             $query = "
@@ -80,7 +78,10 @@ class Fee
                     } else {
                         $runner_id = 0;
                     }
+
+
                     $points = intval($amount);
+
                 }
             } else {
                 return false;
