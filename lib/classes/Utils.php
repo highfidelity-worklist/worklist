@@ -476,15 +476,8 @@ class Utils{
     /**
      * Takes string input and makes links where it thinks they should go
      */
-    public static function linkify($url, $author = null, $bot = false, $process = true) {
+    public static function linkify($url) {
         $original = $url;
-
-        if(!$process) {
-            if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
-                $url = utf8_encode($url);
-            }
-            return '<a href="http://' . htmlentities($url, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($url) . '</a>';
-        }
 
         $class = '';
         $url = html_entity_decode($url, ENT_QUOTES);
@@ -544,27 +537,6 @@ class Utils{
             $url
         );
 
-        // Replace '<repo> v####' with a link to the SVN server
-        $regexp = '/([a-zA-Z0-9]+)\s[v]([0-9_]+)/i';
-        $link = DELIMITER . '<a href="' . SVN_REV_URL . '$1&rev=$2">$1 v$2</a>' . DELIMITER;
-        $url = preg_replace($regexp,  $link, $url);
-
-        // Replace '#/<url>' with a link to the author sandbox
-        $regexp="/\#\/(\S*)/i";
-        if (strpos(SERVER_BASE, '~') === false) {
-            $url = preg_replace(
-                $regexp, DELIMITER .
-                '<a href="' . SERVER_BASE . '~' . $author . '/$1" class="sandbox-item" id="sandbox-$1">'.$author.' : $1</a>' . DELIMITER,
-                $url
-            );
-        } else { // link on a sand box :
-            $url = preg_replace(
-                $regexp, DELIMITER .
-                '<a href="' . SERVER_BASE . '/../~' . $author . '/$1" class="sandbox-item" id="sandbox-$1" >'.$author.' : $1</a>' . DELIMITER,
-                $url
-            );
-        }
-
         $regexp="/\b(?<=mailto:)([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})/i";
         if(preg_match($regexp,$url)){
             $regexp="/\b(mailto:)(?=([A-Za-z0-9_\-\.\+])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))/i";
@@ -581,12 +553,10 @@ class Utils{
         if (mb_detect_encoding($url, 'UTF-8', true) === FALSE) {
             $url = utf8_encode($url);
         }
-        if (!$bot) {
-            $url = htmlentities($url, ENT_QUOTES, "UTF-8");
-        }
         $url = nl2br($url);
         $reg = '/' . DELIMITER . '.+' . DELIMITER . '/';
-        if (!function_exists('workitemLinkPregReplaceCallback')) {
+
+        if (!function_exists('decodeDelimitedLinks')) {
             function decodeDelimitedLinks($matches) {
                 $result = preg_replace('/' . DELIMITER . '/', '', $matches[0]);
                 return html_entity_decode($result, ENT_QUOTES);

@@ -272,7 +272,7 @@ class Project {
     }
 
     public function getWebsiteLink() {
-        return Utils::linkify($this->website, null, false, true);
+        return Utils::linkify($this->website);
     }
 
     public function getWebsiteUrl() {
