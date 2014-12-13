@@ -47,6 +47,10 @@ class ReportsView extends View {
         $projects = Project::getProjects();
         $ret = array();
         $default = isset($_REQUEST['project_id']) ? $_REQUEST['project_id'] : null;
+        $ret[] = array(
+            'project_id' => 'ALL',
+            'name' => 'ALL'
+        );
         foreach($projects as $project) {
             $ret[] = array_merge($project, array(
                 'selected' => ($project['project_id'] === $default)
