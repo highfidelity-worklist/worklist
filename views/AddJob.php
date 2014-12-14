@@ -61,31 +61,6 @@ class AddJobView extends View {
         return $this->workItem;
     }
 
-    public function status() {
-        $statusList = array(
-                        array("name" => "Bidding", "selected" => true),
-                        array("name" => "Suggestion", "selected" => false),
-                        array("name" => "In Progress", "selected" => false),
-                        array("name" => "Draft", "selected" => false)
-                      );
-        $statusMatch = false;
-        if ($this->editing) {
-            $statusList[0]['selected'] = false;
-
-            foreach($statusList as $key => $status) {
-                if ($status['name'] == $this->workItem()->getStatus()) {
-                    $statusList[$key]['selected'] = true;
-                    $statusMatch = true;
-                    breaK;
-                }
-            }
-            if (!$statusMatch) {
-                array_push($statusList, array("name" => $this->workItem()->getStatus(), "selected" => true));
-            }
-        }
-        return $statusList;
-    }
-
     public function getBudgetCombo() {
         $user = User::find($this->currentUser['id']);
         return $user->getBudgetCombo($this->workItem()->getBudget_id());

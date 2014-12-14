@@ -7,7 +7,7 @@ var AddJob = {
     init: function(job_id, editing) {
         AddJob.jobId = job_id;
         AddJob.editing = editing;
-        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
+        $('select[name="itemProject"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
             width: '100%',
             disable_search_threshold: 10
         });
@@ -19,6 +19,10 @@ var AddJob = {
         }
         AddJob.initLabels();
         AddJob.refreshLabels();
+        AddJob.refreshStatus($("select[name='itemProject']").val(), AddJob.jobId);
+        $("select[name='itemProject']").on('change', function() {
+            AddJob.refreshStatus($("select[name='itemProject']").val(), AddJob.jobId);
+        });
     },
 
     initLabels: function() {
@@ -298,6 +302,31 @@ var AddJob = {
                     alert(json.error);
                 } else {
                     location.href = './' + json.workitem;
+                }
+            }
+        });
+    },
+    refreshStatus: function(project_id, job_id) {
+        $.ajax({
+            url: './job/status/' + project_id + '/' + job_id,
+            dataType: 'json',
+            data: {},
+            type: 'POST',
+            success: function(json) {
+                if (json.length > 0) {
+                    var selectHtml = '<select id="itemStatusCombo" name="itemStatus">';
+                    for (var statusIndex in json) {
+                        var selected = json[statusIndex].selected ? "selected=selected" : "";
+                        selectHtml += '<option value="' + json[statusIndex].name + '" ' + selected +'>' + json[statusIndex].name + '</option>';
+                    }
+                    selectHtml += '</select>';
+                    $('#choose-job-status').html(selectHtml);
+                    $('select[name="itemStatus"]').chosen({
+                        width: '100%',
+                        disable_search_threshold: 10
+                    });
+                } else {
+                    $('#choose-job-status').empty();
                 }
             }
         });
