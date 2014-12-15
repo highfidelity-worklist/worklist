@@ -1,6 +1,17 @@
 <?php
 
 class MVCObject {
+    public $app = array(
+        'url' => WORKLIST_URL,
+        'self_url' => '',
+        'feeds_url' => 'feedlist'
+    );
+
+    public function __construct() {
+        $this->app['self_url'] = $_SERVER['PHP_SELF'];
+    }
+
+
     static protected $values = array();
 
     /**
