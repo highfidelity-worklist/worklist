@@ -15,45 +15,6 @@ use \Mustache\Mustache;
 class View extends MVCObject {
     public $name = '';
     public $layout = null;
-    public $title = 'Worklist';
-    public $app = array(
-        'url' => WORKLIST_URL,
-        'metadata' => array(
-            'title' => "Worklist: High Fidelity's exoskeleton for rapid software development.",
-            'image' => 'images/hifi-logo-notext.png',
-            'description' => 'High Fidelity is an open source virtual world platform. We are building the software with a mix of full-time developers, part time developers who are paid here on the worklist, and open source collaborators. As use of the virtual world grows, Worklist will also host paid projects run by other teams.'
-        ),
-        'self_url' => '',
-        'feeds_url' => 'feedlist'
-    );
-    public $redir_url = '';
-
-    public $currentUser = array(
-        'id' => 0,
-        'username' => '',
-        'nickname' => 'Guest',
-        'is_runner' => false,
-        'runner_id' => 0,
-        'is_admin' => false,
-        'is_payer' => false,
-        'is_paypal_verified' => false,
-        'can' => array(
-            'addProject' => false
-        ),
-        'budget' => array(
-            'feeSums' => .0,
-            'totalManaged' => .0,
-            'remainingFunds' => .0,
-            'allocated' => .0,
-            'submitted' => .0,
-            'paid' => .0,
-            'transfered' => .0,
-            'transfersDetails' => array()
-        ),
-        'can' => array(
-            'addProject' => false
-        )
-    );
 
     public $jumbotron = '';
 
@@ -70,6 +31,7 @@ class View extends MVCObject {
      * Constructor method
      */
     public function __construct() {
+        parent::__construct();
         $this->name = strtolower(preg_replace('/View$/', '', get_class($this)));
         $this->loadGlobals();
     }
@@ -82,73 +44,10 @@ class View extends MVCObject {
             return;
         }
 
-        $user_id = Session::uid();
-        $user = new User();
-        if ($user_id) {
-            Utils::initUserById($user_id);
-            $user->findUserById($user_id);
-            $this->currentUser['budget'] = array(
-                'feeSums' => Fee::getSums(),
-                'totalManaged' => money_format('$ %i', $user->getTotalManaged()),
-                'remainingFunds' => money_format('$ %i', $user->setRemainingFunds()),
-                'allocated' => money_format('$ %i', $user->getAllocated()),
-                'submitted' => money_format('$ %i', $user->getSubmitted()),
-                'paid' => money_format('$ %i', $user->getPaid()),
-                'transfered' => money_format('$ %i', $user->getTransfered()),
-                'transfersDetails' => $user->getBudgetTransfersDetails(),
-                'available' => $user->getBudget()
-            );
-            $this->currentUser['can'] = array(
-                'addProject' => ($user->getIs_admin() || $user->isRunner() || $user->isPaypalVerified())
-            );
-            $this->currentUser['is_internal'] = $user->isInternal();
-            $this->currentUser['budgetAuthorized'] = (strpos(BUDGET_AUTHORIZED_USERS, "," . $user_id . ",") !== false);
-        }
-
-        $this->app['self_url'] = $_SERVER['PHP_SELF'];
-        $this->currentUser['id'] = $user_id;
-        $this->currentUser['username'] = $user_id ? $user->getUsername() : '';
-        $this->currentUser['nickname'] = $user_id ? $user->getNickname() : '';
-        $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? false : true;
-        $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? false : true;
-        $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
-
         $this->redir_url = Dispatcher::$url;
         $this->globalsLoaded = true;
     }
 
-    /**
-     * Add a css stylesheet to be used in the view
-     */
-    public function addStyle($path) {
-        if (array_key_exists($path, self::$stylesheets)) {
-            return false;
-        }
-        $this->stylesheets[] = $path;
-        return true;
-    }
-
-    /**
-     * Removes an existing stylesheet from the view
-     */
-    public function removeStyle($path) {
-        if (!array_key_exists($path, $this->stylesheets)) {
-            return false;
-        }
-        unset($this->stylesheets[$path]);
-        return true;
-    }
-
-    /**
-     * Add a script to be ran in the view side
-     */
-    private function addScript($path) {
-        if (array_key_exists($path, $this->scripts)) {
-            return false;
-        }
-        $this->scripts[] = $path;
-        return true;
-    }
 
     /**
      * Outputs stylesheets references to the view/layout
@@ -178,17 +77,6 @@ class View extends MVCObject {
             $ret .= sprintf('<script type="text/javascript" src="%s"></script>', $path);
         }
         return $ret;
-    }
-
-    /**
-     * Removes an existing script from the view
-     */
-    private function removeScript($path) {
-        if (!array_key_exists($path, $this->scripts)) {
-            return false;
-        }
-        unset($this->scripts[$path]);
-        return true;
     }
 
     /**
@@ -222,4 +110,22 @@ class View extends MVCObject {
          */
         return is_null($layout) ? $content : $layout->render($this);
     }
+
+    /**
+     * When a mustache tries to reach a property that is not stored in
+     * the View class, the following __get and __isset methods will help
+     * catching that property read request in order look at Layout
+     * for its value (__get) or existence (__isset)
+     */
+    public function __get($name) {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        } elseif (property_exists($this->layout, $name)) {
+            return $this->layout->$name;
+        }
+    }
+    public function __isset($name) {
+        return property_exists($this, $name) || property_exists($this->layout, $name);
+    }
+
 }
