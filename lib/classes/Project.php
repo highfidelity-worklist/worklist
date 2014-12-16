@@ -684,7 +684,7 @@ class Project {
             $priorityOrder = ' CASE ';
             for($i = 0; $i < count($priorityProjects); $i++) {
                 $projectId = (int) $priorityProjects[$i];
-                $projectsOrder .= " WHEN `p`.`project_id` = '" . $projectId . "' THEN " . $i;
+                $priorityOrder .= " WHEN `p`.`project_id` = '" . $projectId . "' THEN " . $i;
             }
             $priorityOrder .= ' ELSE `p`.`project_id` + 9999 END';
         }
