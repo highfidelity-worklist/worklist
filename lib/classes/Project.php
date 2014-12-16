@@ -678,48 +678,48 @@ class Project {
         Return an array of all projects containing all fields
     **/
     public function getProjects($active = true, $selections = array(), $onlyInactive = false, $namesOnly = false, $public_only = true) {
-         $priorityOrder = '0';
-         $priorityProjects = preg_split('/,/', PROJECT_LISTING_PRIORITY);
-         if (count($priorityProjects)) {
-              $priorityOrder = ' CASE ';
-              for($i = 0; $i < count($priorityProjects); $i++) {
-                   $projectName = mysql_real_escape_string($priorityProjects[$i]);
-                   $priorityOrder .= " WHEN `p`.name = '" . $projectName . "' THEN " . $i;
-              }
-              $priorityOrder .= ' ELSE 9999 END';
-         }
-         $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
-         $query = "
-             SELECT " . ((count($selections) > 0) ? implode(",", $selections) : "*") . ",
-             (
-                 SELECT SUM(w1.status IN ('Done', 'Merged'))
-                 FROM " . WORKLIST . " w1
-                 WHERE w1.project_id = p.project_id " . $internalCond . "
-             ) AS cCount,
-             (
-                 SELECT SUM(w2.status IN ('In Progress', 'Review', 'QA Ready'))
-                  FROM " . WORKLIST . " w2
-                  WHERE w2.project_id = p.project_id " . $internalCond . "
-             ) AS uCount,
-             (
-                 SELECT SUM(status='Bidding')
-                 FROM " . WORKLIST . " w3
-                 WHERE w3.project_id = p.project_id " . $internalCond . "
-             ) AS bCount,
-             (
-                 SELECT SUM(f.amount)
-                 FROM " . FEES . " f
-                 JOIN " . WORKLIST . " w4
-                   ON f.worklist_id = w4.id
-                 WHERE f.withdrawn = 0
-                 AND w4.project_id = p.`project_id`
-                 AND w4.status IN ('Merged', 'Done')
-             ) AS feesCount
-             FROM
-              `" . PROJECTS . "` `p`
-             WHERE
-                 `p`.internal = 1  AND `p`.active = 1
-             ORDER BY " . $priorityOrder . " ASC, name ASC";
+        $priorityOrder = '0';
+        $priorityProjects = preg_split('/,/', PROJECT_LISTING_PRIORITY);
+        if (count($priorityProjects)) {
+            $priorityOrder = ' CASE ';
+            for($i = 0; $i < count($priorityProjects); $i++) {
+                $projectName = mysql_real_escape_string($priorityProjects[$i]);
+                $priorityOrder .= " WHEN `p`.name = '" . $projectName . "' THEN " . $i;
+            }
+            $priorityOrder .= ' ELSE 9999 END';
+        }
+        $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
+        $query = "
+            SELECT " . ((count($selections) > 0) ? implode(",", $selections) : "*") . ",
+            (
+                SELECT SUM(w1.status IN ('Done', 'Merged'))
+                FROM " . WORKLIST . " w1
+                WHERE w1.project_id = p.project_id " . $internalCond . "
+            ) AS cCount,
+            (
+                SELECT SUM(w2.status IN ('In Progress', 'Review', 'QA Ready'))
+                 FROM " . WORKLIST . " w2
+                 WHERE w2.project_id = p.project_id " . $internalCond . "
+            ) AS uCount,
+            (
+                SELECT SUM(status='Bidding')
+                FROM " . WORKLIST . " w3
+                WHERE w3.project_id = p.project_id " . $internalCond . "
+            ) AS bCount,
+            (
+                SELECT SUM(f.amount)
+                FROM " . FEES . " f
+                JOIN " . WORKLIST . " w4
+                  ON f.worklist_id = w4.id
+                WHERE f.withdrawn = 0
+                AND w4.project_id = p.`project_id`
+                AND w4.status IN ('Merged', 'Done')
+            ) AS feesCount
+            FROM
+             `" . PROJECTS . "` `p`
+            WHERE
+                `p`.internal = 1  AND `p`.active = 1
+            ORDER BY " . $priorityOrder . " ASC, name ASC";
 
         $result = mysql_query($query);
         if ($result && mysql_num_rows($result)) {
