@@ -1482,7 +1482,7 @@ class WorkItem {
             $projectsOrder = ' CASE ';
             for($i = 0; $i < count($priorityProjects); $i++) {
                 $projectName = mysql_real_escape_string($priorityProjects[$i]);
-                $projectsOrder .= " WHEN `p`.name = '" . $projectName . "' THEN " . $i;
+                $projectsOrder .= " WHEN `proj`.name = '" . $projectName . "' THEN " . $i;
             }
             $projectsOrder .= ' ELSE 9999 END ASC';
         }
