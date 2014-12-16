@@ -416,7 +416,7 @@ class JobView extends View {
 
     public function codeReviewStarted() {
         $workitem = $this->read('workitem');
-        $workitem->getCRStarted();
+        return $workitem->getCRStarted();
     }
 
     public function codeReviewFee() {
