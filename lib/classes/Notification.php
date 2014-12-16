@@ -237,7 +237,7 @@ class Notification {
                 // render the github branch-created-sub template if necessary
                 if (!empty($data) && array_key_exists('branch_name', $data)) {
                     $template = 'branch-created-sub';
-                    include(dirname(__FILE__) . "/../email/en.php");
+                    include(APP_PATH . '/email/en.php');
 
                     $replacedTemplate = !empty($data) ?
                         Utils::templateReplace($emailTemplates[$template], $data) :
