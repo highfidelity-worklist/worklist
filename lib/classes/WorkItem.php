@@ -1475,6 +1475,18 @@ class WorkItem {
             $conds[] = $subQuery;
         }
         $whereConds = count($conds) ? implode(' AND ', $conds) : '1';
+
+        $projectsOrder = '`w`.`project_id` DESC';
+        $priorityProjects = preg_split('/,/', PROJECT_LISTING_PRIORITY);
+        if (count($priorityProjects)) {
+            $projectsOrder = ' CASE ';
+            for($i = 0; $i < count($priorityProjects); $i++) {
+                $projectId = (int) $priorityProjects[$i];
+                $projectsOrder .= " WHEN `w`.`project_id` = '" . $projectId . "' THEN " . $i;
+            }
+            $projectsOrder .= ' ELSE `w`.`project_id` + 9999 END ASC';
+        }
+
         $sql  = "
             SELECT
               `w`.`id`,
@@ -1539,7 +1551,7 @@ class WorkItem {
                 ON `w`.`mechanic_id` = `mu`.`id`
             WHERE {$whereConds}
             ORDER BY
-              `w`.`project_id` DESC,
+              {$projectsOrder},
               (
                 CASE
                   WHEN `w`.`status` = 'Bidding' THEN 1

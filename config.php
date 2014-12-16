@@ -1316,7 +1316,8 @@ defineOnce('DEFAULT_CONTROLLER_METHOD', 'run');
 
 defineOnce('PAYPAL_ENVIRONMENT', 'sandbox'); // 'sandbox' or 'beta-sandbox' or 'live'
 
-defineOnce('PROJECT_LISTING_PRIORITY', 'hifi,stack-manager,hifi-docs,hifi-website,worklist,data,base8,baseios,DSDNS,love');
+// hifi,stack-manager,hifi-docs,hifi-website,worklist,data,base8,baseios,DSDNS,love
+defineOnce('PROJECT_LISTING_PRIORITY', '181,231,230,215,99,229,211,217,218,80');
 
 require_once('vendor/autoload.php');
 require_once('lib/Core.php');
