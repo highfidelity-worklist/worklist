@@ -60,12 +60,6 @@ class JobView extends View {
 
         $this->reviewer = $this->read('reviewer');
 
-        $this->codeReview = array(
-            'canI' => $this->canReview(),
-            'started' => $this->workitem->getCRStarted(),
-            'feeAmount' => $this->crFee()
-        );
-
         $this->views = $this->read('views');
         $this->viewCount = $this->read('viewCount');
         return parent::render();
@@ -420,6 +414,15 @@ class JobView extends View {
           && !$workitem->getCRCompleted();
     }
 
+    public function codeReviewStarted() {
+        $workitem = $this->read('workitem');
+        return $workitem->getCRStarted();
+    }
+
+    public function codeReviewFee() {
+        return number_format($this->read('crFee'), 2);
+    }
+
     public function canBid() {
         $worklist = $this->worklist;
         return $worklist['status'] == 'Bidding' 
@@ -673,10 +676,6 @@ class JobView extends View {
         $workitem = $this->workitem;
         $user = $this->user;
         return (int) ($this->action == "edit" && ($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $this->currentUser['is_runner'])));
-    }
-
-    public function crFee() {
-        return number_format($this->read('crFee'), 2);
     }
 
     public function statusSuggestion() {

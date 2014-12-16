@@ -154,7 +154,7 @@ class Fee
     }
 
 
-    function add($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder=0)
+    public static function add($itemid, $fee_amount, $fee_category, $fee_desc, $mechanic_id, $is_expense, $is_rewarder=0)
     {
         if ($is_rewarder) $is_expense = 0;
         // Get work item summary

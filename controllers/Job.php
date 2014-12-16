@@ -1121,10 +1121,8 @@ class JobController extends Controller {
                 echo json_encode(array(
                     'success' => true,
                     'message' => $journal_message,
-                    'codeReview' => array(
-                        'started' => true,
-                        'feeAmount' => $this->getCRFee($workitem),
-                    )
+                    'codeReviewStarted' => true,
+                    'codeReviewFeeAmount' => $this->getCRFee($workitem)
                 ));
             }
         } catch (Exception $e) {
@@ -1184,7 +1182,7 @@ class JobController extends Controller {
             }
 
             $desc = strlen(trim($_POST['desc'])) ? 'Code Review - ' . trim($_POST['desc']) : '';
-            $journal_message = Fee::addd($workitem->getId(), $fee, 'Code Review', $desc, $workitem->getCReviewerId(), '', '');
+            $journal_message = Fee::add($workitem->getId(), $fee, 'Code Review', $desc, $workitem->getCReviewerId(), '', '');
             Utils::systemNotification($journal_message);
             $workitem->setCRCompleted(1);
             $workitem->save();

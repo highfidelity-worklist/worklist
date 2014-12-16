@@ -139,9 +139,9 @@
                 {{/labels}}
             </ul>
         </div>
-        {{#codeReview.canI}}
-              {{> job/codeReview }}
-        {{/codeReview.canI}}
+        {{#canReview}}
+            {{> job/codeReview }}
+        {{/canReview}}
         <div class="col-sm-12 col-md-12 job-bid">
             <div class="moneyZone">
                     <div id="bid-panel">

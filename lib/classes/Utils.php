@@ -404,7 +404,7 @@ class Utils{
      * @todo - Marco - Include headers argument to allow ,eg, sending bcc copies
      */
     public static function sendTemplateEmail($to, $template, $data = array(), $from = false){
-        include (dirname(__FILE__) . "/email/en.php");
+        include (APP_PATH . '/email/en.php');
 
         $recipients = is_array($to) ? $to : array($to);
 
