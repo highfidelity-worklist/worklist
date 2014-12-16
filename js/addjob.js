@@ -4,10 +4,11 @@ var AddJob = {
     filesUploading: 0,
     editing: false,
     jobId: 0,
+    status: ["Bidding", "In Progress", "Suggestion", "Draft"],
     init: function(job_id, editing) {
         AddJob.jobId = job_id;
         AddJob.editing = editing;
-        $('select[name="itemProject"], select[name="itemStatus"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
+        $('select[name="itemProject"], select[name="assigned"], #budget-source-combo, select[name="runner"]').chosen({
             width: '100%',
             disable_search_threshold: 10
         });
@@ -19,6 +20,10 @@ var AddJob = {
         }
         AddJob.initLabels();
         AddJob.refreshLabels();
+        AddJob.refreshStatus($("select[name='itemProject']").val());
+        $("select[name='itemProject']").on('change', function() {
+            AddJob.refreshStatus($(this).val());
+        });
     },
 
     initLabels: function() {
@@ -301,6 +306,40 @@ var AddJob = {
                 }
             }
         });
+    },
+    refreshStatus: function(project_id) {
+        if ((is_admin && is_runner) || AddJob.isProjectRunner(project_id)) {
+            var selectHtml = '<select id="itemStatusCombo" name="itemStatus">';
+            var selectStatusIndex = 0;
+            if (AddJob.editing) {
+                if ($.inArray(jobStatus, AddJob.status) == -1) {
+                    AddJob.status.push(jobStatus);
+                }
+                selectStatusIndex = AddJob.status.indexOf(jobStatus);
+            }
+            for (var statusIndex in AddJob.status) {
+                var selected = selectStatusIndex == statusIndex ? "selected=selected" : "";
+                selectHtml += '<option value="' + AddJob.status[statusIndex] + '" ' + selected +'>' + AddJob.status[statusIndex] + '</option>';
+            }
+            selectHtml += '</select>';
+            $('#choose-job-status').html(selectHtml);
+            $('select[name="itemStatus"]').chosen({
+                width: '100%',
+                disable_search_threshold: 10
+            });
+        } else {
+            $('#choose-job-status').empty();
+        }
+    },
+    isProjectRunner: function(project_id) {
+        var isProjectRunner =  false;
+        for (var index in projectsAsRunner) {
+            if (projectsAsRunner[index].id === project_id) {
+                isProjectRunner = true;
+                break;
+            }
+        }
+        return isProjectRunner;
     }
 
 }

@@ -78,16 +78,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
-          {{#currentUser.is_runner}}
-              <select id="itemStatusCombo" name="itemStatus">
-                {{#status}}
-                    <option value="{{name}}" {{#selected}}selected="selected"{{/selected}}>
-                        {{name}}
-                    </option>
-                {{/status}}
-              </select>
-          {{/currentUser.is_runner}}
+        <div class="col-sm-3" id="choose-job-status">
         </div>
 
         {{#userIsInternal}}
@@ -103,6 +94,7 @@
     </div>
 </form>
 <script type="text/javascript">
+    var jobStatus = "{{getJobStatus}}";
     $(function() {
         AddJob.init({{#editing}}{{workitem.getId}}{{/editing}}{{^editing}}0{{/editing}}, {{#editing}}true{{/editing}}{{^editing}}false{{/editing}});
     })
