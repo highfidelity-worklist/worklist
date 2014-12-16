@@ -94,6 +94,7 @@
     </div>
 </form>
 <script type="text/javascript">
+    var jobStatus = "{{getJobStatus}}";
     $(function() {
         AddJob.init({{#editing}}{{workitem.getId}}{{/editing}}{{^editing}}0{{/editing}}, {{#editing}}true{{/editing}}{{^editing}}false{{/editing}});
     })

@@ -114,4 +114,12 @@ class AddJobView extends View {
         $ret .= $defaultOption.'</select>';
         return $ret;
     }
+
+    public function getJobStatus() {
+       $status = "";
+       if ($this->editing) {
+            $status = $this->workItem->getStatus();
+       }
+       return $status;
+    }
 }

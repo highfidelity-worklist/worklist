@@ -2026,38 +2026,6 @@ class JobController extends Controller {
         return $statusList;
     }
 
-    public function status($projectId = 0, $jobId = 0) {
-        $this->view = null;
-        $userId = Session::uid();
-        $user = User::find($userId);
-        $project = Project::find($projectId);
-        $statusList = array();
-        if (($user->getIs_admin() == 1 && $user->getIs_runner()) || $project->isProjectRunner($userId)) {
-            $statusList = array(
-                        array("name" => "Bidding", "selected" => true),
-                        array("name" => "In Progress", "selected" => false),
-                        array("name" => "Suggestion", "selected" => false),
-                        array("name" => "Draft", "selected" => false)
-                      );
-            if ($jobId > 0) {
-                $workItem = WorkItem::getById($jobId);
-                $statusList[0]['selected'] = false;
-                foreach($statusList as $key => $status) {
-                    if ($status['name'] == $workItem->getStatus()) {
-                        $statusList[$key]['selected'] = true;
-                        $statusMatch = true;
-                        breaK;
-                    }
-                }
-                if (!$statusMatch) {
-                    array_push($statusList, array("name" => $workItem->getStatus(), "selected" => true));
-                }
-            }
-        }
-        echo json_encode($statusList);
-        return;
-    }
-
     public function listView($projectName = null, $filterName = null) {
         $this->view = new JobsView();
         // $nick is setup above.. and then overwritten here -- lithium
