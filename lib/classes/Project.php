@@ -686,7 +686,7 @@ class Project {
                 $projectId = (int) $priorityProjects[$i];
                 $projectsOrder .= " WHEN `p`.`project_id` = '" . $projectId . "' THEN " . $i;
             }
-            $priorityOrder .= ' ELSE 9999 END';
+            $priorityOrder .= ' ELSE `p`.`project_id` + 9999 END';
         }
         $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
         $query = "

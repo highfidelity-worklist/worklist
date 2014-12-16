@@ -1484,7 +1484,7 @@ class WorkItem {
                 $projectId = (int) $priorityProjects[$i];
                 $projectsOrder .= " WHEN `w`.`project_id` = '" . $projectId . "' THEN " . $i;
             }
-            $projectsOrder .= ' ELSE 9999 END ASC';
+            $projectsOrder .= ' ELSE `w`.`project_id` + 9999 END ASC';
         }
 
         $sql  = "
