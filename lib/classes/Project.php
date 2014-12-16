@@ -683,10 +683,10 @@ class Project {
         if (count($priorityProjects)) {
             $priorityOrder = ' CASE ';
             for($i = 0; $i < count($priorityProjects); $i++) {
-                $projectName = mysql_real_escape_string($priorityProjects[$i]);
-                $priorityOrder .= " WHEN `p`.name = '" . $projectName . "' THEN " . $i;
+                $projectId = (int) $priorityProjects[$i];
+                $projectsOrder .= " WHEN `p`.`project_id` = '" . $projectId . "' THEN " . $i;
             }
-            $priorityOrder .= ' ELSE 9999 END';
+            $priorityOrder .= ' ELSE `p`.`project_id` + 9999 END';
         }
         $internalCond = $public_only ? ' AND `is_internal` = 0' : '';
         $query = "

@@ -1481,10 +1481,10 @@ class WorkItem {
         if (count($priorityProjects)) {
             $projectsOrder = ' CASE ';
             for($i = 0; $i < count($priorityProjects); $i++) {
-                $projectName = mysql_real_escape_string($priorityProjects[$i]);
-                $projectsOrder .= " WHEN `proj`.name = '" . $projectName . "' THEN " . $i;
+                $projectId = (int) $priorityProjects[$i];
+                $projectsOrder .= " WHEN `w`.`project_id` = '" . $projectId . "' THEN " . $i;
             }
-            $projectsOrder .= ' ELSE 9999 END ASC';
+            $projectsOrder .= ' ELSE `w`.`project_id` + 9999 END ASC';
         }
 
         $sql  = "
