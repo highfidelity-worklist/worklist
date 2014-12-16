@@ -1121,7 +1121,7 @@ class JobController extends Controller {
                 echo json_encode(array(
                     'success' => true,
                     'message' => $journal_message,
-                    'codeReviewStarted' true,
+                    'codeReviewStarted' => true,
                     'codeReviewFeeAmount' => $this->getCRFee($workitem)
                 ));
             }
