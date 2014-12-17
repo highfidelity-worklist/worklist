@@ -56,7 +56,7 @@ class Layout Extends MVCObject {
         $this->currentUser['is_runner'] = empty($_SESSION['is_runner']) ? false : true;
         $this->currentUser['runningProjects'] = json_encode($user->getProjectsAsRunner());
         $this->currentUser['is_payer'] = empty($_SESSION['is_payer']) ? false : true;
-        $this->currentUser['is_admin'] = empty($_SESSION['is_admin']) ? false : true;
+        $this->currentUser['is_admin'] = !$user->getIs_admin() ? false : true;
 
         if ($user_id) {
             Utils::initUserById($user_id);
