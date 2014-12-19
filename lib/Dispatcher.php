@@ -35,8 +35,8 @@ class Dispatcher {
         self::$dispatcher->get('/help', array('Help'));
         self::$dispatcher->any('/payments', array('Payments'));
         self::$dispatcher->get('/privacy', array('Privacy'));
-        self::$dispatcher->any('/reports', array('Payments', 'report'));
-        self::$dispatcher->post('/reports', array('Payments', 'reportApi'));
+        self::$dispatcher->any('/reports', array('Payments', 'reports'));
+        self::$dispatcher->post('/report', array('Payments', 'report'));
         self::$dispatcher->any('/resend', array('Resend'));
         self::$dispatcher->get('/status', array('Status', 'getView'));
         self::$dispatcher->any('/settings', array('Settings'));

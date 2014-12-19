@@ -402,7 +402,7 @@ var Reports = {
 
         $.ajax({
             type: "POST",
-            url: './reports',
+            url: './report',
             data: {
                 qType: 'detail',
                 page: npage,
@@ -506,7 +506,7 @@ var Reports = {
 
         $.ajax({
             type: "POST",
-            url: './reports',
+            url: './report',
             data: {
                 qType: 'payee',
                 page: npage,
@@ -612,7 +612,7 @@ var Reports = {
             var paidStatus = $('#paid-status').val();
             $.ajax({
                 type: "POST",
-                url: './reports',
+                url: './report',
                 data: {
                     qType: 'chart',
                     status: $('select[name=status]').val(),

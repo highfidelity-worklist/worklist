@@ -289,7 +289,7 @@ class PaymentsController extends Controller {
         parent::run();
     }
 
-    public function report() {
+    public function reports() {
         if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POST['paid'])) {
             $this->view = null;
             Utils::redirect("jobs");
@@ -342,7 +342,7 @@ class PaymentsController extends Controller {
         parent::run();
     }
 
-    public function reportApi() {
+    public function report() {
         $this->view = null;
 
         $limit = 30;
