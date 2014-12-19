@@ -332,7 +332,7 @@ class PaymentsController extends Controller {
                 $result = mysql_query($query);
                 $row = mysql_fetch_assoc($result);
                 if($row['bonus']) {
-                    bonus::markPaidById($id,$user_paid=0, $paid=1, true, $fund_id=false);
+                    Bonus::markPaidById($id,$user_paid=0, $paid=1, true, $fund_id=false);
                 } else {
                     Fee::markPaidById($id, $user_paid=0, $paid_notes='', $paid=1, true, $fund_id=false);
                 }
