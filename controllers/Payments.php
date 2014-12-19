@@ -289,7 +289,7 @@ class PaymentsController extends Controller {
         parent::run();
     }
 
-    public function report() {
+    public function reports() {
         if (empty($_SESSION['is_runner']) && empty($_SESSION['is_payer']) && isset($_POST['paid'])) {
             $this->view = null;
             Utils::redirect("jobs");
@@ -332,7 +332,7 @@ class PaymentsController extends Controller {
                 $result = mysql_query($query);
                 $row = mysql_fetch_assoc($result);
                 if($row['bonus']) {
-                    bonus::markPaidById($id,$user_paid=0, $paid=1, true, $fund_id=false);
+                    Bonus::markPaidById($id,$user_paid=0, $paid=1, true, $fund_id=false);
                 } else {
                     Fee::markPaidById($id, $user_paid=0, $paid_notes='', $paid=1, true, $fund_id=false);
                 }
@@ -342,7 +342,7 @@ class PaymentsController extends Controller {
         parent::run();
     }
 
-    public function reportApi() {
+    public function report() {
         $this->view = null;
 
         $limit = 30;

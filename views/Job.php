@@ -419,7 +419,7 @@ class JobView extends View {
         return $workitem->getCRStarted();
     }
 
-    public function codeReviewFee() {
+    public function codeReviewFeeAmount() {
         return number_format($this->read('crFee'), 2);
     }
 
