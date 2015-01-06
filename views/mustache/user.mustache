@@ -173,7 +173,7 @@
                     </table>
                 </div>
 
-                <p class = "info-label title-label-medium completed-jobs">Last 5 completed jobs</p>
+                <p class = "info-label title-label-medium completed-jobs">Last 5 jobs done</p>
                 <div>
                     <table class="table table-striped">
                         <thead>
@@ -186,7 +186,7 @@
                         <tbody>
                             {{#completedJobs}}
                             <tr>
-                                <td id="workitem-{{id}}"><a href="./{{id}}">#{{id}}</a> {{summary}}</td>
+                                <td id="workitem-{{id}}"><a href="./{{id}}">#{{id}} {{summary}}</a></td>
                                 <td>{{#cost}}{{cost}}{{/cost}}{{^cost}}0.00{{/cost}}</td>
                                 <td>{{#days}}{{days}} days{{/days}}{{^days}}1 day{{/days}}</td>
                             </tr>
