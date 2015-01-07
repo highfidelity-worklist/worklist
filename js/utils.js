@@ -95,7 +95,7 @@ var Utils = {
                 if (typeof settings.close == 'function') {
                     settings.close(this);
                 }
-                $('#' + id).remove();
+                $(id).remove();
             });
             $('#' + id).modal('show');
         });
