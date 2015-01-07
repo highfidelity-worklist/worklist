@@ -1951,7 +1951,7 @@ class User {
     public function completedJobsWithStats() {
         $sql = "
             SELECT w.id, w.summary, f.cost,
-            DATEDIFF ((SELECT MAX(change_date) FROM " .STATUS_LOG. " WHERE `status` = 'Merged'
+            DATEDIFF ((SELECT MAX(change_date) FROM " .STATUS_LOG. " WHERE `status` = 'Done'
             AND `worklist_id` = w.id), b.date) days
             FROM " . WORKLIST . " w
             LEFT JOIN " . FEES . " b ON b.worklist_id = w.id AND b.desc = 'Accepted Bid'
@@ -1963,7 +1963,7 @@ class User {
             ) f ON f.worklist_id = w.id
             WHERE
                 (`mechanic_id` = " . $this->getId() . " OR `creator_id` = " . $this->getId() . ") AND
-                w.`status` IN ('Merged', 'Done')
+                w.`status` = 'Done'
             GROUP BY w.`id`
             ORDER BY w.`id` DESC
             LIMIT 5";
