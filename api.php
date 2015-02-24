@@ -968,7 +968,11 @@ function pingTask() {
     $mail_msg .=" sent you a message: ";
     $mail_msg .= "</p><p>----------<br/>". nl2br($msg)."<br />----------</p><p>You can reply via email to ".$email."</p>";
 
-    $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
+    $headers = array(
+        'X-tag' => 'ping',
+        'From' => NOREPLY_SENDER,
+        'Reply-To' => '"' . $nickname . '" <' . $email . '>'
+    );
     if ($send_cc) {
         $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
     }
