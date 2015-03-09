@@ -949,7 +949,7 @@ function getUsersList() {
 }
 
 function pingTask() {
-    checkLogin();
+    Utils::checkLogin();
 
     // Get sender Nickname
     $id = Session::uid();
@@ -958,108 +958,26 @@ function pingTask() {
     $email = $user->getUsername();
     $msg = $_REQUEST['msg'];
     $send_cc = isset($_REQUEST['cc']) ? (int) $_REQUEST['cc'] : false;
+    // Get Receiver Info
+    $receiver = User::find(intval($_REQUEST['userid']));
+    $receiver_nick = $receiver->getNickname();
+    $receiver_email = $receiver->getUsername();
 
-    // ping about concrete task
-    if (isset($_REQUEST['id'])) {
-        $item_id = intval($_REQUEST['id']);
-        $who = $_REQUEST['who'];
-        // Get item
-        $item = new WorkItem($item_id);
+    $mail_subject = $nickname." sent you a message on Worklist";
+    $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
+    $mail_msg .=" sent you a message: ";
+    $mail_msg .= "</p><p>----------<br/>". nl2br($msg)."<br />----------</p><p>You can reply via email to ".$email."</p>";
 
-        if( $who == 'mechanic' ) {
-            // Get mechanic Nickname & email
-            $receiver_id = $item->getMechanicId();
-            $receiver = User::find($receiver_id);
-            $receiver_nick = $receiver->getNickname();
-            $receiver_email = $receiver->getUsername();
-        } else if( $who == 'runner' ) {
-            // Get runner Nickname & email
-            $receiver_id = $item->getRunnerId();
-            $receiver = User::find($receiver_id);
-            $receiver_nick = $receiver->getNickname();
-            $receiver_email = $receiver->getUsername();
-        } else if($who == 'creator' ) {
-            // Get runner Nickname & email
-            $receiver_id = $item->getCreatorId();
-            $receiver = User::find($receiver_id);
-            $receiver_nick = $receiver->getNickname();
-            $receiver_email = $receiver->getUsername();
-        } else if ($who == 'bidder') {
-            // Get bidder Nickname & email
-            if (isset($_REQUEST['bid_id'])) {
-                $bid_id = (int) $_REQUEST['bid_id'];
-            } else {
-                echo json_encode(array("error" => "missing parameter bid_id"));
-                die();
-            }
-            $bid = new Bid();
-            $bid->findBidById($bid_id);
-            $bid_info = $bid->toArray();
-            $receiver_id = $bid_info['bidder_id'];
-            $receiver = User::find($receiver_id);
-            $receiver_nick = $receiver->getNickname();
-            $receiver_email = $receiver->getUsername();
-        }
-        // Send mail
-        if ($who != 'bidder') {
-            $mail_subject = $nickname." sent you a message on Worklist for item #".$item_id;
-            $mail_msg .= "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
-            $mail_msg .= " sent you a message about item ";
-            $mail_msg .= "<a href='" . WORKLIST_URL . $item_id . "'>#" . $item_id . "</a>";
-            $mail_msg .= "</p><p>----------<br/>".$msg."<br/>----------</p><p>You can reply via email to: ".$email."</p>";
-            $headers = array('X-tag' => 'ping, task', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
-            if ($send_cc) {
-                $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
-            }
-            if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-                error_log('pingtask.php:id: Utils::send_email failed');
-            }
-
-        } else if ($who == 'bidder') {
-            $project = new Project();
-            $project->loadById($item->getProjectId());
-            $project_name = $project->getName();
-            $mail_subject = "#" . $item_id . " - " . $item->getSummary();
-            $mail_msg = "<p>The Designer for #" . $item_id . " sent a reply to your bid.</p>";
-            $mail_msg .= "<p>Message from " . $nickname . ":<br/>" . $msg . "</p>";
-            $mail_msg .= "<p>Your bid info:</p>";
-            $mail_msg .= "<p>Amount: " . $bid_info['bid_amount'] . "<br />Done in: " . $bid_info['bid_done_in'] . "<br />Expires: " . $bid_info['bid_expires'] . "</p>";
-            $mail_msg .= "<p>Notes: " . $bid_info['notes'] . "</p>";
-            $mail_msg .= "<p>You can view the job here. <a href='./" . $item_id . "?action=view'>#" . $item_id . "</a></p>";
-            $mail_msg .= "<p><a href=\"www.worklist.net\">www.worklist.net</a></p>";
-            $headers = array('From' => '"'. $project_name.'-bid reply" <'. SMS_SENDER . '>', '
-                X-tag' => 'ping, task',
-                'From' => NOREPLY_SENDER,
-                'Reply-To' => '"' . $nickname . '" <' . $email . '>');
-            if ($send_cc) {
-                $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
-            }
-            if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-                error_log('pingtask.php:id: Utils::send_email failed');
-            }
-
-        }
-
-    } else {
-
-        // just send general ping to user
-
-        $receiver = User::find(intval($_REQUEST['userid']));
-        $receiver_nick = $receiver->getNickname();
-        $receiver_email = $receiver->getUsername;
-
-        $mail_subject = $nickname." sent you a message on Worklist";
-        $mail_msg = "<p><a href='" . WORKLIST_URL .'user/' . $id . "'>" . $nickname . "</a>";
-        $mail_msg .=" sent you a message: ";
-        $mail_msg .= "</p><p>----------<br/>". nl2br($msg)."<br />----------</p><p>You can reply via email to ".$email."</p>";
-
-        $headers = array('X-tag' => 'ping', 'From' => NOREPLY_SENDER, 'Reply-To' => '"' . $nickname . '" <' . $email . '>');
-        if ($send_cc) {
-            $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
-        }
-        if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
-            error_log("pingtask.php:!id: Utils::send_email failed");
-        }
+    $headers = array(
+        'X-tag' => 'ping',
+        'From' => NOREPLY_SENDER,
+        'Reply-To' => '"' . $nickname . '" <' . $email . '>'
+    );
+    if ($send_cc) {
+        $headers['Cc'] = '"' . $nickname . '" <' . $email . '>';
+    }
+    if (!Utils::send_email($receiver_email, $mail_subject, $mail_msg, '', $headers)) {
+        error_log("pingtask.php:!id: Utils::send_email failed");
     }
     echo json_encode(array());
 }

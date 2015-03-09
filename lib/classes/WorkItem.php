@@ -439,7 +439,7 @@ class WorkItem {
                 WHERE `pl`.`project_id` = " . $this->getProjectId() . "
                   AND `l`.`label` IN ('" . implode("','", $this->labels) . "')";
             if (!mysql_query($query)) {
-                error_log('Workitem::saveLavels: ' . mysql_error() . ' - ' . $query);
+                error_log('Workitem::saveLabels: ' . mysql_error() . ' - ' . $query);
             }
             return true;
         } else {
@@ -449,6 +449,24 @@ class WorkItem {
 
     public function getLabels() {
         return $this->labels;
+    }
+
+    public function getWorkItemLabels () {
+        $query = "
+            SELECT label
+            FROM `" . LABELS . "` `l`
+            LEFT JOIN `" . WORKITEM_LABELS . "` `wl`
+              ON  `l`.id = `wl`.label_id
+            WHERE `wl`'workitem_id = " . $this->getId();
+        $result = mysql_query($query);
+        if (!$result) {
+            return false;
+        }
+        $ret = array();
+        while($label = mysql_fetch_assoc($result)) {
+            $ret[] = $label;
+        }
+        return $ret;
     }
 
     /**
