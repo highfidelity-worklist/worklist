@@ -259,6 +259,7 @@ class JobController extends Controller {
         if ($action =='status-switch') {
             $status = $_REQUEST['quick-status'];
             $status_error = '';
+
             if ($status == 'Done' && $workitem->getProjectId() == 0) {
                 $status_error = "No project associated with workitem. Could not set to DONE.";
             } else {
@@ -269,8 +270,7 @@ class JobController extends Controller {
                         if ($status == 'Merged') {
                             $workitem->addFeesToCompletedJob();
                         }
-
-                        if ($status != 'Draft'){
+                        if ($status != 'Draft') {
                             $new_update_message = "Status set to *$status*. ";
                             $notifyEmpty = false;
                             $status_change = '-' . ucfirst(strtolower($status));
@@ -292,7 +292,6 @@ class JobController extends Controller {
                                         array('changes' => $new_update_message));
                                     $notifyEmpty = true;
                                 }
-
                             $journal_message = '\\#' . $worklist_id . ' updated by @' . $_SESSION['nickname'] . ' ' . $new_update_message;
                         }
                     }
@@ -1809,7 +1808,7 @@ class JobController extends Controller {
                     }
                 }
                 // get current labels
-                $labelsCur = $workitem->getLabels();
+                $labelsCur = $workitem->getWorkItemLabels();
                 // have labels been updated?
                 $labelsDiff = array_diff($labelsArr, $labelsCur);
                 if (is_array($labelsDiff) && !empty($labelsDiff)) {
@@ -2002,9 +2001,9 @@ class JobController extends Controller {
     }
 
     private function canEdit($workitem, $user) {
-       return ((($workitem->getIsRelRunner() || ($user->getIs_admin() == 1 && $user->getIs_runner()))
+       return (($workitem->getIsRelRunner() || $user->getIs_admin() == 1 || $user->getIs_runner()
                  && $workitem->getStatus() != 'Done') || ($workitem->getCreatorId() == $user->getId()
-                 && ($workitem->getStatus() == 'Suggestion') ));
+                 && $workitem->getStatus() == 'Suggestion'));
     }
 
     private function getStatusList($workitem, $user) {
