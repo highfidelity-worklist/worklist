@@ -1,9 +1,3 @@
-/**
- * Worklist
- * Copyright (c) 2010 High Fidelity inc.
- * All rights reserved.
- */
-
 var Utils = {
     mustaches: [],
 

@@ -8,8 +8,6 @@
  *
  * This is just a wrapper class that handles a proper running and parsing of
  * the real dispatcher (Pux), for more information see https://github.com/c9s/Pux
- *
- * Copyright 2014 - High Fidelity, Inc.
  */
 
 require_once('Controller.php');
