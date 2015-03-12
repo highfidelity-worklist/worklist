@@ -1,8 +1,4 @@
 <?php
-//  Copyright (c) 2010, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-
 //  This class handles a Comment if you need more functionality don't hesitate to add it.
 //  But please be as fair as you comment your (at least public) methods - maybe another developer
 //  needs them too.

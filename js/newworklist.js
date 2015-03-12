@@ -31,6 +31,8 @@ var NewWorklist = {
         UserStats.init();
         NewWorklist.initJobSearch();
         NewWorklist.initAutocomplete();
+
+        $('#currentYear').html(new Date().getFullYear());
     },
 
     loginClick: function(event) {

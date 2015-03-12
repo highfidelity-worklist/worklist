@@ -1,9 +1,5 @@
 <?php
-//
-//  Copyright (c) 2011, LoveMachine Inc.
-//  All Rights Reserved.
-//  http://www.lovemachineinc.com
-//
+
 require_once('FundException.php');
 
 /*

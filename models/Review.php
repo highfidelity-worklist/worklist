@@ -1,9 +1,5 @@
 <?php
-/**
- * Worklist
- * Copyright (c) 2011 LoveMachine, LLc.
- * All rights reserved.
- */
+
 if (!defined('REVIEWS'))   define('REVIEWS', 'reviews');
 
 class Review extends DataObject {

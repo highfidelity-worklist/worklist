@@ -1,9 +1,5 @@
 <?php
-/**
- * Worklist
- * Copyright (c) 2011 LoveMachine, LLc.
- * All rights reserved.
- */
+
 if (!defined('BUDGETS'))   define('BUDGETS', 'budgets');
  
 class Budget extends DataObject {
