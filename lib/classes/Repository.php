@@ -1,12 +1,5 @@
 <?php
 
-/*
- * Copyright (c) 2010, LoveMachine Inc.
- * All Rights Reserved.
- * http://www.lovemachineinc.com
- *
- * Repository class
- */
 class Repository {
     private static function _webSvnUrl(){
         // 1. Read the config file.
