@@ -1,10 +1,4 @@
 <?php
-/**
- * Copyright (c) 2015, High Fidelity Inc.
- * All Rights Reserved.
- *
- * http://highfidelity.io
- */
 
 require_once ("config.php");
 require_once ("models/DataObject.php");
