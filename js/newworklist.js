@@ -31,7 +31,6 @@ var NewWorklist = {
         UserStats.init();
         NewWorklist.initJobSearch();
         NewWorklist.initAutocomplete();
-
     },
 
     loginClick: function(event) {
