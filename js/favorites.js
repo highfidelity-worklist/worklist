@@ -1,10 +1,3 @@
-/**
- * Copyright (c) 2014, High Fidelity Inc.
- * All Rights Reserved. 
- *
- * http://highfidelity.io
- */
-
 var WLFavorites = {
     favMissionText: null,
     init: function(containerID, favorite_user_id, fav_user_nickname) {

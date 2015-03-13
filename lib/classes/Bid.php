@@ -1,11 +1,5 @@
 <?php
-/*
- * Copyright (c) 2011, LoveMachine Inc.
- * All Rights Reserved.
- * http://www.lovemachineinc.com
- *
- * Bid class
- */
+
 class Bid {
     private $_row = null;
 

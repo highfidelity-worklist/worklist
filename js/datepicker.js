@@ -1,7 +1,3 @@
-//  Copyright (c) 2009, LoveMachine Inc.
-//  All Rights Reserved. 
-//  http://www.lovemachineinc.com
-
 /**
 This is a JavaScript library that will allow you to easily add some basic DHTML
 drop-down datepicker functionality to your Notes forms. This script is not as

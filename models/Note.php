@@ -1,9 +1,5 @@
 <?php
-/**
- * Worklist
- * Copyright (c) 2010 LoveMachine, LLc.
- * All rights reserved.
- */
+
 if (!defined('NOTES'))   define('NOTES', 'notes');
  
 class Note extends DataObject {
