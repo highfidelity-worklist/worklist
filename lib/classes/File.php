@@ -403,8 +403,8 @@ class File {
     // Uploads a file to S3.
     // $source_filename must be a full path   (ie. '/tmp/uploads/whatever.jpg')
     // $dest_filename   can be a path as well (ie. 'images/happyface.png')
-    // $filename sets the Content-Disposition header so when file is downloaded from S3 it has the original name
-    public static function s3Upload($source_filename, $dest_filename, $public = true, $filename) {
+    // $title sets the Content-Disposition header so when file is downloaded from S3 it has the original name
+    public static function s3Upload($source_filename, $dest_filename, $public = true, $title) {
         S3::setAuth(S3_ACCESS_KEY, S3_SECRET_KEY);
         if (S3::putObject(
             S3::inputFile($source_filename),
@@ -413,7 +413,7 @@ class File {
             ($public ? S3::ACL_PUBLIC_READ : ''),
             array(),
             array(
-                'Content-Disposition' => 'attachment; filename="' . $source_filename . '"'
+                'Content-Disposition' => 'attachment; filename="' . $title . '"'
             )
         )) {
             return true;
