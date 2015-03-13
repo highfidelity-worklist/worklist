@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2014, High Fidelity Inc.
+ * Copyright (c) 2015, High Fidelity Inc.
  * All Rights Reserved.
  *
  * http://highfidelity.io
