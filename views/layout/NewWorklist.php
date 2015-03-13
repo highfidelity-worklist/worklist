@@ -38,4 +38,9 @@ class NewWorklistLayout extends Layout {
         'js/budget.js',
         'js/newworklist.js'
     );
+
+    public function __construct() {
+        $this->currentYear = date('Y', strtotime(Model::now()));
+        parent::__construct();
+    }
 }
