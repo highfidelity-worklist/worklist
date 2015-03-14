@@ -147,7 +147,7 @@ class FileController extends JsonController {
 
             // move file to S3
             try {
-                File::s3Upload($file->getRealPath(), APP_ATTACHMENT_PATH . $file->getFileName());
+                File::s3Upload($file->getRealPath(), APP_ATTACHMENT_PATH . $file->getFileName(), true, $file->getTitle());
                 $file->setUrl(APP_ATTACHMENT_URL . $file->getFileName());
                 $file->save();
                 // delete the physical file now it is in S3
