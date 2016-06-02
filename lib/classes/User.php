@@ -1749,6 +1749,17 @@ class User {
         return $this->auth_tokens[$github_id];
     }
 
+    public function findUserByGithubId($github_id) {
+        $cond =
+            '`id` = (
+                SELECT t.user_id
+                FROM `' . USERS_AUTH_TOKENS . "` t
+                WHERE t.github_id = '%s'
+            )";
+        $where = sprintf($cond, $github_id);
+        return $this->loadUser($where);
+    }
+
     public function findUserByAuthToken($token, $github_id = GITHUB_OAUTH2_CLIENT_ID) {
         $cond =
             '`id` = (
@@ -1907,7 +1918,7 @@ class User {
         return $pullRequestStatus;
     }
 
-    public static function signup($username, $nickname, $password, $access_token, $country) {
+    public static function signup($username, $nickname, $password, $access_token, $githubId, $country) {
         $sql = "
             INSERT
             INTO " . USERS  . " (username, nickname, password, confirm_string, added, w9_status, country, is_active)
@@ -1928,7 +1939,7 @@ class User {
         }
         $ret = new User($user_id);
         if ($ret->getId() && !$ret->isGithub_connected()) {
-            $ret->storeCredentials($access_token);
+            $ret->storeCredentials($access_token, $githubId);
         }
         return $ret;
     }

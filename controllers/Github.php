@@ -87,9 +87,9 @@ class GithubController extends Controller {
                     if ($user->getId()) {
                         // user is already logged in in worklist, let's just check if credentials are
                         // already stored and save them in case they're not
-                        if (!$testUser->findUserByAuthToken($access_token)) {
+                        if (!$testUser->findUserByGithubId($gh_user->id)) {
                             // credentials not stored in db and not used by any other user
-                            $user->storeCredentials($access_token);
+                            $user->storeCredentials($access_token,$gh_user->id);
                         } else {
                             // credentials found, let's just sync account with GH data
                             $this->sync($user, $gh_user);
@@ -98,7 +98,7 @@ class GithubController extends Controller {
                     } else {
                         // user not logged in in worklist, let's check whether he already has a 
                         // github-linked account in worklist
-                        if ($user->findUserByAuthToken($access_token)) {
+                        if ($user->findUserByGithubId($gh_user->id)) {
                             // already linked account, let's log him in
                             if ($user->isActive()) {
                                 $this->sync($user, $gh_user);
@@ -226,11 +226,18 @@ class GithubController extends Controller {
                 throw new Exception("Invalid credentials.");
             }
 
+            $this->access_token = $access_token;
+            $gh_user = $this->apiRequest(GITHUB_API_URL . 'user');
+            if (!$gh_user) {
+                // maybe a wrong access token
+                Utils::redirect('./');
+            }
+
             User::login($user, false);
             $testUser = new User();
-            if (!$testUser->findUserByAuthToken($access_token)) {
+            if (!$testUser->findUserByGithubId($gh_user->id)) {
                 // github authorization not used by any other user
-                $user->storeCredentials($access_token);
+                $user->storeCredentials($access_token,$gh_user->id);
             }
             $success = true;
         } catch (Exception $e) {
@@ -305,7 +312,7 @@ class GithubController extends Controller {
             $usernameTestUser = new User();
             $tokenTestUser = new User();
             $usernameTestUser->findUserByUsername($username);
-            $tokenTestUser->findUserByAuthToken($access_token);
+
             if (empty($access_token)) {
                 throw new Exception("Access token not provided.");
             } else if (empty($country) || !array_key_exists($country, $countrylist)) {
@@ -316,8 +323,6 @@ class GithubController extends Controller {
                 throw new Exception("Invalid passwords.");
             } else if ($usernameTestUser->getId()) {
                 throw new Exception("Username already taken.");
-            } else if ($tokenTestUser->getId()) {
-                throw new Exception("Access token already in use.");
             }
 
             $this->access_token = $access_token;
@@ -325,6 +330,11 @@ class GithubController extends Controller {
 
             if (!$gh_user) {
                 throw new Exception("Unable to read user credentials from github.");
+            }
+
+            $tokenTestUser->findUserByGithubId($gh_user->id);
+            if ($tokenTestUser->getId()) {
+                throw new Exception("Github account already in use.");
             }
 
             $nicknameTestUser = new User();
@@ -340,7 +350,7 @@ class GithubController extends Controller {
                 }
             }
 
-            $user = User::signup($username, $nickname, $password, $access_token, $country);
+            $user = User::signup($username, $nickname, $password, $access_token, $gh_user->id, $country);
             $success = true;
 
             $this->sync($user, $gh_user);
