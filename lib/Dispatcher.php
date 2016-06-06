@@ -41,6 +41,8 @@ class Dispatcher {
         self::$dispatcher->get('/team', array('Team'));
         self::$dispatcher->get('/timeline', array('Timeline'));
         self::$dispatcher->get('/welcome', array('Welcome'));
+        self::$dispatcher->any('/forgot', array('Forgot'));
+        self::$dispatcher->any('/resetpass', array('ResetPass'));
         self::$dispatcher->any('/login', array('Github', 'federated'));
         self::$dispatcher->any('/signup', array('Github', 'federated'));
 
