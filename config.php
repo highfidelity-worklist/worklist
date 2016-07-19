@@ -74,8 +74,8 @@ if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.
 if (!defined('SECURE_SERVER_URL')) define("SECURE_SERVER_URL",'https://'.SERVER_NAME.'/'.APP_LOCATION);
 if (!defined('SVN_BASE_URL'))   define('SVN_BASE_URL', 'http://svn.worklist.net/listing.php?repname=');
 if (!defined('SVN_REV_URL'))    define('SVN_REV_URL', 'http://svn.worklist.net/revision.php?repname=');
-if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'feedback@lovemachineinc.com');
-if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@lovemachineinc.com');
+if (!defined('FEEDBACK_EMAIL')) define('FEEDBACK_EMAIL', 'contact@highfidelity.io');
+if (!defined('FINANCE_EMAIL'))  define('FINANCE_EMAIL', 'finance@highfidelity.io');
 
 if (!defined('DB_SERVER'))      define('DB_SERVER', 'dev-db.worklist.net');
 if (!defined('DB_USER'))        define('DB_USER', 'dev_worklist');
