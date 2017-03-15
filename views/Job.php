@@ -4,7 +4,7 @@ use \Michelf\Markdown;
 
 class JobView extends View {
     public $title = '%d: %s - Worklist';
-    public $og_description = 'Worklist job: %s'
+    public $og_description = 'Worklist job: %s';
 
     public $stylesheets = array(
         'css/legacy/workitem.css',
