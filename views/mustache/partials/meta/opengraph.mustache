@@ -1,4 +1,15 @@
 <meta property="og:title" content="{{metadata.title}}" />
 <meta name="description" content="{{metadata.description}}" />
+{{#og_description}}
+<meta property="og:description" content="{{og_description}}" />
+<meta name="twitter:description" content="{{og_description}}" />
+{{/og_description}}
+{{^og_description}}
 <meta property="og:description" content="{{metadata.description}}" />
+<meta name="twitter:description" content="{{metadata.description}}" />
+{{/og_description}}
 <meta property="og:image" content="{{metadata.image}}" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{metadata.title}}" />
+<meta name="twitter:site" content="@theworklist" />
+<meta name="twitter:image" content="{{metadata.image}}" />

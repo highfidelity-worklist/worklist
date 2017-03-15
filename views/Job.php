@@ -4,6 +4,7 @@ use \Michelf\Markdown;
 
 class JobView extends View {
     public $title = '%d: %s - Worklist';
+    public $og_description = 'Worklist job: %s'
 
     public $stylesheets = array(
         'css/legacy/workitem.css',
@@ -35,6 +36,7 @@ class JobView extends View {
         $this->user = $this->read('user');
         $this->workitem_project = $this->read('workitem_project');
         $this->title = sprintf($this->title, $worklist['id'], $worklist['summary']);
+        $this->og_description = sprintf($this->og_description, $worklist['summary']);
 
         $this->bids = $this->read('bids');
         $this->fees = $this->read('fees');
