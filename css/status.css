@@ -94,7 +94,7 @@ body {
     border-color: #007f7c;
 }
 
-a[href="https://gitter.im/highfidelity/hifi"] {
+#gitter-chat {
     display: inline-block;
     width: 180px;
     height: 120px;
@@ -109,7 +109,7 @@ a[href="https://gitter.im/highfidelity/hifi"] {
     background: transparent url(../images/gitter_icon.png) 15px 18px no-repeat;
 }
 
-a[href="https://gitter.im/highfidelity/hifi"]:hover {
+#gitter-chat:hover {
     text-decoration: none;
 }
 
