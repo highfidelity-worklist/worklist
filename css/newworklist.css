@@ -50,6 +50,7 @@ nav.navbar {
 nav.navbar .navbar-right > li > a[href^="./github/login"] {
     color: #fff;
     font-size: 1.4em;
+    margin-right: 20px;
 }
 
 
@@ -670,6 +671,17 @@ body > nav.navbar a.navbar-brand.wl-icon-worklist {
 .wl-icon-dialog-dims {
     width: 45px;
     height: 36px;
+}
+
+.wl-icon-gitter,
+.wl-icon-gitter\:regular {
+    background-image: url('../images/wl-icons/gitter.png');
+    background-repeat: no-repeat;
+}
+
+.wl-icon-gitter-dims {
+    width: 30px;
+    height: 24px;
 }
 
 .wl-icon-document-color,
