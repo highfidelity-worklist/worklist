@@ -1537,6 +1537,11 @@ class WorkItem {
                 WHERE `com`.`worklist_id` = `w`.`id`
               ) AS `comments`,
               (
+                SELECT COUNT(*)
+                FROM `" . BIDS . "` `bid`
+                WHERE `bid`.`worklist_id` = `w`.`id`
+              ) as `bids`,
+              (
                 SELECT GROUP_CONCAT(
                   DISTINCT IF(`l`.`id` IS NULL,
                     '',
@@ -1600,6 +1605,7 @@ class WorkItem {
                 "status" => $row['status'],
                 "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
                 "comments" => $row['comments'],
+                "bids" => $row['bids'],
                 "project_id" => $row['project_id'],
                 "project_name" => $row['project_name'],
                 "labels" => $row['labels'] != null ? $row['labels']: "",
