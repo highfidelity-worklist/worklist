@@ -64,7 +64,7 @@ var jobs = {
                 jobs.renderJobStatus(result.project_id, result.status);
 
             }
-            jobs.renderJob(result.id, result.project_id, result.summary, result.labels, result.comments, result.participants);
+            jobs.renderJob(result.id, result.project_id, result.summary, result.labels, result.comments, result.bids, result.participants);
         }
         if (fAfter) {
             fAfter();
@@ -103,8 +103,12 @@ var jobs = {
         $('#jobs-for-project-' + id).append(html);
     },
 
-    renderJob: function(id, project_id, summary, labels, comments, participants) {
-        var html = "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\"><li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li><li class=\"col-sm-5 col-md-5\"><a href=\"./"+ id +"\">"+summary+"</a></li><li class=\"col-sm-2 col-md-2 project-jobs-label\">";
+    renderJob: function(id, project_id, summary, labels, comments, bids, participants) {
+        var html =
+          "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\">" +
+          "  <li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li>" +
+          "  <li class=\"col-sm-4 col-md-4\"><a href=\"./"+ id +"\">"+summary+"</a></li>" +
+          "  <li class=\"col-sm-2 col-md-2 project-jobs-label\">";
         if($.trim(labels).length > 0) {
             var labels = labels.split(",");
             for(labelIndex in labels) {
@@ -112,16 +116,21 @@ var jobs = {
                 html += "<a class=" + (label[2] == '1' ? 'active' : '') + ">" + label[1] + "</a>";
             }
         }
-        html += "</li><li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
+        html +=
+          "  </li>" +
+          "  <li class=\"col-sm-2 col-md-2 project-jobs-participants\">";
         for (var participantIndex in participants) {
             if (participants[participantIndex].nickname != null) {
                 html += (participantIndex > 0 ? ", " : "") + "<a href=\"./user/" + participants[participantIndex].id + "\">" + $.trim(participants[participantIndex].nickname) + "</a>";
             }
         }
-        html += "</li>";
-        if (comments != "0") {
-            html += "<li class=\"col-sm-2 col-md-2 project-jobs-comment-count\"><a>" + comments +" comments</a></li></ul>";
-        }
+        html +=
+          "  </li>" +
+          "  <li class=\"col-sm-3 col-md-3 project-jobs-comment-count\">" +
+              (comments ? '<a>' + comments + ' <i class="fa fa-comment-o" aria-hidden="true"></i></a>' : '' ) +
+              (bids ? '<a>' + bids + ' bid' + (bids > 1 ? 's' : '') + '</a>' : '' ) +
+          "  </li>" +
+          "</ul>";
         $('#jobs-for-project-' + project_id).append(html);
     },
 
