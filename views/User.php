@@ -4,7 +4,6 @@ class UserView extends View {
     public $title = "%s's profile - Worklist";
 
     public $stylesheets = array(
-        'css/favorites.css',
         'css/userinfo.css',
         'css/user.css'
     );
@@ -12,7 +11,6 @@ class UserView extends View {
     public $scripts = array(
         'js/jquery/jquery.blockUI.js',
         'js/paginator.js',
-        'js/favorites.js',
         'js/userinfo.js'
     );
 

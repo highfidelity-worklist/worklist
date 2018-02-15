@@ -179,7 +179,7 @@ body > .container-fluid h3 {
     font-size: 14px;
     margin-top: 21px;
     line-height: 17px;
-    padding-bottom: 12px;    
+    padding-bottom: 12px;
 }
 
 #globalinfo > div > .info-label:first-child a,
@@ -477,14 +477,14 @@ p.bottom {
 .userName {
     color: #007F7C;
     font-size: 28px;
-    line-height: 60px;
+    line-height: 30px;
     vertical-align: top;
     padding: 6px 11px;
     width: 293px;
     font-family:Helvetica Neue, Helvetica, Arial, sans-serif;
     font-weight: bold;
     display: inline-block;
-    margin-bottom: 45px;
+    margin-top: 58px;
     white-space: nowrap;
 }
 
@@ -511,39 +511,13 @@ p.bottom {
     line-height: 22px;
     vertical-align: top;
     padding: 6px 0;
-    border-bottom: 2px solid #E1E8EA;
-    border-top: 2px solid #e1e8ea;
     width: 100%;
     font-weight: bold;
+    margin-top: 69px;
 }
 
 .profileContactFavorite span{
     font-weight: normal;
-}
-
-.profileContactFavorite,
-.profileInfoFavorite {
-    margin-top: 61px;
-}
-
-.profileInfoFavorite {
-    color: #666;
-    font-size: 12px;
-    line-height: 22px;
-    vertical-align: top;
-    padding: 6px 11px;
-    border-bottom: 2px solid #E1E8EA;
-    border-top: 2px solid #e1e8ea;
-    width: 310px;
-    font-weight: bold;
-    display: inline-block;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-}
-
-.profileInfoFavorite>img {
-    vertical-align: middle;
 }
 
 .favorite_user,

@@ -81,9 +81,6 @@ if(validateAction()) {
                 Utils::validateAPIKey();
                 checkRemovableProjects();
                 break;
-            case 'setFavorite':
-                setFavorite();
-                break;
             case 'getBonusHistory':
                 getBonusHistory();
                 break;
@@ -623,58 +620,6 @@ function dump_row_values($row) {
     }
     $dump .= '</p>';
     return $dump;
-}
-
-function setFavorite() {
-    if ( !isset($_REQUEST['favorite_user_id']) ||
-         !isset($_REQUEST['newVal']) ) {
-        echo json_encode(array( 'error' => "Invalid parameters!"));
-    }
-    $userId = Session::uid();
-    if ($userId > 0) {
-        Utils::initUserById($userId);
-        $user = new User();
-        $user->findUserById( $userId );
-
-        $favorite_user_id = (int) $_REQUEST['favorite_user_id'];
-        $newVal = (int) $_REQUEST['newVal'];
-        $users_favorites  = new Users_Favorite();
-        $res = $users_favorites->setMyFavoriteForUser($userId, $favorite_user_id, $newVal);
-        if ($res == "") {
-            // send chat if user has been marked a favorite
-            $favorite_user = new User();
-            $favorite_user->findUserById($favorite_user_id);
-            if ($newVal == 1) {
-
-                $resetUrl = SECURE_SERVER_URL . 'user/' . $favorite_user_id ;
-                $resetUrl = '<a href="' . $resetUrl . '" title="Your profile">' . $resetUrl . '</a>';
-                $data = array();
-                $data['link'] = $resetUrl;
-                $nick = $favorite_user->getNickname();
-                if (! Utils::sendTemplateEmail($favorite_user->getUsername(), 'trusted', $data)) {
-                    error_log("setFavorite: Utils::send_email failed on favorite notification");
-                }
-
-                // get favourite count
-                $count = $users_favorites->getUserFavoriteCount($favorite_user_id);
-                if ($count > 0) {
-                    if ($count == 1) {
-                        $message = "**{$count}** person";
-                    } else {
-                        $message = "**{$count}** people";
-                    }
-                    $journal_message = '@' . $nick . ' is now trusted by ' . $message . '!';
-                    //sending journal notification
-                    Utils::systemNotification(stripslashes($journal_message));
-                }
-            }
-            echo json_encode(array( 'return' => "Trusted saved."));
-        } else {
-            echo json_encode(array( 'error' => $res));
-        }
-    } else {
-        echo json_encode(array( 'error' => "You must be logged in!"));
-    }
 }
 
 function getBonusHistory() {
