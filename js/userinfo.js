@@ -7,7 +7,7 @@ var UserInfo = {
 
         // set the current values
         $('#manager').val(userInfo.manager);
-        $('#referrer').val(userInfo.referred_by);        
+        $('#referrer').val(userInfo.referred_by);
 
         // master function to handle change in dropdowns
         $('select', '#admin').change(function() {
@@ -458,7 +458,6 @@ var UserInfo = {
             $('#profile-nav a[href="#' + tab + '"]').click();
         }
 
-        $('#user-loves + a').click(UserInfo.displayAllLove);
     },
 
     setW9Status: function(status, reason, fAfter) {
@@ -588,25 +587,6 @@ var UserInfo = {
                             });
                             return false;
                         });
-                    }
-                });
-            }
-        });
-        return false;
-    },
-
-    displayAllLove: function() {
-        var itemsPerPage = 5;
-        var nextPage = $('#user-loves cite').length / itemsPerPage + 1;
-        $.ajax({
-            type: 'GET',
-            url: './user/loves/' + userInfo.nickName + '/' + nextPage + '/' + itemsPerPage,
-            dataType: 'json',
-            success: function(json) {
-                Utils.parseMustache('partials/user/loves', json, function(parsed) {
-                    $('#user-loves').append(parsed);
-                    if (json.page == json.pages) {
-                        $('#user-loves + a').remove();
                     }
                 });
             }
