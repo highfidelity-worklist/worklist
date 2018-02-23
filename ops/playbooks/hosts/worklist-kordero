@@ -1,0 +1,9 @@
+[wl-kordero]
+worklist.kordero.me
+
+[web:children]
+wl-kordero
+
+[db:children]
+wl-kordero
+
