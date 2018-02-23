@@ -64,7 +64,7 @@ var jobs = {
                 jobs.renderJobStatus(result.project_id, result.status);
 
             }
-            jobs.renderJob(result.id, result.project_id, result.summary, result.labels, result.comments, result.bids, result.participants);
+            jobs.renderJob(result.id, result.project_id, result.summary, result.labels, parseInt(result.comments), parseInt(result.bids), result.participants);
         }
         if (fAfter) {
             fAfter();
@@ -107,7 +107,7 @@ var jobs = {
         var html =
           "<ul data-job-id=\""+ id +"\" class=\"project-jobs col-sm-12 col-md-12 dd-max-width\">" +
           "  <li class=\"col-sm-1 col-md-1\"><a href=\"./"+ id +"\">#"+id+"</a></li>" +
-          "  <li class=\"col-sm-4 col-md-4\"><a href=\"./"+ id +"\">"+summary+"</a></li>" +
+          "  <li class=\"col-sm-4 col-md-5\"><a href=\"./"+ id +"\">"+summary+"</a></li>" +
           "  <li class=\"col-sm-2 col-md-2 project-jobs-label\">";
         if($.trim(labels).length > 0) {
             var labels = labels.split(",");
