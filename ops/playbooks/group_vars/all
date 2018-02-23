@@ -1,4 +1,6 @@
 ---
+
+domain: "{{ settings.domain | default('worklist.dev') }}"
 repo:
   url: "{{ settings.repo_url | default('git@github.com:highfidelity-worklist/worklist.git') }}"
   branch: "{{ settings.repo_branch | default('master') }}"
