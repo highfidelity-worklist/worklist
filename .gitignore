@@ -1,6 +1,7 @@
 
 # local install configuration
 /server.local.php
+/phinx.yml
 
 # dependencies & composer.lock
 /vendor
@@ -10,11 +11,10 @@ composer.phar
 # temp dir
 /tmp
 
-# apache dir-level configuration
-/.htaccess
-
 # commonly used for error logging on sandboxes
 /php.errors
 
 .idea
 /uploads
+
+/.vagrant

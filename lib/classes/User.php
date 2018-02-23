@@ -1053,7 +1053,7 @@ class User {
     }
 
     public function getPaypal_verified() {
-        return $this->paypal_verified;
+        return (int) $this->paypal_verified;
     }
 
     public function isPaypalVerified() {
@@ -1926,12 +1926,13 @@ class User {
                 '" . mysql_real_escape_string($username) . "',
                 '" . mysql_real_escape_string($nickname) . "',
                 '{crypt}" . mysql_real_escape_string(Utils::encryptPassword($password)) . "',
-                '" . uniqid() . "',
+                '" . substr(md5(uniqid()), 0, 10) . "',
                 NOW(),
                 'not-applicable',
                 '" . mysql_real_escape_string($country) . "',
-                0
+                1
             )";
+
         $res = mysql_query($sql);
         $user_id = mysql_insert_id();
         if (!$user_id) {
@@ -2681,5 +2682,13 @@ class User {
             throw new Exception('User::sendLove: ' . mysql_error());
         }
         return mysql_insert_id();
+    }
+
+    static function getCountryCodeFromName($name) {
+        global $countrylist;
+        foreach($countrylist as $code => $country) {
+            if (strtolower($country) == strtolower($name)) return $code;
+        }
+        return 'US';
     }
 }

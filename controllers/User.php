@@ -206,8 +206,8 @@ class UserController extends Controller {
         $this->write('user', $user);
 
         $this->write('Annual_Salary', $user->getAnnual_salary() > 0 ? $user->getAnnual_salary() : '');
-        $this->write('manager', $user->getManager());
-        $this->write('referred_by', $user->getReferred_by());
+        $this->write('manager', intval($user->getManager()));
+        $this->write('referred_by', intval($user->getReferred_by()));
 
         if ($action =='create-sandbox') {
             $result = array();

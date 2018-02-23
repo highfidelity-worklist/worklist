@@ -5,6 +5,8 @@
 //  http://www.lovemachineinc.com
 //
 
+require_once('vendor/autoload.php');
+
 //Joanne added the following line for the journal attachments
 $current_dir = dirname(__FILE__) . '/';
 
@@ -64,9 +66,7 @@ if (!defined('CLASSES_PATH'))   define('CLASSES_PATH', realpath(LIB_PATH . '/cla
 
 if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 
-//http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
-if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.worklist.net');
-if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.worklist.net');
+if (!defined('SERVER_NAME'))    define('SERVER_NAME','worklist.net');
 if (!defined('SERVER_URL'))     define('SERVER_URL','https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
@@ -146,7 +146,7 @@ if (!defined("PB_TIMEOUT_3")) 	define("PB_TIMEOUT_3", 600);
 if (!defined('USER_TIMEOUT'))    define('USER_TIMEOUT', 30);
 if (!defined('USER_IDLETIME'))    define('USER_IDLETIME', 15);
 
-if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist/");
+if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://worklist.net/");
 
 //<joanne>
 if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");
@@ -165,14 +165,14 @@ if (!defined("JOURNAL_PICTURE_EMAIL_DOMAIN")) define("JOURNAL_PICTURE_EMAIL_DOMA
 
 //<kordero>
 if(!defined("ADMINS_EMAILS"))
-  define("ADMINS_EMAILS", 
-    "ryan@lovemachineinc.com " . 
-    "garth.johnson@gmail.com " . 
-    "philip@lovemachineinc.com " . 
-    "tj@coffeeandpower.com " . 
-    "danbrown@php.net " . 
-    "heiberger@earthlink.net " . 
-    "fred@lovemachineinc.com " . 
+  define("ADMINS_EMAILS",
+    "ryan@lovemachineinc.com " .
+    "garth.johnson@gmail.com " .
+    "philip@lovemachineinc.com " .
+    "tj@coffeeandpower.com " .
+    "danbrown@php.net " .
+    "heiberger@earthlink.net " .
+    "fred@lovemachineinc.com " .
     "alexi@kostibas.com"
   );
 
@@ -390,7 +390,7 @@ defineOnce('GOOGLE_ANALYTICS_TOKEN', '1/kTlFYUDNtShl_ejOORk1v8fAKhmj3FmIam1i-NTM
 defineOnce('GOOGLE_ANALYTICS_PROFILE_ID', '46390018');
 
 $countryurllist = array(
-    'AF'=>'Afghanistan',                                                        
+    'AF'=>'Afghanistan',
     'AL'=>'Albania',
     'ag'=>'Algeria',
     'Aq'=>'American Samoa',
@@ -1319,5 +1319,4 @@ defineOnce('PAYPAL_ENVIRONMENT', 'sandbox'); // 'sandbox' or 'beta-sandbox' or '
 // hifi,stack-manager,hifi-docs,hifi-website,worklist,data,base8,baseios,DSDNS,love
 defineOnce('PROJECT_LISTING_PRIORITY', '181,231,230,215,99,229,211,217,218,80');
 
-require_once('vendor/autoload.php');
 require_once('lib/Core.php');

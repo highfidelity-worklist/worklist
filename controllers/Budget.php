@@ -503,7 +503,8 @@ class BudgetController extends JsonController {
                     '$budget_note',
                     1
                 )";
-            if (!mysql_unbuffered_query($query)){
+            mysql_unbuffered_query($query);
+            if (mysql_error()){
                 throw new Exception('Error in query.');
             }
             $id =  mysql_insert_id();
@@ -526,7 +527,8 @@ class BudgetController extends JsonController {
                     NOW(),
                     '$source'
                 )";
-            if (!mysql_unbuffered_query($query)){
+            mysql_unbuffered_query($query);
+            if (mysql_error()){
                 throw new Exception('Error in query.');
             }
             if (!$budget_seed) {
@@ -538,7 +540,8 @@ class BudgetController extends JsonController {
                 SET `is_runner` = 1
                 WHERE `id` = $receiver_id
                   AND `is_runner` = 0 ";
-            if (!mysql_unbuffered_query($query2)) {
+            mysql_unbuffered_query($query2);
+            if (mysql_error()) {
                 throw new Exception('Error in query.');
             }
 

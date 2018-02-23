@@ -83,7 +83,7 @@ class SettingsController extends Controller {
 
             if ($paypal_email != $user->getPaypal_email()) {
                 $saveArgs = array_merge($saveArgs, array('paypal' => 0, 'paypal_email' => 0, 'payway' => 1));
-                $messages[] = "Your payment information has been updated.";                
+                $messages[] = "Your payment information has been updated.";
             }
 
             if (!$user->getW9_accepted() && $user->getCountry() == 'US') {
@@ -154,15 +154,15 @@ class SettingsController extends Controller {
 
                 // Email user
                 if (!empty($messages)) {
-                    $to = $_SESSION['username'];
+                    $to = $_SESSION['username'] ?: $paypal_email;
                     $subject = "Settings";
-                    $body  = 
+                    $body  =
                         '<p>Congratulations!</p>' .
                         '<p>You have successfully updated your settings with Worklist: <ul>';
                     foreach ($messages as $msg) {
                         $body .= '<li>'. $msg . '</li>';
                     }
-                    $body .= 
+                    $body .=
                         '</ul>' .
                         '<p><br/>You can view your settings <a href=' . $settings_link . '>here</a></p>' .
                         '<p><a href=' . $worklist_link . '>www.worklist.net</a></p>';
@@ -177,11 +177,11 @@ class SettingsController extends Controller {
                   $_SESSION['timezone'] = trim($_POST['timezone']);
                 }
 
+                $this->view = null;
                 if (isset($confirm_txt) && ! empty($confirm_txt)) {
                     echo $confirm_txt;
-                    exit;
+                    die;
                 }
-                $this->view = null;
 
                 // reset session data
                 $user->findUserById($userId);
