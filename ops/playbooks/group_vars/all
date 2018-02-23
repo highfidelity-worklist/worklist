@@ -2,7 +2,7 @@
 
 domain: "{{ settings.domain | default('worklist.dev') }}"
 repo:
-  url: "{{ settings.repo_url | default('git@github.com:highfidelity-worklist/worklist.git') }}"
+  url: "{{ settings.repo_url | default('https://github.com/highfidelity-worklist/worklist') }}"
   branch: "{{ settings.repo_branch | default('master') }}"
 database:
   port: "{{ settings.db_port | default('3306') }}"
