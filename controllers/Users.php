@@ -7,7 +7,7 @@ class UsersController extends Controller {
         list($action, $format) = preg_split('/\./', $action, 2);
         switch($action) {
             case 'dashbard':
-                $method = 'auth'
+                $method = 'auth';
             case 'index':
             default:
                 $method = 'index';
