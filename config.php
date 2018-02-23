@@ -66,9 +66,7 @@ if (!defined('CLASSES_PATH'))   define('CLASSES_PATH', realpath(LIB_PATH . '/cla
 
 if (!defined('APP_ENV'))        define('APP_ENV', 'production');
 
-//http[s]://[[SECURE_]SERVER_NAME]/[LOCATION/]index.php   #Include a TRAILING / if LOCATION is defined
-if (!defined('SERVER_NAME'))    define('SERVER_NAME','dev.worklist.net');
-if (!defined('SANDBOX_SERVER')) define('SANDBOX_SERVER','dev.worklist.net');
+if (!defined('SERVER_NAME'))    define('SERVER_NAME','worklist.net');
 if (!defined('SERVER_URL'))     define('SERVER_URL','https://'.SERVER_NAME.'/'.APP_LOCATION); //Include [:port] for standard http traffic if not :80
 if (!defined('SERVER_BASE'))    define('SERVER_BASE','https://'.SERVER_NAME.'/'.APP_BASE);
 //SSL Not enabled on development
@@ -148,7 +146,7 @@ if (!defined("PB_TIMEOUT_3")) 	define("PB_TIMEOUT_3", 600);
 if (!defined('USER_TIMEOUT'))    define('USER_TIMEOUT', 30);
 if (!defined('USER_IDLETIME'))    define('USER_IDLETIME', 15);
 
-if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://dev.worklist.net/worklist/");
+if (!defined("WORKLIST_URL"))   define("WORKLIST_URL", "https://worklist.net/");
 
 //<joanne>
 if (!defined("SENDLOVE_URL"))   define("SENDLOVE_URL", "https://lovemachine.sendlove.us/love");

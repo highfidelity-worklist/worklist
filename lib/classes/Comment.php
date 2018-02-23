@@ -391,7 +391,7 @@ class Comment
     private function getCommentColumns()
     {
         $columns = array();
-        $result = mysql_query('SHOW COLUMNS FROM `' . COMMENTS);
+        $result = mysql_query('SHOW COLUMNS FROM ' . COMMENTS);
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_assoc($result)) {
                 $columns[] = $row;

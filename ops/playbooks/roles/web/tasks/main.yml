@@ -15,6 +15,7 @@
     - php-mysql
     - php-zip
     - php-mbstring
+    - php-xml
     - libzend-framework-php
 
 - name: ssl dir

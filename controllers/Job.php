@@ -23,7 +23,7 @@ class JobController extends Controller {
 
     public function view($job_id) {
         $this->write('statusListRunner', array("Draft", "Suggestion", "Bidding", "In Progress", "QA Ready", "Code Review", "Merged", "Done", "Pass"));
-        $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged", "Pass");
+        $statusListMechanic = array("In Progress", "QA Ready", "Code Review", "Merged");
         $this->write('statusListMechanic', $statusListMechanic);
         $this->write('statusListCreator', array("Suggestion", "Pass"));
 

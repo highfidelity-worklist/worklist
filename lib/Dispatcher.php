@@ -86,7 +86,7 @@ class Dispatcher {
         self::$dispatcher->any('/:controller(/:method(/:args))', null, array(
             'require' => array(
                 'controller' => '\w+',
-                'method' => '\w[a-zA-Z0-9-]+',
+                'method' => '\w[a-zA-Z0-9-]*',
                 'args' => '.*'
             ),
             'default' => array(

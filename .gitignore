@@ -11,11 +11,10 @@ composer.phar
 # temp dir
 /tmp
 
-# apache dir-level configuration
-/.htaccess
-
 # commonly used for error logging on sandboxes
 /php.errors
 
 .idea
 /uploads
+
+/.vagrant

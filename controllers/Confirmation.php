@@ -30,7 +30,7 @@ class ConfirmationController extends Controller {
                 $jumbotron = "
                     <h2>Welcome to Worklist!</h2>
                     <p>
-                      Click on a job and add your bid, or come join us in our 
+                      Click on a job and add your bid, or come join us in our
                       <a href='https://gitter.im/highfidelity/worklist' target='_blank'>public chat room</a>.
                       Questions? Check out the <a href='./help'>help tab</a>.
                     </p>";
@@ -62,9 +62,9 @@ class ConfirmationController extends Controller {
                 Utils::redirect('login'); //we are not logged in
             }
             //save new email
-            $user->setUsername($new_email); 
+            $user->setUsername($new_email);
             $user->save();
-            $_SESSION['username'] = $new_email; 
+            $_SESSION['username'] = $new_email;
             $jumbotron = "<h2>Thank you for confirming your changed email address.</h2>";
         }
 

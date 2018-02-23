@@ -582,12 +582,12 @@ class Project {
             "'".mysql_real_escape_string($this->getDescription())."', ".
             "'".mysql_real_escape_string($this->getShortDescription())."', ".
             "'".mysql_real_escape_string($this->getWebsite()) . "', " .
-            "'".mysql_real_escape_string($this->getBudget())."', ".
+            "'".floatval($this->getBudget())."', ".
             "'".mysql_real_escape_string($this->getRepository())."', ".
             "'".mysql_real_escape_string($this->getContactInfo())."', ".
             "'".mysql_real_escape_string($this->getActive())."', ".
             "'".mysql_real_escape_string($this->getOwnerId())."', ".
-            "'".mysql_real_escape_string($this->getTestFlightEnabled())."', ".
+            "'".intval($this->getTestFlightEnabled())."', ".
             "'".mysql_real_escape_string($this->getTestFlightTeamToken())."', ".
             "'".mysql_real_escape_string($this->getLogo())."', ".
             "NOW(), ".

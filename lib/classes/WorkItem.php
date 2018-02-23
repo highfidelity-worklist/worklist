@@ -575,7 +575,7 @@ class WorkItem {
             "'".mysql_real_escape_string($this->getNotes())."', ".
             "'".intval($this->getBugJobId())."', ".
             "NOW(), ".
-            "'".$this->getIs_bug()."', ".
+            (boolval($this->getIs_bug()) ? 'true' : 'false') .", ".
             "NOW(), ".
             mysql_real_escape_string($this->getIs_internal()) . ", " .
             mysql_real_escape_string($this->getAssigned_id()) . ")";
@@ -999,52 +999,6 @@ class WorkItem {
 
         $project = new Project($this->getProjectId());
 
-        // Get the repo for this project
-        $repository = $this->getRepository();
-        $job_id = $this->getId();
-        /* Verify whether the user already has this repo forked on his account
-        *If not create the fork
-        *Check for existing unix account in dev.  If new, make call to create account
-        */
-        $GitHubUser = new User($bid_info['bidder_id']);
-        $url = TOWER_API_URL;
-        $fields = array(
-            'action' => 'create_unixaccount',
-            'nickname' => $bidder->getNickname()
-        );
-        $result = CURLHandler::Post($url, $fields);
-        if (!$GitHubUser->verifyForkExists($project)) {
-            $forkStatus = $GitHubUser->createForkForUser($project);
-            $bidderEmail = $bidder->getUsername();
-            $emailTemplate = 'forked-repo';
-            $data = array(
-                'project_name' => $forkStatus['data']['full_name'],
-                'nickname' => $bidder->getNickname(),
-                'users_fork' => $forkStatus['data']['git_url'],
-                'master_repo' => str_replace('https://', 'git://', $project->getRepository())
-            );
-            $senderEmail = 'Worklist <contact@worklist.net>';
-            Utils::sendTemplateEmail($bidderEmail, $emailTemplate, $data, $senderEmail);
-            sleep(10);
-        }
-        // Create a branch for the user
-        if (!$forkStatus['error']) {
-            $branchStatus = $GitHubUser->createBranchForUser($job_id, $project);
-            $bidderEmail = $bidder->getUsername();
-            $emailTemplate = 'branch-created';
-            $data = array(
-                'branch_name' => $job_id,
-                'nickname' => $bidder->getNickname(),
-                'users_fork' => $forkStatus['data']['git_url'],
-                'master_repo' => str_replace('https://', 'git://', $project->getRepository())
-            );
-
-            $bid_info = array_merge($data, $bid_info);
-        }
-        if (!$branchStatus['error']) {
-            $bid_info['sandbox'] = $branchStatus['branch_url'];
-        }
-
         $bid_info['bid_done'] = strtotime('+' . $bid_info['bid_done_in'], time());
 
         // Adding transaction wrapper around steps
@@ -1055,7 +1009,7 @@ class WorkItem {
             $sql = "UPDATE `" . WORKLIST  ."` SET " .
                 ($is_mechanic ? "`mechanic_id` =  '" . $bid_info['bidder_id'] . "', " : '') .
                 ($is_runner_or_assignee && $user_id > 0 && $workitem_info['runner_id'] != $user_id ? "`runner_id` =  '".$user_id."', " : '') .
-                " `status` = 'In Progress',`status_changed`=NOW(),`sandbox` = '" . $bid_info['sandbox'] . "',`budget_id` = " . $budget_id .
+                " `status` = 'In Progress',`status_changed`=NOW(),`sandbox` = '',`budget_id` = " . $budget_id .
                 " WHERE `" . WORKLIST . "`.`id` = " . $bid_info['worklist_id'];
             if (! $myresult = mysql_query($sql)) {
                 error_log("AcceptBid:UpdateMechanic failed: ".mysql_error());
@@ -1537,6 +1491,11 @@ class WorkItem {
                 WHERE `com`.`worklist_id` = `w`.`id`
               ) AS `comments`,
               (
+                SELECT COUNT(*)
+                FROM `" . BIDS . "` `bid`
+                WHERE `bid`.`worklist_id` = `w`.`id`
+              ) as `bids`,
+              (
                 SELECT GROUP_CONCAT(
                   DISTINCT IF(`l`.`id` IS NULL,
                     '',
@@ -1600,6 +1559,7 @@ class WorkItem {
                 "status" => $row['status'],
                 "participants" => array_unique(array(array("nickname" => $row['creator_nickname'], "id" => $row['creator_id']), array("nickname" => $row['runner_nickname'], "id" => $row['runner_id']),array("nickname" => $row['mechanic_nickname'],"id" => $row['mechanic_id'])), SORT_REGULAR),
                 "comments" => $row['comments'],
+                "bids" => $row['bids'],
                 "project_id" => $row['project_id'],
                 "project_name" => $row['project_name'],
                 "labels" => $row['labels'] != null ? $row['labels']: "",
