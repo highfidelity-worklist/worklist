@@ -30,7 +30,6 @@
     version: "{{ repo.branch }}"
     dest: "/var/www/{{ domain }}"
     force: yes
-    key_file: /etc/ssh/deploy_keys/id_rsa
     accept_hostkey: yes
   when: vagrant_box == false
 
