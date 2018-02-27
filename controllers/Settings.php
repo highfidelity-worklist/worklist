@@ -74,6 +74,11 @@ class SettingsController extends Controller {
                 $_POST['system_delete']
             );
 
+            $hmd_owner = ($_POST['hmd_owner']);
+            if ($hmd_owner != $user->getHmd_owner()) {
+                $saveArgs['hmd_owner'] = 1;
+            }
+
             $paypal = 0;
             $paypal_email = '';
             // defaulting to paypal at this stage

@@ -157,6 +157,7 @@ var Settings = {
                 review_notif: $('#review_notif').prop('checked') ? 1 : 0,
                 self_notif: $('#self_notif').prop('checked') ? 1 : 0,
                 about: $("#about").val(),
+                hmd_owner: $("#hmd_owner").val(),
                 paypal_email: $("#paypal_email").val(),
                 payway: $("#payway").val(),
                 system_operating_systems: arrayValueForTagWithName('input', 'system_operating_systems'),

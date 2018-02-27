@@ -22,6 +22,14 @@
                     <div id="user-avatar">
                         <img id="avatar" src="{{& userAvatarUrl}}" title="{{profileUser.getNickname}}'s picture" />
                         <div class="userName" id="userName">{{profileUser.getNickname}}</div>
+<<<<<<< HEAD
+                        <div class="profileInfoFavorite" id="profileInfoFavorite">
+                            <div class="{{favoriteClass}}" title="{{favoriteTitle}}">&nbsp;</div>
+                            <span class="profileFavoriteText" data-favorite-count="{{favorite_count}}"></span>
+                        </div>
+                        {{& profileInfoFavorite}}
+=======
+>>>>>>> 6c28e951042c0af7252b20503759a6b413b11baf
                     </div>
                     <div class="row" id="globalinfo">
                         <div class="col-md-6 col-xs-12">
@@ -71,6 +79,14 @@
                 </p>
                 <p id="info-about">{{profileUser.getAbout}}</p>
 
+                <div id="userHardware">
+                  <ul>
+                  {{#profileUser.getHmd_owner}}
+                    <li>Head-mounted display (HMD) owner</li>
+                  {{/profileUser.getHmd_owner}}
+                  </ul>
+                </div>
+
                 <div id="user-systems">
                     {{#profileUser.getSystems}}
                         <h4>System {{index}}</h4>
@@ -81,6 +97,7 @@
                         <a href="./settings">Add/edit systems</a>
                     {{/ownProfile}}
                 </div>
+
             </div><!-- end of left-column -->
             <div class="col-md-6">
                 <div class="button-row">
