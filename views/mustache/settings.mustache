@@ -36,7 +36,16 @@
             <label for="about">Short description of you and your skills</label>
             <textarea id="about" name="about" class="form-control autogrow">{{userInfo.about}}</textarea>
 
-            <h3>Your Systems</h3>
+            <label>Your hardware</label>
+            <ul>
+              <li>
+                <input type="checkbox" id="hmd_owner" name="hmd_owner"
+                 value="1" {{#userInfo.hmd_owner}}checked="checked"{{/userInfo.hmd_owner}} />
+                <label for="hmd_owner">HMD (Head-mounted display)</label>
+              </li>
+            </ul>
+
+            <label>Your Systems</label>
             <div id="systems-forms">
                 {{#userSystems}}
                     <div class="{{#is_placeholder}}system-placeholder-wrapper{{/is_placeholder}}{{^is_placeholder}}system-wrapper{{/is_placeholder}}">
@@ -64,12 +73,12 @@
                 <a href="http://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank">
                     Download W-9 Here
                 </a>.
-                Remember, you need a valid US mailing address to receive your 1099 
+                Remember, you need a valid US mailing address to receive your 1099
                 tax documents at the end of the year. If you move, it\'s up to you
                 to let us know your new address.
             </p>
             <p>
-                <input type="checkbox" name="w9_accepted" id="w9_accepted" 
+                <input type="checkbox" name="w9_accepted" id="w9_accepted"
                   {{#user.getW9_accepted}}checked="checked" disabled="disabled"{{/user.getW9_accepted}} />
                 <label id="w9_accepted_label" for="w9_accepted">Check this box to let us know you'll do your part!</label>
             </p>

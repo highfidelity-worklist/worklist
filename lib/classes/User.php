@@ -53,6 +53,7 @@ class User {
     protected $has_W2;
     protected $findus;
     protected $sound_settings;
+    protected $hmd_owner;
 
     /**
      * All about budget
@@ -821,6 +822,22 @@ class User {
         $this->sound_settings = $sound_settings;
         return $this;
     }
+
+    /**
+     * @return the $hmd_owner
+     */
+    public function getHmd_owner() {
+        return $this->hmd_owner;
+    }
+
+    /**
+     * @param $hmd_owner to set
+     */
+    public function setHmd_owner($hmd_owner) {
+        $this->hmd_owner = $hmd_owner;
+        return $this;
+    }
+
 
     /**
      * @return the $contactway
