@@ -426,6 +426,7 @@ class UserController extends Controller {
                             throw new Exception('No changes made');
                         }
                         $review->review = $userReview;
+                        $review->updated = "NOW()";
                         $review->journal_notified = 0;
                         if (!$review->save('reviewer_id', 'reviewee_id')) {
                             throw new Exception('Cannot update review! Please retry later');

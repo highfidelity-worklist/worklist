@@ -58,10 +58,6 @@ if(validateAction()) {
                 Utils::validateAPIKey();
                 autoPassSuggestedJobs();
                 break;
-            case 'processPendingReviewsNotifications':
-                Utils::validateAPIKey();
-                processPendingReviewsNotifications();
-                break;
             case 'getFavoriteUsers':
                 getFavoriteUsers();
                 break;
@@ -373,69 +369,6 @@ function autoPassSuggestedJobs() {
     }
     mysql_free_result($result);
     mysql_close($con);
-}
-
-function processPendingReviewsNotifications() {
-    // Check if it is time to process notifications
-    if (!isset($_REQUEST['force']) && !canProcessNotifications()) {
-        return;
-    }
-
-    // process pending journal notifications
-    $pendingReviews = Review::getReviewsWithPendingJournalNotifications();
-    if($pendingReviews !== false && count($pendingReviews) > 0) {
-        echo "<br/>Processing " . count($pendingReviews) . " reviews.";
-        foreach ($pendingReviews as $review) {
-            $tReview = new Review();
-            $tReview->loadById($review['reviewer_id'], $review['reviewee_id']);
-            if ($tReview->journal_notified == 0) {
-                Utils::sendReviewNotification($tReview->reviewee_id, 'update',
-                    $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
-            } else {
-                Utils::sendReviewNotification($tReview->reviewee_id, 'new',
-                    $tReview->getReviews($tReview->reviewee_id, $tReview->reviewer_id, ' AND r.reviewer_id=' . $tReview->reviewer_id));
-            }
-            $tReview->journal_notified = 1;
-            $tReview->save('reviewer_id', 'reviewee_id');
-            usleep(4000000);
-        }
-    } else {
-        echo "<br />Processed. No pending Reviews.";
-    }
-    resetCronFile();
-}
-
-function canProcessNotifications() {
-    $file = REVIEW_NOTIFICATIONS_CRON_FILE;
-    // If no temp file is set (first time?) run it
-    if (!file_exists($file)) {
-        return true;
-    } else {
-        $hour = (int) file_get_contents($file);
-        $serverHour = (int) date('H');
-        if ($serverHour == $hour) {
-            return true;
-        } else {
-            echo "<br/>It is not time yet.";
-            echo "<br/>Next hour: " . $hour;
-            echo "<br/>Current hour:" . $serverHour;
-            return false;
-        }
-    }
-}
-
-function resetCronFile() {
-    $hourLag = mt_rand(5, 12);
-    $serverHour = (int) date('H');
-    $newHour = $hourLag + $serverHour;
-    if ($newHour > 23) {
-        $newHour -= 24;
-    }
-    echo "<br/>Cron File Reseted.";
-    echo "<br/>Next hour: " . $newHour;
-    unlink(REVIEW_NOTIFICATIONS_CRON_FILE);
-    file_put_contents(REVIEW_NOTIFICATIONS_CRON_FILE, $newHour);
-    chmod (REVIEW_NOTIFICATIONS_CRON_FILE, 0755);
 }
 
 function getFavoriteUsers() {
