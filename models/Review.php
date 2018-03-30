@@ -35,7 +35,7 @@ class Review extends DataObject {
     public function loadById($reviewer_id,$reviewee_id) {
         $cond =
           " `reviewee_id`={$reviewee_id} AND `reviewer_id`={$reviewer_id} AND " .
-          " DATEDIFF(NOW(), ISNULL(ISNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60 ";
+          " DATEDIFF(NOW(), IFNULL(IFNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60 ";
         $objectData = $this->dbFetchArray($cond);
         return $this->loadObject($objectData);
     }
@@ -46,7 +46,7 @@ class Review extends DataObject {
     public function getIndex($reviewee_id) {
         $cond =
           " `reviewee_id`={$reviewee_id} ORDER BY `reviewer_id` AND " .
-          " DATEDIFF(NOW(), ISNULL(ISNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60 ";
+          " DATEDIFF(NOW(), IFNULL(IFNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60 ";
         $objectData = $this->dbFetchArray($cond);
 
         if (!$objectData && is_array($objectData)) {
@@ -64,7 +64,7 @@ class Review extends DataObject {
             . REVIEWS . " AS r
             INNER JOIN " . FEES . " AS f ON r.reviewer_id = f.user_id AND f.paid = 1
             WHERE reviewee_id = $reviewee_id $filter
-              AND DATEDIFF(NOW(), ISNULL(ISNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60
+              AND DATEDIFF(NOW(), IFNULL(IFNULL(`updated`, `created`), '2018-03-01 00:00:00')) < 60
             GROUP BY r.review,r.reviewer_id
             ORDER BY nbFees DESC ";
 
