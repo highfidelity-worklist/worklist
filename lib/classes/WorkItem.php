@@ -27,6 +27,7 @@ class WorkItem {
     protected $budget_id;
     protected $is_internal;
     protected $assigned_id;
+    protected $hmd_required;
 
     var $status_changed;
 
@@ -537,6 +538,22 @@ class WorkItem {
         return $this;
     }
 
+    /**
+     * @return int $hmd_required
+     */
+    public function getHmd_required() {
+        return (int) $this->$hmd_required;
+    }
+
+    /**
+     * @param int $hmd_required the $hmd_required to set
+     */
+    public function setHmd_required($hmd_required) {
+        $this->$hmd_required = (int) $hmd_required;
+        return $this;
+    }
+
+
     public static function getStates()
     {
         $states = array();
@@ -565,7 +582,7 @@ class WorkItem {
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal, assigned_id) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal, assigned_id, hmd_required) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -578,7 +595,8 @@ class WorkItem {
             (boolval($this->getIs_bug()) ? 'true' : 'false') .", ".
             "NOW(), ".
             mysql_real_escape_string($this->getIs_internal()) . ", " .
-            mysql_real_escape_string($this->getAssigned_id()) . ")";
+            mysql_real_escape_string($this->getAssigned_id()) . ", " .
+            "'".intval($this->getHmd_required())."')";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -632,7 +650,8 @@ class WorkItem {
             code_review_started='.$this->getCRStarted().',
             code_review_completed='.$this->getCRCompleted().',
             sandbox="' .mysql_real_escape_string($this->getSandbox()).'",
-            assigned_id=' . (int) $this->getAssigned_id();
+            assigned_id=' . (int) $this->getAssigned_id().',
+            hmd_required=' . (int) $this->getHmd_required();
         $query .= ' WHERE id='.$this->getId();
         $result_query = mysql_query($query);
         if($result_query) {
@@ -711,7 +730,7 @@ class WorkItem {
                  " uc.nickname AS creator_nickname, um.nickname AS mechanic_nickname, w.status, w.notes, ".
                  " w.project_id, p.name AS project_name, p.repository AS repository, p.website AS p_website,
                   w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id,
-                  assigned_id
+                  w.assigned_id, w.hmd_required
                   FROM  " . WORKLIST . " as w
                   LEFT JOIN " . USERS . " as uc ON w.creator_id = uc.id
                   LEFT JOIN " . USERS . " as um ON w.mechanic_id = um.id

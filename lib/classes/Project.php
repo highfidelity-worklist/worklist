@@ -917,7 +917,7 @@ class Project {
             }
             return $runners;
         } else {
-            return false;
+            return [];
         }
     }
 
