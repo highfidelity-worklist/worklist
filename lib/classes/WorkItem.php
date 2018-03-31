@@ -28,6 +28,7 @@ class WorkItem {
     protected $is_internal;
     protected $assigned_id;
     protected $hmd_required;
+    protected $special_job;
 
     var $status_changed;
 
@@ -542,7 +543,7 @@ class WorkItem {
      * @return int $hmd_required
      */
     public function getHmd_required() {
-        return (int) $this->$hmd_required;
+        return (int) $this->hmd_required;
     }
 
     /**
@@ -550,6 +551,21 @@ class WorkItem {
      */
     public function setHmd_required($hmd_required) {
         $this->$hmd_required = (int) $hmd_required;
+        return $this;
+    }
+
+    /**
+     * @return int $special_job
+     */
+    public function getSpecial_job() {
+        return (int) $this->special_job;
+    }
+
+    /**
+     * @param int $special_job the $special_job to set
+     */
+    public function setSpecial_job($special_job) {
+        $this->special_job = (int) $special_job;
         return $this;
     }
 
@@ -582,7 +598,7 @@ class WorkItem {
     protected function insert()
     {
         $query = "INSERT INTO ".WORKLIST." (summary, creator_id, runner_id, status,".
-                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal, assigned_id, hmd_required) ".
+                 "project_id, notes, bug_job_id, created, is_bug, status_changed, is_internal, assigned_id, hmd_required, special_job) ".
             " VALUES (".
             "'".mysql_real_escape_string($this->getSummary())."', ".
             "'".mysql_real_escape_string($this->getCreatorId())."', ".
@@ -596,7 +612,8 @@ class WorkItem {
             "NOW(), ".
             mysql_real_escape_string($this->getIs_internal()) . ", " .
             mysql_real_escape_string($this->getAssigned_id()) . ", " .
-            "'".intval($this->getHmd_required())."')";
+            "'".intval($this->getHmd_required()).", ";
+            "'".intval($this->getSpecial_job())."')";
         $rt = mysql_query($query);
 
         $this->id = mysql_insert_id();
@@ -651,7 +668,8 @@ class WorkItem {
             code_review_completed='.$this->getCRCompleted().',
             sandbox="' .mysql_real_escape_string($this->getSandbox()).'",
             assigned_id=' . (int) $this->getAssigned_id().',
-            hmd_required=' . (int) $this->getHmd_required();
+            hmd_required=' . (int) $this->getHmd_required().',
+            special_job=' . (int) $this->getSpecial_job();
         $query .= ' WHERE id='.$this->getId();
         $result_query = mysql_query($query);
         if($result_query) {
@@ -730,7 +748,7 @@ class WorkItem {
                  " uc.nickname AS creator_nickname, um.nickname AS mechanic_nickname, w.status, w.notes, ".
                  " w.project_id, p.name AS project_name, p.repository AS repository, p.website AS p_website,
                   w.sandbox, w.bug_job_id, w.is_bug, w.budget_id, b.reason AS budget_reason, b.giver_id AS budget_giver_id,
-                  w.assigned_id, w.hmd_required
+                  w.assigned_id, w.hmd_required, w.special_job
                   FROM  " . WORKLIST . " as w
                   LEFT JOIN " . USERS . " as uc ON w.creator_id = uc.id
                   LEFT JOIN " . USERS . " as um ON w.mechanic_id = um.id

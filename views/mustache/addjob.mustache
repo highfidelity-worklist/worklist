@@ -81,15 +81,25 @@
         <div class="col-sm-3" id="choose-job-status">
         </div>
 
-        {{#userIsInternal}}
-        <div class="col-sm-offset-0 col-sm-6" id="save-button">
-            <input type="checkbox" name="is_internal" {{#editing}} {{#workitem.isInternal}}checked{{/workitem.isInternal}}{{/editing}} id="is_internal" />
+        <div class="col-sm-offset-0 col-sm-6 text-right">
+          {{#userIsInternal}}
+            <input type="checkbox" name="is_internal" {{#editing}}{{#workitem.isInternal}}checked{{/workitem.isInternal}}{{/editing}} id="is_internal" />
             <label for="is_internal">Internal</label>
-        {{/userIsInternal}}
-        {{^userIsInternal}}
-        <div class="col-sm-offset-2 col-sm-4">
-        {{/userIsInternal}}
-            <button class="btn btn-primary" type="submit" name="save_item">{{#editing}}Save changes{{/editing}} {{^editing}}Add Job{{/editing}}</button>
+          {{/userIsInternal}}
+
+          <input type="checkbox" name="hmd_required" {{#editing}}{{#workitem.getHmd_required}}checked{{/workitem.getHmd_required}}{{/editing}} id="hmd_required" />
+          <label for="hmd_required">Requires HMD</label>
+
+          <input type="checkbox" name="special_job" {{#editing}}{{#workitem.getSpecial_job}}checked{{/workitem.getSpecial_job}}{{/editing}} id="special_job" />
+          <label for="special_job">Special Job</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-offset-0 col-sm-9 text-right" id="save-button">
+          <button class="btn btn-primary" type="submit" name="save_item">
+            {{#editing}}Save changes{{/editing}}
+            {{^editing}}Add Job{{/editing}}
+          </button>
         </div>
     </div>
 </form>
