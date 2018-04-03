@@ -1332,6 +1332,7 @@ class JobController extends Controller {
                         : "Unknown error";
                 }
                 $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
+            }
         }
 
         if ($newStatus == 'QA Ready' && $repoType == 'git') {
