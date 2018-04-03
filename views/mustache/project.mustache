@@ -20,14 +20,10 @@
                 </span>
                 {{#currentUser.is_admin}}
                     <div id="projectInternal">
-                        <input class="wlcheckbox" type="checkbox" name="internal" id="internal" 
-                          {{^edit_mode}}disabled="disabled"{{/edit_mode}} 
+                        <input class="wlcheckbox" type="checkbox" name="internal" id="internal"
+                          {{^edit_mode}}disabled="disabled"{{/edit_mode}}
                           {{#project.getInternal}}checked="checked"{{/project.getInternal}} />
                         <label for="internal">Internal project</label>
-                        <input class="wlcheckbox" type="checkbox" name="require_sandbox" id="require_sandbox"
-                          {{^edit_mode}}disabled="disabled"{{/edit_mode}}
-                          {{#project.getRequireSandbox}}checked="checked"{{/project.getRequireSandbox}} />
-                        <label for="require_sandbox">Requires Sandbox</label>
                     </div>
                 {{/currentUser.is_admin}}
             </div>
@@ -51,7 +47,7 @@
         {{/adminOrOwner}}
         </section>
         <div>
-            <div id="contactInfo"><span>Contact Info:</span> 
+            <div id="contactInfo"><span>Contact Info:</span>
                 <a href="mailto:{{project.getContactInfo}}">{{project.getContactInfo}}</a>
             </div>
             <div id="projectRunner"><span>Project started by</span>
@@ -124,9 +120,9 @@
                                     <tr class="role roleitem-{{id}}">
                                         <script type="data">
                                             {
-                                                id: '{{id}}', 
-                                                role_title: '{{role_title}}', 
-                                                percentage: '{{percentage}}', 
+                                                id: '{{id}}',
+                                                role_title: '{{role_title}}',
+                                                percentage: '{{percentage}}',
                                                 min_amount: '{{min_amount}}'
                                             }
                                         </script>
@@ -200,7 +196,7 @@
                         </div>
                         <div>
                             <label for="hipchat_room">Room</label>
-                            <input type="text" id="hipchat_room" name="hipchat_room" value="{{project.getHipchatRoom}}" />                        
+                            <input type="text" id="hipchat_room" name="hipchat_room" value="{{project.getHipchatRoom}}" />
                         </div>
                         <div>
                             <label for="hipchat_color">Message Color</label>
@@ -208,7 +204,7 @@
                         </div>
                     {{/edit_mode}}
                 </div>
-            </li>  
+            </li>
             <li id="projectLabels">
                 <h3>Project labels</h3>
                 <table class="table table-striped">
@@ -241,7 +237,7 @@
                     Each project has its own repository. The repository for this project is:
                     <a id="projectRepositoryUrl"  href="{{project.getRepoUrl}}">
                         {{project.getRepoUrl}}
-                    </a>                        
+                    </a>
                 </p>
             </li>
             <li id="projectTotalJobs">
@@ -301,7 +297,7 @@
                 <p id="viewHistory">
                     <a href="./jobs?project={{project.getName}}&user=&status=underway">
                         View history of jobs
-                    </a> for the {{project.getName}} project 
+                    </a> for the {{project.getName}} project
                 </p>
             </li>
             {{#is_owner}}

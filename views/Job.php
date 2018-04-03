@@ -161,10 +161,6 @@ class JobView extends View {
         return $this->worklist['status'] == "Done";
     }
 
-    public function isGitProject() {
-        return $this->workitem_project->getRepo_type() == 'git';
-    }
-
     public function nonEditableRunnerBox() {
         $worklist = $this->worklist;
         $ret = '';

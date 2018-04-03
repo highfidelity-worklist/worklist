@@ -230,7 +230,6 @@
 </div>
 
 <script type="text/javascript">
-    var repo_type = '{{workitem_project.getRepo_type}}';
     GitHub.isConnected = {{#isGitHubConnected}}1{{/isGitHubConnected}}{{^isGitHubConnected}}0{{/isGitHubConnected}};
     GitHub.applicationKey = '{{workitem_project.getGithubId}}';
     var project_id = {{worklist.project_id}};

@@ -1310,34 +1310,13 @@ class JobController extends Controller {
         $workitem->setStatus($newStatus);
         $projectId = $workitem->getProjectId();
         $thisProject = new Project($projectId);
-        $repoType = $thisProject->getRepo_type();
+        $repository = $thisProject->getRepository();
 
         // Generate diff and send to pastebin if we're in REVIEW
         if ($newStatus == "Code Review") {
             //reset code_review flags
             $workitem->resetCRFlags();
-            if ($repoType == 'svn') {
-                if (substr($workitem->getSandbox(), 0, 4) == "http") {
-
-                    // Sandbox URLs look like:
-                    // https://dev.worklist.net/~johncarlson21/worklist
-                    // 0     12               3              4
-                    $sandbox_array = explode("/", $workitem->getSandbox());
-
-                    $username = isset($sandbox_array[3]) ? $sandbox_array[3] : "~";
-                    $username = substr($username, 1); // eliminate the tilde
-
-                    $sandbox = isset($sandbox_array[4]) ? $sandbox_array[4] : "";
-
-                    try {
-                        $result = SandBoxUtil::pasteSandboxDiff($username, $workitem->getId(), $sandbox);
-                        $comment = "Code Review available here:\n$result";
-                        $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
-                    } catch (Exception $ex) {
-                        error_log("Could not paste diff: \n$ex");
-                    }
-                }
-            } elseif ($repoType == 'git') {
+            if (strlen(trim($repository))) {
                 $GitHubUser = new User($workitem->getMechanicId());
                 $pullResults = $GitHubUser->createPullRequest($workitem->getId(), $workitem->getSummary(), $thisProject);
 
@@ -1353,7 +1332,6 @@ class JobController extends Controller {
                         : "Unknown error";
                 }
                 $rt = $this->addComment($workitem->getId(), $user->getId(), $comment);
-            }
         }
 
         if ($newStatus == 'QA Ready' && $repoType == 'git') {
@@ -1369,7 +1347,7 @@ class JobController extends Controller {
                 'branch_name' => $workitem->getId(),
                 'runner' => $GitHubUser->getNickname(),
                 'users_fork' => $usersFork,
-                'master_repo' => str_replace('https://', 'git://', $thisProject->getRepository())
+                'master_repo' => str_replace('https://', 'git://', $repository)
             );
             $senderEmail = 'Worklist <contact@worklist.net>';
             Utils::sendTemplateEmail($runnerEmail, $emailTemplate, $data, $senderEmail);

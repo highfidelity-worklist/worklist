@@ -27,8 +27,6 @@ class Project {
     protected $cr_job_runner;
     protected $cr_users_specified;
     protected $internal;
-    protected $require_sandbox;
-    protected $repo_type;
     protected $creation_date;
     protected $hipchat_enabled;
     protected $hipchat_notification_token;
@@ -125,7 +123,6 @@ class Project {
                 p.website,
                 p.budget,
                 p.repository,
-                p.repo_type,
                 p.contact_info,
                 p.last_commit,
                 p.active,
@@ -140,7 +137,6 @@ class Project {
                 p.cr_job_runner,
                 p.cr_users_specified,
                 p.internal,
-                p.require_sandbox,
                 p.creation_date,
                 p.hipchat_enabled,
                 p.hipchat_notification_token,
@@ -168,7 +164,6 @@ class Project {
              ->setWebsite($row['website'])
              ->setBudget($row['budget'])
              ->setRepository($row['repository'])
-             ->setRepo_type($row['repo_type'])
              ->setContactInfo($row['contact_info'])
              ->setLastCommit($row['last_commit'])
              ->setActive($row['active'])
@@ -183,7 +178,6 @@ class Project {
              $this->setCrRunner($row['cr_job_runner']);
              $this->setCrUsersSpecified($row['cr_users_specified']);
              $this->setInternal($row['internal']);
-             $this->setRequireSandbox($row['require_sandbox']);
              $this->setCreationDate($row['creation_date']);
         $this->setHipchatEnabled($row['hipchat_enabled']);
         $this->setHipchatNotificationToken($row['hipchat_notification_token']);
@@ -299,15 +293,6 @@ class Project {
 
     public function getRepository() {
         return $this->repository;
-    }
-
-    public function setRepo_type($repo_type) {
-        $this->repo_type = $repo_type;
-        return $this;
-    }
-
-    public function getRepo_type() {
-        return $this->repo_type;
     }
 
     public function setContactInfo($contact_info) {
@@ -427,13 +412,6 @@ class Project {
     }
     public function getInternal() {
         return $this->internal;
-    }
-    public function setRequireSandbox($require_sandbox) {
-        $this->require_sandbox = $require_sandbox ? 1 : 0;
-        return $this;
-    }
-    public function getRequireSandbox() {
-        return $this->require_sandbox;
     }
     public function setCreationDate($creation_date) {
         $this->creation_date = $creation_date;
@@ -575,8 +553,8 @@ class Project {
             (name, description, short_description, website, budget, repository, contact_info, active,
                 owner_id, testflight_enabled, testflight_team_token,
                 logo, last_commit, cr_anyone, cr_3_favorites, cr_project_admin,
-                cr_job_runner, cr_users_specified, internal, require_sandbox, creation_date, hipchat_enabled,
-                hipchat_notification_token, hipchat_room, hipchat_color, repo_type, github_id, github_secret) " .
+                cr_job_runner, cr_users_specified, internal, creation_date, hipchat_enabled,
+                hipchat_notification_token, hipchat_room, hipchat_color, github_id, github_secret) " .
             "VALUES (".
             "'".mysql_real_escape_string($this->getName())."', ".
             "'".mysql_real_escape_string($this->getDescription())."', ".
@@ -603,7 +581,6 @@ class Project {
             "'" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatRoom()) . "', " .
             "'" . mysql_real_escape_string($this->getHipchatColor()) . "', " .
-            "'" . mysql_real_escape_string($this->getRepo_type()) . "', " .
             "'" . mysql_real_escape_string($this->getGithubId()) . "', " .
             "'" . mysql_real_escape_string($this->getGithubSecret()) . "')";
         $rt = mysql_query($query);
@@ -652,7 +629,6 @@ class Project {
                 cr_job_runner='" . intval($this->getCrRunner()) . "',
                 cr_users_specified='" . intval($this->getCrUsersSpecified()) . "',
                 internal='" . intval($this->getInternal()) . "',
-                require_sandbox='" . intval($this->getRequireSandbox()) . "',
                 hipchat_enabled='" . intval($this->getHipchatEnabled()) . "',
                 hipchat_notification_token='" . mysql_real_escape_string($this->getHipchatNotificationToken()) . "',
                 hipchat_room='" . mysql_real_escape_string($this->getHipchatRoom()) . "',
@@ -768,11 +744,7 @@ class Project {
     }
 
     public function getRepoUrl() {
-        if ($this->getRepo_type() == 'git') {
-            return $this->repository;
-        } else {
-            return SVN_BASE_URL . $this->repository;
-        }
+        return $this->repository;
     }
 
     /**

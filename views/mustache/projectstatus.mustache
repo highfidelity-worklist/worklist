@@ -9,15 +9,14 @@
         dbuser = '{{db_user}}',
         template = '{{templateEmail}}',
         github_repo_url = '{{projectObj.getRepository}}',
-        github__repo_type = '{{projectObj.getRepo_type}}';
     GitHub.isConnected = '{{isGitHubConnected}}';
     GitHub.applicationKey = '{{projectObj.getGithubId}}';
 </script>
 <h1 class="newProject">Project {{projectName}} setup underway...</h1>
     {{#isGithubProject}}
     <div class="project-description">
-        <p>Your project is being linked to the GitHub repository you specified. 
-           Users will be able to bid on your projects once they have validated their GitHub credentials with Worklist. 
+        <p>Your project is being linked to the GitHub repository you specified.
+           Users will be able to bid on your projects once they have validated their GitHub credentials with Worklist.
         </p>
     </div>
     {{/isGithubProject}}
@@ -28,8 +27,8 @@
     {{/isGithubProject}}
     <div id="project-status">
             {{#isGithubProject}}
-            <p>GitHub Repository linked</p>    
-            <p>Emails sent</p>    
+            <p>GitHub Repository linked</p>
+            <p>Emails sent</p>
             <p>Project created!</p>
             {{/isGithubProject}}
             {{^isGithubProject}}
