@@ -221,7 +221,6 @@ replacement data:
                <p>Just wanted to let you know that a new project has been created on the worklist.</p>
                <p>Project Admin: {nickname}<br/>
                Project Name: {project_name}<br/>
-               Project Repo type:{repo_type}
                </p>
                <p>You can view the details <a href="' . WORKLIST_URL . '{project_name}">here</a>.'
 ),

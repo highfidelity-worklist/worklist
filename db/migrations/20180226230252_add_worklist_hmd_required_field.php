@@ -13,7 +13,7 @@ class AddWorklistHmdRequiredField extends AbstractMigration
 
   public function down() {
     $this->table('worklist')
-      ->removeColumn('special_job')
+      ->removeColumn('hmd_required')
       ->save();
   }
 }

@@ -58,7 +58,6 @@ class ProjectController extends Controller {
             $cr_users_specified = isset($_REQUEST['cr_users_specified']) ? 1 : 0;
             $cr_job_runner = isset($_REQUEST['cr_job_runner']) ? 1 : 0;
             $internal = isset($_REQUEST['internal']) ? 1 : 0;
-            $require_sandbox = isset($_REQUEST['require_sandbox']) ? 1 : 0;
             $hipchat_enabled = isset($_REQUEST['hipchat_enabled']) ? 1 : 0;
             $project->setCrAnyone($cr_anyone);
             $project->setCrFav($cr_3_favorites);
@@ -69,12 +68,9 @@ class ProjectController extends Controller {
             $project->setHipchatNotificationToken($_REQUEST['hipchat_notification_token']);
             $project->setHipchatRoom($_REQUEST['hipchat_room']);
             $project->setHipchatColor($_REQUEST['hipchat_color']);
-            
+
             if ($user->getIs_admin()) {
                 $project->setInternal($internal);
-            }
-            if ($user->getIs_admin()) {
-                $project->setRequireSandbox($require_sandbox);
             }
             if ($_REQUEST['logoProject'] != "") {
                 $project->setLogo(basename($_REQUEST['logoProject']));
@@ -109,7 +105,7 @@ class ProjectController extends Controller {
                 $role_id = mysql_real_escape_string($_POST['role_id']);
                 $res = $project->deleteRole($role_id);
             }
-            
+
         }
 
         /* Prevent reposts on refresh */

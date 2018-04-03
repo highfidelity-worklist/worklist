@@ -1,6 +1,6 @@
 <form method="post" id="addJob">
     <div class="row">
-       {{#editing}}
+        {{#editing}}
             {{#canReassignRunner}}
                 <div class="col-sm-12">
                     <p>Designer:</p>
@@ -22,7 +22,7 @@
         </div>
         {{#editing}}
             <div class="col-sm-5">
-               {{#canSeeBudgetArea}}
+                {{#canSeeBudgetArea}}
                     <p>Budget:</p>
                     {{#isRunnerOfWorkitem}}
                         <select id="budget-source-combo" name="budget-source-combo" data-placeholder="Select a budget">

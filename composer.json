@@ -7,7 +7,8 @@
         "knplabs/github-api": "*",
         "kriswallsmith/Buzz": "*",
         "robmorgan/phinx": "dev-master",
-        "dshafik/php7-mysql-shim": "dev-master"
+        "dshafik/php7-mysql-shim": "dev-master",
+        "fzaninotto/faker": "^1.8@dev"
     },
     "repositories": [
         {
